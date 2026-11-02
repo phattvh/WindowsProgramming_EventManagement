@@ -204,3 +204,20 @@ CREATE TABLE dbo.ChiTietTaiTro
     CONSTRAINT CK_ChiTietTaiTro_Goi CHECK (GoiTaiTro IN (N'Kim Cương', N'Vàng', N'Bạc', N'Đồng', N'Đồng hành'))
 );
 GO
+
+-- bảng 13: HangVe --
+CREATE TABLE dbo.HangVe
+(
+    MaHangVe            VARCHAR(20)     NOT NULL,
+    MaSuKien            VARCHAR(20)     NOT NULL,
+    TenHangVe           NVARCHAR(50)    NOT NULL,
+    GiaVe               DECIMAL(18,2)   NOT NULL CONSTRAINT DF_HangVe_GiaVe DEFAULT 0,
+    SoLuongPhatHanh     INT             NOT NULL,
+    SoLuongDaBan        INT             NOT NULL CONSTRAINT DF_HangVe_SoLuongDaBan DEFAULT 0,
+    CONSTRAINT PK_HangVe PRIMARY KEY (MaHangVe),
+    CONSTRAINT FK_HangVe_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien) ON DELETE CASCADE,
+    CONSTRAINT CK_HangVe_GiaVe CHECK (GiaVe >= 0),
+    CONSTRAINT CK_HangVe_SoLuongPhatHanh CHECK (SoLuongPhatHanh > 0),
+    CONSTRAINT CK_HangVe_SoLuongDaBan CHECK (SoLuongDaBan >= 0 AND SoLuongDaBan <= SoLuongPhatHanh)
+);
+GO
