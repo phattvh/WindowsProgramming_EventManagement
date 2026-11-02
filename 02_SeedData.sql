@@ -57,3 +57,24 @@ SELECT 'STAFF', MaChucNang,
        CASE WHEN MaChucNang IN ('UC01', 'UC02', 'UC10', 'UC11', 'UC13', 'UC18', 'UC21') THEN 1 ELSE 0 END
 FROM dbo.ChucNang;
 GO
+
+-- seed: NguoiDung Admin --
+INSERT INTO dbo.NguoiDung 
+(
+    MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, LanDoiMatKhauGanNhat, SoLanDangNhapSai, KhoaDenKhi
+)
+VALUES
+(
+    'USR001', 
+    'admin', 
+    '$2a$11$Vn9HCdEIZew5LLR7UcYHH.0eTE9n3Jj928xQ7TJq8mQauMf9sOe0y', 
+    N'Quản trị viên Hệ thống', 
+    'admin@eventmanagement.vn', 
+    '0901234567', 
+    'ADMIN', 
+    N'Hoạt động', 
+    GETDATE(), 
+    0, 
+    NULL
+);
+GO
