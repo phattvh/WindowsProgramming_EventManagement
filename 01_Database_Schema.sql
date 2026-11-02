@@ -304,3 +304,20 @@ CREATE TABLE dbo.PhanCongNhanSu
     CONSTRAINT CK_PhanCong_ThoiGian CHECK (ThoiGianKetThuc > ThoiGianBatDau)
 );
 GO
+
+-- bảng 19: ChiPhiSuKien --
+CREATE TABLE dbo.ChiPhiSuKien
+(
+    MaChiPhi            VARCHAR(20)     NOT NULL,
+    MaSuKien            VARCHAR(20)     NOT NULL,
+    KhoanMucChi         NVARCHAR(100)   NOT NULL,
+    SoTien              DECIMAL(18,2)   NOT NULL,
+    NgayChi             DATETIME        NOT NULL CONSTRAINT DF_ChiPhi_NgayChi DEFAULT GETDATE(),
+    NguoiDuyet          VARCHAR(20)     NULL,
+    GhiChu              NVARCHAR(255)   NULL,
+    CONSTRAINT PK_ChiPhiSuKien PRIMARY KEY (MaChiPhi),
+    CONSTRAINT FK_ChiPhi_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien) ON DELETE CASCADE,
+    CONSTRAINT FK_ChiPhi_NguoiDung FOREIGN KEY (NguoiDuyet) REFERENCES dbo.NguoiDung(MaNguoiDung),
+    CONSTRAINT CK_ChiPhi_SoTien CHECK (SoTien > 0)
+);
+GO
