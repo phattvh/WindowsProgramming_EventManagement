@@ -321,3 +321,36 @@ CREATE TABLE dbo.ChiPhiSuKien
     CONSTRAINT CK_ChiPhi_SoTien CHECK (SoTien > 0)
 );
 GO
+
+-- bảng 20: PhanHoi --
+CREATE TABLE dbo.PhanHoi
+(
+    MaPhanHoi           VARCHAR(20)     NOT NULL,
+    MaSuKien            VARCHAR(20)     NOT NULL,
+    MaNguoiThamGia      VARCHAR(20)     NOT NULL,
+    DiemDanhGia         INT             NOT NULL,
+    NoiDungPhanHoi      NVARCHAR(500)   NULL,
+    NgayDanhGia         DATETIME        NOT NULL CONSTRAINT DF_PhanHoi_NgayDanhGia DEFAULT GETDATE(),
+    CONSTRAINT PK_PhanHoi PRIMARY KEY (MaPhanHoi),
+    CONSTRAINT FK_PhanHoi_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien) ON DELETE CASCADE,
+    CONSTRAINT FK_PhanHoi_NguoiThamGia FOREIGN KEY (MaNguoiThamGia) REFERENCES dbo.NguoiThamGia(MaNguoiThamGia),
+    CONSTRAINT UQ_PhanHoi_SuKien_NguoiThamGia UNIQUE (MaSuKien, MaNguoiThamGia),
+    CONSTRAINT CK_PhanHoi_DiemDanhGia CHECK (DiemDanhGia >= 1 AND DiemDanhGia <= 5)
+);
+GO
+
+-- Indexes --
+CREATE NONCLUSTERED INDEX IX_NguoiDung_MaNhomQuyen ON dbo.NguoiDung(MaNhomQuyen);
+CREATE NONCLUSTERED INDEX IX_PhanQuyen_MaChucNang ON dbo.PhanQuyen(MaChucNang);
+CREATE NONCLUSTERED INDEX IX_SuKien_MaLoaiSK ON dbo.SuKien(MaLoaiSK);
+CREATE NONCLUSTERED INDEX IX_SuKien_MaDiaDiem ON dbo.SuKien(MaDiaDiem);
+CREATE NONCLUSTERED INDEX IX_SuKien_TrangThai_NgayBatDau ON dbo.SuKien(TrangThai, NgayBatDau);
+CREATE NONCLUSTERED INDEX IX_LichTrinh_MaSuKien ON dbo.LichTrinh(MaSuKien);
+CREATE NONCLUSTERED INDEX IX_HangVe_MaSuKien ON dbo.HangVe(MaSuKien);
+CREATE NONCLUSTERED INDEX IX_DangKy_MaSuKien ON dbo.DangKy(MaSuKien);
+CREATE NONCLUSTERED INDEX IX_DangKy_MaNguoiThamGia ON dbo.DangKy(MaNguoiThamGia);
+CREATE NONCLUSTERED INDEX IX_DangKy_MaHangVe ON dbo.DangKy(MaHangVe);
+CREATE NONCLUSTERED INDEX IX_ChiTietVe_MaDangKy ON dbo.ChiTietVe(MaDangKy);
+CREATE NONCLUSTERED INDEX IX_PhanCongNhanSu_MaSuKien ON dbo.PhanCongNhanSu(MaSuKien);
+CREATE NONCLUSTERED INDEX IX_ChiPhiSuKien_MaSuKien ON dbo.ChiPhiSuKien(MaSuKien);
+GO
