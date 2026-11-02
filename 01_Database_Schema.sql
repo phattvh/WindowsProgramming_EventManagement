@@ -186,3 +186,21 @@ CREATE TABLE dbo.LichTrinh
     CONSTRAINT CK_LichTrinh_ThoiGian CHECK (ThoiGianKetThuc > ThoiGianBatDau)
 );
 GO
+
+-- bảng 12: ChiTietTaiTro --
+CREATE TABLE dbo.ChiTietTaiTro
+(
+    MaTaiTro            VARCHAR(20)     NOT NULL,
+    MaSuKien            VARCHAR(20)     NOT NULL,
+    MaNhaTaiTro         VARCHAR(20)     NOT NULL,
+    GoiTaiTro           NVARCHAR(50)    NOT NULL CONSTRAINT DF_ChiTietTaiTro_Goi DEFAULT N'Đồng',
+    GiaTriTaiTro        DECIMAL(18,2)   NOT NULL CONSTRAINT DF_ChiTietTaiTro_GiaTri DEFAULT 0,
+    HinhThucTaiTro      NVARCHAR(100)   NOT NULL CONSTRAINT DF_ChiTietTaiTro_HinhThuc DEFAULT N'Tiền mặt',
+    GhiChu              NVARCHAR(255)   NULL,
+    CONSTRAINT PK_ChiTietTaiTro PRIMARY KEY (MaTaiTro),
+    CONSTRAINT FK_ChiTietTaiTro_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien) ON DELETE CASCADE,
+    CONSTRAINT FK_ChiTietTaiTro_NhaTaiTro FOREIGN KEY (MaNhaTaiTro) REFERENCES dbo.NhaTaiTro(MaNhaTaiTro),
+    CONSTRAINT CK_ChiTietTaiTro_GiaTri CHECK (GiaTriTaiTro >= 0),
+    CONSTRAINT CK_ChiTietTaiTro_Goi CHECK (GoiTaiTro IN (N'Kim Cương', N'Vàng', N'Bạc', N'Đồng', N'Đồng hành'))
+);
+GO
