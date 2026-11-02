@@ -94,3 +94,16 @@ CREATE TABLE dbo.LoaiSuKien
     CONSTRAINT PK_LoaiSuKien PRIMARY KEY (MaLoaiSK)
 );
 GO
+
+-- bảng 6: DiaDiem --
+CREATE TABLE dbo.DiaDiem
+(
+    MaDiaDiem       VARCHAR(20)     NOT NULL,
+    TenDiaDiem      NVARCHAR(150)   NOT NULL,
+    DiaChi          NVARCHAR(255)   NOT NULL,
+    SucChuaToiDa    INT             NOT NULL CONSTRAINT DF_DiaDiem_SucChuaToiDa DEFAULT 100,
+    GhiChu          NVARCHAR(255)   NULL,
+    CONSTRAINT PK_DiaDiem PRIMARY KEY (MaDiaDiem),
+    CONSTRAINT CK_DiaDiem_SucChuaToiDa CHECK (SucChuaToiDa > 0)
+);
+GO
