@@ -62,3 +62,13 @@ CREATE TABLE dbo.NguoiDung
     CONSTRAINT CK_NguoiDung_TrangThai CHECK (TrangThai IN (N'Hoạt động', N'Khóa tạm thời', N'Khóa vĩnh viễn'))
 );
 GO
+
+-- bảng 3: ChucNang --
+CREATE TABLE dbo.ChucNang
+(
+    MaChucNang      VARCHAR(20)     NOT NULL,
+    TenChucNang     NVARCHAR(100)   NOT NULL,
+    MaForm          VARCHAR(20)     NOT NULL,
+    CONSTRAINT PK_ChucNang PRIMARY KEY (MaChucNang)
+);
+GO
