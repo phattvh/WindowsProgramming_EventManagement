@@ -72,3 +72,15 @@ CREATE TABLE dbo.ChucNang
     CONSTRAINT PK_ChucNang PRIMARY KEY (MaChucNang)
 );
 GO
+
+-- bảng 4: PhanQuyen --
+CREATE TABLE dbo.PhanQuyen
+(
+    MaNhomQuyen     VARCHAR(20)     NOT NULL,
+    MaChucNang      VARCHAR(20)     NOT NULL,
+    CoQuyen         BIT             NOT NULL CONSTRAINT DF_PhanQuyen_CoQuyen DEFAULT 1,
+    CONSTRAINT PK_PhanQuyen PRIMARY KEY (MaNhomQuyen, MaChucNang),
+    CONSTRAINT FK_PhanQuyen_NhomQuyen FOREIGN KEY (MaNhomQuyen) REFERENCES dbo.NhomQuyen(MaNhomQuyen),
+    CONSTRAINT FK_PhanQuyen_ChucNang FOREIGN KEY (MaChucNang) REFERENCES dbo.ChucNang(MaChucNang)
+);
+GO
