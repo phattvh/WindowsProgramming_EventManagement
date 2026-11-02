@@ -84,3 +84,13 @@ CREATE TABLE dbo.PhanQuyen
     CONSTRAINT FK_PhanQuyen_ChucNang FOREIGN KEY (MaChucNang) REFERENCES dbo.ChucNang(MaChucNang)
 );
 GO
+
+-- bảng 5: LoaiSuKien --
+CREATE TABLE dbo.LoaiSuKien
+(
+    MaLoaiSK        VARCHAR(20)     NOT NULL,
+    TenLoaiSK       NVARCHAR(100)   NOT NULL,
+    MoTa            NVARCHAR(255)   NULL,
+    CONSTRAINT PK_LoaiSuKien PRIMARY KEY (MaLoaiSK)
+);
+GO
