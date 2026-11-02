@@ -271,3 +271,19 @@ CREATE TABLE dbo.ChiTietVe
     CONSTRAINT CK_ChiTietVe_TrangThai CHECK (TrangThaiVe IN (N'Hợp lệ', N'Đã check-in', N'Đã hủy'))
 );
 GO
+
+-- bảng 17: CheckIn --
+CREATE TABLE dbo.CheckIn
+(
+    MaCheckIn           VARCHAR(20)     NOT NULL,
+    MaVe                VARCHAR(30)     NOT NULL,
+    ThoiGianCheckIn     DATETIME        NOT NULL CONSTRAINT DF_CheckIn_ThoiGianCheckIn DEFAULT GETDATE(),
+    NguoiThucHien       VARCHAR(20)     NOT NULL,
+    HinhThucCheckIn     NVARCHAR(50)    NOT NULL CONSTRAINT DF_CheckIn_HinhThuc DEFAULT N'Webcam QR Code',
+    GhiChu              NVARCHAR(255)   NULL,
+    CONSTRAINT PK_CheckIn PRIMARY KEY (MaCheckIn),
+    CONSTRAINT UQ_CheckIn_MaVe UNIQUE (MaVe),
+    CONSTRAINT FK_CheckIn_ChiTietVe FOREIGN KEY (MaVe) REFERENCES dbo.ChiTietVe(MaVe),
+    CONSTRAINT FK_CheckIn_NguoiDung FOREIGN KEY (NguoiThucHien) REFERENCES dbo.NguoiDung(MaNguoiDung)
+);
+GO
