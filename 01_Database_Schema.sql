@@ -168,3 +168,21 @@ CREATE TABLE dbo.SuKien
     CONSTRAINT CK_SuKien_TrangThai CHECK (TrangThai IN (N'Dự kiến', N'Mở đăng ký', N'Đang diễn ra', N'Đã kết thúc', N'Hủy'))
 );
 GO
+
+-- bảng 11: LichTrinh --
+CREATE TABLE dbo.LichTrinh
+(
+    MaLichTrinh     VARCHAR(20)     NOT NULL,
+    MaSuKien        VARCHAR(20)     NOT NULL,
+    TenTietMuc      NVARCHAR(150)   NOT NULL,
+    ThoiGianBatDau  DATETIME        NOT NULL,
+    ThoiGianKetThuc DATETIME        NOT NULL,
+    MaDienGia       VARCHAR(20)     NULL,
+    DiaDiemChiTiet  NVARCHAR(100)   NULL,
+    GhiChu          NVARCHAR(255)   NULL,
+    CONSTRAINT PK_LichTrinh PRIMARY KEY (MaLichTrinh),
+    CONSTRAINT FK_LichTrinh_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien) ON DELETE CASCADE,
+    CONSTRAINT FK_LichTrinh_DienGia FOREIGN KEY (MaDienGia) REFERENCES dbo.DienGia(MaDienGia),
+    CONSTRAINT CK_LichTrinh_ThoiGian CHECK (ThoiGianKetThuc > ThoiGianBatDau)
+);
+GO
