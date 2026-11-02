@@ -40,3 +40,20 @@ INSERT INTO dbo.ChucNang (MaChucNang, TenChucNang, MaForm) VALUES
 ('UC20', N'Cấu hình hệ thống & Ma trận phân quyền', 'F20'),
 ('UC21', N'Đổi mật khẩu cá nhân',                   'UC21');
 GO
+
+-- seed: PhanQuyen --
+INSERT INTO dbo.PhanQuyen (MaNhomQuyen, MaChucNang, CoQuyen)
+SELECT 'ADMIN', MaChucNang, 1 FROM dbo.ChucNang;
+GO
+
+INSERT INTO dbo.PhanQuyen (MaNhomQuyen, MaChucNang, CoQuyen)
+SELECT 'MANAGER', MaChucNang, 
+       CASE WHEN MaChucNang IN ('UC03', 'UC20') THEN 0 ELSE 1 END
+FROM dbo.ChucNang;
+GO
+
+INSERT INTO dbo.PhanQuyen (MaNhomQuyen, MaChucNang, CoQuyen)
+SELECT 'STAFF', MaChucNang, 
+       CASE WHEN MaChucNang IN ('UC01', 'UC02', 'UC10', 'UC11', 'UC13', 'UC18', 'UC21') THEN 1 ELSE 0 END
+FROM dbo.ChucNang;
+GO
