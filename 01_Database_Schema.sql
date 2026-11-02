@@ -121,3 +121,15 @@ CREATE TABLE dbo.DienGia
     CONSTRAINT PK_DienGia PRIMARY KEY (MaDienGia)
 );
 GO
+
+-- bảng 8: NhanSu --
+CREATE TABLE dbo.NhanSu
+(
+    MaNhanSu        VARCHAR(20)     NOT NULL,
+    HoTen           NVARCHAR(100)   NOT NULL,
+    SoDienThoai     VARCHAR(15)     NOT NULL,
+    Email           VARCHAR(100)    NULL,
+    ChucVu          NVARCHAR(50)    NOT NULL CONSTRAINT DF_NhanSu_ChucVu DEFAULT N'Cộng tác viên',
+    CONSTRAINT PK_NhanSu PRIMARY KEY (MaNhanSu)
+);
+GO
