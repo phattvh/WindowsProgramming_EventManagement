@@ -146,3 +146,25 @@ CREATE TABLE dbo.NhaTaiTro
     CONSTRAINT PK_NhaTaiTro PRIMARY KEY (MaNhaTaiTro)
 );
 GO
+
+-- bảng 10: SuKien --
+CREATE TABLE dbo.SuKien
+(
+    MaSuKien        VARCHAR(20)     NOT NULL,
+    TenSuKien       NVARCHAR(200)   NOT NULL,
+    MaLoaiSK        VARCHAR(20)     NOT NULL,
+    MaDiaDiem       VARCHAR(20)     NOT NULL,
+    NgayBatDau      DATETIME        NOT NULL,
+    NgayKetThuc     DATETIME        NOT NULL,
+    TrangThai       NVARCHAR(30)    NOT NULL CONSTRAINT DF_SuKien_TrangThai DEFAULT N'Dự kiến',
+    MoTa            NVARCHAR(MAX)   NULL,
+    HinhAnh         VARCHAR(255)    NULL,
+    MaNguoiTao      VARCHAR(20)     NOT NULL,
+    CONSTRAINT PK_SuKien PRIMARY KEY (MaSuKien),
+    CONSTRAINT FK_SuKien_LoaiSuKien FOREIGN KEY (MaLoaiSK) REFERENCES dbo.LoaiSuKien(MaLoaiSK),
+    CONSTRAINT FK_SuKien_DiaDiem FOREIGN KEY (MaDiaDiem) REFERENCES dbo.DiaDiem(MaDiaDiem),
+    CONSTRAINT FK_SuKien_NguoiDung FOREIGN KEY (MaNguoiTao) REFERENCES dbo.NguoiDung(MaNguoiDung),
+    CONSTRAINT CK_SuKien_NgayHopLe CHECK (NgayKetThuc >= NgayBatDau),
+    CONSTRAINT CK_SuKien_TrangThai CHECK (TrangThai IN (N'Dự kiến', N'Mở đăng ký', N'Đang diễn ra', N'Đã kết thúc', N'Hủy'))
+);
+GO
