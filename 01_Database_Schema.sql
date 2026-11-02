@@ -107,3 +107,17 @@ CREATE TABLE dbo.DiaDiem
     CONSTRAINT CK_DiaDiem_SucChuaToiDa CHECK (SucChuaToiDa > 0)
 );
 GO
+
+-- bảng 7: DienGia --
+CREATE TABLE dbo.DienGia
+(
+    MaDienGia       VARCHAR(20)     NOT NULL,
+    HoTen           NVARCHAR(100)   NOT NULL,
+    ChucVu          NVARCHAR(100)   NULL,
+    DonViCongTac    NVARCHAR(150)   NULL,
+    Email           VARCHAR(100)    NULL,
+    SoDienThoai     VARCHAR(15)     NULL,
+    TieuSu          NVARCHAR(500)   NULL,
+    CONSTRAINT PK_DienGia PRIMARY KEY (MaDienGia)
+);
+GO
