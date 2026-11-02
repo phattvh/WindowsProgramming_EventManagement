@@ -133,3 +133,16 @@ CREATE TABLE dbo.NhanSu
     CONSTRAINT PK_NhanSu PRIMARY KEY (MaNhanSu)
 );
 GO
+
+-- bảng 9: NhaTaiTro --
+CREATE TABLE dbo.NhaTaiTro
+(
+    MaNhaTaiTro     VARCHAR(20)     NOT NULL,
+    TenToChuc       NVARCHAR(150)   NOT NULL,
+    NguoiDaiDien    NVARCHAR(100)   NULL,
+    Email           VARCHAR(100)    NULL,
+    SoDienThoai     VARCHAR(15)     NULL,
+    DiaChi          NVARCHAR(255)   NULL,
+    CONSTRAINT PK_NhaTaiTro PRIMARY KEY (MaNhaTaiTro)
+);
+GO
