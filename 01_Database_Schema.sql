@@ -257,3 +257,17 @@ CREATE TABLE dbo.DangKy
     CONSTRAINT CK_DangKy_TrangThai CHECK (TrangThaiThanhToan IN (N'Chưa thanh toán', N'Đã thanh toán', N'Đã hủy'))
 );
 GO
+
+-- bảng 16: ChiTietVe --
+CREATE TABLE dbo.ChiTietVe
+(
+    MaVe                VARCHAR(30)     NOT NULL,
+    MaDangKy            VARCHAR(20)     NOT NULL,
+    MaQR                VARCHAR(100)    NOT NULL,
+    TrangThaiVe         NVARCHAR(30)    NOT NULL CONSTRAINT DF_ChiTietVe_TrangThai DEFAULT N'Hợp lệ',
+    CONSTRAINT PK_ChiTietVe PRIMARY KEY (MaVe),
+    CONSTRAINT UQ_ChiTietVe_MaQR UNIQUE (MaQR),
+    CONSTRAINT FK_ChiTietVe_DangKy FOREIGN KEY (MaDangKy) REFERENCES dbo.DangKy(MaDangKy) ON DELETE CASCADE,
+    CONSTRAINT CK_ChiTietVe_TrangThai CHECK (TrangThaiVe IN (N'Hợp lệ', N'Đã check-in', N'Đã hủy'))
+);
+GO
