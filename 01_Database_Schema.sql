@@ -221,3 +221,17 @@ CREATE TABLE dbo.HangVe
     CONSTRAINT CK_HangVe_SoLuongDaBan CHECK (SoLuongDaBan >= 0 AND SoLuongDaBan <= SoLuongPhatHanh)
 );
 GO
+
+-- bảng 14: NguoiThamGia --
+CREATE TABLE dbo.NguoiThamGia
+(
+    MaNguoiThamGia      VARCHAR(20)     NOT NULL,
+    HoTen               NVARCHAR(100)   NOT NULL,
+    GioiTinh            NVARCHAR(10)    NULL,
+    Email               VARCHAR(100)    NOT NULL,
+    SoDienThoai         VARCHAR(15)     NOT NULL,
+    DonViCongTac        NVARCHAR(150)   NULL,
+    CONSTRAINT PK_NguoiThamGia PRIMARY KEY (MaNguoiThamGia),
+    CONSTRAINT CK_NguoiThamGia_GioiTinh CHECK (GioiTinh IS NULL OR GioiTinh IN (N'Nam', N'Nữ', N'Khác'))
+);
+GO
