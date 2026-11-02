@@ -287,3 +287,20 @@ CREATE TABLE dbo.CheckIn
     CONSTRAINT FK_CheckIn_NguoiDung FOREIGN KEY (NguoiThucHien) REFERENCES dbo.NguoiDung(MaNguoiDung)
 );
 GO
+
+-- bảng 18: PhanCongNhanSu --
+CREATE TABLE dbo.PhanCongNhanSu
+(
+    MaPhanCong          VARCHAR(20)     NOT NULL,
+    MaSuKien            VARCHAR(20)     NOT NULL,
+    MaNhanSu            VARCHAR(20)     NOT NULL,
+    NhiemVu             NVARCHAR(100)   NOT NULL,
+    ThoiGianBatDau      DATETIME        NOT NULL,
+    ThoiGianKetThuc     DATETIME        NOT NULL,
+    GhiChu              NVARCHAR(255)   NULL,
+    CONSTRAINT PK_PhanCongNhanSu PRIMARY KEY (MaPhanCong),
+    CONSTRAINT FK_PhanCong_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien) ON DELETE CASCADE,
+    CONSTRAINT FK_PhanCong_NhanSu FOREIGN KEY (MaNhanSu) REFERENCES dbo.NhanSu(MaNhanSu),
+    CONSTRAINT CK_PhanCong_ThoiGian CHECK (ThoiGianKetThuc > ThoiGianBatDau)
+);
+GO
