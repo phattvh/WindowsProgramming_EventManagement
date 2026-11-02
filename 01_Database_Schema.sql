@@ -235,3 +235,25 @@ CREATE TABLE dbo.NguoiThamGia
     CONSTRAINT CK_NguoiThamGia_GioiTinh CHECK (GioiTinh IS NULL OR GioiTinh IN (N'Nam', N'Nữ', N'Khác'))
 );
 GO
+
+-- bảng 15: DangKy --
+CREATE TABLE dbo.DangKy
+(
+    MaDangKy            VARCHAR(20)     NOT NULL,
+    MaSuKien            VARCHAR(20)     NOT NULL,
+    MaNguoiThamGia      VARCHAR(20)     NOT NULL,
+    MaHangVe            VARCHAR(20)     NOT NULL,
+    NgayDangKy          DATETIME        NOT NULL CONSTRAINT DF_DangKy_NgayDangKy DEFAULT GETDATE(),
+    SoLuong             INT             NOT NULL CONSTRAINT DF_DangKy_SoLuong DEFAULT 1,
+    TongTien            DECIMAL(18,2)   NOT NULL CONSTRAINT DF_DangKy_TongTien DEFAULT 0,
+    TrangThaiThanhToan  NVARCHAR(30)    NOT NULL CONSTRAINT DF_DangKy_TrangThai DEFAULT N'Chưa thanh toán',
+    PhuongThucThanhToan NVARCHAR(50)    NULL,
+    CONSTRAINT PK_DangKy PRIMARY KEY (MaDangKy),
+    CONSTRAINT FK_DangKy_SuKien FOREIGN KEY (MaSuKien) REFERENCES dbo.SuKien(MaSuKien),
+    CONSTRAINT FK_DangKy_NguoiThamGia FOREIGN KEY (MaNguoiThamGia) REFERENCES dbo.NguoiThamGia(MaNguoiThamGia),
+    CONSTRAINT FK_DangKy_HangVe FOREIGN KEY (MaHangVe) REFERENCES dbo.HangVe(MaHangVe),
+    CONSTRAINT CK_DangKy_SoLuong CHECK (SoLuong > 0 AND SoLuong <= 10),
+    CONSTRAINT CK_DangKy_TongTien CHECK (TongTien >= 0),
+    CONSTRAINT CK_DangKy_TrangThai CHECK (TrangThaiThanhToan IN (N'Chưa thanh toán', N'Đã thanh toán', N'Đã hủy'))
+);
+GO
