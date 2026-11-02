@@ -41,3 +41,24 @@ CREATE TABLE dbo.NhomQuyen
     CONSTRAINT PK_NhomQuyen PRIMARY KEY (MaNhomQuyen)
 );
 GO
+
+-- bảng 2: NguoiDung --
+CREATE TABLE dbo.NguoiDung
+(
+    MaNguoiDung         VARCHAR(20)     NOT NULL,
+    TenDangNhap         VARCHAR(50)     NOT NULL,
+    MatKhauHash         VARCHAR(255)    NOT NULL,
+    HoTen               NVARCHAR(100)   NOT NULL,
+    Email               VARCHAR(100)    NOT NULL,
+    SoDienThoai         VARCHAR(15)     NULL,
+    MaNhomQuyen         VARCHAR(20)     NOT NULL,
+    TrangThai           NVARCHAR(30)    NOT NULL CONSTRAINT DF_NguoiDung_TrangThai DEFAULT N'Hoạt động',
+    LanDoiMatKhauGanNhat DATETIME       NULL,
+    SoLanDangNhapSai    INT             NOT NULL CONSTRAINT DF_NguoiDung_SoLanDangNhapSai DEFAULT 0,
+    KhoaDenKhi          DATETIME        NULL,
+    CONSTRAINT PK_NguoiDung PRIMARY KEY (MaNguoiDung),
+    CONSTRAINT UQ_NguoiDung_TenDangNhap UNIQUE (TenDangNhap),
+    CONSTRAINT FK_NguoiDung_NhomQuyen FOREIGN KEY (MaNhomQuyen) REFERENCES dbo.NhomQuyen(MaNhomQuyen),
+    CONSTRAINT CK_NguoiDung_TrangThai CHECK (TrangThai IN (N'Hoạt động', N'Khóa tạm thời', N'Khóa vĩnh viễn'))
+);
+GO
