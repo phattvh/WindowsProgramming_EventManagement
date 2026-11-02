@@ -78,3 +78,49 @@ VALUES
     NULL
 );
 GO
+
+-- seed: DuLieuMau --
+INSERT INTO dbo.LoaiSuKien (MaLoaiSK, TenLoaiSK, MoTa) VALUES
+('LSK01', N'Hội thảo Công nghệ', N'Các sự kiện chia sẻ kiến thức chuyên đề IT, AI và phần mềm.'),
+('LSK02', N'Đại nhạc hội', N'Sự kiện âm nhạc ngoài trời quy mô lớn.'),
+('LSK03', N'Triển lãm Thương mại', N'Không gian trưng bày, kết nối giao thương giữa các doanh nghiệp.');
+GO
+
+INSERT INTO dbo.DiaDiem (MaDiaDiem, TenDiaDiem, DiaChi, SucChuaToiDa, GhiChu) VALUES
+('DD001', N'Trung tâm Hội nghị White Palace', N'194 Hoàng Văn Thụ, Phường 9, Phú Nhuận, TP.HCM', 1500, N'Hội trường Grand Ballroom đầy đủ màn hình LED và âm thanh P.A.'),
+('DD002', N'Nhà thi đấu Phú Thọ', N'1 Lữ Gia, Phường 15, Quận 11, TP.HCM', 5000, N'Sức chứa lớn, phù hợp đại nhạc hội hoặc triển lãm công nghệ.');
+GO
+
+INSERT INTO dbo.DienGia (MaDienGia, HoTen, ChucVu, DonViCongTac, Email, SoDienThoai, TieuSu) VALUES
+('DG001', N'TS. Nguyễn Văn Hùng', N'Chuyên gia Trí tuệ nhân tạo', N'Viện Nghiên cứu Đổi mới Sáng tạo', 'hung.nguyen@ai-institute.vn', '0912345678', N'Hơn 15 năm nghiên cứu Machine Learning và GenAI.'),
+('DG002', N'ThS. Lê Hoàng Mai', N'Giám đốc Kỹ thuật (CTO)', N'TechCorp Asia', 'mai.le@techcorp.com', '0987654321', N'Chuyên gia kiến trúc hệ thống phân tán và bảo mật đám mây.');
+GO
+
+INSERT INTO dbo.NhanSu (MaNhanSu, HoTen, SoDienThoai, Email, ChucVu) VALUES
+('NS001', N'Trần Minh Tâm', '0933111222', 'tam.tran@eventops.vn', N'Trưởng nhóm điều phối'),
+('NS002', N'Lê Thị Thu Thảo', '0944333444', 'thao.le@eventops.vn', N'Điều phối viên Check-in');
+GO
+
+INSERT INTO dbo.NhaTaiTro (MaNhaTaiTro, TenToChuc, NguoiDaiDien, Email, SoDienThoai, DiaChi) VALUES
+('NTT001', N'Tập đoàn Viễn thông & Công nghệ VietTech', N'Ông Phạm Nhật Long', 'contact@viettech.vn', '0283899999', N'Tòa nhà VietTech Tower, Quận 1, TP.HCM'),
+('NTT002', N'Ngân hàng Số FinPay', N'Bà Võ Kim Oanh', 'partnership@finpay.vn', '0283788888', N'Khu Đô thị Sala, TP. Thủ Đức, TP.HCM');
+GO
+
+INSERT INTO dbo.SuKien (MaSuKien, TenSuKien, MaLoaiSK, MaDiaDiem, NgayBatDau, NgayKetThuc, TrangThai, MoTa, HinhAnh, MaNguoiTao) VALUES
+('EVT202601', N'Hội nghị Công nghệ Vietnam Tech Summit 2026', 'LSK01', 'DD001', '2026-12-15 08:00:00', '2026-12-15 17:30:00', N'Mở đăng ký', N'Sự kiện công nghệ thường niên quy tụ hơn 1000 chuyên gia, kỹ sư và lãnh đạo công nghệ.', 'banner_techsummit2026.png', 'USR001');
+GO
+
+INSERT INTO dbo.HangVe (MaHangVe, MaSuKien, TenHangVe, GiaVe, SoLuongPhatHanh, SoLuongDaBan) VALUES
+('HV001', 'EVT202601', N'Vé Tiêu chuẩn (Standard)', 200000, 800, 0),
+('HV002', 'EVT202601', N'Vé VIP (Full-access)',     800000, 200, 0);
+GO
+
+INSERT INTO dbo.LichTrinh (MaLichTrinh, MaSuKien, TenTietMuc, ThoiGianBatDau, ThoiGianKetThuc, MaDienGia, DiaDiemChiTiet, GhiChu) VALUES
+('LT001', 'EVT202601', N'Khai mạc & Keynote: Xu hướng GenAI & Agentic Coding 2026', '2026-12-15 08:30:00', '2026-12-15 10:00:00', 'DG001', N'Hội trường chính Grand Ballroom', N'Trình chiếu keynote khai mạc'),
+('LT002', 'EVT202601', N'Tọa đàm: Bảo mật thông tin & Kiến trúc Cloud-Native', '2026-12-15 10:15:00', '2026-12-15 11:45:00', 'DG002', N'Phòng Hội thảo 2', N'Phiên hỏi đáp Q&A cùng khán giả');
+GO
+
+INSERT INTO dbo.ChiTietTaiTro (MaTaiTro, MaSuKien, MaNhaTaiTro, GoiTaiTro, GiaTriTaiTro, HinhThucTaiTro, GhiChu) VALUES
+('TT001', 'EVT202601', 'NTT001', N'Kim Cương', 150000000, N'Tiền mặt', N'Tài trợ độc quyền tiệc Gala Dinner'),
+('TT002', 'EVT202601', 'NTT002', N'Vàng',       60000000,  N'Tiền mặt', N'Tài trợ toàn bộ hệ thống quà tặng công nghệ');
+GO
