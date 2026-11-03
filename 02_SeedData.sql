@@ -110,9 +110,9 @@ INSERT INTO dbo.SuKien (MaSuKien, TenSuKien, MaLoaiSK, MaDiaDiem, NgayBatDau, Ng
 ('EVT202601', N'Hội nghị Công nghệ Vietnam Tech Summit 2026', 'LSK01', 'DD001', '2026-12-15 08:00:00', '2026-12-15 17:30:00', N'Mở đăng ký', N'Sự kiện công nghệ thường niên quy tụ hơn 1000 chuyên gia, kỹ sư và lãnh đạo công nghệ.', 'banner_techsummit2026.png', 'USR001');
 GO
 
-INSERT INTO dbo.HangVe (MaHangVe, MaSuKien, TenHangVe, GiaVe, SoLuongPhatHanh, SoLuongDaBan) VALUES
-('HV001', 'EVT202601', N'Vé Tiêu chuẩn (Standard)', 200000, 800, 0),
-('HV002', 'EVT202601', N'Vé VIP (Full-access)',     800000, 200, 0);
+INSERT INTO dbo.HangVe (MaHangVe, MaSuKien, TenHangVe, GiaVe, SoLuongPhatHanh, SoLuongDaBan, ThoiGianMoBan, ThoiGianDongBan) VALUES
+('HV001', 'EVT202601', N'Vé Tiêu chuẩn (Standard)', 200000, 800, 0, '2026-11-01 00:00:00', '2026-12-14 23:59:59'),
+('HV002', 'EVT202601', N'Vé VIP (Full-access)',     800000, 200, 0, '2026-11-01 00:00:00', '2026-12-14 23:59:59');
 GO
 
 INSERT INTO dbo.LichTrinh (MaLichTrinh, MaSuKien, TenTietMuc, ThoiGianBatDau, ThoiGianKetThuc, MaDienGia, DiaDiemChiTiet, GhiChu) VALUES
