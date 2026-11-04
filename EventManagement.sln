@@ -5,13 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Core", "EventManagement.Core\EventManagement.Core.csproj", "{E30549A0-3C7C-46FE-B8E0-EAB0C1213E5F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Tests", "tests\EventManagement.Tests\EventManagement.Tests.csproj", "{730095A8-875F-48A1-AD4D-939D7F79B7B2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.Tests", "EventManagement.Tests\EventManagement.Tests.csproj", "{BF524064-A14E-4F4F-9FD3-D6F16086C3BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.DAL", "EventManagement.DAL\EventManagement.DAL.csproj", "{9DF8230D-EE6E-4BAC-9F5F-2BA1DBC1F369}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventManagement.GUI", "EventManagement.GUI\EventManagement.GUI.csproj", "{BF13E296-E377-4BE3-B695-9EA6C1C909B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,18 +33,6 @@ Global
 		{E30549A0-3C7C-46FE-B8E0-EAB0C1213E5F}.Release|x64.Build.0 = Release|Any CPU
 		{E30549A0-3C7C-46FE-B8E0-EAB0C1213E5F}.Release|x86.ActiveCfg = Release|Any CPU
 		{E30549A0-3C7C-46FE-B8E0-EAB0C1213E5F}.Release|x86.Build.0 = Release|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Debug|x64.Build.0 = Debug|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Debug|x86.Build.0 = Debug|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Release|x64.ActiveCfg = Release|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Release|x64.Build.0 = Release|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Release|x86.ActiveCfg = Release|Any CPU
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2}.Release|x86.Build.0 = Release|Any CPU
 		{BF524064-A14E-4F4F-9FD3-D6F16086C3BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF524064-A14E-4F4F-9FD3-D6F16086C3BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF524064-A14E-4F4F-9FD3-D6F16086C3BE}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -71,11 +57,20 @@ Global
 		{9DF8230D-EE6E-4BAC-9F5F-2BA1DBC1F369}.Release|x64.Build.0 = Release|Any CPU
 		{9DF8230D-EE6E-4BAC-9F5F-2BA1DBC1F369}.Release|x86.ActiveCfg = Release|Any CPU
 		{9DF8230D-EE6E-4BAC-9F5F-2BA1DBC1F369}.Release|x86.Build.0 = Release|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Debug|x64.Build.0 = Debug|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Release|x64.ActiveCfg = Release|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Release|x64.Build.0 = Release|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{BF13E296-E377-4BE3-B695-9EA6C1C909B1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{730095A8-875F-48A1-AD4D-939D7F79B7B2} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
