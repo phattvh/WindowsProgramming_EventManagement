@@ -15,11 +15,7 @@ namespace EventManagement.Core.Entities
         public string SoDienThoai { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? DonVi { get; set; }
-        public string? DonViCongTac
-        {
-            get => DonVi;
-            set => DonVi = value;
-        }
+        public string? DonViCongTac { get => DonVi; set => DonVi = value; }
         public string? DiaChi { get; set; }
         public string TrangThai { get; set; } = "Hoạt động"; // Hoạt động, Khóa
 

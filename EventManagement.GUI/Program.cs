@@ -4,17 +4,16 @@ using EventManagement.GUI.Forms;
 
 namespace EventManagement.GUI
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
-        /// The main entry point for the application.
+        ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            // Khởi chạy với Form F10 (Quản lý người tham gia)
-            Application.Run(new FrmAttendee());
-        }    
+            Application.Run(new FrmLogin());
+        }
     }
 }

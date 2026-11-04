@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EventManagement.Core\EventManagement.Core.csproj" />
+    <ProjectReference Include="..\EventManagement.DAL\EventManagement.DAL.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
