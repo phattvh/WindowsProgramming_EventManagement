@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace EventManagement.Core.Common
 {
@@ -10,13 +11,27 @@ namespace EventManagement.Core.Common
         public bool IsSuccess { get; set; }
         public string Message { get; set; } = string.Empty;
         public string? ErrorCode { get; set; }
+        public List<string> Errors { get; set; } = new List<string>();
 
         public static ServiceResult Success(string message = "Thao tác thành công!")
         {
             return new ServiceResult { IsSuccess = true, Message = message };
         }
 
-        public static ServiceResult Failed(string message, string? errorCode = null)
+        public static ServiceResult Failed(string message)
+        {
+            return new ServiceResult { IsSuccess = false, Message = message };
+        }
+
+        public static ServiceResult Failed(string message, IEnumerable<string> errors)
+        {
+            var res = new ServiceResult { IsSuccess = false, Message = message };
+            if (errors != null)
+                res.Errors.AddRange(errors);
+            return res;
+        }
+
+        public static ServiceResult FailedWithCode(string message, string errorCode)
         {
             return new ServiceResult { IsSuccess = false, Message = message, ErrorCode = errorCode };
         }
@@ -34,7 +49,20 @@ namespace EventManagement.Core.Common
             return new ServiceResult<T> { IsSuccess = true, Message = message, Data = data };
         }
 
-        public new static ServiceResult<T> Failed(string message, string? errorCode = null)
+        public new static ServiceResult<T> Failed(string message)
+        {
+            return new ServiceResult<T> { IsSuccess = false, Message = message };
+        }
+
+        public new static ServiceResult<T> Failed(string message, IEnumerable<string> errors)
+        {
+            var res = new ServiceResult<T> { IsSuccess = false, Message = message };
+            if (errors != null)
+                res.Errors.AddRange(errors);
+            return res;
+        }
+
+        public new static ServiceResult<T> FailedWithCode(string message, string errorCode)
         {
             return new ServiceResult<T> { IsSuccess = false, Message = message, ErrorCode = errorCode };
         }
