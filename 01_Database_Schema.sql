@@ -118,6 +118,7 @@ CREATE TABLE dbo.DienGia
     Email           VARCHAR(100)    NULL,
     SoDienThoai     VARCHAR(15)     NULL,
     TieuSu          NVARCHAR(500)   NULL,
+    HinhAnh         VARCHAR(255)    NULL,
     CONSTRAINT PK_DienGia PRIMARY KEY (MaDienGia)
 );
 GO
