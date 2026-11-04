@@ -13,7 +13,7 @@ namespace EventManagement.GUI
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new FrmBase());
+            Application.Run(new FrmLogin());
         }
     }
 }
