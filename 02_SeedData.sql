@@ -91,9 +91,9 @@ INSERT INTO dbo.DiaDiem (MaDiaDiem, TenDiaDiem, DiaChi, SucChuaToiDa, GhiChu) VA
 ('DD002', N'Nhà thi đấu Phú Thọ', N'1 Lữ Gia, Phường 15, Quận 11, TP.HCM', 5000, N'Sức chứa lớn, phù hợp đại nhạc hội hoặc triển lãm công nghệ.');
 GO
 
-INSERT INTO dbo.DienGia (MaDienGia, HoTen, ChucVu, DonViCongTac, Email, SoDienThoai, TieuSu) VALUES
-('DG001', N'TS. Nguyễn Văn Hùng', N'Chuyên gia Trí tuệ nhân tạo', N'Viện Nghiên cứu Đổi mới Sáng tạo', 'hung.nguyen@ai-institute.vn', '0912345678', N'Hơn 15 năm nghiên cứu Machine Learning và GenAI.'),
-('DG002', N'ThS. Lê Hoàng Mai', N'Giám đốc Kỹ thuật (CTO)', N'TechCorp Asia', 'mai.le@techcorp.com', '0987654321', N'Chuyên gia kiến trúc hệ thống phân tán và bảo mật đám mây.');
+INSERT INTO dbo.DienGia (MaDienGia, HoTen, ChucVu, DonViCongTac, Email, SoDienThoai, TieuSu, HinhAnh) VALUES
+('DG001', N'TS. Nguyễn Văn Hùng', N'Chuyên gia Trí tuệ nhân tạo', N'Viện Nghiên cứu Đổi mới Sáng tạo', 'hung.nguyen@ai-institute.vn', '0912345678', N'Hơn 15 năm nghiên cứu Machine Learning và GenAI.', 'dg01_nguyen_van_an.jpg'),
+('DG002', N'ThS. Lê Hoàng Mai', N'Giám đốc Kỹ thuật (CTO)', N'TechCorp Asia', 'mai.le@techcorp.com', '0987654321', N'Chuyên gia kiến trúc hệ thống phân tán và bảo mật đám mây.', 'dg02_tran_thi_bich.jpg');
 GO
 
 INSERT INTO dbo.NhanSu (MaNhanSu, HoTen, SoDienThoai, Email, ChucVu) VALUES

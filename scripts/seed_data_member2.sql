@@ -37,11 +37,11 @@ GO
 -- 3. DỮ LIỆU MẪU: DIỄN GIẢ & KHÁCH MỜI (DienGia)
 IF NOT EXISTS (SELECT 1 FROM dbo.DienGia WHERE MaDienGia = 'DG003')
 BEGIN
-    INSERT INTO dbo.DienGia (MaDienGia, HoTen, ChucVu, DonViCongTac, Email, SoDienThoai, TieuSu) VALUES
-    ('DG003', N'ThS. Lê Quang Huy', N'Trưởng phòng An toàn Thông tin', N'Viettel Cyber Security', 'huylq@viettel.com.vn', '0988334455', N'Chuyên gia ứng cứu sự cố và bảo mật hạ tầng trọng yếu, diễn giả quen thuộc tại Security Bootcamp.'),
-    ('DG004', N'Bà Phạm Mai Lan', N'Giám đốc Đổi mới Sáng tạo', N'Forbes Under 30 Asia', 'lan.pham@innovate.vn', '0977445566', N'Cố vấn khởi nghiệp công nghệ, đã ươm tạo hơn 40 dự án Tech Startup tại Đông Nam Á.'),
-    ('DG005', N'Ông Michael Harrison', N'Principal Cloud Architect', N'Google Cloud APAC', 'mharrison@google.com', '0933556677', N'Hơn 18 năm tư vấn kiến trúc Cloud Native và bảo mật dữ liệu cấp doanh nghiệp cho các tập đoàn toàn cầu.'),
-    ('DG006', N'ThS. Đặng Hữu Hoàng', N'Senior Software Architect', N'FPT Software', 'hoangdh@fpt.com', '0966778899', N'Chuyên gia kiến trúc Microservices, Clean Architecture và tối ưu hóa hệ thống .NET Enterprise.');
+    INSERT INTO dbo.DienGia (MaDienGia, HoTen, ChucVu, DonViCongTac, Email, SoDienThoai, TieuSu, HinhAnh) VALUES
+    ('DG003', N'ThS. Lê Quang Huy', N'Trưởng phòng An toàn Thông tin', N'Viettel Cyber Security', 'huylq@viettel.com.vn', '0988334455', N'Chuyên gia ứng cứu sự cố và bảo mật hạ tầng trọng yếu, diễn giả quen thuộc tại Security Bootcamp.', 'dg03_le_quang_huy.jpg'),
+    ('DG004', N'Bà Phạm Mai Lan', N'Giám đốc Đổi mới Sáng tạo', N'Forbes Under 30 Asia', 'lan.pham@innovate.vn', '0977445566', N'Cố vấn khởi nghiệp công nghệ, đã ươm tạo hơn 40 dự án Tech Startup tại Đông Nam Á.', 'dg04_pham_mai_lan.jpg'),
+    ('DG005', N'Ông Michael Harrison', N'Principal Cloud Architect', N'Google Cloud APAC', 'mharrison@google.com', '0933556677', N'Hơn 18 năm tư vấn kiến trúc Cloud Native và bảo mật dữ liệu cấp doanh nghiệp cho các tập đoàn toàn cầu.', 'dg05_michael_harrison.jpg'),
+    ('DG006', N'ThS. Đặng Hữu Hoàng', N'Senior Software Architect', N'FPT Software', 'hoangdh@fpt.com', '0966778899', N'Chuyên gia kiến trúc Microservices, Clean Architecture và tối ưu hóa hệ thống .NET Enterprise.', 'dg06_dang_huu_hoang.jpg');
     PRINT N'-> Đã bổ sung 4 chuyên gia diễn giả uy tín (DG003 - DG006).';
 END
 GO
