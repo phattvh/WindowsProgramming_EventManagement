@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EventManagement.Core\EventManagement.Core.csproj" />
     <ProjectReference Include="..\EventManagement.DAL\EventManagement.DAL.csproj" />
+    <ProjectReference Include="..\EventManagement.BLL\EventManagement.BLL.csproj" />
   </ItemGroup>
 
 </Project>
