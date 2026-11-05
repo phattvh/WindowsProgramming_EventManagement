@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
@@ -18,6 +19,8 @@ namespace EventManagement.BLL.Services
     {
         private readonly AppDbContext _context;
         private readonly IPasswordHasher _passwordHasher;
+        private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex PhoneRegex = new(@"^(0|\+84)[0-9]{9,10}$", RegexOptions.Compiled);
 
         public UserService() : this(CreateDefaultContext(), new PasswordHasher())
         {
@@ -112,9 +115,34 @@ namespace EventManagement.BLL.Services
                 return ServiceResult<UserDto>.Failed("Tên đăng nhập không được để trống!");
             }
 
+            if (dto.TenDangNhap.Trim().Length < 3)
+            {
+                return ServiceResult<UserDto>.Failed("Tên đăng nhập phải có ít nhất 3 ký tự!");
+            }
+
             if (string.IsNullOrWhiteSpace(dto.MatKhau) || dto.MatKhau.Length < 6)
             {
                 return ServiceResult<UserDto>.Failed("Mật khẩu phải có độ dài tối thiểu 6 ký tự!");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.HoTen))
+            {
+                return ServiceResult<UserDto>.Failed("Họ và tên không được để trống!");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+            {
+                return ServiceResult<UserDto>.Failed("Email không được để trống!");
+            }
+
+            if (!EmailRegex.IsMatch(dto.Email.Trim()))
+            {
+                return ServiceResult<UserDto>.Failed("Định dạng email không hợp lệ (ví dụ: user@example.com)!");
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.SoDienThoai) && !PhoneRegex.IsMatch(dto.SoDienThoai.Trim()))
+            {
+                return ServiceResult<UserDto>.Failed("Số điện thoại không hợp lệ (cần 10 số, bắt đầu bằng 0 hoặc +84)!");
             }
 
             string cleanUsername = dto.TenDangNhap.Trim();
@@ -185,6 +213,26 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed("Không tìm thấy thông tin tài khoản!");
             }
 
+            if (string.IsNullOrWhiteSpace(dto.HoTen))
+            {
+                return ServiceResult.Failed("Họ và tên không được để trống!");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Email))
+            {
+                return ServiceResult.Failed("Email không được để trống!");
+            }
+
+            if (!EmailRegex.IsMatch(dto.Email.Trim()))
+            {
+                return ServiceResult.Failed("Định dạng email không hợp lệ (ví dụ: user@example.com)!");
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.SoDienThoai) && !PhoneRegex.IsMatch(dto.SoDienThoai.Trim()))
+            {
+                return ServiceResult.Failed("Số điện thoại không hợp lệ (cần 10 số, bắt đầu bằng 0 hoặc +84)!");
+            }
+
             // Ràng buộc an toàn: Không được khóa hoặc hạ quyền Admin duy nhất
             if (user.MaNhomQuyen == "ADMIN")
             {
@@ -242,14 +290,21 @@ namespace EventManagement.BLL.Services
                 }
             }
 
-            // Xóa người dùng
-            _context.NguoiDungs.Remove(user);
-            await _context.SaveChangesAsync();
-            return ServiceResult.Success("Xóa tài khoản thành công!");
+            try
+            {
+                // Xóa người dùng
+                _context.NguoiDungs.Remove(user);
+                await _context.SaveChangesAsync();
+                return ServiceResult.Success("Xóa tài khoản thành công!");
+            }
+            catch (DbUpdateException)
+            {
+                return ServiceResult.Failed("Không thể xóa tài khoản này do đã có dữ liệu ràng buộc trong hệ thống (Sự kiện, Điểm danh hoặc Chi phí). Vui lòng chuyển trạng thái sang 'Khóa vĩnh viễn' thay vì xóa!");
+            }
         }
 
         /// <summary>
-        /// Mở khóa tức thì cho tài khoản bị khóa do Brute-force (Task T1-13 / AD-7 / BR-19)
+        /// Mở khóa tức thì cho tài khoản bị khóa do Brute-force hoặc do Admin (Task T1-13 / AD-7 / BR-19)
         /// </summary>
         public async Task<ServiceResult> UnlockUserAsync(string userId)
         {
@@ -261,10 +316,7 @@ namespace EventManagement.BLL.Services
 
             user.SoLanDangNhapSai = 0;
             user.KhoaDenKhi = null;
-            if (user.TrangThai == "Khóa tạm thời")
-            {
-                user.TrangThai = "Hoạt động";
-            }
+            user.TrangThai = "Hoạt động";
 
             await _context.SaveChangesAsync();
             return ServiceResult.Success($"Đã mở khóa và khôi phục trạng thái hoạt động cho tài khoản '{user.TenDangNhap}' thành công!");

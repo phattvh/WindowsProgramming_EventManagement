@@ -14,13 +14,23 @@ namespace EventManagement.Core.DTOs
         public decimal TongChiSauKhiThem => TongThucChiHienTai + KhoanChiSapThem;
         
         // Tỷ lệ sử dụng ngân sách (%)
-        public double TyLeSuDung => NganSachDuKien > 0 ? (double)(TongChiSauKhiThem / NganSachDuKien) * 100 : 0;
+        public double TyLeSuDung
+        {
+            get
+            {
+                if (NganSachDuKien > 0)
+                    return (double)(TongChiSauKhiThem / NganSachDuKien) * 100;
+                if (TongChiSauKhiThem > 0)
+                    return 999.0;
+                return 0;
+            }
+        }
 
         // Cảnh báo mềm (80% - 100% đổi màu vàng cam)
-        public bool IsWarning80 => TyLeSuDung >= 80.0 && TyLeSuDung <= 100.0;
+        public bool IsWarning80 => NganSachDuKien > 0 && TyLeSuDung >= 80.0 && TyLeSuDung <= 100.0;
 
-        // Cảnh báo vượt trần (> 100% đổi màu đỏ cảnh báo bội chi)
-        public bool IsOverBudget => TyLeSuDung > 100.0;
+        // Cảnh báo vượt trần (> 100% hoặc có chi tiêu khi ngân sách = 0 đổi màu đỏ cảnh báo bội chi)
+        public bool IsOverBudget => NganSachDuKien <= 0 ? TongChiSauKhiThem > 0 : TyLeSuDung > 100.0;
 
         public string ThongBaoTrangThai
         {

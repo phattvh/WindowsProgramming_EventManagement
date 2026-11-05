@@ -124,6 +124,54 @@ namespace EventManagement.Tests
         }
 
         [TestMethod]
+        public async Task CreateAsync_WithInvalidEmail_ReturnsFailed()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            var dto = new CreateUserDto
+            {
+                TenDangNhap = "staff_bad_email",
+                MatKhau = "Secret@123",
+                HoTen = "Pham Nhan Vien",
+                Email = "invalid-email-format",
+                MaNhomQuyen = "STAFF"
+            };
+
+            // Act
+            var result = await service.CreateAsync(dto);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Message.Should().Contain("email không hợp lệ");
+        }
+
+        [TestMethod]
+        public async Task CreateAsync_WithEmptyFullName_ReturnsFailed()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            var dto = new CreateUserDto
+            {
+                TenDangNhap = "staff_noname",
+                MatKhau = "Secret@123",
+                HoTen = "   ",
+                Email = "noname@event.vn",
+                MaNhomQuyen = "STAFF"
+            };
+
+            // Act
+            var result = await service.CreateAsync(dto);
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Message.Should().Contain("Họ và tên không được để trống");
+        }
+
+        [TestMethod]
         public async Task UpdateAsync_AttemptingToLockLastAdmin_ReturnsFailed()
         {
             // Arrange: Chỉ có đúng 1 tài khoản Admin
@@ -237,6 +285,62 @@ namespace EventManagement.Tests
             updated!.SoLanDangNhapSai.Should().Be(0);
             updated.KhoaDenKhi.Should().BeNull();
             updated.TrangThai.Should().Be("Hoạt động");
+        }
+
+        [TestMethod]
+        public async Task UnlockUserAsync_PermanentlyLockedUser_RestoresToActive()
+        {
+            // Arrange: Tài khoản bị Admin Khóa vĩnh viễn
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            context.NguoiDungs.Add(new NguoiDung
+            {
+                MaNguoiDung = "U_PERM_LOCKED",
+                TenDangNhap = "perm_locked",
+                HoTen = "Permanently Locked",
+                Email = "perm@event.vn",
+                MaNhomQuyen = "STAFF",
+                TrangThai = "Khóa vĩnh viễn"
+            });
+            await context.SaveChangesAsync();
+
+            // Act: Admin bấm mở khóa tài khoản
+            var result = await service.UnlockUserAsync("U_PERM_LOCKED");
+
+            // Assert: Trạng thái phải chuyển thành "Hoạt động"
+            result.IsSuccess.Should().BeTrue();
+            var updated = await context.NguoiDungs.FindAsync("U_PERM_LOCKED");
+            updated!.TrangThai.Should().Be("Hoạt động");
+            updated.SoLanDangNhapSai.Should().Be(0);
+            updated.KhoaDenKhi.Should().BeNull();
+        }
+
+        [TestMethod]
+        public async Task ToggleLockAsync_WhenActive_LocksUser()
+        {
+            // Arrange
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            context.NguoiDungs.Add(new NguoiDung
+            {
+                MaNguoiDung = "U_TOGGLE",
+                TenDangNhap = "toggle_user",
+                HoTen = "Toggle User",
+                Email = "toggle@event.vn",
+                MaNhomQuyen = "STAFF",
+                TrangThai = "Hoạt động"
+            });
+            await context.SaveChangesAsync();
+
+            // Act
+            var result = await service.ToggleLockAsync("U_TOGGLE");
+
+            // Assert
+            result.IsSuccess.Should().BeTrue();
+            var updated = await context.NguoiDungs.FindAsync("U_TOGGLE");
+            updated!.TrangThai.Should().Be("Khóa vĩnh viễn");
         }
     }
 }
