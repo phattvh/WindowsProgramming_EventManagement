@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using EventManagement.BLL.Services;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
+using EventManagement.GUI.Common;
 
 namespace EventManagement.GUI.Forms
 {
