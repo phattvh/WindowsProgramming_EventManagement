@@ -13,6 +13,8 @@ namespace EventManagement.Core.Entities
         public string SoDienThoai { get; set; } = string.Empty;
         public string? Email { get; set; }
         public string ChucVu { get; set; } = "Cộng tác viên";
+        public string PhongBan { get; set; } = "Hậu cần";
+        public string TrangThai { get; set; } = "Hoạt động";
 
         // Navigation properties: 1 Nhân sự có thể được phân công trực ở nhiều sự kiện/ca trực
         public virtual ICollection<PhanCongNhanSu> PhanCongNhanSus { get; set; } = new List<PhanCongNhanSu>();
