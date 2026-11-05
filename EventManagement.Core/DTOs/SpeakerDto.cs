@@ -19,5 +19,8 @@ namespace EventManagement.Core.DTOs
 
         // Thống kê số lượng tiết mục diễn giả này tham gia
         public int SoTietMucThamGia { get; set; }
+
+        // Trạng thái hoạt động: "Hoạt động" hoặc "Ngừng hợp tác" (BR-20)
+        public string TrangThai { get; set; } = "Hoạt động";
     }
 }
