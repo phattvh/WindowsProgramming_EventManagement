@@ -20,12 +20,6 @@ namespace EventManagement.Core.Entities
         public string NguoiPhuTrach { get; set; } = string.Empty;
         public string TrangThai { get; set; } = "Chuẩn bị"; // Chuẩn bị, Sắp diễn ra, Đang diễn ra, Đã hoàn thành, Đã hủy
 
-        // Navigation properties phân hệ Sự kiện & Danh mục (Thành viên 2)
-        public virtual LoaiSuKien? LoaiSuKien { get; set; }
-        public virtual DiaDiem? DiaDiem { get; set; }
-        public virtual ICollection<LichTrinh> LichTrinhs { get; set; } = new List<LichTrinh>();
-        public virtual ICollection<PhanCongNhanSu> PhanCongNhanSus { get; set; } = new List<PhanCongNhanSu>();
-
         // Navigation properties liên kết tới phân hệ của Thành viên 3
         public virtual ICollection<HangVe> HangVes { get; set; } = new List<HangVe>();
         public virtual ICollection<DangKy> DangKys { get; set; } = new List<DangKy>();

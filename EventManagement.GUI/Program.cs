@@ -7,14 +7,13 @@ namespace EventManagement.GUI
     internal static class Program
     {
         /// <summary>
-        /// Điểm khởi chạy chính của ứng dụng Windows Forms.
+        ///  The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            // Khởi chạy mặc định Form F06 (hoặc F07) trong giai đoạn phát triển phân hệ Thành viên 2
-            Application.Run(new FrmEventType());
+            Application.Run(new FrmLogin());
         }
     }
 }

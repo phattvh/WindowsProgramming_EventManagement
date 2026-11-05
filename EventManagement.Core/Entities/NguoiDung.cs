@@ -20,7 +20,8 @@ namespace EventManagement.Core.Entities
         public int SoLanDangNhapSai { get; set; } = 0;
         public DateTime? KhoaDenKhi { get; set; }
 
-        // Navigation properties liên kết tới phân hệ của Thành viên 3
+        // Navigation properties liên kết
+        public virtual NhomQuyen? NhomQuyen { get; set; }
         public virtual ICollection<CheckIn> CheckIns { get; set; } = new List<CheckIn>();
         public virtual ICollection<ChiPhiSuKien> ChiPhiSuKiens { get; set; } = new List<ChiPhiSuKien>();
     }

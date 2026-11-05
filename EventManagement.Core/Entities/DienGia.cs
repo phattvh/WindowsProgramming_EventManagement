@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 
 namespace EventManagement.Core.Entities
 {
     /// <summary>
-    /// Bảng DienGia - Danh sách diễn giả và khách mời chuyên môn
-    /// Phụ trách: Thành viên 2 (Màn hình F09 và Tab 3 Form F05)
+    /// Bảng DienGia - Thông tin diễn giả & chuyên gia khách mời (F09)
     /// </summary>
     public class DienGia
     {
@@ -15,8 +15,6 @@ namespace EventManagement.Core.Entities
         public string? Email { get; set; }
         public string? SoDienThoai { get; set; }
         public string? TieuSu { get; set; }
-
-        // Navigation properties: 1 Diễn giả có thể trình bày ở nhiều Tiết mục/Lịch trình
-        public virtual ICollection<LichTrinh> LichTrinhs { get; set; } = new List<LichTrinh>();
+        public string? HinhAnh { get; set; } // Tên file ảnh chân dung (ví dụ: dg01_nguyen_van_an.jpg)
     }
 }

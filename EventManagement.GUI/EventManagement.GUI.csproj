@@ -1,5 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\EventManagement.Core\EventManagement.Core.csproj" />
+    <ProjectReference Include="..\EventManagement.DAL\EventManagement.DAL.csproj" />
+    <ProjectReference Include="..\EventManagement.BLL\EventManagement.BLL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AForge.Video" Version="2.2.5" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WinForms" Version="2.0.0-rc3.3" />
+    <PackageReference Include="ZXing.Net" Version="0.16.9" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -7,10 +19,5 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\EventManagement.Core\EventManagement.Core.csproj" />
-    <ProjectReference Include="..\EventManagement.BLL\EventManagement.BLL.csproj" />
-  </ItemGroup>
 
 </Project>
