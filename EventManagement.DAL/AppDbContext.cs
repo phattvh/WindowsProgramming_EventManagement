@@ -8,6 +8,10 @@ namespace EventManagement.DAL
     /// </summary>
     public class AppDbContext : DbContext
     {
+        public AppDbContext() : base(DatabaseConfigHelper.CreateDefaultOptions())
+        {
+        }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
