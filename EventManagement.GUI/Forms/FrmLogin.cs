@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +16,7 @@ namespace EventManagement.GUI.Forms
         private readonly IAuthService? _authService;
         private int _remainingLockoutSeconds = 0;
 
-        public FrmLogin() : this(null)
+        public FrmLogin() : this(new AuthService())
         {
         }
 

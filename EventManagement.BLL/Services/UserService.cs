@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,16 +22,8 @@ namespace EventManagement.BLL.Services
         private static readonly Regex EmailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex PhoneRegex = new(@"^(0|\+84)[0-9]{9,10}$", RegexOptions.Compiled);
 
-        public UserService() : this(CreateDefaultContext(), new PasswordHasher())
+        public UserService() : this(new AppDbContext(), new PasswordHasher())
         {
-        }
-
-        private static AppDbContext CreateDefaultContext()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer("Server=.;Database=EventManagementDb;Trusted_Connection=True;TrustServerCertificate=True;")
-                .Options;
-            return new AppDbContext(options);
         }
 
         public UserService(AppDbContext context, IPasswordHasher passwordHasher)

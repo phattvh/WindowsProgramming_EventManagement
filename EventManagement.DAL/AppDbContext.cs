@@ -5,6 +5,7 @@ namespace EventManagement.DAL
 {
     /// <summary>
     /// DbContext chính của hệ thống Quản lý Sự kiện (Entity Framework Core)
+    /// Đầy đủ 20 bảng quan hệ theo 01_Database_Schema.sql
     /// </summary>
     public class AppDbContext : DbContext
     {
@@ -31,6 +32,11 @@ namespace EventManagement.DAL
         public DbSet<NhaTaiTro> NhaTaiTros { get; set; } = null!;
         public DbSet<DienGia> DienGias { get; set; } = null!;
         public DbSet<PhanHoi> PhanHois { get; set; } = null!;
+        public DbSet<LoaiSuKien> LoaiSuKiens { get; set; } = null!;
+        public DbSet<DiaDiem> DiaDiems { get; set; } = null!;
+        public DbSet<NhanSu> NhanSus { get; set; } = null!;
+        public DbSet<LichTrinh> LichTrinhs { get; set; } = null!;
+        public DbSet<PhanCongNhanSu> PhanCongNhanSus { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -95,6 +101,47 @@ namespace EventManagement.DAL
                       .HasForeignKey(e => e.MaChucNang);
             });
 
+            // Bảng 5: LoaiSuKien
+            modelBuilder.Entity<LoaiSuKien>(entity =>
+            {
+                entity.ToTable("LoaiSuKien");
+                entity.HasKey(e => e.MaLoaiSK);
+                entity.Property(e => e.MaLoaiSK).HasMaxLength(20);
+                entity.Property(e => e.TenLoaiSK).HasMaxLength(100).IsRequired();
+            });
+
+            // Bảng 6: DiaDiem
+            modelBuilder.Entity<DiaDiem>(entity =>
+            {
+                entity.ToTable("DiaDiem");
+                entity.HasKey(e => e.MaDiaDiem);
+                entity.Property(e => e.MaDiaDiem).HasMaxLength(20);
+                entity.Property(e => e.TenDiaDiem).HasMaxLength(200).IsRequired();
+            });
+
+            // Bảng 7: DienGia
+            modelBuilder.Entity<DienGia>(entity =>
+            {
+                entity.ToTable("DienGia");
+                entity.HasKey(e => e.MaDienGia);
+            });
+
+            // Bảng 8: NhanSu
+            modelBuilder.Entity<NhanSu>(entity =>
+            {
+                entity.ToTable("NhanSu");
+                entity.HasKey(e => e.MaNhanSu);
+                entity.Property(e => e.MaNhanSu).HasMaxLength(20);
+                entity.Property(e => e.HoTen).HasMaxLength(100).IsRequired();
+            });
+
+            // Bảng 9: NhaTaiTro
+            modelBuilder.Entity<NhaTaiTro>(entity =>
+            {
+                entity.ToTable("NhaTaiTro");
+                entity.HasKey(e => e.MaNhaTaiTro);
+            });
+
             // Bảng 10: SuKien
             modelBuilder.Entity<SuKien>(entity =>
             {
@@ -108,6 +155,22 @@ namespace EventManagement.DAL
                 entity.Property(e => e.NguoiPhuTrach).HasMaxLength(20);
             });
 
+            // Bảng 11: LichTrinh
+            modelBuilder.Entity<LichTrinh>(entity =>
+            {
+                entity.ToTable("LichTrinh");
+                entity.HasKey(e => e.MaLichTrinh);
+                entity.Property(e => e.MaLichTrinh).HasMaxLength(20);
+                entity.Property(e => e.TenTietMuc).HasMaxLength(200).IsRequired();
+            });
+
+            // Bảng 12: ChiTietTaiTro
+            modelBuilder.Entity<ChiTietTaiTro>(entity =>
+            {
+                entity.ToTable("ChiTietTaiTro");
+                entity.HasKey(e => e.MaTaiTro);
+            });
+
             // Bảng 13: HangVe
             modelBuilder.Entity<HangVe>(entity =>
             {
@@ -117,6 +180,20 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaSuKien).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.TenHangVe).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.GiaVe).HasPrecision(18, 2);
+            });
+
+            // Bảng 14: NguoiThamGia
+            modelBuilder.Entity<NguoiThamGia>(entity =>
+            {
+                entity.ToTable("NguoiThamGia");
+                entity.HasKey(e => e.MaNguoiThamGia);
+            });
+
+            // Bảng 15: DangKy
+            modelBuilder.Entity<DangKy>(entity =>
+            {
+                entity.ToTable("DangKy");
+                entity.HasKey(e => e.MaDangKy);
             });
 
             // Bảng 16: ChiTietVe
@@ -145,39 +222,12 @@ namespace EventManagement.DAL
                       .HasForeignKey<CheckIn>(e => e.MaVe);
             });
 
-            // Bảng 7: DienGia
-            modelBuilder.Entity<DienGia>(entity =>
+            // Bảng 18: PhanCongNhanSu
+            modelBuilder.Entity<PhanCongNhanSu>(entity =>
             {
-                entity.ToTable("DienGia");
-                entity.HasKey(e => e.MaDienGia);
-            });
-
-            // Bảng 9: NhaTaiTro
-            modelBuilder.Entity<NhaTaiTro>(entity =>
-            {
-                entity.ToTable("NhaTaiTro");
-                entity.HasKey(e => e.MaNhaTaiTro);
-            });
-
-            // Bảng 12: ChiTietTaiTro
-            modelBuilder.Entity<ChiTietTaiTro>(entity =>
-            {
-                entity.ToTable("ChiTietTaiTro");
-                entity.HasKey(e => e.MaTaiTro);
-            });
-
-            // Bảng 14: NguoiThamGia
-            modelBuilder.Entity<NguoiThamGia>(entity =>
-            {
-                entity.ToTable("NguoiThamGia");
-                entity.HasKey(e => e.MaNguoiThamGia);
-            });
-
-            // Bảng 15: DangKy
-            modelBuilder.Entity<DangKy>(entity =>
-            {
-                entity.ToTable("DangKy");
-                entity.HasKey(e => e.MaDangKy);
+                entity.ToTable("PhanCongNhanSu");
+                entity.HasKey(e => e.MaPhanCong);
+                entity.Property(e => e.MaPhanCong).HasMaxLength(20);
             });
 
             // Bảng 19: ChiPhiSuKien

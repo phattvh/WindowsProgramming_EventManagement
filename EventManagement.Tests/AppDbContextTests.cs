@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using EventManagement.Core.Entities;
 using EventManagement.DAL;
@@ -83,6 +83,36 @@ namespace EventManagement.Tests
             var retrieved = await context.PhanQuyens.FindAsync("STAFF", "UC13");
             retrieved.Should().NotBeNull();
             retrieved!.CoQuyen.Should().BeTrue();
+        }
+    
+        [TestMethod]
+        public void AppDbContext_All20DbSets_AreConfiguredAndAccessible()
+        {
+            using var context = CreateContext();
+
+            context.NhomQuyens.Should().NotBeNull();
+            context.NguoiDungs.Should().NotBeNull();
+            context.ChucNangs.Should().NotBeNull();
+            context.PhanQuyens.Should().NotBeNull();
+            context.SuKiens.Should().NotBeNull();
+            context.HangVes.Should().NotBeNull();
+            context.ChiTietVes.Should().NotBeNull();
+            context.CheckIns.Should().NotBeNull();
+            context.DangKys.Should().NotBeNull();
+            context.NguoiThamGias.Should().NotBeNull();
+            context.ChiPhiSuKiens.Should().NotBeNull();
+            context.ChiTietTaiTros.Should().NotBeNull();
+            context.NhaTaiTros.Should().NotBeNull();
+            context.DienGias.Should().NotBeNull();
+            context.PhanHois.Should().NotBeNull();
+            context.LoaiSuKiens.Should().NotBeNull();
+            context.DiaDiems.Should().NotBeNull();
+            context.NhanSus.Should().NotBeNull();
+            context.LichTrinhs.Should().NotBeNull();
+            context.PhanCongNhanSus.Should().NotBeNull();
+
+            // Verify EF Core Model contains 20 entities
+            context.Model.GetEntityTypes().Should().HaveCount(20);
         }
     }
 }

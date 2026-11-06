@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -18,16 +18,8 @@ namespace EventManagement.BLL.Services
     {
         private readonly AppDbContext _context;
 
-        public RolePermissionService() : this(CreateDefaultContext())
+        public RolePermissionService() : this(new AppDbContext())
         {
-        }
-
-        private static AppDbContext CreateDefaultContext()
-        {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseSqlServer("Server=.;Database=EventManagementDb;Trusted_Connection=True;TrustServerCertificate=True;")
-                .Options;
-            return new AppDbContext(options);
         }
 
         public RolePermissionService(AppDbContext context)

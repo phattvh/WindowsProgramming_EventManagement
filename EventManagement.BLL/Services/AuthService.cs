@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +20,10 @@ namespace EventManagement.BLL.Services
     {
         private readonly AppDbContext _context;
         private readonly IPasswordHasher _passwordHasher;
+
+        public AuthService() : this(new AppDbContext(), new PasswordHasher())
+        {
+        }
 
         public AuthService(AppDbContext context, IPasswordHasher passwordHasher)
         {
