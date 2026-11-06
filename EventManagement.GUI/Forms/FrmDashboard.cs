@@ -125,11 +125,33 @@ namespace EventManagement.GUI.Forms
         }
 
         /// <summary>
-        /// Phương thức ảo để tích hợp biểu đồ LiveCharts2 ở Ngày 7.
+        /// Tích hợp và cập nhật dữ liệu biểu đồ LiveCharts2 ở Ngày 7 (Task T1-16).
         /// </summary>
-        protected virtual Task LoadChartsDataAsync()
+        protected virtual async Task LoadChartsDataAsync()
         {
-            return Task.CompletedTask;
+            try
+            {
+                // 1. Dữ liệu biểu đồ cột so sánh Doanh thu vs Chi phí
+                var revResult = await _dashboardService.GetEventRevenueComparisonAsync(5);
+                if (revResult.IsSuccess && revResult.Data != null)
+                {
+                    var (series, xLabels) = Common.DashboardChartBuilder.BuildRevenueExpenseSeries(revResult.Data);
+                    chartRevenue.Series = series;
+                    chartRevenue.XAxes = Common.DashboardChartBuilder.BuildXAxes(xLabels);
+                    chartRevenue.YAxes = Common.DashboardChartBuilder.BuildCurrencyYAxes();
+                }
+
+                // 2. Dữ liệu biểu đồ tròn Tỷ lệ Check-in
+                var checkInResult = await _dashboardService.GetCheckInRatioAsync();
+                if (checkInResult.IsSuccess && checkInResult.Data != null)
+                {
+                    chartCheckIn.Series = Common.DashboardChartBuilder.BuildCheckInPieSeries(checkInResult.Data);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Lỗi nạp biểu đồ LiveCharts2: {ex.Message}");
+            }
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)

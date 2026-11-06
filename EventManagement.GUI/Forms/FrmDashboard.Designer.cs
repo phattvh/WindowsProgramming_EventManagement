@@ -52,6 +52,14 @@ namespace EventManagement.GUI.Forms
             this.btnNavUsers = new System.Windows.Forms.Button();
             this.btnNavRoles = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
+            this.pnlChartsContainer = new System.Windows.Forms.Panel();
+            this.tblCharts = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlRevenueChart = new System.Windows.Forms.Panel();
+            this.lblRevenueChartTitle = new System.Windows.Forms.Label();
+            this.chartRevenue = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
+            this.pnlCheckInChart = new System.Windows.Forms.Panel();
+            this.lblCheckInChartTitle = new System.Windows.Forms.Label();
+            this.chartCheckIn = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
             this.grpUpcoming = new System.Windows.Forms.GroupBox();
             this.dgvUpcoming = new System.Windows.Forms.DataGridView();
             this.colMaSK = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -65,7 +73,6 @@ namespace EventManagement.GUI.Forms
             this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlUpcomingFooter = new System.Windows.Forms.Panel();
             this.lblUpcomingSummary = new System.Windows.Forms.Label();
-            this.pnlChartsContainer = new System.Windows.Forms.Panel();
             this.pnlHeader.SuspendLayout();
             this.pnlUserInfo.SuspendLayout();
             this.tblKpiCards.SuspendLayout();
@@ -75,6 +82,10 @@ namespace EventManagement.GUI.Forms
             this.pnlCard4.SuspendLayout();
             this.pnlQuickAccess.SuspendLayout();
             this.flpQuickButtons.SuspendLayout();
+            this.pnlChartsContainer.SuspendLayout();
+            this.tblCharts.SuspendLayout();
+            this.pnlRevenueChart.SuspendLayout();
+            this.pnlCheckInChart.SuspendLayout();
             this.grpUpcoming.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUpcoming)).BeginInit();
             this.pnlUpcomingFooter.SuspendLayout();
@@ -492,11 +503,94 @@ namespace EventManagement.GUI.Forms
             // 
             // pnlChartsContainer
             // 
+            this.pnlChartsContainer.Controls.Add(this.tblCharts);
             this.pnlChartsContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlChartsContainer.Location = new System.Drawing.Point(0, 228);
             this.pnlChartsContainer.Name = "pnlChartsContainer";
-            this.pnlChartsContainer.Size = new System.Drawing.Size(1134, 220);
+            this.pnlChartsContainer.Size = new System.Drawing.Size(1134, 230);
             this.pnlChartsContainer.TabIndex = 3;
+            // 
+            // tblCharts
+            // 
+            this.tblCharts.ColumnCount = 2;
+            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62F));
+            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38F));
+            this.tblCharts.Controls.Add(this.pnlRevenueChart, 0, 0);
+            this.tblCharts.Controls.Add(this.pnlCheckInChart, 1, 0);
+            this.tblCharts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblCharts.Location = new System.Drawing.Point(0, 0);
+            this.tblCharts.Name = "tblCharts";
+            this.tblCharts.Padding = new System.Windows.Forms.Padding(12, 5, 12, 5);
+            this.tblCharts.RowCount = 1;
+            this.tblCharts.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblCharts.Size = new System.Drawing.Size(1134, 230);
+            this.tblCharts.TabIndex = 0;
+            // 
+            // pnlRevenueChart
+            // 
+            this.pnlRevenueChart.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlRevenueChart.Controls.Add(this.chartRevenue);
+            this.pnlRevenueChart.Controls.Add(this.lblRevenueChartTitle);
+            this.pnlRevenueChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlRevenueChart.Location = new System.Drawing.Point(15, 8);
+            this.pnlRevenueChart.Name = "pnlRevenueChart";
+            this.pnlRevenueChart.Size = new System.Drawing.Size(682, 214);
+            this.pnlRevenueChart.TabIndex = 0;
+            // 
+            // lblRevenueChartTitle
+            // 
+            this.lblRevenueChartTitle.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
+            this.lblRevenueChartTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblRevenueChartTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblRevenueChartTitle.ForeColor = System.Drawing.Color.FromArgb(44, 62, 80);
+            this.lblRevenueChartTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblRevenueChartTitle.Name = "lblRevenueChartTitle";
+            this.lblRevenueChartTitle.Padding = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.lblRevenueChartTitle.Size = new System.Drawing.Size(680, 26);
+            this.lblRevenueChartTitle.TabIndex = 0;
+            this.lblRevenueChartTitle.Text = "📊 SO SÁNH DOANH THU & CHI PHÍ THEO SỰ KIỆN (VNĐ)";
+            this.lblRevenueChartTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // chartRevenue
+            // 
+            this.chartRevenue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartRevenue.Location = new System.Drawing.Point(0, 26);
+            this.chartRevenue.Name = "chartRevenue";
+            this.chartRevenue.Size = new System.Drawing.Size(680, 186);
+            this.chartRevenue.TabIndex = 1;
+            // 
+            // pnlCheckInChart
+            // 
+            this.pnlCheckInChart.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlCheckInChart.Controls.Add(this.chartCheckIn);
+            this.pnlCheckInChart.Controls.Add(this.lblCheckInChartTitle);
+            this.pnlCheckInChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCheckInChart.Location = new System.Drawing.Point(703, 8);
+            this.pnlCheckInChart.Name = "pnlCheckInChart";
+            this.pnlCheckInChart.Size = new System.Drawing.Size(416, 214);
+            this.pnlCheckInChart.TabIndex = 1;
+            // 
+            // lblCheckInChartTitle
+            // 
+            this.lblCheckInChartTitle.BackColor = System.Drawing.Color.FromArgb(245, 247, 250);
+            this.lblCheckInChartTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblCheckInChartTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblCheckInChartTitle.ForeColor = System.Drawing.Color.FromArgb(44, 62, 80);
+            this.lblCheckInChartTitle.Location = new System.Drawing.Point(0, 0);
+            this.lblCheckInChartTitle.Name = "lblCheckInChartTitle";
+            this.lblCheckInChartTitle.Padding = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.lblCheckInChartTitle.Size = new System.Drawing.Size(414, 26);
+            this.lblCheckInChartTitle.TabIndex = 0;
+            this.lblCheckInChartTitle.Text = "🎯 TỶ LỆ CHECK-IN THỰC TẾ (%)";
+            this.lblCheckInChartTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // chartCheckIn
+            // 
+            this.chartCheckIn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chartCheckIn.Location = new System.Drawing.Point(0, 26);
+            this.chartCheckIn.Name = "chartCheckIn";
+            this.chartCheckIn.Size = new System.Drawing.Size(414, 186);
+            this.chartCheckIn.TabIndex = 1;
             // 
             // grpUpcoming
             // 
@@ -504,10 +598,10 @@ namespace EventManagement.GUI.Forms
             this.grpUpcoming.Controls.Add(this.pnlUpcomingFooter);
             this.grpUpcoming.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpUpcoming.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.grpUpcoming.Location = new System.Drawing.Point(0, 448);
+            this.grpUpcoming.Location = new System.Drawing.Point(0, 458);
             this.grpUpcoming.Name = "grpUpcoming";
             this.grpUpcoming.Padding = new System.Windows.Forms.Padding(10);
-            this.grpUpcoming.Size = new System.Drawing.Size(1134, 262);
+            this.grpUpcoming.Size = new System.Drawing.Size(1134, 252);
             this.grpUpcoming.TabIndex = 4;
             this.grpUpcoming.TabStop = false;
             this.grpUpcoming.Text = "📅 CÁC SỰ KIỆN SẮP DIỄN RA TRONG 7 NGÀY TỚI";
@@ -554,7 +648,7 @@ namespace EventManagement.GUI.Forms
             this.dgvUpcoming.RowHeadersWidth = 51;
             this.dgvUpcoming.RowTemplate.Height = 29;
             this.dgvUpcoming.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvUpcoming.Size = new System.Drawing.Size(1114, 192);
+            this.dgvUpcoming.Size = new System.Drawing.Size(1114, 182);
             this.dgvUpcoming.TabIndex = 0;
             // 
             // colMaSK
@@ -642,7 +736,7 @@ namespace EventManagement.GUI.Forms
             // 
             this.pnlUpcomingFooter.Controls.Add(this.lblUpcomingSummary);
             this.pnlUpcomingFooter.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlUpcomingFooter.Location = new System.Drawing.Point(10, 222);
+            this.pnlUpcomingFooter.Location = new System.Drawing.Point(10, 212);
             this.pnlUpcomingFooter.Name = "pnlUpcomingFooter";
             this.pnlUpcomingFooter.Size = new System.Drawing.Size(1114, 30);
             this.pnlUpcomingFooter.TabIndex = 1;
@@ -691,6 +785,10 @@ namespace EventManagement.GUI.Forms
             this.pnlQuickAccess.ResumeLayout(false);
             this.pnlQuickAccess.PerformLayout();
             this.flpQuickButtons.ResumeLayout(false);
+            this.pnlChartsContainer.ResumeLayout(false);
+            this.tblCharts.ResumeLayout(false);
+            this.pnlRevenueChart.ResumeLayout(false);
+            this.pnlCheckInChart.ResumeLayout(false);
             this.grpUpcoming.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvUpcoming)).EndInit();
             this.pnlUpcomingFooter.ResumeLayout(false);
@@ -740,6 +838,14 @@ namespace EventManagement.GUI.Forms
         private System.Windows.Forms.Button btnRefresh;
 
         protected System.Windows.Forms.Panel pnlChartsContainer;
+        private System.Windows.Forms.TableLayoutPanel tblCharts;
+        private System.Windows.Forms.Panel pnlRevenueChart;
+        private System.Windows.Forms.Label lblRevenueChartTitle;
+        public LiveChartsCore.SkiaSharpView.WinForms.CartesianChart chartRevenue;
+        private System.Windows.Forms.Panel pnlCheckInChart;
+        private System.Windows.Forms.Label lblCheckInChartTitle;
+        public LiveChartsCore.SkiaSharpView.WinForms.PieChart chartCheckIn;
+
         private System.Windows.Forms.GroupBox grpUpcoming;
         private System.Windows.Forms.DataGridView dgvUpcoming;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaSK;
