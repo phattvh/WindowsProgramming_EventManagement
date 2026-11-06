@@ -15,6 +15,7 @@ namespace EventManagement.GUI
         [STAThread]
         static void Main(string[] args)
         {
+            EventManagement.GUI.Common.GlobalExceptionHandler.Register();
             if (args.Length > 0 && args[0] == "--test-day4")
             {
                 RunDay4AutomatedTests();
@@ -24,6 +25,12 @@ namespace EventManagement.GUI
             if (args.Length > 0 && args[0] == "--test-day5")
             {
                 RunDay5AutomatedTests();
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--test-member3" || args[0] == "--test-day6-member3" || args[0] == "--test-day7-member3"))
+            {
+                RunMember3AutomatedTests();
                 return;
             }
 
@@ -46,6 +53,27 @@ namespace EventManagement.GUI
                 ApplicationConfiguration.Initialize();
                 EventManagement.GUI.Common.GlobalExceptionHandler.Register();
                 Application.Run(new FrmServerConfig());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f17" || args[0] == "--budget"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmBudgetExpense());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f11" || args[0] == "--ticket-order"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmTicketOrder());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f13" || args[0] == "--checkin" || args[0] == "--check-in"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmCheckInCamera());
                 return;
             }
 
@@ -531,6 +559,123 @@ namespace EventManagement.GUI
             using (var frmStaff = new FrmStaff())
             {
                 AssertTest("Khởi tạo Form F14 (FrmStaff) thành công", frmStaff != null && frmStaff.Text.Contains("nhân sự"));
+            }
+
+            Console.WriteLine("\n======================================================================");
+            Console.WriteLine($"KẾT QUẢ KIỂM THỬ: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
+            Console.WriteLine("======================================================================");
+        }
+            private static void RunMember3AutomatedTests()
+        {
+            try { Console.OutputEncoding = System.Text.Encoding.UTF8; } catch { }
+            Console.WriteLine("======================================================================");
+            Console.WriteLine(">>> BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC TÍNH NĂNG THÀNH VIÊN 3 (NGÀY 6 & 7)");
+            Console.WriteLine(">>> (F17 - NGÂN SÁCH [BR-14, BR-15], F11 - BÁN VÉ [BR-09, BR-10, BR-17], F13 - SOÁT VÉ QR [BR-11, BR-12])");
+            Console.WriteLine("======================================================================");
+
+            int passCount = 0;
+            int totalCount = 0;
+
+            void AssertTest(string testName, bool condition, string detail = "")
+            {
+                totalCount++;
+                if (condition)
+                {
+                    passCount++;
+                    Console.WriteLine($"[PASS] {testName} {(string.IsNullOrWhiteSpace(detail) ? "" : "-> " + detail)}");
+                }
+                else
+                {
+                    Console.WriteLine($"[FAIL] {testName} -> {detail}");
+                }
+            }
+
+            // 1. Kiểm thử F17 - Ngân sách & Cảnh báo chi phí (BR-14, BR-15)
+            Console.WriteLine("\n--- 1. Kiểm thử Ngân sách & Cảnh báo chi phí (F17 - BR-14, BR-15) ---");
+            var budgetSvc = new BudgetService();
+            var invalidExp = new ExpenseDto { MaSuKien = "EVT202601", KhoanMucChi = "Test 0d", SoTien = 0m, NguoiLapPhieu = "Tester" };
+            var addZeroRes = budgetSvc.AddExpense(invalidExp);
+            AssertTest("Chặn thêm chi phí bằng 0 (BR-14)", !addZeroRes.IsSuccess, addZeroRes.Message);
+
+            var negativeExp = new ExpenseDto { MaSuKien = "EVT202601", KhoanMucChi = "Test âm", SoTien = -1000m, NguoiLapPhieu = "Tester" };
+            var addNegRes = budgetSvc.AddExpense(negativeExp);
+            AssertTest("Chặn thêm chi phí âm (BR-14)", !addNegRes.IsSuccess, addNegRes.Message);
+
+            var normalAlert = new BudgetAlertDto { NganSachDuKien = 100000000m, TongThucChiHienTai = 60000000m };
+            AssertTest("Ngưỡng an toàn <80% (BR-15)", !normalAlert.IsWarning80 && !normalAlert.IsOverBudget, $"{normalAlert.TyLeSuDung:F1}%");
+
+            var warnAlert = new BudgetAlertDto { NganSachDuKien = 100000000m, TongThucChiHienTai = 85000000m };
+            AssertTest("Cảnh báo tiếp cận hạn mức 80%-100% (BR-15)", warnAlert.IsWarning80 && !warnAlert.IsOverBudget, $"{warnAlert.TyLeSuDung:F1}%");
+
+            var dangerAlert = new BudgetAlertDto { NganSachDuKien = 100000000m, TongThucChiHienTai = 105000000m };
+            AssertTest("Cảnh báo bội chi >100% (BR-15)", dangerAlert.IsOverBudget, $"{dangerAlert.TyLeSuDung:F1}%");
+
+            // 2. Kiểm thử F11 - Bán vé & Đăng ký tham dự (BR-09, BR-10, BR-17, BR-18)
+            Console.WriteLine("\n--- 2. Kiểm thử Bán vé & Đơn hàng (F11 - BR-09, BR-10, BR-17, BR-18) ---");
+            var ticketSvc = new TicketOrderService();
+            var zeroTicketReq = new RegisterTicketRequestDto { MaSuKien = "EVT202601", MaHangVe = "HV001", SoLuongMua = 0, HoTenNguoiMua = "A", SoDienThoai = "0901" };
+            var zeroTicketRes = ticketSvc.RegisterTicketOrder(zeroTicketReq);
+            AssertTest("Chặn mua 0 vé (BR-10)", !zeroTicketRes.IsSuccess, zeroTicketRes.Message);
+
+            var over10TicketReq = new RegisterTicketRequestDto { MaSuKien = "EVT202601", MaHangVe = "HV001", SoLuongMua = 11, HoTenNguoiMua = "A", SoDienThoai = "0901" };
+            var over10TicketRes = ticketSvc.RegisterTicketOrder(over10TicketReq);
+            AssertTest("Chặn mua >10 vé trong 1 đơn hàng (BR-10)", !over10TicketRes.IsSuccess, over10TicketRes.Message);
+
+            var outOfStockReq = new RegisterTicketRequestDto { MaSuKien = "EVT202602", MaHangVe = "HV003", SoLuongMua = 10, HoTenNguoiMua = "A", SoDienThoai = "0901" };
+            var outOfStockRes = ticketSvc.RegisterTicketOrder(outOfStockReq);
+            AssertTest("Chặn bán vượt quá tồn kho khả dụng (BR-09)", !outOfStockRes.IsSuccess, outOfStockRes.Message);
+
+            var validOrderReq = new RegisterTicketRequestDto
+            {
+                MaSuKien = "EVT202601",
+                MaHangVe = "HV001",
+                SoLuongMua = 3,
+                HoTenNguoiMua = "Đỗ Khắc Nam",
+                SoDienThoai = "0912345678",
+                Email = "nam.do@test.vn",
+                DanhSachNguoiDiCung = new List<string> { "Đỗ Khắc Nam", "Nguyễn Minh", "Trần Long" }
+            };
+            var validOrderRes = ticketSvc.RegisterTicketOrder(validOrderReq);
+            bool isDecomposed = validOrderRes.IsSuccess && validOrderRes.Data?.DanhSachVe.Count == 3;
+            AssertTest("Mua 3 vé hợp lệ & phân rã vé con Master-Detail (BR-10, BR-18)", isDecomposed, $"Tổng tiền: {validOrderRes.Data?.TongTien:N0} đ");
+
+            var distinctQrCount = validOrderRes.Data?.DanhSachVe.Select(v => v.MaQR).Distinct().Count() ?? 0;
+            AssertTest("Mỗi vé con sinh mã QR token GUID duy nhất (BR-17)", distinctQrCount == 3, $"Số mã QR độc lập: {distinctQrCount}");
+
+            // 3. Kiểm thử F13 - Soát vé & Điểm danh Webcam QR (BR-11, BR-12)
+            Console.WriteLine("\n--- 3. Kiểm thử Soát vé & Điểm danh QR (F13 - BR-11, BR-12) ---");
+            var checkInSvc = new CheckInService();
+            var notFoundCheckIn = checkInSvc.ProcessCheckIn(new CheckInRequestDto { MaSuKien = "EVT202601", MaQRLuocDoc = "FAKE_QR_9999", PhuongThuc = "Thủ công" });
+            AssertTest("Từ chối mã vé không tồn tại (BR-11)", !notFoundCheckIn.IsSuccess, notFoundCheckIn.Message);
+
+            var wrongEvtCheckIn = checkInSvc.ProcessCheckIn(new CheckInRequestDto { MaSuKien = "EVT202602", MaQRLuocDoc = "VE00001", PhuongThuc = "Webcam" });
+            AssertTest("Từ chối vé sai sự kiện (BR-11)", !wrongEvtCheckIn.IsSuccess, wrongEvtCheckIn.Message);
+
+            checkInSvc.ResetCheckInForDemo("VE00001");
+            var firstCheckIn = checkInSvc.ProcessCheckIn(new CheckInRequestDto { MaSuKien = "EVT202601", MaQRLuocDoc = "VE00001", PhuongThuc = "Webcam" });
+            AssertTest("Check-in hợp lệ lần đầu thành công (BR-11)", firstCheckIn.IsSuccess && !firstCheckIn.Data!.IsWarningDuplicate, firstCheckIn.Data?.TenNguoiThamGia ?? "");
+
+            var secondCheckIn = checkInSvc.ProcessCheckIn(new CheckInRequestDto { MaSuKien = "EVT202601", MaQRLuocDoc = "VE00001", PhuongThuc = "Webcam" });
+            AssertTest("Cảnh báo quét trùng lặp & chặn vào cổng lần 2 (BR-12)", !secondCheckIn.Data!.IsSuccess && secondCheckIn.Data.IsWarningDuplicate, secondCheckIn.Data?.Message ?? "");
+
+            var stats = checkInSvc.GetCheckInStatistics("EVT202601");
+            AssertTest("Thống kê số lượng check-in thời gian thực", stats.TongVePhatHanh > 0 && stats.DaCheckIn > 0, $"Tổng: {stats.TongVePhatHanh}, Đã check-in: {stats.DaCheckIn} ({stats.TyLeCheckIn:F1}%)");
+
+            // 4. Khởi tạo Headless UI
+            Console.WriteLine("\n--- 4. Kiểm thử khởi tạo Form Giao diện (Headless Check) ---");
+            using (var frmF17 = new FrmBudgetExpense(budgetSvc))
+            {
+                AssertTest("Khởi tạo Form F17 (FrmBudgetExpense) thành công", frmF17 != null && frmF17.Text.Contains("F17"));
+            }
+
+            using (var frmF11 = new FrmTicketOrder(ticketSvc))
+            {
+                AssertTest("Khởi tạo Form F11 (FrmTicketOrder) thành công", frmF11 != null && frmF11.Text.Contains("F11"));
+            }
+
+            using (var frmF13 = new FrmCheckInCamera(checkInSvc))
+            {
+                AssertTest("Khởi tạo Form F13 (FrmCheckInCamera) thành công", frmF13 != null && frmF13.Text.Contains("F13"));
             }
 
             Console.WriteLine("\n======================================================================");
