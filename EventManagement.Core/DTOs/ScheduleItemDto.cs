@@ -4,18 +4,22 @@ namespace EventManagement.Core.DTOs
 {
     /// <summary>
     /// DTO hiển thị danh sách lịch trình hoạt động chi tiết (Form F08, Tab 2 Form F05)
-    /// Phụ trách: Thành viên 2
+    /// Phụ trách: Thành viên 2 (Giao diện UI/UX & Sự kiện)
     /// </summary>
     public class ScheduleItemDto
     {
         public string MaLichTrinh { get; set; } = string.Empty;
         public string MaSuKien { get; set; } = string.Empty;
+        public string? TenSuKien { get; set; }
         public string TenTietMuc { get; set; } = string.Empty;
         public DateTime ThoiGianBatDau { get; set; }
         public DateTime ThoiGianKetThuc { get; set; }
 
         // Khung giờ hiển thị định dạng HH:mm - HH:mm
         public string KhungGio => $"{ThoiGianBatDau:HH:mm} - {ThoiGianKetThuc:HH:mm}";
+
+        // Ngày diễn ra hiển thị dd/MM/yyyy
+        public string NgayDienRa => ThoiGianBatDau.ToString("dd/MM/yyyy");
 
         public string? MaDienGia { get; set; }
         public string? TenDienGia { get; set; }
