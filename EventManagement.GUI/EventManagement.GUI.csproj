@@ -8,8 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="AForge.Video" Version="2.2.5" />
+    <PackageReference Include="AForge.Video.DirectShow" Version="2.2.5" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.WinForms" Version="2.0.0-rc3.3" />
     <PackageReference Include="ZXing.Net" Version="0.16.9" />
+    <PackageReference Include="ZXing.Net.Bindings.Windows.Compatibility" Version="0.16.12" />
   </ItemGroup>
 
   <PropertyGroup>
