@@ -1,0 +1,453 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using EventManagement.BLL.Services;
+using EventManagement.Core.Common;
+using EventManagement.Core.DTOs;
+using EventManagement.GUI.Common;
+
+namespace EventManagement.GUI.Forms
+{
+    /// <summary>
+    /// Màn hình F11 - Bán vé & Đăng ký tham dự sự kiện
+    /// Phụ trách: Thành viên 3 (Task T3-17 / Day 6)
+    /// Nghiệp vụ:
+    /// - BR-09: Kiểm tra số lượng vé còn lại trước khi xác nhận.
+    /// - BR-10: 1 đơn hàng được mua từ 1 đến 10 vé, nhập danh sách người đi cùng.
+    /// - BR-17: Sinh mã QR token ngẫu nhiên (GUID duy nhất) cho mỗi vé.
+    /// - BR-18: Đảm bảo tính toàn vẹn dữ liệu đơn hàng và vé (SqlTransaction mô phỏng).
+    /// </summary>
+    public partial class FrmTicketOrder : FrmBase
+    {
+        private readonly ITicketOrderService _ticketOrderService;
+        private bool _isLoading = true;
+        private List<(string MaSuKien, string TenSuKien)> _events = new();
+        private List<TicketTierSummaryDto> _currentTiers = new();
+        private List<TicketDetailDto> _lastIssuedTickets = new();
+
+        public FrmTicketOrder() : this(new TicketOrderService())
+        {
+        }
+
+        public FrmTicketOrder(ITicketOrderService ticketOrderService)
+        {
+            InitializeComponent();
+            _ticketOrderService = ticketOrderService ?? new TicketOrderService();
+            ApplyCustomStyles();
+        }
+
+        private void ApplyCustomStyles()
+        {
+            StyleButton(btnXacNhan, ButtonRole.Success);
+            StyleButton(btnLamMoi, ButtonRole.Secondary);
+            StyleButton(btnInVe, ButtonRole.Primary);
+
+            StyleDataGridView(dgvNguoiDiCung);
+            StyleDataGridView(dgvIssuedTickets);
+
+            dgvIssuedTickets.AutoGenerateColumns = false;
+            colGiaVe.DefaultCellStyle.Format = "N0";
+            colGiaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            _isLoading = true;
+            LoadEvents();
+            _isLoading = false;
+
+            if (cboSuKien.Items.Count > 0)
+            {
+                cboSuKien.SelectedIndex = 0;
+            }
+
+            SyncAttendeeGridRows((int)nudSoLuong.Value);
+            RecalculateTotal();
+        }
+
+        private void LoadEvents()
+        {
+            try
+            {
+                _events = _ticketOrderService.GetAvailableEvents();
+                cboSuKien.DataSource = null;
+                cboSuKien.DisplayMember = "TenSuKien";
+                cboSuKien.ValueMember = "MaSuKien";
+                cboSuKien.DataSource = _events;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải danh sách sự kiện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cboSuKien_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isLoading || cboSuKien.SelectedValue == null) return;
+
+            string maSuKien = cboSuKien.SelectedValue.ToString() ?? string.Empty;
+            LoadTicketTiers(maSuKien);
+        }
+
+        private void LoadTicketTiers(string maSuKien)
+        {
+            try
+            {
+                _currentTiers = _ticketOrderService.GetTicketTiersByEvent(maSuKien);
+                cboHangVe.DataSource = null;
+                cboHangVe.DisplayMember = "TenHangVe";
+                cboHangVe.ValueMember = "MaHangVe";
+                cboHangVe.DataSource = _currentTiers;
+
+                if (_currentTiers.Count > 0)
+                {
+                    cboHangVe.SelectedIndex = 0;
+                }
+                UpdateTierInfoDisplay();
+                RecalculateTotal();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi nạp hạng vé: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void cboHangVe_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateTierInfoDisplay();
+            RecalculateTotal();
+        }
+
+        private TicketTierSummaryDto? GetSelectedTier()
+        {
+            if (cboHangVe.SelectedItem is TicketTierSummaryDto dto) return dto;
+            if (cboHangVe.SelectedValue != null)
+            {
+                string maHangVe = cboHangVe.SelectedValue.ToString() ?? string.Empty;
+                return _currentTiers.FirstOrDefault(t => t.MaHangVe == maHangVe);
+            }
+            return null;
+        }
+
+        private void UpdateTierInfoDisplay()
+        {
+            var tier = GetSelectedTier();
+            if (tier != null)
+            {
+                lblTierInfo.Text = $"Đơn giá: {tier.GiaVe:N0} đ | Còn lại: {tier.SoLuongConLai}/{tier.SoLuongPhatHanh} vé";
+                if (tier.SoLuongConLai <= 0)
+                {
+                    lblTierInfo.ForeColor = Color.Red;
+                    lblTierInfo.Text += " (HẾT VÉ)";
+                }
+                else if (tier.SoLuongConLai <= 10)
+                {
+                    lblTierInfo.ForeColor = Color.DarkOrange;
+                    lblTierInfo.Text += " (SẮP HẾT)";
+                }
+                else
+                {
+                    lblTierInfo.ForeColor = Color.FromArgb(46, 125, 50);
+                }
+            }
+            else
+            {
+                lblTierInfo.Text = "Chưa có thông tin hạng vé";
+                lblTierInfo.ForeColor = Color.Gray;
+            }
+        }
+
+        private void nudSoLuong_ValueChanged(object sender, EventArgs e)
+        {
+            int qty = (int)nudSoLuong.Value;
+            SyncAttendeeGridRows(qty);
+            RecalculateTotal();
+        }
+
+        private void txtHoTen_TextChanged(object sender, EventArgs e)
+        {
+            if (dgvNguoiDiCung.Rows.Count > 0)
+            {
+                string buyer = string.IsNullOrWhiteSpace(txtHoTen.Text) ? "Người mua vé (Chính)" : txtHoTen.Text.Trim();
+                dgvNguoiDiCung.Rows[0].Cells[1].Value = buyer;
+            }
+        }
+
+        private void SyncAttendeeGridRows(int count)
+        {
+            // BR-10: 1 - 10 vé
+            if (count < 1) count = 1;
+            if (count > 10) count = 10;
+
+            int currentCount = dgvNguoiDiCung.Rows.Count;
+            if (currentCount < count)
+            {
+                for (int i = currentCount; i < count; i++)
+                {
+                    int stt = i + 1;
+                    string defaultName = i == 0 
+                        ? (string.IsNullOrWhiteSpace(txtHoTen.Text) ? "Người mua vé (Chính)" : txtHoTen.Text.Trim())
+                        : $"Người tham dự #{stt}";
+                    dgvNguoiDiCung.Rows.Add(stt.ToString(), defaultName);
+                }
+            }
+            else if (currentCount > count)
+            {
+                for (int i = currentCount - 1; i >= count; i--)
+                {
+                    dgvNguoiDiCung.Rows.RemoveAt(i);
+                }
+            }
+
+            if (dgvNguoiDiCung.Rows.Count > 0)
+            {
+                dgvNguoiDiCung.Rows[0].Cells[1].ReadOnly = false;
+            }
+        }
+
+        private void RecalculateTotal()
+        {
+            var tier = GetSelectedTier();
+            if (tier != null)
+            {
+                decimal total = (decimal)nudSoLuong.Value * tier.GiaVe;
+                lblTongTien.Text = $"{total:N0} đ";
+            }
+            else
+            {
+                lblTongTien.Text = "0 đ";
+            }
+        }
+
+        private bool ValidateOrderInput()
+        {
+            errorProvider.Clear();
+            bool isValid = true;
+
+            if (cboSuKien.SelectedValue == null)
+            {
+                errorProvider.SetError(cboSuKien, "Vui lòng chọn sự kiện.");
+                isValid = false;
+            }
+
+            var tier = GetSelectedTier();
+            if (tier == null)
+            {
+                errorProvider.SetError(cboHangVe, "Vui lòng chọn hạng vé.");
+                isValid = false;
+            }
+
+            int qty = (int)nudSoLuong.Value;
+            // BR-10: Kiểm tra 1-10 vé
+            if (qty < 1 || qty > 10)
+            {
+                errorProvider.SetError(nudSoLuong, "Số lượng vé mỗi đơn hàng phải từ 1 đến 10 vé (BR-10).");
+                isValid = false;
+            }
+
+            // BR-09: Kiểm tra số lượng tồn
+            if (tier != null && tier.SoLuongConLai < qty)
+            {
+                errorProvider.SetError(nudSoLuong, $"Hạng vé chỉ còn lại {tier.SoLuongConLai} vé, không đủ đáp ứng số lượng {qty} (BR-09).");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtHoTen.Text))
+            {
+                errorProvider.SetError(txtHoTen, "Vui lòng nhập họ tên người mua vé.");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtSoDienThoai.Text))
+            {
+                errorProvider.SetError(txtSoDienThoai, "Vui lòng nhập số điện thoại liên hệ.");
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        private void btnXacNhan_Click(object sender, EventArgs e)
+        {
+            if (!ValidateOrderInput())
+            {
+                return;
+            }
+
+            var tier = GetSelectedTier();
+            if (tier == null || cboSuKien.SelectedValue == null) return;
+
+            string maSuKien = cboSuKien.SelectedValue.ToString() ?? string.Empty;
+            string maHangVe = tier.MaHangVe;
+            int qty = (int)nudSoLuong.Value;
+
+            // Thu thập danh sách người tham dự
+            var attendees = new List<string>();
+            foreach (DataGridViewRow row in dgvNguoiDiCung.Rows)
+            {
+                if (row.IsNewRow) continue;
+                string name = row.Cells[1].Value?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(name))
+                {
+                    name = txtHoTen.Text.Trim();
+                }
+                attendees.Add(name.Trim());
+            }
+
+            if (attendees.Count == 0)
+            {
+                attendees.Add(txtHoTen.Text.Trim());
+            }
+
+            var request = new RegisterTicketRequestDto
+            {
+                MaSuKien = maSuKien,
+                MaHangVe = maHangVe,
+                SoLuongMua = qty,
+                HoTenNguoiMua = txtHoTen.Text.Trim(),
+                SoDienThoai = txtSoDienThoai.Text.Trim(),
+                Email = txtEmail.Text.Trim(),
+                DonVi = txtDonVi.Text.Trim(),
+                DanhSachNguoiDiCung = attendees
+            };
+
+            var confirmResult = MessageBox.Show(
+                $"Xác nhận lập đơn hàng:\n- Sự kiện: {cboSuKien.Text}\n- Hạng vé: {tier.TenHangVe}\n- Số lượng: {qty} vé\n- Tổng tiền: {lblTongTien.Text}\n- Người mua: {request.HoTenNguoiMua}\n\nBạn có chắc chắn muốn xuất vé không?",
+                "Xác nhận đặt vé",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirmResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                var result = _ticketOrderService.RegisterTicketOrder(request);
+                if (result.IsSuccess && result.Data != null)
+                {
+                    _lastIssuedTickets = result.Data.DanhSachVe ?? new List<TicketDetailDto>();
+                    BindIssuedTickets(_lastIssuedTickets);
+
+                    MessageBox.Show(
+                        $"Đặt vé thành công!\nMã đơn đăng ký: {result.Data.MaDangKy}\nTổng cộng: {result.Data.SoLuong} vé đã được phát hành với mã QR token duy nhất (BR-17).",
+                        "Thành công",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    // Cập nhật lại tồn kho hạng vé trên giao diện
+                    LoadTicketTiers(maSuKien);
+                    cboHangVe.SelectedValue = maHangVe;
+                    UpdateTierInfoDisplay();
+                }
+                else
+                {
+                    MessageBox.Show("Không thể tạo đơn hàng: " + (result.Message ?? "Lỗi không xác định"), "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi xử lý đặt vé: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BindIssuedTickets(List<TicketDetailDto> tickets)
+        {
+            dgvIssuedTickets.Rows.Clear();
+            foreach (var t in tickets)
+            {
+                dgvIssuedTickets.Rows.Add(
+                    t.MaVe,
+                    t.TenNguoiThamGia,
+                    t.MaQR,
+                    t.TenHangVe,
+                    t.GiaVe.ToString("N0") + " đ"
+                );
+            }
+
+            lblTicketCountSummary.Text = $"Tổng cộng: {tickets.Count} vé đã xuất thành công";
+            btnInVe.Enabled = tickets.Count > 0;
+        }
+
+        private void btnLamMoi_Click(object sender, EventArgs e)
+        {
+            txtHoTen.Clear();
+            txtSoDienThoai.Clear();
+            txtEmail.Clear();
+            txtDonVi.Clear();
+            nudSoLuong.Value = 1;
+            dgvIssuedTickets.Rows.Clear();
+            lblTicketCountSummary.Text = "Tổng cộng: 0 vé đã xuất";
+            btnInVe.Enabled = false;
+            errorProvider.Clear();
+
+            if (cboSuKien.SelectedValue != null)
+            {
+                LoadTicketTiers(cboSuKien.SelectedValue.ToString() ?? string.Empty);
+            }
+
+            SyncAttendeeGridRows(1);
+            RecalculateTotal();
+            txtHoTen.Focus();
+        }
+
+        private void btnInVe_Click(object sender, EventArgs e)
+        {
+            if (_lastIssuedTickets == null || _lastIssuedTickets.Count == 0)
+            {
+                MessageBox.Show("Chưa có danh sách vé vừa xuất để in.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("==================================================");
+            sb.AppendLine("             DANH SÁCH VÉ SỰ KIỆN");
+            sb.AppendLine($"Sự kiện: {cboSuKien.Text}");
+            sb.AppendLine($"Người mua: {txtHoTen.Text} - SĐT: {txtSoDienThoai.Text}");
+            sb.AppendLine($"Ngày xuất vé: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+            sb.AppendLine("==================================================");
+
+            foreach (var t in _lastIssuedTickets)
+            {
+                sb.AppendLine($"Mã vé     : {t.MaVe}");
+                sb.AppendLine($"Họ tên    : {t.TenNguoiThamGia}");
+                sb.AppendLine($"Hạng vé   : {t.TenHangVe}");
+                sb.AppendLine($"Giá vé    : {t.GiaVe:N0} đ");
+                sb.AppendLine($"QR Token  : {t.MaQR}");
+                sb.AppendLine("--------------------------------------------------");
+            }
+
+            using (var sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
+                sfd.FileName = $"DanhSachVe_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
+                    MessageBox.Show($"Đã lưu danh sách vé ra file thành công:\n{sfd.FileName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                btnXacNhan.PerformClick();
+                return true;
+            }
+            if (keyData == (Keys.Control | Keys.N))
+            {
+                btnLamMoi.PerformClick();
+                return true;
+            }
+            if (keyData == Keys.Escape)
+            {
+                Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+    }
+}
