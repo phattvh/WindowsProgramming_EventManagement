@@ -49,6 +49,8 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvLichTrinh);
             dgvLichTrinh.AutoGenerateColumns = false;
+            dgvLichTrinh.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvLichTrinh.ScrollBars = ScrollBars.Both;
 
             LoadAuxiliaryData();
         }
@@ -449,6 +451,42 @@ namespace EventManagement.GUI.Forms
             }
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (_currentMode == FormMode.View)
+            {
+                if (keyData == Keys.F2)
+                {
+                    if (btnThem.Enabled) { btnThem.PerformClick(); return true; }
+                }
+                else if (keyData == Keys.F3)
+                {
+                    if (btnSua.Enabled) { btnSua.PerformClick(); return true; }
+                }
+                else if (keyData == Keys.Delete && !(ActiveControl is TextBoxBase))
+                {
+                    if (btnXoa.Enabled) { btnXoa.PerformClick(); return true; }
+                }
+                else if (keyData == Keys.F5)
+                {
+                    if (btnLamMoi.Enabled) { btnLamMoi.PerformClick(); return true; }
+                }
+            }
+            else
+            {
+                if (keyData == (Keys.Control | Keys.S))
+                {
+                    if (btnLuu.Enabled) { btnLuu.PerformClick(); return true; }
+                }
+                else if (keyData == Keys.Escape)
+                {
+                    if (btnHuy.Enabled) { btnHuy.PerformClick(); return true; }
+                }
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void FrmSchedule_KeyDown(object sender, KeyEventArgs e)
         {
             if (_currentMode == FormMode.View)
@@ -463,9 +501,14 @@ namespace EventManagement.GUI.Forms
                     btnSua.PerformClick();
                     e.Handled = true;
                 }
-                else if (e.KeyCode == Keys.Delete)
+                else if (e.KeyCode == Keys.Delete && !(ActiveControl is TextBoxBase))
                 {
                     btnXoa.PerformClick();
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.F5)
+                {
+                    btnLamMoi.PerformClick();
                     e.Handled = true;
                 }
             }
@@ -599,7 +642,7 @@ namespace EventManagement.GUI.Forms
 
             using SaveFileDialog sfd = new SaveFileDialog
             {
-                Filter = "Tệp CSV (Excel (*.csv)|*.csv",
+                Filter = "Tệp CSV (*.csv)|*.csv",
                 FileName = $"LichTrinh_SuKien_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
             };
 
@@ -655,6 +698,18 @@ namespace EventManagement.GUI.Forms
         {
             if (_isLoading) return;
             LoadData();
+        }
+
+        private void cboSuKien_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isLoading || _currentMode != FormMode.Add) return;
+
+            var currentEvent = GetCurrentSelectedEvent();
+            if (currentEvent.HasValue)
+            {
+                dtpBatDau.Value = currentEvent.Value.BatDau;
+                dtpKetThuc.Value = currentEvent.Value.BatDau.AddHours(1);
+            }
         }
 
         private class ComboBoxItem
