@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -33,6 +33,22 @@ namespace EventManagement.GUI
                 return;
             }
 
+            if (args.Length > 0 && (args[0] == "--f02" || args[0] == "--dashboard"))
+            {
+                ApplicationConfiguration.Initialize();
+                EventManagement.GUI.Common.GlobalExceptionHandler.Register();
+                Application.Run(new FrmDashboard());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--server-config" || args[0] == "--ad6"))
+            {
+                ApplicationConfiguration.Initialize();
+                EventManagement.GUI.Common.GlobalExceptionHandler.Register();
+                Application.Run(new FrmServerConfig());
+                return;
+            }
+
             if (args.Length > 0 && (args[0] == "--f15" || args[0] == "--staff-assignment"))
             {
                 ApplicationConfiguration.Initialize();
@@ -63,7 +79,7 @@ namespace EventManagement.GUI
 
             ApplicationConfiguration.Initialize();
             // Mặc định khởi chạy FrmSchedule (F08) cho kiểm tra giao diện
-            Application.Run(new FrmSchedule());
+            Application.Run(new FrmDashboard());
         }
 
         private static void RunDay5AutomatedTests()
