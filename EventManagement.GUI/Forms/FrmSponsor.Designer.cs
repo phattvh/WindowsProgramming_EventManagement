@@ -276,11 +276,11 @@ namespace EventManagement.GUI.Forms
             // btnLamMoi
             // 
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnLamMoi.Location = new System.Drawing.Point(900, 8);
+            this.btnLamMoi.Location = new System.Drawing.Point(885, 8);
             this.btnLamMoi.Name = "btnLamMoi";
-            this.btnLamMoi.Size = new System.Drawing.Size(105, 30);
+            this.btnLamMoi.Size = new System.Drawing.Size(120, 30);
             this.btnLamMoi.TabIndex = 6;
-            this.btnLamMoi.Text = "🔄 Làm mới";
+            this.btnLamMoi.Text = "🔄 Làm mới (F5)";
             this.btnLamMoi.UseVisualStyleBackColor = true;
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
 

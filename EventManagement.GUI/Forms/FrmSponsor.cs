@@ -418,9 +418,14 @@ namespace EventManagement.GUI.Forms
                     btnSua.PerformClick();
                     e.Handled = true;
                 }
-                else if (e.KeyCode == Keys.Delete)
+                else if (e.KeyCode == Keys.Delete && !(ActiveControl is TextBoxBase))
                 {
                     btnXoa.PerformClick();
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.F5)
+                {
+                    btnLamMoi.PerformClick();
                     e.Handled = true;
                 }
             }
