@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using EventManagement.Core.Common;
+using EventManagement.Core.DTOs;
 using EventManagement.Core.Entities;
 
 namespace EventManagement.BLL.Services
@@ -13,6 +14,8 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class StaffScheduleService
     {
+        #region 1. THUẬT TOÁN BR-13 (CHO ENTITY PhanCongNhanSu)
+
         /// <summary>
         /// Thuật toán BR-13: Chống trùng ca trực nhân sự (Shift Overlap Detection)
         /// Một nhân sự không thể được phân công 2 ca trực có khung thời gian giao thoa nhau.
@@ -101,5 +104,89 @@ namespace EventManagement.BLL.Services
                 existingAssignments
             );
         }
+
+        #endregion
+
+        #region 2. THUẬT TOÁN BR-13 (CHO DTO StaffAssignmentDto - PHỤC VỤ FORM F15)
+
+        /// <summary>
+        /// Thuật toán BR-13 cho danh sách StaffAssignmentDto
+        /// </summary>
+        public ServiceResult<bool> CheckShiftConflict(
+            string maNhanSu,
+            DateTime start,
+            DateTime end,
+            string? excludeMaPhanCong,
+            IEnumerable<StaffAssignmentDto> existingAssignments)
+        {
+            if (string.IsNullOrWhiteSpace(maNhanSu))
+            {
+                return ServiceResult<bool>.Failed("Mã nhân sự không được để trống khi phân công ca trực.");
+            }
+
+            if (end <= start)
+            {
+                return ServiceResult<bool>.Failed(
+                    "Thời gian kết thúc ca trực phải lớn hơn thời gian bắt đầu.",
+                    new List<string> { $"ThoiGianBatDau ({start:HH:mm}) >= ThoiGianKetThuc ({end:HH:mm})" }
+                );
+            }
+
+            var conflict = existingAssignments.FirstOrDefault(a =>
+                a.MaNhanSu.Equals(maNhanSu, StringComparison.OrdinalIgnoreCase) &&
+                !a.MaPhanCong.Equals(excludeMaPhanCong, StringComparison.OrdinalIgnoreCase) &&
+                start < a.ThoiGianKetThuc &&
+                end > a.ThoiGianBatDau
+            );
+
+            if (conflict != null)
+            {
+                return ServiceResult<bool>.Failed(
+                    $"Xung đột ca trực nhân sự (BR-13): Nhân sự [{maNhanSu}] đã có ca trực nhiệm vụ '{conflict.NhiemVu}' từ {conflict.ThoiGianBatDau:dd/MM/yyyy HH:mm} đến {conflict.ThoiGianKetThuc:dd/MM/yyyy HH:mm}.",
+                    new List<string>
+                    {
+                        $"Mã phân công xung đột: {conflict.MaPhanCong}",
+                        $"Nhiệm vụ trùng lặp: {conflict.NhiemVu}",
+                        $"Khung giờ đã trực: {conflict.ThoiGianBatDau:dd/MM/yyyy HH:mm} - {conflict.ThoiGianKetThuc:HH:mm}",
+                        $"Khung giờ yêu cầu mới: {start:dd/MM/yyyy HH:mm} - {end:HH:mm}"
+                    }
+                );
+            }
+
+            return ServiceResult<bool>.Success(true, "Nhân sự hoàn toàn khả dụng cho ca trực này.");
+        }
+
+        /// <summary>
+        /// Thẩm định toàn diện một phân công nhân sự StaffAssignmentDto trước khi lưu vào CSDL
+        /// </summary>
+        public ServiceResult<bool> ValidateAssignment(
+            StaffAssignmentDto assignment,
+            IEnumerable<StaffAssignmentDto> existingAssignments)
+        {
+            if (assignment == null)
+            {
+                return ServiceResult<bool>.Failed("Thông tin phân công nhân sự không được để trống.");
+            }
+
+            if (string.IsNullOrWhiteSpace(assignment.MaSuKien))
+            {
+                return ServiceResult<bool>.Failed("Mã sự kiện không được để trống.");
+            }
+
+            if (string.IsNullOrWhiteSpace(assignment.NhiemVu))
+            {
+                return ServiceResult<bool>.Failed("Nhiệm vụ phân công không được để trống.");
+            }
+
+            return CheckShiftConflict(
+                assignment.MaNhanSu,
+                assignment.ThoiGianBatDau,
+                assignment.ThoiGianKetThuc,
+                assignment.MaPhanCong,
+                existingAssignments
+            );
+        }
+
+        #endregion
     }
 }

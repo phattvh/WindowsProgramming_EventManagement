@@ -10,13 +10,18 @@ namespace EventManagement.Core.DTOs
     {
         public string MaPhanCong { get; set; } = string.Empty;
         public string MaSuKien { get; set; } = string.Empty;
+        public string TenSuKien { get; set; } = string.Empty;
         public string MaNhanSu { get; set; } = string.Empty;
         public string TenNhanSu { get; set; } = string.Empty;
         public string SoDienThoai { get; set; } = string.Empty;
         public string ChucVuNhanSu { get; set; } = string.Empty;
+        public string PhongBan { get; set; } = string.Empty;
         public string NhiemVu { get; set; } = string.Empty;
         public DateTime ThoiGianBatDau { get; set; }
         public DateTime ThoiGianKetThuc { get; set; }
+
+        // Ngày trực (dd/MM/yyyy)
+        public string NgayTruc => ThoiGianBatDau.ToString("dd/MM/yyyy");
 
         // Khung giờ hiển thị định dạng HH:mm - HH:mm (dd/MM)
         public string KhungGio => $"{ThoiGianBatDau:HH:mm} - {ThoiGianKetThuc:HH:mm} ({ThoiGianBatDau:dd/MM})";
