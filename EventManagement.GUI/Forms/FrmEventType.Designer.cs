@@ -426,7 +426,7 @@ namespace EventManagement.GUI.Forms
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(120, 36);
             this.btnThem.TabIndex = 0;
-            this.btnThem.Text = "➕ Thêm";
+            this.btnThem.Text = "➕ Thêm (F2)";
             this.btnThem.UseVisualStyleBackColor = true;
             this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
 
@@ -438,7 +438,7 @@ namespace EventManagement.GUI.Forms
             this.btnSua.Name = "btnSua";
             this.btnSua.Size = new System.Drawing.Size(120, 36);
             this.btnSua.TabIndex = 1;
-            this.btnSua.Text = "✏️ Sửa";
+            this.btnSua.Text = "✏️ Sửa (F3)";
             this.btnSua.UseVisualStyleBackColor = true;
             this.btnSua.Click += new System.EventHandler(this.btnSua_Click);
 
@@ -450,7 +450,7 @@ namespace EventManagement.GUI.Forms
             this.btnXoa.Name = "btnXoa";
             this.btnXoa.Size = new System.Drawing.Size(120, 36);
             this.btnXoa.TabIndex = 2;
-            this.btnXoa.Text = "🗑️ Xóa";
+            this.btnXoa.Text = "🗑️ Xóa (Del)";
             this.btnXoa.UseVisualStyleBackColor = true;
             this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
 
@@ -462,7 +462,7 @@ namespace EventManagement.GUI.Forms
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(130, 36);
             this.btnLuu.TabIndex = 3;
-            this.btnLuu.Text = "💾 Lưu dữ liệu";
+            this.btnLuu.Text = "💾 Lưu (Ctrl+S)";
             this.btnLuu.UseVisualStyleBackColor = true;
             this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
 
@@ -474,7 +474,7 @@ namespace EventManagement.GUI.Forms
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(130, 36);
             this.btnHuy.TabIndex = 4;
-            this.btnHuy.Text = "❌ Hủy bỏ";
+            this.btnHuy.Text = "❌ Hủy (Esc)";
             this.btnHuy.UseVisualStyleBackColor = true;
             this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
 
@@ -497,7 +497,9 @@ namespace EventManagement.GUI.Forms
             this.MaximizeBox = false;
             this.Name = "FrmEventType";
             this.Text = "Quản lý loại sự kiện";
+            this.KeyPreview = true;
             this.Load += new System.EventHandler(this.FrmEventType_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmEventType_KeyDown);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.pnlFilter.ResumeLayout(false);

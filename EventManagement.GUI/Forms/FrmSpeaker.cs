@@ -405,6 +405,41 @@ namespace EventManagement.GUI.Forms
             }
         }
 
+        private void FrmSpeaker_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (_currentMode == FormMode.View)
+            {
+                if (e.KeyCode == Keys.F2)
+                {
+                    btnThem.PerformClick();
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.F3)
+                {
+                    btnSua.PerformClick();
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.Delete)
+                {
+                    btnXoa.PerformClick();
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                if (e.Control && e.KeyCode == Keys.S)
+                {
+                    btnLuu.PerformClick();
+                    e.Handled = true;
+                }
+                else if (e.KeyCode == Keys.Escape)
+                {
+                    btnHuy.PerformClick();
+                    e.Handled = true;
+                }
+            }
+        }
+
         private void btnHuy_Click(object sender, EventArgs e)
         {
             SetFormState(FormMode.View);
