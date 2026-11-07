@@ -55,6 +55,13 @@ namespace EventManagement.GUI.Forms
             dgvSuKien.AutoGenerateColumns = false;
             dgvSuKien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvSuKien.ScrollBars = ScrollBars.Both;
+            dgvSuKien.CellDoubleClick += (s, e) =>
+            {
+                if (e.RowIndex >= 0)
+                {
+                    btnChiTiet_Click(s, e);
+                }
+            };
 
             LoadAuxiliaryData();
         }
@@ -534,18 +541,9 @@ namespace EventManagement.GUI.Forms
                 return;
             }
 
-            MessageBox.Show(
-                $"Thông tin chi tiết sự kiện:\n\n" +
-                $"- Mã sự kiện: {dto.MaSuKien}\n" +
-                $"- Tên sự kiện: {dto.TenSuKien}\n" +
-                $"- Loại sự kiện: {dto.TenLoaiSK}\n" +
-                $"- Địa điểm: {dto.TenDiaDiem}\n" +
-                $"- Thời gian: {dto.NgayBatDau:dd/MM/yyyy HH:mm} - {dto.NgayKetThuc:dd/MM/yyyy HH:mm}\n" +
-                $"- Trạng thái: {dto.TrangThai}\n\n" +
-                $"Hệ thống quản lý chi tiết gồm 9 phân hệ chức năng (Lịch trình, Hạng vé, Khách mời, Nhân sự, Tài trợ, Chi phí, Đăng ký, Đánh giá, Báo cáo).",
-                "Chi tiết sự kiện",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            using var frmDetail = new FrmEventDetail(dto.MaSuKien);
+            frmDetail.ShowDialog(this);
+            LoadData();
         }
 
         private void btnXuatExcel_Click(object sender, EventArgs e)

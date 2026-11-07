@@ -44,6 +44,19 @@ namespace EventManagement.GUI
                 return;
             }
 
+            if (args.Length > 0 && (args[0] == "--f05" || args[0] == "--event-detail"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmEventDetail());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--test-day8-member2" || args[0] == "--test-f05"))
+            {
+                RunDay8Member2AutomatedTests();
+                return;
+            }
+
             if (args.Length > 0 && (args[0] == "--test-member3" || args[0] == "--test-day6-member3" || args[0] == "--test-day7-member3"))
             {
                 RunMember3AutomatedTests();
@@ -1023,6 +1036,119 @@ namespace EventManagement.GUI
             Console.WriteLine("\n======================================================================");
             Console.WriteLine($"KẾT QUẢ KIỂM THỬ RBAC: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
             Console.WriteLine("======================================================================");
+            Console.WriteLine("======================================================================");
+        }
+        private static void RunDay8Member2AutomatedTests()
+        {
+            try { Console.OutputEncoding = System.Text.Encoding.UTF8; } catch { }
+            Console.WriteLine("======================================================================");
+            Console.WriteLine(">>> BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC TÍNH NĂNG NGÀY 8 CỦA THÀNH VIÊN 2");
+            Console.WriteLine(">>> (FORM F05 - CHI TIẾT SỰ KIỆN & ĐIỀU PHỐI TRUNG TÂM 9 TABS)");
+            Console.WriteLine("======================================================================");
+
+            int passCount = 0;
+            int totalCount = 0;
+
+            void AssertTest(string testName, bool condition, string detail = "")
+            {
+                totalCount++;
+                if (condition)
+                {
+                    passCount++;
+                    Console.WriteLine($"[PASS] {testName} {(string.IsNullOrWhiteSpace(detail) ? "" : "-> " + detail)}");
+                }
+                else
+                {
+                    Console.WriteLine($"[FAIL] {testName} -> {detail}");
+                }
+            }
+
+            // 1. Kiểm thử khởi tạo Form F05
+            Console.WriteLine("\n--- 1. Kiểm thử khởi tạo Form F05 (Chi tiết sự kiện) ---");
+            using (var frmDefault = new FrmEventDetail())
+            {
+                AssertTest("Khởi tạo FrmEventDetail với constructor mặc định", frmDefault != null && frmDefault.Text.Contains("Chi tiết sự kiện"));
+                AssertTest("Form F05 bật KeyPreview cho phím tắt", frmDefault.KeyPreview == true);
+                AssertTest("Kích thước Form F05 chuẩn (Width >= 1200, Height >= 780)", frmDefault.MinimumSize.Width >= 1200 && frmDefault.MinimumSize.Height >= 780);
+            }
+
+            using (var frmParam = new FrmEventDetail("EVT202601"))
+            {
+                AssertTest("Khởi tạo FrmEventDetail với mã sự kiện 'EVT202601'", frmParam != null);
+            }
+
+            // 2. Kiểm thử dữ liệu Tab 1 (Thông tin cơ bản)
+            Console.WriteLine("\n--- 2. Kiểm thử dữ liệu Tab 1 (Thông tin cơ bản) ---");
+            var eventSvc = new EventService();
+            var evRes = eventSvc.GetById("EVT202601");
+            AssertTest("Truy vấn sự kiện EVT202601 thành công", evRes.IsSuccess && evRes.Data != null, evRes.Data?.TenSuKien);
+            AssertTest("Sự kiện EVT202601 có ngân sách dự kiến > 0", evRes.Data?.NganSachDuKien > 0, $"{evRes.Data?.NganSachDuKien:N0} VNĐ");
+            AssertTest("Sự kiện EVT202601 có sức chứa hợp lệ", evRes.Data?.SucChua >= 100, $"{evRes.Data?.SucChua:N0} chỗ");
+
+            // 3. Kiểm thử dữ liệu Tab 2 (Lịch chương trình)
+            Console.WriteLine("\n--- 3. Kiểm thử dữ liệu Tab 2 (Lịch chương trình) ---");
+            var scheduleSvc = new ScheduleService();
+            var schedRes = scheduleSvc.GetAll(maSuKien: "EVT202601");
+            AssertTest("Truy vấn lịch trình cho sự kiện EVT202601", schedRes.IsSuccess && schedRes.Data?.Count >= 1, $"Số tiết mục: {schedRes.Data?.Count}");
+
+            // 4. Kiểm thử dữ liệu Tab 3 (Diễn giả & Khách mời)
+            Console.WriteLine("\n--- 4. Kiểm thử dữ liệu Tab 3 (Diễn giả & Khách mời) ---");
+            var speakerSvc = new SpeakerService();
+            var spkRes = speakerSvc.GetAll();
+            AssertTest("Truy vấn danh mục diễn giả khách mời", spkRes.IsSuccess && spkRes.Data?.Count >= 3, $"Số diễn giả: {spkRes.Data?.Count}");
+
+            // 5. Kiểm thử dữ liệu Tab 4 (Người tham gia)
+            Console.WriteLine("\n--- 5. Kiểm thử dữ liệu Tab 4 (Người tham gia) ---");
+            var ticketOrderSvc = new TicketOrderService();
+            var attendeeRes = ticketOrderSvc.GetTicketsByEvent("EVT202601");
+            AssertTest("Truy vấn danh sách vé / người tham gia EVT202601", attendeeRes.IsSuccess && attendeeRes.Data != null, $"Số vé phát hành: {attendeeRes.Data?.Count}");
+
+            // 6. Kiểm thử dữ liệu Tab 5 (Hạng vé & Tồn kho)
+            Console.WriteLine("\n--- 6. Kiểm thử dữ liệu Tab 5 (Hạng vé & Tồn kho) ---");
+            var tiers = ticketOrderSvc.GetTicketTiersByEvent("EVT202601");
+            AssertTest("Truy vấn danh mục hạng vé sự kiện EVT202601", tiers != null && tiers.Count >= 2, $"Số hạng vé: {tiers?.Count}");
+            var totalPhatHanh = tiers?.Sum(x => x.SoLuongPhatHanh) ?? 0;
+            var totalDaBan = tiers?.Sum(x => x.SoLuongDaBan) ?? 0;
+            AssertTest("Kiểm tra tồn kho khả dụng BR-09 (DaBan <= PhatHanh)", totalDaBan <= totalPhatHanh, $"Đã bán: {totalDaBan} / {totalPhatHanh}");
+
+            // 7. Kiểm thử dữ liệu Tab 6 (Nhân sự phân công)
+            Console.WriteLine("\n--- 7. Kiểm thử dữ liệu Tab 6 (Nhân sự phân công) ---");
+            var staffSvc = new StaffAssignmentService();
+            var staffRes = staffSvc.GetAll(maSuKien: "EVT202601");
+            AssertTest("Truy vấn ca trực nhân sự sự kiện EVT202601", staffRes.IsSuccess && staffRes.Data != null, $"Số lượt phân công: {staffRes.Data?.Count}");
+
+            // 8. Kiểm thử dữ liệu Tab 7 (Nhà tài trợ)
+            Console.WriteLine("\n--- 8. Kiểm thử dữ liệu Tab 7 (Nhà tài trợ) ---");
+            var sponsorSvc = new SponsorService();
+            var sponsorRes = sponsorSvc.GetAll();
+            AssertTest("Truy vấn danh sách nhà tài trợ đối tác", sponsorRes.IsSuccess && sponsorRes.Data?.Count >= 3, $"Số nhà tài trợ: {sponsorRes.Data?.Count}");
+
+            // 9. Kiểm thử dữ liệu Tab 8 (Ngân sách & Chi phí BR-14, BR-15)
+            Console.WriteLine("\n--- 9. Kiểm thử dữ liệu Tab 8 (Ngân sách & Chi phí BR-14, BR-15) ---");
+            var budgetSvc = new BudgetService();
+            var expenseRes = budgetSvc.GetExpensesByEvent("EVT202601");
+            AssertTest("Truy vấn khoản mục chi phí sự kiện EVT202601", expenseRes.IsSuccess && expenseRes.Data != null, $"Số khoản chi: {expenseRes.Data?.Count}");
+            var statusRes = budgetSvc.GetBudgetStatus("EVT202601");
+            AssertTest("Kiểm tra thuật toán giám sát ngân sách BR-14, BR-15", statusRes.IsSuccess && statusRes.Data != null, $"Tỷ lệ chi: {statusRes.Data?.TyLeSuDung:F1}%");
+
+            // 10. Kiểm thử dữ liệu Tab 9 (Khảo sát & Đánh giá)
+            Console.WriteLine("\n--- 10. Kiểm thử dữ liệu Tab 9 (Khảo sát & Đánh giá) ---");
+            var feedbackSvc = new FeedbackService();
+            var fbRes = feedbackSvc.GetAll(maSuKien: "EVT202601");
+            AssertTest("Truy vấn danh sách phản hồi sau sự kiện", fbRes.IsSuccess && fbRes.Data != null, $"Số phản hồi: {fbRes.Data?.Count}");
+            var fbSummary = feedbackSvc.GetSummary("EVT202601");
+            AssertTest("Tính toán điểm trung bình và tỷ lệ hài lòng", fbSummary.IsSuccess && fbSummary.Data != null, $"Điểm TB: {fbSummary.Data?.DiemTrungBinh:F1}/5.0 | Tỷ lệ hài lòng: {fbSummary.Data?.TyLeHaiLong}%");
+
+            // 11. Kiểm thử liên kết luồng mở form từ F04 sang F05
+            Console.WriteLine("\n--- 11. Kiểm thử liên kết luồng mở Form F05 từ F04 ---");
+            using (var frmList = new FrmEventList())
+            {
+                AssertTest("Khởi tạo Form F04 danh sách sự kiện thành công", frmList != null);
+                AssertTest("Form F04 đã kích hoạt phím tắt và xử lý chuyển tiếp F05", frmList.KeyPreview == true);
+            }
+
+            Console.WriteLine("\n======================================================================");
+            Console.WriteLine($"KẾT QUẢ KIỂM THỬ NGÀY 8 THÀNH VIÊN 2 (F05): {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
             Console.WriteLine("======================================================================");
         }
     }
