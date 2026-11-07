@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="EventManagementDataSource">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>c0a80101-0001-0000-0000-000000000001</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="TicketReceiptDataSet">
+      <Query>
+        <DataSourceName>EventManagementDataSource</DataSourceName>
+        <CommandText>/* Command */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="MaVe"><DataField>MaVe</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="MaDangKy"><DataField>MaDangKy</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="TenSuKien"><DataField>TenSuKien</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="NgayBatDau"><DataField>NgayBatDau</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+        <Field Name="NgayKetThuc"><DataField>NgayKetThuc</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+        <Field Name="TenDiaDiem"><DataField>TenDiaDiem</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="DiaChiDiaDiem"><DataField>DiaChiDiaDiem</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="TenHangVe"><DataField>TenHangVe</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="DonGia"><DataField>DonGia</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="TenNguoiThamGia"><DataField>TenNguoiThamGia</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="EmailNguoiThamGia"><DataField>EmailNguoiThamGia</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="MaQR"><DataField>MaQR</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="QRCodeImageBytes"><DataField>QRCodeImageBytes</DataField><rd:TypeName>System.Byte[]</rd:TypeName></Field>
+        <Field Name="NgayXuatVe"><DataField>NgayXuatVe</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>TicketReceiptDataSet</rd:DataSetName>
+        <rd:TableName>TicketReceiptDto</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <!-- Outer Ticket Border Box -->
+          <Rectangle Name="rectTicket">
+            <Top>0.5cm</Top>
+            <Left>0.5cm</Left>
+            <Height>11.5cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <Border>
+                <Color>#1E3A8A</Color>
+                <Style>Solid</Style>
+                <Width>1.5pt</Width>
+              </Border>
+              <BackgroundColor>#FFFFFF</BackgroundColor>
+            </Style>
+            <ReportItems>
+              <!-- Ticket Header Banner -->
+              <Rectangle Name="rectHeader">
+                <Top>0cm</Top>
+                <Left>0cm</Left>
+                <Height>2.2cm</Height>
+                <Width>19.0cm</Width>
+                <Style>
+                  <BackgroundColor>#1E3A8A</BackgroundColor>
+                </Style>
+                <ReportItems>
+                  <Textbox Name="txtDocTitle">
+                    <Top>0.3cm</Top>
+                    <Left>0.5cm</Left>
+                    <Height>0.8cm</Height>
+                    <Width>18.0cm</Width>
+                    <Value>VÉ THAM DỰ SỰ KIỆN ĐIỆN TỬ (E-TICKET)</Value>
+                    <Style>
+                      <Color>#FFFFFF</Color>
+                      <FontFamily>Segoe UI</FontFamily>
+                      <FontSize>16pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <TextAlign>Center</TextAlign>
+                    </Style>
+                  </Textbox>
+                  <Textbox Name="txtEventName">
+                    <Top>1.2cm</Top>
+                    <Left>0.5cm</Left>
+                    <Height>0.7cm</Height>
+                    <Width>18.0cm</Width>
+                    <Value>=First(Fields!TenSuKien.Value, "TicketReceiptDataSet")</Value>
+                    <Style>
+                      <Color>#93C5FD</Color>
+                      <FontFamily>Segoe UI</FontFamily>
+                      <FontSize>12pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <TextAlign>Center</TextAlign>
+                    </Style>
+                  </Textbox>
+                </ReportItems>
+              </Rectangle>
+
+              <!-- Left Column: Event & Attendee Details -->
+              <Textbox Name="lblTimeTitle">
+                <Top>2.6cm</Top>
+                <Left>0.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>4.0cm</Width>
+                <Value>Thời gian tổ chức:</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight><Color>#475569</Color></Style>
+              </Textbox>
+              <Textbox Name="valTime">
+                <Top>2.6cm</Top>
+                <Left>4.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>8.5cm</Width>
+                <Value>=Format(First(Fields!NgayBatDau.Value, "TicketReceiptDataSet"), "dd/MM/yyyy HH:mm") &amp; " - " &amp; Format(First(Fields!NgayKetThuc.Value, "TicketReceiptDataSet"), "HH:mm")</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>SemiBold</FontWeight></Style>
+              </Textbox>
+
+              <Textbox Name="lblVenueTitle">
+                <Top>3.3cm</Top>
+                <Left>0.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>4.0cm</Width>
+                <Value>Địa điểm tổ chức:</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight><Color>#475569</Color></Style>
+              </Textbox>
+              <Textbox Name="valVenue">
+                <Top>3.3cm</Top>
+                <Left>4.8cm</Left>
+                <Height>0.9cm</Height>
+                <Width>8.5cm</Width>
+                <Value>=First(Fields!TenDiaDiem.Value, "TicketReceiptDataSet") &amp; " (" &amp; First(Fields!DiaChiDiaDiem.Value, "TicketReceiptDataSet") &amp; ")"</Value>
+                <Style><FontFamily>Segoe UI</FontFamily></Style>
+              </Textbox>
+
+              <Textbox Name="lblAttendeeTitle">
+                <Top>4.4cm</Top>
+                <Left>0.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>4.0cm</Width>
+                <Value>Người tham dự:</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight><Color>#475569</Color></Style>
+              </Textbox>
+              <Textbox Name="valAttendee">
+                <Top>4.4cm</Top>
+                <Left>4.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>8.5cm</Width>
+                <Value>=First(Fields!TenNguoiThamGia.Value, "TicketReceiptDataSet")</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>11pt</FontSize><FontWeight>Bold</FontWeight><Color>#1E3A8A</Color></Style>
+              </Textbox>
+
+              <Textbox Name="lblTierTitle">
+                <Top>5.1cm</Top>
+                <Left>0.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>4.0cm</Width>
+                <Value>Hạng vé &amp; Đơn giá:</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight><Color>#475569</Color></Style>
+              </Textbox>
+              <Textbox Name="valTier">
+                <Top>5.1cm</Top>
+                <Left>4.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>8.5cm</Width>
+                <Value>=First(Fields!TenHangVe.Value, "TicketReceiptDataSet") &amp; " - " &amp; Format(First(Fields!DonGia.Value, "TicketReceiptDataSet"), "#,##0") &amp; " VNĐ"</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>SemiBold</FontWeight><Color>#16A34A</Color></Style>
+              </Textbox>
+
+              <Textbox Name="lblTicketCode">
+                <Top>5.8cm</Top>
+                <Left>0.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>4.0cm</Width>
+                <Value>Mã số vé:</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight><Color>#475569</Color></Style>
+              </Textbox>
+              <Textbox Name="valTicketCode">
+                <Top>5.8cm</Top>
+                <Left>4.8cm</Left>
+                <Height>0.5cm</Height>
+                <Width>8.5cm</Width>
+                <Value>=First(Fields!MaVe.Value, "TicketReceiptDataSet")</Value>
+                <Style><FontFamily>Segoe UI</FontFamily><FontWeight>Bold</FontWeight></Style>
+              </Textbox>
+
+              <!-- Right Column: QR Code Box & Check-in Token -->
+              <Rectangle Name="rectQrArea">
+                <Top>2.6cm</Top>
+                <Left>14.0cm</Left>
+                <Height>5.0cm</Height>
+                <Width>4.5cm</Width>
+                <Style>
+                  <Border><Color>#E2E8F0</Color><Style>Solid</Style></Border>
+                  <BackgroundColor>#F8FAFC</BackgroundColor>
+                </Style>
+                <ReportItems>
+                  <Image Name="imgQrCode">
+                    <Top>0.3cm</Top>
+                    <Left>0.5cm</Left>
+                    <Height>3.5cm</Height>
+                    <Width>3.5cm</Width>
+                    <Source>Database</Source>
+                    <Value>=First(Fields!QRCodeImageBytes.Value, "TicketReceiptDataSet")</Value>
+                    <MIMEType>image/png</MIMEType>
+                    <Sizing>FitProportional</Sizing>
+                  </Image>
+                  <Textbox Name="txtQrCaption">
+                    <Top>3.9cm</Top>
+                    <Left>0.2cm</Left>
+                    <Height>0.9cm</Height>
+                    <Width>4.1cm</Width>
+                    <Value>=First(Fields!MaQR.Value, "TicketReceiptDataSet")</Value>
+                    <Style>
+                      <FontFamily>Segoe UI</FontFamily>
+                      <FontSize>7.5pt</FontSize>
+                      <TextAlign>Center</TextAlign>
+                      <Color>#64748B</Color>
+                    </Style>
+                  </Textbox>
+                </ReportItems>
+              </Rectangle>
+
+              <!-- Bottom Footer Disclaimer Notice -->
+              <Textbox Name="txtNotice">
+                <Top>8.2cm</Top>
+                <Left>0.8cm</Left>
+                <Height>2.8cm</Height>
+                <Width>17.7cm</Width>
+                <Value>LƯU Ý QUAN TRỌNG KHI CHECK-IN:
+- Quý khách vui lòng xuất trình vé điện tử này (bản in hoặc trên màn hình điện thoại) tại bàn tiếp đón.
+- Mã QR chỉ có hiệu lực quét điểm danh 01 lần duy nhất theo quy định một chiều BR-12. Không chia sẻ mã QR cho người khác.
+- Đơn hàng xuất ngày: " &amp; Format(First(Fields!NgayXuatVe.Value, "TicketReceiptDataSet"), "dd/MM/yyyy HH:mm:ss") &amp; " • Hotline hỗ trợ BTC: 1900 6868."</Value>
+                <Style>
+                  <FontFamily>Segoe UI</FontFamily>
+                  <FontSize>8pt</FontSize>
+                  <Color>#64748B</Color>
+                  <BorderStyle><Top>Dashed</Top></BorderStyle>
+                  <BorderColor><Top>#CBD5E1</Top></BorderColor>
+                  <PaddingTop>6pt</PaddingTop>
+                </Style>
+              </Textbox>
+            </ReportItems>
+          </Rectangle>
+        </ReportItems>
+        <Height>12.5cm</Height>
+        <Style />
+      </Body>
+      <Width>20.0cm</Width>
+      <Page>
+        <PageHeight>29.7cm</PageHeight>
+        <PageWidth>21.0cm</PageWidth>
+        <LeftMargin>0.5cm</LeftMargin>
+        <RightMargin>0.5cm</RightMargin>
+        <TopMargin>0.5cm</TopMargin>
+        <BottomMargin>0.5cm</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+</Report>
