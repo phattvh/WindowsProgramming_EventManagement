@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -724,5 +724,39 @@ namespace EventManagement.GUI.Forms
 
             public override string ToString() => Text;
         }
-    }
+    
+        private void FrmEventList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (_currentMode == FormMode.View)
+            {
+                if (e.KeyCode == Keys.F2)
+                {
+                    if (btnThem.Enabled) { btnThem.PerformClick(); e.Handled = true; }
+                }
+                else if (e.KeyCode == Keys.F3)
+                {
+                    if (btnSua.Enabled) { btnSua.PerformClick(); e.Handled = true; }
+                }
+                else if (e.KeyCode == Keys.Delete && !(ActiveControl is TextBoxBase))
+                {
+                    if (btnXoa.Enabled) { btnXoa.PerformClick(); e.Handled = true; }
+                }
+                else if (e.KeyCode == Keys.F5)
+                {
+                    if (btnLamMoi.Enabled) { btnLamMoi.PerformClick(); e.Handled = true; }
+                }
+            }
+            else
+            {
+                if (e.Control && e.KeyCode == Keys.S)
+                {
+                    if (btnLuu.Enabled) { btnLuu.PerformClick(); e.Handled = true; }
+                }
+                else if (e.KeyCode == Keys.Escape)
+                {
+                    if (btnHuy.Enabled) { btnHuy.PerformClick(); e.Handled = true; }
+                }
+            }
+        }
+}
 }
