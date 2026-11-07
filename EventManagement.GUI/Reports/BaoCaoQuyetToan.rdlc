@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="EventManagementDataSource">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>d0a80102-0002-0000-0000-000000000002</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="SettlementSummaryDataSet">
+      <Query>
+        <DataSourceName>EventManagementDataSource</DataSourceName>
+        <CommandText>/* Command */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="MaSuKien"><DataField>MaSuKien</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="TenSuKien"><DataField>TenSuKien</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="TuNgay"><DataField>TuNgay</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+        <Field Name="DenNgay"><DataField>DenNgay</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+        <Field Name="NganSachDuKien"><DataField>NganSachDuKien</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="TongDoanhThuBanVe"><DataField>TongDoanhThuBanVe</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="TongTienTaiTro"><DataField>TongTienTaiTro</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="TongThu"><DataField>TongThu</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="TongThucChi"><DataField>TongThucChi</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="ChenhLechThuChi"><DataField>ChenhLechThuChi</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="DanhGiaQuyetToan"><DataField>DanhGiaQuyetToan</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>SettlementSummaryDataSet</rd:DataSetName>
+        <rd:TableName>SettlementDto</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+    <DataSet Name="ExpenseDataSet">
+      <Query>
+        <DataSourceName>EventManagementDataSource</DataSourceName>
+        <CommandText>/* Command */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="MaChiPhi"><DataField>MaChiPhi</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="MaSuKien"><DataField>MaSuKien</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="KhoanMucChi"><DataField>KhoanMucChi</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="SoTien"><DataField>SoTien</DataField><rd:TypeName>System.Decimal</rd:TypeName></Field>
+        <Field Name="NgayChi"><DataField>NgayChi</DataField><rd:TypeName>System.DateTime</rd:TypeName></Field>
+        <Field Name="GhiChu"><DataField>GhiChu</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="NguoiChi"><DataField>NguoiChi</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+        <Field Name="HoaDonChungTu"><DataField>HoaDonChungTu</DataField><rd:TypeName>System.String</rd:TypeName></Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>ExpenseDataSet</rd:DataSetName>
+        <rd:TableName>ExpenseDto</rd:TableName>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <!-- Title Box -->
+          <Textbox Name="txtReportTitle">
+            <Top>0.4cm</Top>
+            <Left>0.5cm</Left>
+            <Height>1.0cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <FontFamily>Segoe UI</FontFamily>
+              <FontSize>16pt</FontSize>
+              <FontWeight>Bold</FontWeight>
+              <Color>#1B365D</Color>
+              <TextAlign>Center</TextAlign>
+              <VerticalAlign>Middle</VerticalAlign>
+            </Style>
+            <Value>BÁO CÁO QUYẾT TOÁN TÀI CHÍNH SỰ KIỆN</Value>
+          </Textbox>
+          
+          <Textbox Name="txtEventInfo">
+            <Top>1.4cm</Top>
+            <Left>0.5cm</Left>
+            <Height>0.7cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <FontFamily>Segoe UI</FontFamily>
+              <FontSize>11pt</FontSize>
+              <FontWeight>SemiBold</FontWeight>
+              <Color>#333333</Color>
+              <TextAlign>Center</TextAlign>
+            </Style>
+            <Value>="Sự kiện: " &amp; First(Fields!TenSuKien.Value, "SettlementSummaryDataSet") &amp; " | Mã SK: " &amp; First(Fields!MaSuKien.Value, "SettlementSummaryDataSet")</Value>
+          </Textbox>
+
+          <Textbox Name="txtPeriod">
+            <Top>2.1cm</Top>
+            <Left>0.5cm</Left>
+            <Height>0.6cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <FontFamily>Segoe UI</FontFamily>
+              <FontSize>9pt</FontSize>
+              <FontStyle>Italic</FontStyle>
+              <Color>#666666</Color>
+              <TextAlign>Center</TextAlign>
+            </Style>
+            <Value>="Thời gian quyết toán: Từ " &amp; Format(First(Fields!TuNgay.Value, "SettlementSummaryDataSet"), "dd/MM/yyyy") &amp; " đến " &amp; Format(First(Fields!DenNgay.Value, "SettlementSummaryDataSet"), "dd/MM/yyyy")</Value>
+          </Textbox>
+
+          <!-- Section I: NGUỒN THU & NGÂN SÁCH -->
+          <Textbox Name="lblSec1">
+            <Top>2.9cm</Top>
+            <Left>0.5cm</Left>
+            <Height>0.6cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <FontFamily>Segoe UI</FontFamily>
+              <FontSize>10.5pt</FontSize>
+              <FontWeight>Bold</FontWeight>
+              <Color>#0D6EFD</Color>
+            </Style>
+            <Value>I. TỔNG HỢP NGUỒN THU VÀ DỰ TOÁN</Value>
+          </Textbox>
+
+          <Rectangle Name="rectSummary">
+            <Top>3.6cm</Top>
+            <Left>0.5cm</Left>
+            <Height>2.2cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <Border><Style>Solid</Style><Color>#CED4DA</Color></Border>
+              <BackgroundColor>#F8F9FA</BackgroundColor>
+            </Style>
+            <ReportItems>
+              <!-- Left Column: Ngan sach, Doanh thu ve -->
+              <Textbox Name="lblBudget">
+                <Top>0.2cm</Top><Left>0.4cm</Left><Height>0.5cm</Height><Width>4.0cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>SemiBold</FontWeight></Style>
+                <Value>Ngân sách ban đầu:</Value>
+              </Textbox>
+              <Textbox Name="valBudget">
+                <Top>0.2cm</Top><Left>4.5cm</Left><Height>0.5cm</Height><Width>4.5cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><TextAlign>Right</TextAlign></Style>
+                <Value>=Format(First(Fields!NganSachDuKien.Value, "SettlementSummaryDataSet"), "#,##0") &amp; " VNĐ"</Value>
+              </Textbox>
+
+              <Textbox Name="lblTicketRev">
+                <Top>0.8cm</Top><Left>0.4cm</Left><Height>0.5cm</Height><Width>4.0cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>SemiBold</FontWeight></Style>
+                <Value>Doanh thu bán vé:</Value>
+              </Textbox>
+              <Textbox Name="valTicketRev">
+                <Top>0.8cm</Top><Left>4.5cm</Left><Height>0.5cm</Height><Width>4.5cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><TextAlign>Right</TextAlign></Style>
+                <Value>=Format(First(Fields!TongDoanhThuBanVe.Value, "SettlementSummaryDataSet"), "#,##0") &amp; " VNĐ"</Value>
+              </Textbox>
+
+              <!-- Right Column: Tien tai tro, Tong thu -->
+              <Textbox Name="lblSponsor">
+                <Top>0.2cm</Top><Left>10.0cm</Left><Height>0.5cm</Height><Width>4.0cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>SemiBold</FontWeight></Style>
+                <Value>Tiền tài trợ tiếp nhận:</Value>
+              </Textbox>
+              <Textbox Name="valSponsor">
+                <Top>0.2cm</Top><Left>14.2cm</Left><Height>0.5cm</Height><Width>4.4cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><TextAlign>Right</TextAlign></Style>
+                <Value>=Format(First(Fields!TongTienTaiTro.Value, "SettlementSummaryDataSet"), "#,##0") &amp; " VNĐ"</Value>
+              </Textbox>
+
+              <Textbox Name="lblTotalRev">
+                <Top>0.8cm</Top><Left>10.0cm</Left><Height>0.5cm</Height><Width>4.0cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize><FontWeight>Bold</FontWeight><Color>#198754</Color></Style>
+                <Value>TỔNG NGUỒN THU:</Value>
+              </Textbox>
+              <Textbox Name="valTotalRev">
+                <Top>0.8cm</Top><Left>14.2cm</Left><Height>0.5cm</Height><Width>4.4cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize><FontWeight>Bold</FontWeight><Color>#198754</Color><TextAlign>Right</TextAlign></Style>
+                <Value>=Format(First(Fields!TongThu.Value, "SettlementSummaryDataSet"), "#,##0") &amp; " VNĐ"</Value>
+              </Textbox>
+
+              <!-- Bottom note: Đánh giá -->
+              <Textbox Name="lblConclusionBox">
+                <Top>1.5cm</Top><Left>0.4cm</Left><Height>0.5cm</Height><Width>18.2cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>#0D6EFD</Color></Style>
+                <Value>="Kết quả quyết toán: " &amp; First(Fields!DanhGiaQuyetToan.Value, "SettlementSummaryDataSet") &amp; " (Chênh lệch: " &amp; Format(First(Fields!ChenhLechThuChi.Value, "SettlementSummaryDataSet"), "#,##0") &amp; " VNĐ)"</Value>
+              </Textbox>
+            </ReportItems>
+          </Rectangle>
+
+          <!-- Section II: CHI TIẾT CHI PHÍ THỰC TẾ -->
+          <Textbox Name="lblSec2">
+            <Top>6.1cm</Top>
+            <Left>0.5cm</Left>
+            <Height>0.6cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <FontFamily>Segoe UI</FontFamily>
+              <FontSize>10.5pt</FontSize>
+              <FontWeight>Bold</FontWeight>
+              <Color>#0D6EFD</Color>
+            </Style>
+            <Value>II. CHI TIẾT CÁC KHOẢN CHI THỰC TẾ</Value>
+          </Textbox>
+
+          <!-- Tablix for Expenses -->
+          <Tablix Name="tblExpenses">
+            <DataSetName>ExpenseDataSet</DataSetName>
+            <Top>6.8cm</Top>
+            <Left>0.5cm</Left>
+            <Height>1.8cm</Height>
+            <Width>19.0cm</Width>
+            <Style>
+              <Border><Style>Solid</Style><Color>#DEE2E6</Color></Border>
+            </Style>
+            <TablixBody>
+              <TablixColumns>
+                <TablixColumn><Width>1.2cm</Width></TablixColumn>
+                <TablixColumn><Width>4.5cm</Width></TablixColumn>
+                <TablixColumn><Width>5.3cm</Width></TablixColumn>
+                <TablixColumn><Width>2.5cm</Width></TablixColumn>
+                <TablixColumn><Width>2.5cm</Width></TablixColumn>
+                <TablixColumn><Width>3.0cm</Width></TablixColumn>
+              </TablixColumns>
+              <TablixRows>
+                <!-- Header Row -->
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="thSTT">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#E9ECEF</BackgroundColor><TextAlign>Center</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>STT</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="thKhoanMuc">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#E9ECEF</BackgroundColor><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>Khoản mục chi</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="thGhiChu">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#E9ECEF</BackgroundColor><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>Nội dung / Diễn giải</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="thNgayChi">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#E9ECEF</BackgroundColor><TextAlign>Center</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>Ngày chi</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="thNguoiChi">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#E9ECEF</BackgroundColor><TextAlign>Center</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>Người chi</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="thSoTien">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#E9ECEF</BackgroundColor><TextAlign>Right</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>Số tiền (VNĐ)</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+
+                <!-- Data Row -->
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbSTT">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>8.5pt</FontSize><TextAlign>Center</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#DEE2E6</Color></Border></Style>
+                          <Value>=RowNumber(Nothing)</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbKhoanMuc">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>8.5pt</FontSize><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#DEE2E6</Color></Border></Style>
+                          <Value>=Fields!KhoanMucChi.Value</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbGhiChu">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>8.5pt</FontSize><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#DEE2E6</Color></Border></Style>
+                          <Value>=Fields!GhiChu.Value</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbNgayChi">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>8.5pt</FontSize><TextAlign>Center</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#DEE2E6</Color></Border></Style>
+                          <Value>=Format(Fields!NgayChi.Value, "dd/MM/yyyy")</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbNguoiChi">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>8.5pt</FontSize><TextAlign>Center</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#DEE2E6</Color></Border></Style>
+                          <Value>=Fields!NguoiChi.Value</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbSoTien">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>8.5pt</FontSize><TextAlign>Right</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#DEE2E6</Color></Border></Style>
+                          <Value>=Format(Fields!SoTien.Value, "#,##0")</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+
+                <!-- Summary Row -->
+                <TablixRow>
+                  <Height>0.6cm</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbTotalLabel">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><BackgroundColor>#F8F9FA</BackgroundColor><TextAlign>Right</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>TỔNG CỘNG THỰC CHI:</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell />
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="tbTotalVal">
+                          <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontWeight>Bold</FontWeight><Color>#DC3545</Color><BackgroundColor>#F8F9FA</BackgroundColor><TextAlign>Right</TextAlign><VerticalAlign>Middle</VerticalAlign><Border><Style>Solid</Style><Color>#CED4DA</Color></Border></Style>
+                          <Value>=Format(Sum(Fields!SoTien.Value), "#,##0") &amp; " VNĐ"</Value>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy>
+              <TablixMembers>
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+                <TablixMember />
+              </TablixMembers>
+            </TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember><KeepWithGroup>After</KeepWithGroup></TablixMember>
+                <TablixMember><Group Name="ExpenseDetails" /></TablixMember>
+                <TablixMember><KeepWithGroup>Before</KeepWithGroup></TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+          </Tablix>
+
+          <!-- Section III: Signatures -->
+          <Rectangle Name="rectSignatures">
+            <Top>9.0cm</Top>
+            <Left>0.5cm</Left>
+            <Height>3.2cm</Height>
+            <Width>19.0cm</Width>
+            <Style><Border><Style>None</Style></Border></Style>
+            <ReportItems>
+              <Textbox Name="txtSignDate">
+                <Top>0.2cm</Top><Left>12.0cm</Left><Height>0.5cm</Height><Width>6.5cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontStyle>Italic</FontStyle><TextAlign>Center</TextAlign></Style>
+                <Value>="Ngày " &amp; Day(Globals!ExecutionTime) &amp; " tháng " &amp; Month(Globals!ExecutionTime) &amp; " năm " &amp; Year(Globals!ExecutionTime)</Value>
+              </Textbox>
+
+              <Textbox Name="lblSign1">
+                <Top>0.8cm</Top><Left>0.5cm</Left><Height>0.5cm</Height><Width>5.0cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize><FontWeight>Bold</FontWeight><TextAlign>Center</TextAlign></Style>
+                <Value>NGƯỜI LẬP BIỂU</Value>
+              </Textbox>
+              <Textbox Name="lblSign1Sub">
+                <Top>1.3cm</Top><Left>0.5cm</Left><Height>0.4cm</Height><Width>5.0cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>8pt</FontSize><FontStyle>Italic</FontStyle><TextAlign>Center</TextAlign></Style>
+                <Value>(Ký và ghi rõ họ tên)</Value>
+              </Textbox>
+
+              <Textbox Name="lblSign2">
+                <Top>0.8cm</Top><Left>6.8cm</Left><Height>0.5cm</Height><Width>5.4cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize><FontWeight>Bold</FontWeight><TextAlign>Center</TextAlign></Style>
+                <Value>KẾ TOÁN TRƯỞNG</Value>
+              </Textbox>
+              <Textbox Name="lblSign2Sub">
+                <Top>1.3cm</Top><Left>6.8cm</Left><Height>0.4cm</Height><Width>5.4cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>8pt</FontSize><FontStyle>Italic</FontStyle><TextAlign>Center</TextAlign></Style>
+                <Value>(Ký và ghi rõ họ tên)</Value>
+              </Textbox>
+
+              <Textbox Name="lblSign3">
+                <Top>0.8cm</Top><Left>13.0cm</Left><Height>0.5cm</Height><Width>5.5cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize><FontWeight>Bold</FontWeight><TextAlign>Center</TextAlign></Style>
+                <Value>TRƯỞNG BAN TỔ CHỨC</Value>
+              </Textbox>
+              <Textbox Name="lblSign3Sub">
+                <Top>1.3cm</Top><Left>13.0cm</Left><Height>0.4cm</Height><Width>5.5cm</Width>
+                <Style><FontFamily>Segoe UI</FontFamily><FontSize>8pt</FontSize><FontStyle>Italic</FontStyle><TextAlign>Center</TextAlign></Style>
+                <Value>(Ký, đóng dấu và ghi rõ họ tên)</Value>
+              </Textbox>
+            </ReportItems>
+          </Rectangle>
+        </ReportItems>
+        <Height>12.8cm</Height>
+      </Body>
+      <Width>20.0cm</Width>
+      <Page>
+        <PageHeight>29.7cm</PageHeight>
+        <PageWidth>21.0cm</PageWidth>
+        <LeftMargin>0.5cm</LeftMargin>
+        <RightMargin>0.5cm</RightMargin>
+        <TopMargin>0.5cm</TopMargin>
+        <BottomMargin>0.5cm</BottomMargin>
+      </Page>
+    </ReportSection>
+  </ReportSections>
+</Report>
