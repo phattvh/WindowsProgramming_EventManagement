@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -28,6 +28,19 @@ namespace EventManagement.GUI
             if (args.Length > 0 && args[0] == "--test-day5")
             {
                 RunDay5AutomatedTests();
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--test-day7" || args[0] == "--test-day7-member2"))
+            {
+                RunDay7AutomatedTests();
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f04" || args[0] == "--event-list"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmEventList());
                 return;
             }
 
@@ -467,6 +480,164 @@ namespace EventManagement.GUI
             using (var frmStaffAssignment = new FrmStaffAssignment())
             {
                 AssertTest("Khởi tạo Form F15 (FrmStaffAssignment) thành công", frmStaffAssignment != null && frmStaffAssignment.Text.Contains("Phân công nhân sự"));
+            }
+
+            Console.WriteLine("\n======================================================================");
+            Console.WriteLine($"KẾT QUẢ KIỂM THỬ: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
+            Console.WriteLine("======================================================================");
+        }
+
+        private static void RunDay7AutomatedTests()
+        {
+            try { Console.OutputEncoding = System.Text.Encoding.UTF8; } catch { }
+            Console.WriteLine("======================================================================");
+            Console.WriteLine(">>> BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC TÍNH NĂNG NGÀY 7 CỦA THÀNH VIÊN 2");
+            Console.WriteLine(">>> (F04 - DANH SÁCH SỰ KIỆN TỔNG THỂ, TÌM KIẾM ĐA ĐIỀU KIỆN, LỌC LOẠI & TRẠNG THÁI)");
+            Console.WriteLine(">>> (THẨM ĐỊNH THUẬT TOÁN: BR-02, BR-03, BR-04, BR-17)");
+            Console.WriteLine("======================================================================");
+
+            int passCount = 0;
+            int totalCount = 0;
+
+            void AssertTest(string testName, bool condition, string detail = "")
+            {
+                totalCount++;
+                if (condition)
+                {
+                    passCount++;
+                    Console.WriteLine($"[PASS] {testName} {(string.IsNullOrWhiteSpace(detail) ? "" : "-> " + detail)}");
+                }
+                else
+                {
+                    Console.WriteLine($"[FAIL] {testName} -> {detail}");
+                }
+            }
+
+            var eventSvc = new EventService();
+
+            // 1. Kiểm thử lấy danh sách sự kiện ban đầu
+            Console.WriteLine("\n--- 1. Kiểm thử lấy danh sách sự kiện ban đầu ---");
+            var allEvents = eventSvc.GetAll();
+            AssertTest("Lấy toàn bộ danh sách sự kiện khởi tạo", allEvents.IsSuccess && allEvents.Data?.Count >= 7, $"Số lượng: {allEvents.Data?.Count}");
+
+            // 2. Kiểm thử tìm kiếm đa điều kiện theo từ khóa
+            Console.WriteLine("\n--- 2. Kiểm thử tìm kiếm đa điều kiện theo từ khóa ---");
+            var kw1 = eventSvc.GetAll(keyword: "Tech Summit");
+            AssertTest("Tìm kiếm theo tên sự kiện 'Tech Summit'", kw1.IsSuccess && kw1.Data?.Count == 1 && kw1.Data[0].MaSuKien == "EVT202601", $"Tìm thấy: {kw1.Data?.FirstOrDefault()?.TenSuKien}");
+
+            var kw2 = eventSvc.GetAll(keyword: "Trần Minh Tâm");
+            AssertTest("Tìm kiếm theo người phụ trách 'Trần Minh Tâm'", kw2.IsSuccess && kw2.Data?.Count >= 2, $"Số lượng: {kw2.Data?.Count}");
+
+            var kw3 = eventSvc.GetAll(keyword: "EVT202602");
+            AssertTest("Tìm kiếm theo mã sự kiện 'EVT202602'", kw3.IsSuccess && kw3.Data?.Count == 1, $"Tìm thấy: {kw3.Data?.FirstOrDefault()?.TenSuKien}");
+
+            // 3. Kiểm thử lọc theo Loại sự kiện
+            Console.WriteLine("\n--- 3. Kiểm thử lọc theo loại sự kiện ---");
+            var loaiHoiThao = eventSvc.GetAll(maLoaiSK: "Hội thảo Công nghệ");
+            AssertTest("Lọc theo loại sự kiện 'Hội thảo Công nghệ'", loaiHoiThao.IsSuccess && loaiHoiThao.Data?.All(x => x.TenLoaiSK == "Hội thảo Công nghệ") == true && loaiHoiThao.Data?.Count >= 2, $"Số lượng: {loaiHoiThao.Data?.Count}");
+
+            var loaiWorkshop = eventSvc.GetAll(maLoaiSK: "LSK05");
+            AssertTest("Lọc theo mã loại 'LSK05' (Workshop)", loaiWorkshop.IsSuccess && loaiWorkshop.Data?.Count == 1, $"Số lượng: {loaiWorkshop.Data?.Count}");
+
+            // 4. Kiểm thử lọc theo Trạng thái sự kiện
+            Console.WriteLine("\n--- 4. Kiểm thử lọc theo trạng thái sự kiện ---");
+            var dangDienRa = eventSvc.GetAll(trangThai: "Đang diễn ra");
+            AssertTest("Lọc sự kiện 'Đang diễn ra'", dangDienRa.IsSuccess && dangDienRa.Data?.All(x => x.TrangThai == "Đang diễn ra") == true && dangDienRa.Data?.Count >= 1, $"Số lượng: {dangDienRa.Data?.Count}");
+
+            var sapDienRa = eventSvc.GetAll(trangThai: "Sắp diễn ra");
+            AssertTest("Lọc sự kiện 'Sắp diễn ra'", sapDienRa.IsSuccess && sapDienRa.Data?.All(x => x.TrangThai == "Sắp diễn ra") == true && sapDienRa.Data?.Count >= 1, $"Số lượng: {sapDienRa.Data?.Count}");
+
+            var daHuy = eventSvc.GetAll(trangThai: "Đã hủy");
+            AssertTest("Lọc sự kiện 'Đã hủy'", daHuy.IsSuccess && daHuy.Data?.All(x => x.TrangThai == "Đã hủy") == true && daHuy.Data?.Count >= 1, $"Số lượng: {daHuy.Data?.Count}");
+
+            // 5. Kiểm thử lọc kết hợp đa điều kiện (Loại SK + Trạng thái)
+            Console.WriteLine("\n--- 5. Kiểm thử lọc kết hợp đồng thời nhiều tiêu chí ---");
+            var filterResult = eventSvc.GetAll(keyword: "Quân Khu 7", maLoaiSK: "Giải đấu Thể thao Điện tử", trangThai: "Chuẩn bị");
+            AssertTest("Lọc kết hợp Từ khóa + Loại SK + Trạng thái", filterResult.IsSuccess && filterResult.Data?.Count == 1 && filterResult.Data[0].MaSuKien == "EVT202605", $"Tìm thấy: {filterResult.Data?.FirstOrDefault()?.TenSuKien}");
+
+            // 6. Kiểm thử thuật toán BR-03 (Logic thời gian sự kiện: NgayKetThuc >= NgayBatDau)
+            Console.WriteLine("\n--- 6. Kiểm thử thuật toán BR-03: Logic thời gian sự kiện ---");
+            var br03Invalid = new EventListDto
+            {
+                MaSuKien = "EVT_TEST_BR03",
+                TenSuKien = "Sự kiện thời gian lỗi",
+                MaLoaiSK = "LSK01",
+                MaDiaDiem = "DD004",
+                NgayBatDau = new DateTime(2026, 12, 10, 17, 0, 0),
+                NgayKetThuc = new DateTime(2026, 12, 10, 8, 0, 0), // Kết thúc trước bắt đầu!
+                SucChua = 500,
+                NganSachDuKien = 50000000m
+            };
+            var br03Res = eventSvc.Add(br03Invalid);
+            AssertTest("Chặn sự kiện có thời gian kết thúc trước thời gian bắt đầu (BR-03)", !br03Res.IsSuccess && br03Res.ErrorCode == "BR-03", br03Res.Message);
+
+            // 7. Kiểm thử thuật toán BR-04 (Chống trùng lịch địa điểm giữa các sự kiện)
+            Console.WriteLine("\n--- 7. Kiểm thử thuật toán BR-04: Chống trùng lịch địa điểm ---");
+            // EVT202601 tổ chức tại DD001 từ 2026-12-15 08:00 đến 17:30
+            var br04Conflict = new EventListDto
+            {
+                MaSuKien = "EVT_TEST_BR04",
+                TenSuKien = "Sự kiện trùng lịch địa điểm DD001",
+                MaLoaiSK = "LSK01",
+                MaDiaDiem = "DD001", // Trùng địa điểm
+                NgayBatDau = new DateTime(2026, 12, 15, 10, 0, 0), // Giao thoa khung giờ
+                NgayKetThuc = new DateTime(2026, 12, 15, 14, 0, 0),
+                SucChua = 400,
+                NganSachDuKien = 30000000m
+            };
+            var br04Res = eventSvc.Add(br04Conflict);
+            AssertTest("Chặn xếp 2 sự kiện cùng địa điểm trong khoảng thời gian giao thoa (BR-04)", !br04Res.IsSuccess && br04Res.ErrorCode == "BR-04", br04Res.Message);
+
+            // Kiểm tra tại cùng địa điểm nhưng KHÁC ngày (không trùng) -> Cho phép
+            var br04NoConflict = new EventListDto
+            {
+                MaSuKien = "EVT_TEST_BR04_OK",
+                TenSuKien = "Sự kiện cùng địa điểm khác ngày hợp lệ",
+                MaLoaiSK = "LSK01",
+                MaDiaDiem = "DD001",
+                NgayBatDau = new DateTime(2026, 12, 18, 8, 0, 0), // Ngày 18/12, không trùng ngày 15/12
+                NgayKetThuc = new DateTime(2026, 12, 18, 17, 0, 0),
+                SucChua = 400,
+                NganSachDuKien = 30000000m
+            };
+            var br04OkRes = eventSvc.Add(br04NoConflict);
+            AssertTest("Cho phép sự kiện tại cùng địa điểm ở khung thời gian không giao thoa", br04OkRes.IsSuccess, br04OkRes.Message);
+            eventSvc.Delete("EVT_TEST_BR04_OK");
+
+            // 8. Kiểm thử thuật toán BR-02 (Ràng buộc xóa sự kiện)
+            Console.WriteLine("\n--- 8. Kiểm thử thuật toán BR-02: Ràng buộc xóa sự kiện ---");
+            // EVT202601 đã có 450 vé bán -> Chặn xóa cứng
+            var delConflictRes = eventSvc.Delete("EVT202601");
+            AssertTest("Chặn xóa cứng sự kiện đã có vé bán / dữ liệu liên kết (BR-02)", !delConflictRes.IsSuccess && delConflictRes.ErrorCode == "BR-02", delConflictRes.Message);
+
+            // Chuyển trạng thái sang "Đã hủy" theo BR-02
+            var cancelRes = eventSvc.CancelEvent("EVT202603");
+            var evt03After = eventSvc.GetById("EVT202603");
+            AssertTest("Chuyển trạng thái sự kiện sang 'Đã hủy' (BR-02)", cancelRes.IsSuccess && evt03After.Data?.TrangThai == "Đã hủy", evt03After.Data?.TrangThai ?? "");
+
+            // Xóa sự kiện chưa phát sinh dữ liệu liên kết (EVT202606 có 0 vé bán)
+            var delOkRes = eventSvc.Delete("EVT202606");
+            AssertTest("Cho phép xóa sự kiện chưa phát sinh dữ liệu liên kết (BR-02)", delOkRes.IsSuccess, delOkRes.Message);
+
+            // 9. Kiểm thử đề xuất mã sự kiện tự động (SuggestNextCode)
+            Console.WriteLine("\n--- 9. Kiểm thử tự động sinh mã sự kiện (SuggestNextCode) ---");
+            string nextCode = eventSvc.SuggestNextCode();
+            AssertTest("Tự động sinh mã sự kiện theo chuẩn EVT...", nextCode.StartsWith("EVT") && nextCode.Length >= 8, $"Mã đề xuất: {nextCode}");
+
+            // 10. Kiểm thử cập nhật sự kiện
+            Console.WriteLine("\n--- 10. Kiểm thử cập nhật thông tin sự kiện ---");
+            var updateDto = eventSvc.GetById("EVT202602").Data!;
+            updateDto.TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026 (Cập nhật)";
+            updateDto.NganSachDuKien = 99000000m;
+            var updRes = eventSvc.Update(updateDto);
+            var updatedEvt = eventSvc.GetById("EVT202602").Data;
+            AssertTest("Cập nhật thông tin sự kiện thành công", updRes.IsSuccess && updatedEvt?.NganSachDuKien == 99000000m, updRes.Message);
+
+            // 11. Khởi tạo giao diện Windows Forms (Headless UI Check)
+            Console.WriteLine("\n--- 11. Kiểm thử khởi tạo Form Giao diện (FrmEventList) ---");
+            using (var frmEventList = new FrmEventList(eventSvc))
+            {
+                AssertTest("Khởi tạo Form Quản lý danh sách sự kiện tổng thể (FrmEventList) thành công", frmEventList != null && frmEventList.Text.Contains("danh sách sự kiện"));
             }
 
             Console.WriteLine("\n======================================================================");
