@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
 using EventManagement.Core.DTOs;
+using EventManagement.Core.Session;
+using EventManagement.GUI.Common;
 
 namespace EventManagement.GUI.Forms
 {
@@ -33,6 +35,17 @@ namespace EventManagement.GUI.Forms
 
         private async void FrmRolePermission_Load(object sender, EventArgs e)
         {
+            if (CurrentSession.IsLoggedIn && !PermissionHelper.CheckAccessAndNotify(this, "UC20", "Phân quyền & Nhóm quyền (F20)"))
+            {
+                this.Close();
+                return;
+            }
+
+            btnLuu.Tag = "UC20";
+            btnThemNhom.Tag = "UC20";
+            btnXoaNhom.Tag = "UC20";
+            PermissionHelper.ApplyAuthorization(this, hideInsteadOfDisable: false);
+
             await LoadRolesAsync();
         }
 

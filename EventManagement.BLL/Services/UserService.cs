@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -7,6 +7,7 @@ using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
 using EventManagement.Core.Entities;
 using EventManagement.Core.Security;
+using EventManagement.Core.Session;
 using EventManagement.DAL;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,6 +103,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult<UserDto>> CreateAsync(CreateUserDto dto)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC03");
             if (string.IsNullOrWhiteSpace(dto.TenDangNhap))
             {
                 return ServiceResult<UserDto>.Failed("Tên đăng nhập không được để trống!");
@@ -199,6 +201,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult> UpdateAsync(string userId, UpdateUserDto dto)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC03");
             var user = await _context.NguoiDungs.FindAsync(userId);
             if (user == null)
             {
@@ -264,6 +267,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult> DeleteAsync(string userId)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC03");
             var user = await _context.NguoiDungs.FindAsync(userId);
             if (user == null)
             {
@@ -300,6 +304,7 @@ namespace EventManagement.BLL.Services
         /// </summary>
         public async Task<ServiceResult> UnlockUserAsync(string userId)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC03");
             var user = await _context.NguoiDungs.FindAsync(userId);
             if (user == null)
             {
@@ -316,6 +321,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult> ToggleLockAsync(string userId)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC03");
             var user = await _context.NguoiDungs.FindAsync(userId);
             if (user == null)
             {

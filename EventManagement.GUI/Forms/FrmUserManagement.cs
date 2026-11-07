@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
 using EventManagement.Core.DTOs;
+using EventManagement.Core.Session;
 using EventManagement.GUI.Common;
 
 namespace EventManagement.GUI.Forms
@@ -36,6 +37,18 @@ namespace EventManagement.GUI.Forms
 
         private async void FrmUserManagement_Load(object sender, EventArgs e)
         {
+            if (CurrentSession.IsLoggedIn && !PermissionHelper.CheckAccessAndNotify(this, "UC03", "Quản lý người dùng (F03)"))
+            {
+                this.Close();
+                return;
+            }
+
+            btnThem.Tag = "UC03";
+            btnSua.Tag = "UC03";
+            btnXoa.Tag = "UC03";
+            btnMoKhoa.Tag = "UC03";
+            PermissionHelper.ApplyAuthorization(pnlButtons, hideInsteadOfDisable: false);
+
             cboLocNhomQuyen.SelectedIndex = 0; // "Tất cả"
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
             cboNhomQuyen.SelectedIndex = 2;    // "STAFF"

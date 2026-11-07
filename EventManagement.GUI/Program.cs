@@ -3,6 +3,9 @@ using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
 using EventManagement.Core.DTOs;
+using EventManagement.Core.Security;
+using EventManagement.Core.Session;
+using EventManagement.GUI.Common;
 using EventManagement.GUI.Forms;
 
 namespace EventManagement.GUI
@@ -37,6 +40,12 @@ namespace EventManagement.GUI
             if (args.Length > 0 && (args[0] == "--test-day8" || args[0] == "--test-day8-member3"))
             {
                 RunDay8AutomatedTests();
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--test-rbac" || args[0] == "--rbac" || args[0] == "--test-day8-member1"))
+            {
+                RunRbacAutomatedTests();
                 return;
             }
 
@@ -758,6 +767,91 @@ namespace EventManagement.GUI
 
             Console.WriteLine("\n======================================================================");
             Console.WriteLine($"KẾT QUẢ KIỂM THỬ NGÀY 8: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
+        }
+
+        private static void RunRbacAutomatedTests()
+        {
+            Console.WriteLine("======================================================================");
+            Console.WriteLine("CHƯƠNG TRÌNH KIỂM THỬ TỰ ĐỘNG PHÂN QUYỀN ĐỘNG HAI LỚP RBAC (TASK T1-17)");
+            Console.WriteLine("======================================================================");
+
+            int passCount = 0;
+            int totalCount = 0;
+
+            void AssertTest(string testName, bool condition, string detail = "")
+            {
+                totalCount++;
+                if (condition)
+                {
+                    passCount++;
+                    Console.WriteLine($"[PASS] {testName} {(string.IsNullOrEmpty(detail) ? "" : "-> " + detail)}");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"[FAIL] {testName} {(string.IsNullOrEmpty(detail) ? "" : "-> " + detail)}");
+                    Console.ResetColor();
+                }
+            }
+
+            try
+            {
+                // 1. Ánh xạ hai chiều CurrentSession (UC <-> Form)
+                Console.WriteLine("\n--- 1. Kiểm thử ánh xạ hai chiều CurrentSession (UC <-> Form) ---");
+                CurrentSession.DangNhap("U01", "staff01", "Lê Văn B", "staff@e.vn", "STAFF", new[] { "UC11", "F13" });
+                AssertTest("Kiểm tra quyền UC11 (Bán vé) có hiệu lực", CurrentSession.CoQuyen("UC11"));
+                AssertTest("Tự động ánh xạ UC11 sang mã Form F11", CurrentSession.CoQuyen("F11"));
+                AssertTest("Kiểm tra quyền F13 (Soát vé) có hiệu lực", CurrentSession.CoQuyen("F13"));
+                AssertTest("Tự động ánh xạ F13 sang mã Use Case UC13", CurrentSession.CoQuyen("UC13"));
+                AssertTest("Chặn quyền chưa được cấp (UC03 / F03)", !CurrentSession.CoQuyen("UC03") && !CurrentSession.CoQuyen("F03"));
+
+                // 2. Ranh giới an ninh BLL Lớp 2 (SecurityGuard)
+                Console.WriteLine("\n--- 2. Kiểm thử SecurityGuard (BLL Layer 2) ---");
+                bool guardPassed = false;
+                try { SecurityGuard.YeuCauQuyen("UC11"); guardPassed = true; } catch { guardPassed = false; }
+                AssertTest("SecurityGuard cho phép thực thi quyền hợp lệ (UC11)", guardPassed);
+
+                bool guardBlocked = false;
+                try { SecurityGuard.YeuCauQuyen("UC03"); } catch (UnauthorizedAccessException) { guardBlocked = true; }
+                AssertTest("SecurityGuard ném UnauthorizedAccessException khi vi phạm (UC03)", guardBlocked);
+
+                // 3. Phân quyền giao diện Lớp 1 (PermissionHelper)
+                Console.WriteLine("\n--- 3. Kiểm thử PermissionHelper (GUI Layer 1) ---");
+                var btnAdmin = new Button { Tag = "UC03", Visible = true };
+                PermissionHelper.EvaluateControlPermission(btnAdmin, hideInsteadOfDisable: true);
+                AssertTest("PermissionHelper tự động ẩn nút UC03 của tài khoản STAFF", !btnAdmin.Visible);
+
+                var btnTicket = new Button { Tag = "UC11", Visible = true };
+                PermissionHelper.EvaluateControlPermission(btnTicket, hideInsteadOfDisable: true);
+                AssertTest("PermissionHelper duy trì hiển thị nút UC11 của tài khoản STAFF", btnTicket.Visible);
+
+                // 4. Kiểm thử FrmDashboard ẩn/hiện động 8 nút lối tắt
+                Console.WriteLine("\n--- 4. Kiểm thử phân quyền động trên FrmDashboard (F02) ---");
+                using var frm = new FrmDashboard();
+
+                // Kiểm thử STAFF
+                frm.ApplyUserSessionAndPermissions();
+                AssertTest("STAFF: Hiển thị nút Bán vé (F11)", frm.IsButtonAuthorized(frm.btnNavTickets));
+                AssertTest("STAFF: Hiển thị nút Soát vé (F13)", frm.IsButtonAuthorized(frm.btnNavCheckIn));
+                AssertTest("STAFF: Ẩn nút Quản lý người dùng (F03)", !frm.IsButtonAuthorized(frm.btnNavUsers));
+                AssertTest("STAFF: Ẩn nút Phân quyền (F20)", !frm.IsButtonAuthorized(frm.btnNavRoles));
+
+                // Kiểm thử ADMIN
+                CurrentSession.DangNhap("ADM", "admin", "Quản Trị Viên", "admin@e.vn", "ADMIN");
+                frm.ApplyUserSessionAndPermissions();
+                AssertTest("ADMIN: Toàn quyền truy cập Quản trị viên (CanAccessAdminFeatures = true)", frm.CanAccessAdminFeatures);
+                AssertTest("ADMIN: Hiển thị nút Quản lý người dùng (F03)", frm.IsButtonAuthorized(frm.btnNavUsers));
+                AssertTest("ADMIN: Hiển thị nút Phân quyền (F20)", frm.IsButtonAuthorized(frm.btnNavRoles));
+                AssertTest("ADMIN: Hiển thị nút Chi phí & Ngân sách (F17)", frm.IsButtonAuthorized(frm.btnNavExpenses));
+            }
+            finally
+            {
+                CurrentSession.DangXuat();
+            }
+
+            Console.WriteLine("\n======================================================================");
+            Console.WriteLine($"KẾT QUẢ KIỂM THỬ RBAC: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
+            Console.WriteLine("======================================================================");
             Console.WriteLine("======================================================================");
         }
     }

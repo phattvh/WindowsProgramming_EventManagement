@@ -48,6 +48,7 @@ namespace EventManagement.GUI.Forms
             this.btnNavTickets = new System.Windows.Forms.Button();
             this.btnNavCheckIn = new System.Windows.Forms.Button();
             this.btnNavTicketTiers = new System.Windows.Forms.Button();
+            this.btnNavExpenses = new System.Windows.Forms.Button();
             this.btnNavReports = new System.Windows.Forms.Button();
             this.btnNavUsers = new System.Windows.Forms.Button();
             this.btnNavRoles = new System.Windows.Forms.Button();
@@ -409,82 +410,101 @@ namespace EventManagement.GUI.Forms
             this.flpQuickButtons.Controls.Add(this.btnNavTickets);
             this.flpQuickButtons.Controls.Add(this.btnNavCheckIn);
             this.flpQuickButtons.Controls.Add(this.btnNavTicketTiers);
+            this.flpQuickButtons.Controls.Add(this.btnNavExpenses);
             this.flpQuickButtons.Controls.Add(this.btnNavReports);
             this.flpQuickButtons.Controls.Add(this.btnNavUsers);
             this.flpQuickButtons.Controls.Add(this.btnNavRoles);
             this.flpQuickButtons.Controls.Add(this.btnRefresh);
             this.flpQuickButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flpQuickButtons.Location = new System.Drawing.Point(160, 6);
+            this.flpQuickButtons.Location = new System.Drawing.Point(140, 6);
             this.flpQuickButtons.Name = "flpQuickButtons";
-            this.flpQuickButtons.Size = new System.Drawing.Size(959, 36);
+            this.flpQuickButtons.Size = new System.Drawing.Size(979, 36);
             this.flpQuickButtons.TabIndex = 1;
             // 
             // btnNavEvents
             // 
             this.btnNavEvents.Location = new System.Drawing.Point(3, 3);
             this.btnNavEvents.Name = "btnNavEvents";
-            this.btnNavEvents.Size = new System.Drawing.Size(110, 30);
+            this.btnNavEvents.Size = new System.Drawing.Size(95, 30);
             this.btnNavEvents.TabIndex = 0;
+            this.btnNavEvents.Tag = "UC04,UC08";
             this.btnNavEvents.Text = "📅 Sự kiện";
             this.btnNavEvents.UseVisualStyleBackColor = true;
             this.btnNavEvents.Click += new System.EventHandler(this.btnNavEvents_Click);
             // 
             // btnNavTickets
             // 
-            this.btnNavTickets.Location = new System.Drawing.Point(119, 3);
+            this.btnNavTickets.Location = new System.Drawing.Point(104, 3);
             this.btnNavTickets.Name = "btnNavTickets";
-            this.btnNavTickets.Size = new System.Drawing.Size(105, 30);
+            this.btnNavTickets.Size = new System.Drawing.Size(95, 30);
             this.btnNavTickets.TabIndex = 1;
+            this.btnNavTickets.Tag = "UC11";
             this.btnNavTickets.Text = "🎟️ Bán vé";
             this.btnNavTickets.UseVisualStyleBackColor = true;
             this.btnNavTickets.Click += new System.EventHandler(this.btnNavTickets_Click);
             // 
             // btnNavCheckIn
             // 
-            this.btnNavCheckIn.Location = new System.Drawing.Point(230, 3);
+            this.btnNavCheckIn.Location = new System.Drawing.Point(205, 3);
             this.btnNavCheckIn.Name = "btnNavCheckIn";
-            this.btnNavCheckIn.Size = new System.Drawing.Size(115, 30);
+            this.btnNavCheckIn.Size = new System.Drawing.Size(105, 30);
             this.btnNavCheckIn.TabIndex = 2;
+            this.btnNavCheckIn.Tag = "UC13";
             this.btnNavCheckIn.Text = "📷 Soát vé QR";
             this.btnNavCheckIn.UseVisualStyleBackColor = true;
             this.btnNavCheckIn.Click += new System.EventHandler(this.btnNavCheckIn_Click);
             // 
             // btnNavTicketTiers
             // 
-            this.btnNavTicketTiers.Location = new System.Drawing.Point(351, 3);
+            this.btnNavTicketTiers.Location = new System.Drawing.Point(316, 3);
             this.btnNavTicketTiers.Name = "btnNavTicketTiers";
-            this.btnNavTicketTiers.Size = new System.Drawing.Size(110, 30);
+            this.btnNavTicketTiers.Size = new System.Drawing.Size(95, 30);
             this.btnNavTicketTiers.TabIndex = 3;
+            this.btnNavTicketTiers.Tag = "UC12";
             this.btnNavTicketTiers.Text = "🏷️ Hạng vé";
             this.btnNavTicketTiers.UseVisualStyleBackColor = true;
             this.btnNavTicketTiers.Click += new System.EventHandler(this.btnNavTicketTiers_Click);
             // 
+            // btnNavExpenses
+            // 
+            this.btnNavExpenses.Location = new System.Drawing.Point(417, 3);
+            this.btnNavExpenses.Name = "btnNavExpenses";
+            this.btnNavExpenses.Size = new System.Drawing.Size(95, 30);
+            this.btnNavExpenses.TabIndex = 4;
+            this.btnNavExpenses.Tag = "UC17";
+            this.btnNavExpenses.Text = "💵 Chi phí";
+            this.btnNavExpenses.UseVisualStyleBackColor = true;
+            this.btnNavExpenses.Click += new System.EventHandler(this.btnNavExpenses_Click);
+            // 
             // btnNavReports
             // 
-            this.btnNavReports.Location = new System.Drawing.Point(467, 3);
+            this.btnNavReports.Location = new System.Drawing.Point(518, 3);
             this.btnNavReports.Name = "btnNavReports";
-            this.btnNavReports.Size = new System.Drawing.Size(100, 30);
-            this.btnNavReports.TabIndex = 4;
+            this.btnNavReports.Size = new System.Drawing.Size(95, 30);
+            this.btnNavReports.TabIndex = 5;
+            this.btnNavReports.Tag = "UC19";
             this.btnNavReports.Text = "📊 Báo cáo";
             this.btnNavReports.UseVisualStyleBackColor = true;
             this.btnNavReports.Click += new System.EventHandler(this.btnNavReports_Click);
             // 
             // btnNavUsers
             // 
-            this.btnNavUsers.Location = new System.Drawing.Point(573, 3);
+            this.btnNavUsers.Location = new System.Drawing.Point(619, 3);
             this.btnNavUsers.Name = "btnNavUsers";
-            this.btnNavUsers.Size = new System.Drawing.Size(115, 30);
-            this.btnNavUsers.TabIndex = 5;
+            this.btnNavUsers.Size = new System.Drawing.Size(105, 30);
+            this.btnNavUsers.TabIndex = 6;
+            this.btnNavUsers.Tag = "UC03";
             this.btnNavUsers.Text = "👥 Người dùng";
             this.btnNavUsers.UseVisualStyleBackColor = true;
             this.btnNavUsers.Click += new System.EventHandler(this.btnNavUsers_Click);
             // 
             // btnNavRoles
             // 
-            this.btnNavRoles.Location = new System.Drawing.Point(694, 3);
+            this.btnNavRoles.Location = new System.Drawing.Point(730, 3);
             this.btnNavRoles.Name = "btnNavRoles";
-            this.btnNavRoles.Size = new System.Drawing.Size(115, 30);
-            this.btnNavRoles.TabIndex = 6;
+            this.btnNavRoles.Size = new System.Drawing.Size(105, 30);
+            this.btnNavRoles.TabIndex = 7;
+            this.btnNavRoles.Tag = "UC20";
             this.btnNavRoles.Text = "🛡️ Phân quyền";
             this.btnNavRoles.UseVisualStyleBackColor = true;
             this.btnNavRoles.Click += new System.EventHandler(this.btnNavRoles_Click);
@@ -493,6 +513,13 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnRefresh.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
             this.btnRefresh.ForeColor = System.Drawing.Color.White;
+            this.btnRefresh.Location = new System.Drawing.Point(841, 3);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(110, 30);
+            this.btnRefresh.TabIndex = 8;
+            this.btnRefresh.Text = "🔄 Làm mới (F5)";
+            this.btnRefresh.UseVisualStyleBackColor = false;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             this.btnRefresh.Location = new System.Drawing.Point(815, 3);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(120, 30);
@@ -827,15 +854,16 @@ namespace EventManagement.GUI.Forms
 
         private System.Windows.Forms.Panel pnlQuickAccess;
         private System.Windows.Forms.Label lblQuickAccess;
-        private System.Windows.Forms.FlowLayoutPanel flpQuickButtons;
-        private System.Windows.Forms.Button btnNavEvents;
-        private System.Windows.Forms.Button btnNavTickets;
-        private System.Windows.Forms.Button btnNavCheckIn;
-        private System.Windows.Forms.Button btnNavTicketTiers;
-        private System.Windows.Forms.Button btnNavReports;
-        private System.Windows.Forms.Button btnNavUsers;
-        private System.Windows.Forms.Button btnNavRoles;
-        private System.Windows.Forms.Button btnRefresh;
+        public System.Windows.Forms.FlowLayoutPanel flpQuickButtons;
+        public System.Windows.Forms.Button btnNavEvents;
+        public System.Windows.Forms.Button btnNavTickets;
+        public System.Windows.Forms.Button btnNavCheckIn;
+        public System.Windows.Forms.Button btnNavTicketTiers;
+        public System.Windows.Forms.Button btnNavExpenses;
+        public System.Windows.Forms.Button btnNavReports;
+        public System.Windows.Forms.Button btnNavUsers;
+        public System.Windows.Forms.Button btnNavRoles;
+        public System.Windows.Forms.Button btnRefresh;
 
         protected System.Windows.Forms.Panel pnlChartsContainer;
         private System.Windows.Forms.TableLayoutPanel tblCharts;

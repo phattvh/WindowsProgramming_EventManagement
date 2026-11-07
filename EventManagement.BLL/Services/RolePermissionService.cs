@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
 using EventManagement.Core.Entities;
+using EventManagement.Core.Security;
+using EventManagement.Core.Session;
 using EventManagement.DAL;
 using Microsoft.EntityFrameworkCore;
 
@@ -92,6 +94,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult> SavePermissionMatrixAsync(string roleId, List<PhanQuyenMatrixDto> matrix)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC20");
             var role = await _context.NhomQuyens.FindAsync(roleId);
             if (role == null)
             {
@@ -136,6 +139,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult<RoleDto>> CreateRoleAsync(CreateRoleDto dto)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC20");
             if (string.IsNullOrWhiteSpace(dto.MaNhomQuyen))
             {
                 return ServiceResult<RoleDto>.Failed("Mã nhóm quyền không được để trống!");
@@ -194,6 +198,7 @@ namespace EventManagement.BLL.Services
 
         public async Task<ServiceResult> DeleteRoleAsync(string roleId)
         {
+            if (CurrentSession.IsLoggedIn) SecurityGuard.YeuCauQuyen("UC20");
             var role = await _context.NhomQuyens
                 .Include(r => r.NguoiDungs)
                 .Include(r => r.PhanQuyens)

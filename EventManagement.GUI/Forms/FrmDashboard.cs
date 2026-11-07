@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using EventManagement.BLL.Services;
 using EventManagement.Core.DTOs;
 using EventManagement.Core.Session;
+using EventManagement.GUI.Common;
 
 namespace EventManagement.GUI.Forms
 {
@@ -37,6 +38,9 @@ namespace EventManagement.GUI.Forms
 
         public bool CanAccessAdminFeatures { get; private set; }
 
+        public bool IsButtonAuthorized(Button? btn) => PermissionHelper.IsControlAuthorized(btn);
+        public bool IsButtonAuthorized(string buttonName) => IsButtonAuthorized(flpQuickButtons.Controls[buttonName] as Button);
+
         public void ApplyUserSessionAndPermissions()
         {
             if (CurrentSession.IsLoggedIn)
@@ -45,22 +49,22 @@ namespace EventManagement.GUI.Forms
                 var role = CurrentSession.MaNhomQuyen ?? "Khách";
                 lblUserGreeting.Text = $"Xin chào: {hoTen}\n({role})";
 
-                // Phân quyền hiển thị các nút quản trị hệ thống
-                bool isAdmin = string.Equals(role, "ADMIN", StringComparison.OrdinalIgnoreCase)
-                    || string.Equals(role, "NQ_ADMIN", StringComparison.OrdinalIgnoreCase)
-                    || CurrentSession.CoQuyen("F03")
-                    || CurrentSession.CoQuyen("ALL");
+                // Rà soát phân quyền động toàn bộ các nút trong thanh công cụ Lối tắt tác nghiệp (AD-4 Lớp 1)
+                PermissionHelper.ApplyAuthorization(flpQuickButtons, hideInsteadOfDisable: true);
 
-                CanAccessAdminFeatures = isAdmin;
-                btnNavUsers.Visible = isAdmin;
-                btnNavRoles.Visible = isAdmin;
+                CanAccessAdminFeatures = CurrentSession.IsAdmin 
+                    || (CurrentSession.CoQuyen("UC03") && CurrentSession.CoQuyen("UC20"));
             }
             else
             {
                 lblUserGreeting.Text = "Xin chào: Quản trị viên (Khách)";
                 CanAccessAdminFeatures = true;
-                btnNavUsers.Visible = true;
-                btnNavRoles.Visible = true;
+
+                // Khi chạy độc lập không đăng nhập: Hiển thị đầy đủ để demo
+                foreach (Control c in flpQuickButtons.Controls)
+                {
+                    c.Visible = true;
+                }
             }
         }
 
@@ -190,86 +194,46 @@ namespace EventManagement.GUI.Forms
             }
         }
 
-        // --- Điều hướng các lối tắt nghiệp vụ ---
+        // --- Điều hướng các lối tắt nghiệp vụ (Phân quyền 2 lớp AD-4) ---
 
         private void btnNavEvents_Click(object sender, EventArgs e)
         {
-            // Mở màn hình sự kiện / lịch trình
-            try
-            {
-                using var frm = new FrmSchedule();
-                frm.ShowDialog(this);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Chức năng Sự kiện: {ex.Message}", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            PermissionHelper.SafeLaunchDialog(this, "UC08", () => new FrmSchedule(), "Quản lý lịch trình sự kiện (F08)");
         }
 
         private void btnNavTickets_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
-                "Màn hình Đăng ký & Bán vé (F11) đang được Thành viên 3 hoàn thiện.\nVui lòng mở chức năng Quản lý hạng vé (F12) để xem tồn kho.",
-                "Điều Hướng Tác Nghiệp (F11)",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            PermissionHelper.SafeLaunchDialog(this, "UC11", () => new FrmTicketOrder(), "Đăng ký & Bán vé sự kiện (F11)");
         }
 
         private void btnNavCheckIn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
-                "Màn hình Soát vé Webcam QR (F13) đang được Thành viên 3 kết nối camera.\nHệ thống sẽ sẵn sàng trong Ngày 7.",
-                "Điều Hướng Tác Nghiệp (F13)",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            PermissionHelper.SafeLaunchDialog(this, "UC13", () => new FrmCheckInCamera(), "Soát vé qua Webcam QR (F13)");
         }
 
         private void btnNavTicketTiers_Click(object sender, EventArgs e)
         {
-            try
-            {
-                using var frm = new FrmTicketTier();
-                frm.ShowDialog(this);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi mở màn hình Hạng vé: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            PermissionHelper.SafeLaunchDialog(this, "UC12", () => new FrmTicketTier(), "Quản lý hạng vé sự kiện (F12)");
+        }
+
+        private void btnNavExpenses_Click(object sender, EventArgs e)
+        {
+            PermissionHelper.SafeLaunchDialog(this, "UC17", () => new FrmBudgetExpense(), "Quản lý ngân sách & chi phí (F17)");
         }
 
         private void btnNavReports_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
-                "Màn hình Báo cáo & Thống kê RDLC/Excel (F19) được phân công cho Thành viên 3 tại Ngày 8.",
-                "Điều Hướng Báo Cáo (F19)",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            PermissionHelper.SafeLaunchDialog(this, "UC19", () => new FrmReportStatistics(), "Báo cáo & Thống kê sự kiện (F19)");
         }
 
         private void btnNavUsers_Click(object sender, EventArgs e)
         {
-            try
-            {
-                using var frm = new FrmUserManagement();
-                frm.ShowDialog(this);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi mở màn hình Quản lý người dùng: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            PermissionHelper.SafeLaunchDialog(this, "UC03", () => new FrmUserManagement(), "Quản lý người dùng & Mở khóa (F03)");
         }
 
         private void btnNavRoles_Click(object sender, EventArgs e)
         {
-            try
-            {
-                using var frm = new FrmRolePermission();
-                frm.ShowDialog(this);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi mở màn hình Phân quyền: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            PermissionHelper.SafeLaunchDialog(this, "UC20", () => new FrmRolePermission(), "Quản lý phân quyền & Nhóm quyền (F20)");
         }
     }
 }
