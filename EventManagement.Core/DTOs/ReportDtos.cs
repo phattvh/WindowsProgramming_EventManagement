@@ -44,4 +44,27 @@ namespace EventManagement.Core.DTOs
         // Danh sách chi tiết các khoản chi
         public List<ExpenseDto> DanhSachChiPhi { get; set; } = new List<ExpenseDto>();
     }
+
+    /// <summary>
+    /// DTO tổng hợp chỉ số KPI sự kiện phục vụ báo cáo tổng hợp (F19)
+    /// </summary>
+    public class EventSummaryKpiDto
+    {
+        public string MaSuKien { get; set; } = string.Empty;
+        public string TenSuKien { get; set; } = string.Empty;
+        public DateTime ThoiGianBatDau { get; set; }
+        public DateTime ThoiGianKetThuc { get; set; }
+        public string DiaDiem { get; set; } = string.Empty;
+        public int TongVePhatHanh { get; set; }
+        public int TongVeDaBan { get; set; }
+        public int TongLuotCheckIn { get; set; }
+        public double TyLeCheckIn => TongVeDaBan > 0 ? (double)TongLuotCheckIn / TongVeDaBan * 100 : 0.0;
+        public double TyLeThamDu => TyLeCheckIn;
+        public double TyLeBanVe => TongVePhatHanh > 0 ? (double)TongVeDaBan / TongVePhatHanh * 100 : 0.0;
+        public decimal TongDoanhThuVe { get; set; }
+        public decimal TongDoanhThu => TongDoanhThuVe;
+        public decimal TongTienTaiTro { get; set; }
+        public decimal TongChiPhiThucTe { get; set; }
+        public decimal LoiNhuanRong => (TongDoanhThuVe + TongTienTaiTro) - TongChiPhiThucTe;
+    }
 }
