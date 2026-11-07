@@ -14,6 +14,7 @@ namespace EventManagement.Core.DTOs
         public string TenLoaiSK { get; set; } = string.Empty;
         public string MaDiaDiem { get; set; } = string.Empty;
         public string TenDiaDiem { get; set; } = string.Empty;
+        public string? MoTa { get; set; }
         public DateTime NgayBatDau { get; set; }
         public DateTime NgayKetThuc { get; set; }
         public int SucChua { get; set; }
