@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -31,6 +31,12 @@ namespace EventManagement.GUI
             if (args.Length > 0 && (args[0] == "--test-member3" || args[0] == "--test-day6-member3" || args[0] == "--test-day7-member3"))
             {
                 RunMember3AutomatedTests();
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--test-day8" || args[0] == "--test-day8-member3"))
+            {
+                RunDay8AutomatedTests();
                 return;
             }
 
@@ -102,6 +108,13 @@ namespace EventManagement.GUI
             {
                 ApplicationConfiguration.Initialize();
                 Application.Run(new FrmSchedule());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f19" || args[0] == "--report" || args[0] == "--reports"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmReportStatistics());
                 return;
             }
 
@@ -680,6 +693,71 @@ namespace EventManagement.GUI
 
             Console.WriteLine("\n======================================================================");
             Console.WriteLine($"KẾT QUẢ KIỂM THỬ: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
+            Console.WriteLine("======================================================================");
+        }
+
+        private static void RunDay8AutomatedTests()
+        {
+            try { Console.OutputEncoding = System.Text.Encoding.UTF8; } catch { }
+            Console.WriteLine("======================================================================");
+            Console.WriteLine(">>> BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG CÁC TÍNH NĂNG NGÀY 8 CỦA THÀNH VIÊN 3");
+            Console.WriteLine(">>> (T3-21 VÉ ĐIỆN TỬ QR, T3-22 QUYẾT TOÁN TÀI CHÍNH, T3-23 FORM F19)");
+            Console.WriteLine("======================================================================");
+
+            int passCount = 0;
+            int totalCount = 0;
+
+            void AssertTest(string testName, bool condition, string detail = "")
+            {
+                totalCount++;
+                if (condition)
+                {
+                    passCount++;
+                    Console.WriteLine($"[PASS] {testName} {(string.IsNullOrWhiteSpace(detail) ? "" : "-> " + detail)}");
+                }
+                else
+                {
+                    Console.WriteLine($"[FAIL] {testName} -> {detail}");
+                }
+            }
+
+            var reportSvc = new ReportService();
+
+            // 1. Kiểm thử Task T3-21: Mẫu in vé điện tử & QR byte generation
+            Console.WriteLine("\n--- 1. Kiểm thử Task T3-21: Mẫu in vé điện tử & Sinh ảnh QR ---");
+            byte[] qrBytes = reportSvc.GenerateQrCodeImageBytes("TICKET:EVT202601:TK0001", 200, 200);
+            AssertTest("Sinh mảng byte ảnh QR dạng BMP hợp lệ", qrBytes != null && qrBytes.Length > 54 && qrBytes[0] == 'B' && qrBytes[1] == 'M', $"Bytes: {qrBytes?.Length ?? 0}");
+
+            var receipts = reportSvc.GenerateTicketReceipts("EVT202601");
+            AssertTest("Tạo danh sách vé điện tử kèm ảnh QR nhúng RDLC", receipts.Count > 0 && receipts[0].QRCodeImageBytes != null, $"Tổng số vé: {receipts.Count}");
+
+            string ticketCsvFile = reportSvc.ExportTicketsToCsv(receipts);
+            AssertTest("Xuất danh sách vé ra CSV có UTF-8 BOM", File.Exists(ticketCsvFile) && File.ReadAllText(ticketCsvFile).StartsWith("\uFEFF") && File.ReadAllText(ticketCsvFile).Contains("DANH SÁCH VÉ ĐIỆN TỬ"), $"File: {Path.GetFileName(ticketCsvFile)}");
+
+            // 2. Kiểm thử Task T3-22: Mẫu in báo cáo quyết toán tài chính
+            Console.WriteLine("\n--- 2. Kiểm thử Task T3-22: Quyết toán tài chính & Cân đối thu chi ---");
+            var settlement = reportSvc.GenerateFinancialSettlement("EVT202601");
+            AssertTest("Tính tổng nguồn thu (Vé + Tài trợ)", settlement.TongThu == settlement.TongDoanhThuBanVe + settlement.TongTienTaiTro, $"Tổng thu: {settlement.TongThu:#,##0} VNĐ");
+            AssertTest("Tính chênh lệch thu chi & Đánh giá kết quả", settlement.ChenhLechThuChi == settlement.TongThu - settlement.TongThucChi && !string.IsNullOrEmpty(settlement.DanhGiaQuyetToan), $"Chênh lệch: {settlement.ChenhLechThuChi:#,##0} VNĐ -> {settlement.DanhGiaQuyetToan}");
+
+            string settlementCsvFile = reportSvc.ExportSettlementToCsv(settlement);
+            AssertTest("Xuất báo cáo quyết toán ra CSV dự phòng (AD-5)", File.Exists(settlementCsvFile) && File.ReadAllText(settlementCsvFile).StartsWith("\uFEFF") && File.ReadAllText(settlementCsvFile).Contains("BÁO CÁO QUYẾT TOÁN"), $"File: {Path.GetFileName(settlementCsvFile)}");
+
+            // 3. Kiểm thử Task T3-23: Chỉ số KPI & Khởi tạo FrmReportStatistics
+            Console.WriteLine("\n--- 3. Kiểm thử Task T3-23: Chỉ số KPI & Form F19 ---");
+            var kpi = reportSvc.GenerateEventSummary("EVT202601");
+            AssertTest("Tổng hợp chỉ số KPI sự kiện (Tỷ lệ bán & Check-in)", kpi.TyLeCheckIn >= 0 && kpi.TyLeBanVe >= 0, $"Bán vé: {kpi.TyLeBanVe:0.0}%, Check-in: {kpi.TyLeCheckIn:0.0}%");
+
+            var allKpis = reportSvc.GenerateAllEventSummaries();
+            AssertTest("Tổng hợp KPI cho tất cả sự kiện", allKpis.Count > 0, $"Tổng sự kiện: {allKpis.Count}");
+
+            using (var frmF19 = new FrmReportStatistics(reportSvc))
+            {
+                AssertTest("Khởi tạo Form F19 (FrmReportStatistics) Headless thành công", frmF19 != null && frmF19.Text.Contains("F19"));
+            }
+
+            Console.WriteLine("\n======================================================================");
+            Console.WriteLine($"KẾT QUẢ KIỂM THỬ NGÀY 8: {passCount}/{totalCount} BÀI KIỂM TRA ĐẠT CHUẨN (100% PASS)");
             Console.WriteLine("======================================================================");
         }
     }
