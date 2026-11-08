@@ -133,6 +133,7 @@ namespace EventManagement.BLL.Services
                     Message = successMsg
                 };
 
+                EventManagement.Core.Common.DataSyncNotifier.NotifyTicketCheckedIn(ticket.TenSuKien, ticket.MaVe);
                 return ServiceResult<CheckInResultDto>.Success(successResult, successMsg);
             }
         }

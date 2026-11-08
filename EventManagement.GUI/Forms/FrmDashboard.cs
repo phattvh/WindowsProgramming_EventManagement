@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
+using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
 using EventManagement.Core.Session;
 using EventManagement.GUI.Common;
@@ -33,7 +34,46 @@ namespace EventManagement.GUI.Forms
         private async void FrmDashboard_Load(object sender, EventArgs e)
         {
             ApplyUserSessionAndPermissions();
+            DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
+            dgvUpcoming.CellDoubleClick += DgvUpcoming_CellDoubleClick;
             await RefreshDashboardAsync();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            DataSyncNotifier.GeneralDataChanged -= OnDataSyncChanged;
+            dgvUpcoming.CellDoubleClick -= DgvUpcoming_CellDoubleClick;
+            base.OnFormClosed(e);
+        }
+
+        private async void OnDataSyncChanged()
+        {
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+            try
+            {
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke(new Action(async () => await RefreshDashboardAsync()));
+                }
+                else
+                {
+                    await RefreshDashboardAsync();
+                }
+            }
+            catch
+            {
+                // Bỏ qua lỗi giao diện khi form đang đóng
+            }
+        }
+
+        private void DgvUpcoming_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= dgvUpcoming.Rows.Count) return;
+            var row = dgvUpcoming.Rows[e.RowIndex];
+            var evt = row.DataBoundItem as UpcomingEventDto;
+            string eventCode = evt?.MaSuKien ?? "EVT202601";
+            PermissionHelper.SafeLaunchDialog(this, "UC05", () => new FrmEventDetail(eventCode), $"Chi tiết sự kiện {eventCode} (F05)");
+            _ = RefreshDashboardAsync();
         }
 
         public bool CanAccessAdminFeatures { get; private set; }
@@ -194,11 +234,12 @@ namespace EventManagement.GUI.Forms
             }
         }
 
-        // --- Điều hướng các lối tắt nghiệp vụ (Phân quyền 2 lớp AD-4) ---
+        // --- Điều hướng các lối tắt nghiệp vụ (Phân quyền 2 lớp AD-4 & Ghép nối luồng T2-19) ---
 
         private void btnNavEvents_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC08", () => new FrmSchedule(), "Quản lý lịch trình sự kiện (F08)");
+            PermissionHelper.SafeLaunchDialog(this, "UC04", () => new FrmEventList(), "Danh sách sự kiện tổng thể (F04)");
+            _ = RefreshDashboardAsync();
         }
 
         private void btnNavTickets_Click(object sender, EventArgs e)

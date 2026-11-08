@@ -282,6 +282,7 @@ namespace EventManagement.BLL.Services
                     DanhSachVe = createdTickets
                 };
 
+                EventManagement.Core.Common.DataSyncNotifier.NotifyTicketSold(request.MaSuKien, request.SoLuongMua, totalAmount);
                 return ServiceResult<TicketOrderResultDto>.Success(
                     orderResult,
                     $"Đăng ký đơn hàng thành công! Đã phát hành {request.SoLuongMua} vé điện tử với mã QR độc lập."

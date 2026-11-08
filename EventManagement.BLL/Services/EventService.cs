@@ -381,6 +381,7 @@ namespace EventManagement.BLL.Services
             };
 
             _events.Add(newEntity);
+            EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(newEntity.MaSuKien, "Added");
             return ServiceResult.Success("Thêm mới sự kiện thành công!");
         }
 
@@ -475,6 +476,7 @@ namespace EventManagement.BLL.Services
             }
             existing.MoTa = dto.MoTa?.Trim();
 
+            EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Updated");
             return ServiceResult.Success("Cập nhật thông tin sự kiện thành công!");
         }
 
@@ -502,6 +504,7 @@ namespace EventManagement.BLL.Services
             }
 
             _events.Remove(existing);
+            EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Deleted");
             return ServiceResult.Success($"Đã xóa vĩnh viễn sự kiện '{existing.TenSuKien}' ({existing.MaSuKien}) khỏi hệ thống!");
         }
 
@@ -519,6 +522,7 @@ namespace EventManagement.BLL.Services
             }
 
             existing.TrangThai = "Đã hủy";
+            EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Cancelled");
             return ServiceResult.Success($"Đã chuyển trạng thái sự kiện '{existing.TenSuKien}' sang 'Đã hủy' (BR-02)!");
         }
 

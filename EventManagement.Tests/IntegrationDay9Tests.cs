@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using EventManagement.BLL.Services;
+using EventManagement.Core.Common;
+using EventManagement.Core.DTOs;
 
 namespace EventManagement.Tests
 {
@@ -83,6 +86,136 @@ namespace EventManagement.Tests
             Assert.IsFalse(string.IsNullOrWhiteSpace(connStr));
             Assert.IsTrue(connStr.Contains("Server=") || connStr.Contains("Data Source="));
             Assert.IsTrue(connStr.Contains("EventManagementDb"));
+        }
+
+        // =========================================================================
+        // PHẦN 3: KIỂM THỬ TASK T3-24 (Đồng Bộ Dữ Liệu Thời Gian Thực DataSyncNotifier)
+        // =========================================================================
+
+        [TestMethod]
+        public void DataSync_TicketOrderService_FiresTicketSoldNotification()
+        {
+            // Mô tả: Kiểm tra khi đăng ký đơn vé thành công, TicketOrderService tự động phát sự kiện TicketSold và GeneralDataChanged với đúng thông tin sự kiện.
+            DataSyncNotifier.ResetHandlers();
+            string notifiedEvent = string.Empty;
+            int notifiedQty = 0;
+            decimal notifiedAmount = 0;
+            bool generalFired = false;
+
+            DataSyncNotifier.TicketSold += (ev, qty, amt) =>
+            {
+                notifiedEvent = ev ?? string.Empty;
+                notifiedQty = qty;
+                notifiedAmount = amt;
+            };
+            DataSyncNotifier.GeneralDataChanged += () =>
+            {
+                generalFired = true;
+            };
+
+            var ticketService = new TicketOrderService();
+            var result = ticketService.RegisterTicketOrder(new RegisterTicketRequestDto
+            {
+                MaSuKien = "EVT202601",
+                MaHangVe = "HV001",
+                SoLuongMua = 2,
+                HoTenNguoiMua = "DataSync Tester",
+                SoDienThoai = "0987654321",
+                Email = "datasync@test.com"
+            });
+
+            Assert.IsTrue(result.IsSuccess, "Đăng ký vé phải thành công.");
+            Assert.AreEqual("EVT202601", notifiedEvent, "Sự kiện được thông báo phải khớp mã sự kiện.");
+            Assert.AreEqual(2, notifiedQty, "Số lượng vé phải thông báo đúng 2 vé.");
+            Assert.IsTrue(notifiedAmount > 0, "Doanh thu phải lớn hơn 0.");
+            Assert.IsTrue(generalFired, "GeneralDataChanged phải được kích hoạt để cập nhật Dashboard.");
+        }
+
+        [TestMethod]
+        public void DataSync_CheckInService_FiresTicketCheckedInNotification()
+        {
+            // Mô tả: Kiểm tra khi quét soát vé thành công, CheckInService tự động kích hoạt thông báo TicketCheckedIn và GeneralDataChanged.
+            DataSyncNotifier.ResetHandlers();
+            string checkedTicket = string.Empty;
+            bool generalFired = false;
+
+            DataSyncNotifier.TicketCheckedIn += (ev, t) =>
+            {
+                checkedTicket = t ?? string.Empty;
+            };
+            DataSyncNotifier.GeneralDataChanged += () =>
+            {
+                generalFired = true;
+            };
+
+            var ticketService = new TicketOrderService();
+            var orderResult = ticketService.RegisterTicketOrder(new RegisterTicketRequestDto
+            {
+                MaSuKien = "EVT202601",
+                MaHangVe = "HV001",
+                SoLuongMua = 1,
+                HoTenNguoiMua = "CheckIn Sync Tester",
+                SoDienThoai = "0911223344",
+                Email = "checkin.sync@test.com"
+            });
+
+            Assert.IsTrue(orderResult.IsSuccess);
+            var issuedTicket = orderResult.Data!.DanhSachVe[0];
+
+            var checkInService = new CheckInService();
+            var checkInResult = checkInService.ProcessCheckIn(new CheckInRequestDto
+            {
+                MaSuKien = "EVT202601",
+                MaQRLuocDoc = issuedTicket.MaQR,
+                PhuongThuc = "Webcam"
+            });
+
+            Assert.IsTrue(checkInResult.IsSuccess, "Soát vé lần đầu phải thành công.");
+            Assert.AreEqual(issuedTicket.MaVe, checkedTicket, "Mã vé điểm danh phải được truyền qua thông báo.");
+            Assert.IsTrue(generalFired, "GeneralDataChanged phải được kích hoạt.");
+        }
+
+        [TestMethod]
+        public void DataSync_EventService_FiresEventChangedNotification()
+        {
+            // Mô tả: Kiểm tra khi cập nhật hoặc đổi trạng thái sự kiện, EventService tự động kích hoạt thông báo EventChanged và GeneralDataChanged.
+            DataSyncNotifier.ResetHandlers();
+            string eventCodeNotified = string.Empty;
+            bool generalFired = false;
+
+            DataSyncNotifier.EventChanged += (ev) =>
+            {
+                eventCodeNotified = ev ?? string.Empty;
+            };
+            DataSyncNotifier.GeneralDataChanged += () =>
+            {
+                generalFired = true;
+            };
+
+            var eventService = new EventService();
+            var existingEv = eventService.GetById("EVT202601");
+            Assert.IsTrue(existingEv.IsSuccess && existingEv.Data != null);
+
+            var updateDto = new EventListDto
+            {
+                MaSuKien = "EVT202601",
+                TenSuKien = existingEv.Data!.TenSuKien,
+                MaLoaiSK = existingEv.Data.MaLoaiSK,
+                TenLoaiSK = existingEv.Data.TenLoaiSK,
+                MaDiaDiem = existingEv.Data.MaDiaDiem,
+                TenDiaDiem = existingEv.Data.TenDiaDiem,
+                NgayBatDau = existingEv.Data.NgayBatDau,
+                NgayKetThuc = existingEv.Data.NgayKetThuc,
+                SucChua = existingEv.Data.SucChua,
+                NganSachDuKien = existingEv.Data.NganSachDuKien,
+                NguoiPhuTrach = existingEv.Data.NguoiPhuTrach,
+                TrangThai = "Đang diễn ra"
+            };
+
+            var updateResult = eventService.Update(updateDto);
+            Assert.IsTrue(updateResult.IsSuccess);
+            Assert.AreEqual("EVT202601", eventCodeNotified);
+            Assert.IsTrue(generalFired, "GeneralDataChanged phải được kích hoạt.");
         }
     }
 }
