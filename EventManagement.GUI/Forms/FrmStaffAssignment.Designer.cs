@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmStaffAssignment
     {
@@ -323,7 +323,7 @@
             // colTenSuKien
             // 
             this.colTenSuKien.DataPropertyName = "TenSuKien";
-            this.colTenSuKien.HeaderText = "Sự kiện áp dụng";
+            this.colTenSuKien.HeaderText = "Sự kiện";
             this.colTenSuKien.Name = "colTenSuKien";
             this.colTenSuKien.ReadOnly = true;
             this.colTenSuKien.Width = 190;
@@ -604,6 +604,7 @@
             this.btnKiemTraXungDot.TabIndex = 14;
             this.btnKiemTraXungDot.Text = "⚡ Kiểm tra ca trực";
             this.btnKiemTraXungDot.UseVisualStyleBackColor = false;
+            this.btnKiemTraXungDot.Visible = false;
             this.btnKiemTraXungDot.Click += new System.EventHandler(this.btnKiemTraXungDot_Click);
 
             // 
@@ -730,7 +731,7 @@
             this.MaximizeBox = true;
             this.Name = "FrmStaffAssignment";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Phân công nhân sự theo ca trực (F15)";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.KeyPreview = true;
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmStaffAssignment_KeyDown);
             this.Load += new System.EventHandler(this.FrmStaffAssignment_Load);
