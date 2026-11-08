@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -113,7 +113,7 @@ namespace EventManagement.Tests
 
             // Assert
             form.Should().NotBeNull();
-            form.Text.Should().Contain("Dashboard");
+            form.Text.Should().Be("Hệ Thống Quản Lý Sự Kiện");
             form.Font.Name.Should().Be("Segoe UI");
             form.StartPosition.Should().Be(FormStartPosition.CenterScreen);
         }
@@ -212,6 +212,23 @@ namespace EventManagement.Tests
             form.Should().BeAssignableTo<FrmBase>();
             form.MaximizeBox.Should().BeTrue("Dashboard phải bật MaximizeBox để phóng to toàn màn hình.");
             form.WindowState.Should().Be(System.Windows.Forms.FormWindowState.Maximized, "Dashboard phải mở chế độ Maximized để hiển thị toàn bộ biểu đồ và bảng trên màn hình.");
+        }
+
+        [TestMethod]
+        public void FrmDashboard_TitleAndHeaderAndNavigation_AreFormattedProperly()
+        {
+            // Mô tả: Kiểm tra tiêu đề form chuẩn "Hệ Thống Quản Lý Sự Kiện", tiêu đề góc trên "TRANG CHỦ" in hoa in đậm, nhãn điều hướng "Điều hướng:" và các nút dàn trải đều trên thanh công cụ.
+            using var form = new FrmDashboard();
+            form.Text.Should().Be("Hệ Thống Quản Lý Sự Kiện", "Thanh tiêu đề Dashboard phải là 'Hệ Thống Quản Lý Sự Kiện'");
+            var lblHeaderTitle = form.Controls.Find("lblHeaderTitle", true)[0] as Label;
+            lblHeaderTitle.Should().NotBeNull();
+            lblHeaderTitle!.Text.Should().Be("TRANG CHỦ", "Tiêu đề Dashboard phải là TRANG CHỦ in hoa");
+            var lblQuickAccess = form.Controls.Find("lblQuickAccess", true)[0] as Label;
+            lblQuickAccess.Should().NotBeNull();
+            lblQuickAccess!.Text.Should().Be("Điều hướng:", "Nhãn lối tắt tác nghiệp phải được đổi thành 'Điều hướng:'");
+            var flpQuickButtons = form.Controls.Find("flpQuickButtons", true)[0] as FlowLayoutPanel;
+            flpQuickButtons.Should().NotBeNull();
+            flpQuickButtons!.Dock.Should().Be(DockStyle.Fill, "Thanh nút tác nghiệp phải Dock Fill để dàn đều");
         }
     }
 }

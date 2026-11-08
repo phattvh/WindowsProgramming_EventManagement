@@ -33,7 +33,10 @@ namespace EventManagement.GUI.Forms
 
         private async void FrmDashboard_Load(object sender, EventArgs e)
         {
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             ApplyUserSessionAndPermissions();
+            DistributeQuickButtons();
+            this.Resize += (s, ev) => DistributeQuickButtons();
             DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
             dgvUpcoming.CellDoubleClick += DgvUpcoming_CellDoubleClick;
             await RefreshDashboardAsync();
@@ -91,6 +94,7 @@ namespace EventManagement.GUI.Forms
 
                 // Rà soát phân quyền động toàn bộ các nút trong thanh công cụ Lối tắt tác nghiệp (AD-4 Lớp 1)
                 PermissionHelper.ApplyAuthorization(flpQuickButtons, hideInsteadOfDisable: true);
+                DistributeQuickButtons();
 
                 CanAccessAdminFeatures = CurrentSession.IsAdmin 
                     || (CurrentSession.CoQuyen("UC03") && CurrentSession.CoQuyen("UC20"));
@@ -105,6 +109,20 @@ namespace EventManagement.GUI.Forms
                 {
                     c.Visible = true;
                 }
+            }
+        }
+
+        public void DistributeQuickButtons()
+        {
+            var visibleButtons = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Where(System.Linq.Enumerable.OfType<Button>(flpQuickButtons.Controls), b => b.Visible));
+            if (visibleButtons.Count == 0) return;
+            int availableWidth = flpQuickButtons.ClientSize.Width - 10;
+            if (availableWidth <= 50) return;
+            int buttonWidth = Math.Max(95, (availableWidth / visibleButtons.Count) - 6);
+            foreach (var btn in visibleButtons)
+            {
+                btn.Width = buttonWidth;
+                btn.Margin = new Padding(3, 3, 3, 3);
             }
         }
 

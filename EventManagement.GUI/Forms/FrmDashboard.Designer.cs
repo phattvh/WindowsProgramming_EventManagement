@@ -107,13 +107,13 @@ namespace EventManagement.GUI.Forms
             // lblHeaderTitle
             // 
             this.lblHeaderTitle.AutoSize = true;
-            this.lblHeaderTitle.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblHeaderTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblHeaderTitle.ForeColor = System.Drawing.Color.White;
-            this.lblHeaderTitle.Location = new System.Drawing.Point(15, 8);
+            this.lblHeaderTitle.Location = new System.Drawing.Point(15, 14);
             this.lblHeaderTitle.Name = "lblHeaderTitle";
-            this.lblHeaderTitle.Size = new System.Drawing.Size(378, 31);
+            this.lblHeaderTitle.Size = new System.Drawing.Size(200, 37);
             this.lblHeaderTitle.TabIndex = 0;
-            this.lblHeaderTitle.Text = "HỆ THỐNG QUẢN LÝ SỰ KIỆN";
+            this.lblHeaderTitle.Text = "TRANG CHỦ";
             // 
             // lblHeaderSubtitle
             // 
@@ -122,9 +122,10 @@ namespace EventManagement.GUI.Forms
             this.lblHeaderSubtitle.ForeColor = System.Drawing.Color.Silver;
             this.lblHeaderSubtitle.Location = new System.Drawing.Point(17, 39);
             this.lblHeaderSubtitle.Name = "lblHeaderSubtitle";
-            this.lblHeaderSubtitle.Size = new System.Drawing.Size(269, 20);
+            this.lblHeaderSubtitle.Size = new System.Drawing.Size(0, 20);
             this.lblHeaderSubtitle.TabIndex = 1;
-            this.lblHeaderSubtitle.Text = "Bảng Điều Khiển Tổng Quan (Dashboard)";
+            this.lblHeaderSubtitle.Text = "";
+            this.lblHeaderSubtitle.Visible = false;
             // 
             // pnlUserInfo
             // 
@@ -396,13 +397,13 @@ namespace EventManagement.GUI.Forms
             // lblQuickAccess
             // 
             this.lblQuickAccess.AutoSize = true;
-            this.lblQuickAccess.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblQuickAccess.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblQuickAccess.ForeColor = System.Drawing.Color.FromArgb(44, 62, 80);
             this.lblQuickAccess.Location = new System.Drawing.Point(12, 13);
             this.lblQuickAccess.Name = "lblQuickAccess";
-            this.lblQuickAccess.Size = new System.Drawing.Size(133, 20);
+            this.lblQuickAccess.Size = new System.Drawing.Size(95, 21);
             this.lblQuickAccess.TabIndex = 0;
-            this.lblQuickAccess.Text = "Lối tắt tác nghiệp:";
+            this.lblQuickAccess.Text = "Điều hướng:";
             // 
             // flpQuickButtons
             // 
@@ -415,10 +416,10 @@ namespace EventManagement.GUI.Forms
             this.flpQuickButtons.Controls.Add(this.btnNavUsers);
             this.flpQuickButtons.Controls.Add(this.btnNavRoles);
             this.flpQuickButtons.Controls.Add(this.btnRefresh);
-            this.flpQuickButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flpQuickButtons.Location = new System.Drawing.Point(140, 6);
+            this.flpQuickButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpQuickButtons.Location = new System.Drawing.Point(115, 6);
             this.flpQuickButtons.Name = "flpQuickButtons";
-            this.flpQuickButtons.Size = new System.Drawing.Size(979, 36);
+            this.flpQuickButtons.Size = new System.Drawing.Size(1004, 36);
             this.flpQuickButtons.TabIndex = 1;
             // 
             // btnNavEvents
@@ -794,7 +795,7 @@ namespace EventManagement.GUI.Forms
             this.MinimumSize = new System.Drawing.Size(950, 600);
             this.Name = "FrmDashboard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hệ Thống Quản Lý Sự Kiện - Dashboard / Trang Chủ (F02)";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.Load += new System.EventHandler(this.FrmDashboard_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmDashboard_KeyDown);
             this.pnlHeader.ResumeLayout(false);
