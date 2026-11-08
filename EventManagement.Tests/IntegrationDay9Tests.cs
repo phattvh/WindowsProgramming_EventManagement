@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EventManagement.BLL.Services;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
+using EventManagement.GUI.Forms;
 
 namespace EventManagement.Tests
 {
@@ -216,6 +217,42 @@ namespace EventManagement.Tests
             Assert.IsTrue(updateResult.IsSuccess);
             Assert.AreEqual("EVT202601", eventCodeNotified);
             Assert.IsTrue(generalFired, "GeneralDataChanged phải được kích hoạt.");
+        }
+
+        // =========================================================================
+        // PHẦN 4: KIỂM THỬ TASK T2-19 (Ghép Nối Luồng Điều Hướng UI Xuyên Suốt)
+        // =========================================================================
+
+        [TestMethod]
+        public void Navigation_Dashboard_NavEventsButton_IsConfiguredForEventList()
+        {
+            // Mô tả: Kiểm tra nút Sự kiện trên Dashboard (F02) được cấu hình mã quyền UC04 để mở danh sách sự kiện F04.
+            using var dashboard = new FrmDashboard(new DashboardService());
+            dashboard.ApplyUserSessionAndPermissions();
+
+            Assert.IsNotNull(dashboard.btnNavEvents);
+            string tag = dashboard.btnNavEvents.Tag?.ToString() ?? string.Empty;
+            Assert.IsTrue(tag.Contains("UC04"), "Nút Sự kiện trên Dashboard phải liên kết với chức năng UC04.");
+        }
+
+        [TestMethod]
+        public void Navigation_EventDetail_ProvidesAllChildNavigationMethods()
+        {
+            // Mô tả: Kiểm tra Form F05 cung cấp đầy đủ 11 phương thức điều hướng mở các Form nghiệp vụ con phục vụ liên kết 9 Tabs (Task T2-19).
+            using var detailForm = new FrmEventDetail("EVT202601");
+            var methodNames = detailForm.GetType().GetMethods().Select(m => m.Name).ToHashSet();
+
+            Assert.IsTrue(methodNames.Contains("OpenScheduleForm"), "F05 phải cung cấp phương thức mở F08 (Lịch trình).");
+            Assert.IsTrue(methodNames.Contains("OpenSpeakerForm"), "F05 phải cung cấp phương thức mở F09 (Diễn giả).");
+            Assert.IsTrue(methodNames.Contains("OpenAttendeeForm"), "F05 phải cung cấp phương thức mở F10 (Khách tham gia).");
+            Assert.IsTrue(methodNames.Contains("OpenTicketOrderForm"), "F05 phải cung cấp phương thức mở F11 (Bán vé).");
+            Assert.IsTrue(methodNames.Contains("OpenTicketTierForm"), "F05 phải cung cấp phương thức mở F12 (Hạng vé).");
+            Assert.IsTrue(methodNames.Contains("OpenCheckInCameraForm"), "F05 phải cung cấp phương thức mở F13 (Webcam QR).");
+            Assert.IsTrue(methodNames.Contains("OpenStaffAssignmentForm"), "F05 phải cung cấp phương thức mở F15 (Ca trực nhân sự).");
+            Assert.IsTrue(methodNames.Contains("OpenSponsorForm"), "F05 phải cung cấp phương thức mở F16 (Tài trợ).");
+            Assert.IsTrue(methodNames.Contains("OpenBudgetExpenseForm"), "F05 phải cung cấp phương thức mở F17 (Chi phí & Ngân sách).");
+            Assert.IsTrue(methodNames.Contains("OpenFeedbackForm"), "F05 phải cung cấp phương thức mở F18 (Khảo sát).");
+            Assert.IsTrue(methodNames.Contains("OpenReportStatisticsForm"), "F05 phải cung cấp phương thức mở F19 (Báo cáo & Thống kê).");
         }
     }
 }

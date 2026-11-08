@@ -29,6 +29,7 @@ namespace EventManagement.GUI.Forms
         private readonly ISponsorService _sponsorService;
         private readonly IBudgetService _budgetService;
         private readonly IFeedbackService _feedbackService;
+        private readonly Action _onSyncDataChanged;
 
         private string _maSuKien = string.Empty;
         private EventListDto? _currentEvent;
@@ -88,6 +89,27 @@ namespace EventManagement.GUI.Forms
             _sponsorService = sponsorService ?? new SponsorService();
             _budgetService = budgetService ?? new BudgetService();
             _feedbackService = feedbackService ?? new FeedbackService();
+
+            // Đăng ký nhận thông báo đồng bộ dữ liệu thời gian thực (Task T3-24)
+            _onSyncDataChanged = () =>
+            {
+                if (IsHandleCreated && !IsDisposed && !string.IsNullOrEmpty(_maSuKien))
+                {
+                    try
+                    {
+                        BeginInvoke(new Action(() => ReloadAllTabs()));
+                    }
+                    catch
+                    {
+                        // Bỏ qua khi form đang đóng
+                    }
+                }
+            };
+            DataSyncNotifier.GeneralDataChanged += _onSyncDataChanged;
+            this.FormClosed += (s, e) =>
+            {
+                DataSyncNotifier.GeneralDataChanged -= _onSyncDataChanged;
+            };
         }
 
         private void FrmEventDetail_Load(object sender, EventArgs e)
@@ -144,6 +166,16 @@ namespace EventManagement.GUI.Forms
             StyleDataGridView(dgvTaiTro);
             StyleDataGridView(dgvChiPhi);
             StyleDataGridView(dgvDanhGia);
+
+            // Wire double-click drill-down navigation (Task T2-19)
+            dgvLichTrinh.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenScheduleForm(); };
+            dgvDienGia.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenSpeakerForm(); };
+            dgvNguoiThamGia.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenAttendeeForm(); };
+            dgvHangVe.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenTicketTierForm(); };
+            dgvNhanSu.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenStaffAssignmentForm(); };
+            dgvTaiTro.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenSponsorForm(); };
+            dgvChiPhi.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenBudgetExpenseForm(); };
+            dgvDanhGia.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenFeedbackForm(); };
 
             // Configure cell alignments and formats
             colLT_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -789,6 +821,98 @@ namespace EventManagement.GUI.Forms
         #endregion
 
         #region Bottom Actions & Shortcuts
+
+        #region Public Cross-Form Navigation Methods (Task T2-19)
+
+        public void OpenScheduleForm()
+        {
+            using var frm = new FrmSchedule();
+            frm.ShowDialog(this);
+            LoadTab2_LichTrinh(_maSuKien);
+        }
+
+        public void OpenSpeakerForm()
+        {
+            using var frm = new FrmSpeaker();
+            frm.ShowDialog(this);
+            LoadTab3_DienGia(_maSuKien);
+        }
+
+        public void OpenAttendeeForm()
+        {
+            using var frm = new FrmAttendee();
+            frm.ShowDialog(this);
+            LoadTab4_NguoiThamGia(_maSuKien);
+        }
+
+        public void OpenTicketOrderForm()
+        {
+            using var frm = new FrmTicketOrder();
+            frm.ShowDialog(this);
+            LoadTab4_NguoiThamGia(_maSuKien);
+            LoadTab5_HangVe(_maSuKien);
+            UpdateKPICards();
+        }
+
+        public void OpenTicketTierForm()
+        {
+            using var frm = new FrmTicketTier();
+            frm.ShowDialog(this);
+            LoadTab5_HangVe(_maSuKien);
+            UpdateKPICards();
+        }
+
+        public void OpenStaffForm()
+        {
+            using var frm = new FrmStaff();
+            frm.ShowDialog(this);
+        }
+
+        public void OpenStaffAssignmentForm()
+        {
+            using var frm = new FrmStaffAssignment();
+            frm.ShowDialog(this);
+            LoadTab6_NhanSu(_maSuKien);
+        }
+
+        public void OpenSponsorForm()
+        {
+            using var frm = new FrmSponsor();
+            frm.ShowDialog(this);
+            LoadTab7_TaiTro(_maSuKien);
+        }
+
+        public void OpenBudgetExpenseForm()
+        {
+            using var frm = new FrmBudgetExpense();
+            frm.ShowDialog(this);
+            LoadTab8_ChiPhi(_maSuKien);
+            UpdateKPICards();
+        }
+
+        public void OpenFeedbackForm()
+        {
+            using var frm = new FrmFeedback();
+            frm.ShowDialog(this);
+            LoadTab9_DanhGia(_maSuKien);
+            UpdateKPICards();
+        }
+
+        public void OpenCheckInCameraForm()
+        {
+            using var frm = new FrmCheckInCamera();
+            frm.ShowDialog(this);
+            LoadTab4_NguoiThamGia(_maSuKien);
+            UpdateKPICards();
+        }
+
+        public void OpenReportStatisticsForm()
+        {
+            using var frm = new FrmReportStatistics();
+            frm.ShowDialog(this);
+        }
+
+        #endregion
 
         private void btnDong_Click(object sender, EventArgs e)
         {
