@@ -137,6 +137,8 @@
             this.AcceptButton = this.btnLogin;
             this.CancelButton = this.btnExit;
             this.ClientSize = new System.Drawing.Size(420, 345);
+            this.MinimumSize = new System.Drawing.Size(436, 384);
+            this.MaximumSize = new System.Drawing.Size(436, 384);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.lblLockoutNotice);

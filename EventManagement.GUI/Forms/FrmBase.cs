@@ -39,24 +39,37 @@ namespace EventManagement.GUI.Forms
             this.StartPosition = FormStartPosition.CenterScreen;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             this.DoubleBuffered = true;
-            this.MinimumSize = new Size(1024, 680);
-
-            if (!(this is FrmLogin))
+            if (this is not FrmLogin)
             {
+                this.MinimumSize = new Size(1024, 680);
                 this.MaximizeBox = true;
                 this.WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                this.MinimumSize = new Size(420, 345);
+                this.MaximumSize = new Size(436, 384);
+                this.MaximizeBox = false;
+                this.MinimizeBox = false;
+                this.WindowState = FormWindowState.Normal;
             }
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if (!DesignMode && !(this is FrmLogin))
+            if (!DesignMode && this is not FrmLogin)
             {
                 this.MaximizeBox = true;
                 this.FormBorderStyle = FormBorderStyle.Sizable;
                 this.WindowState = FormWindowState.Maximized;
                 ApplyResponsiveLayout(this);
+            }
+            else if (!DesignMode && this is FrmLogin)
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.ClientSize = new Size(420, 345);
+                this.CenterToScreen();
             }
         }
 

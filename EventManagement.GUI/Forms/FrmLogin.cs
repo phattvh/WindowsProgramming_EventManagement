@@ -24,7 +24,11 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _authService = authService;
-
+            this.ClientSize = new System.Drawing.Size(420, 345);
+            this.MinimumSize = new System.Drawing.Size(436, 384);
+            this.MaximumSize = new System.Drawing.Size(436, 384);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
         }
 
         private void chkShowPassword_CheckedChanged(object sender, EventArgs e)
