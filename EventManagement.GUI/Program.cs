@@ -154,6 +154,16 @@ namespace EventManagement.GUI
             }
 
             ApplicationConfiguration.Initialize();
+            try
+            {
+                using var seedContext = new EventManagement.DAL.AppDbContext();
+                EventManagement.DAL.DatabaseInitializer.EnsureDataSeeded(seedContext);
+            }
+            catch
+            {
+                // Bỏ qua nếu chưa kết nối được CSDL ở giai đoạn khởi động
+            }
+
             // Vòng đời đăng nhập và quản lý phiên làm việc (Session Lifecycle):
             // 1. Mở FrmLogin để người dùng đăng nhập tài khoản (admin, manager1, staff1,...)
             // 2. Vào FrmDashboard với quyền tương ứng

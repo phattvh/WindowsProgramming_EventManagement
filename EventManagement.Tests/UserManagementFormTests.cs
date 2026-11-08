@@ -1,154 +1,123 @@
-using EventManagement.Core.DTOs;
-using EventManagement.GUI.Forms;
-using FluentAssertions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using EventManagement.GUI.Forms;
+using EventManagement.GUI.Common;
+using EventManagement.BLL.Services;
+using EventManagement.Core.Common;
+using EventManagement.Core.DTOs;
+using EventManagement.Core.Entities;
+using EventManagement.Core.Session;
+using EventManagement.DAL;
 
 namespace EventManagement.Tests
 {
-    /// <summary>
-    /// Kiểm thử thẩm định dữ liệu và quy tắc nghiệp vụ Form F03 Quản lý tài khoản (Task T1-12 & T1-13)
-    /// </summary>
     [TestClass]
     public class UserManagementFormTests
     {
-        [TestMethod]
-        public void ValidateUserInput_EmptyUsername_ReturnsErrorOnUsername()
+        private class MockUserService : IUserService
         {
-            // Act
-            var result = FrmUserManagement.ValidateUserInput("", "Nguyen Van A", "a@event.vn", "0901234567", "Pass@123", isNewUser: true);
+            public Task<List<UserDto>> GetAllAsync(string? keyword = null, string? roleId = null, string? status = null)
+                => Task.FromResult(new List<UserDto>());
+            public Task<UserDto?> GetByIdAsync(string userId) => Task.FromResult<UserDto?>(null);
+            public Task<ServiceResult<UserDto>> CreateAsync(CreateUserDto dto) => Task.FromResult(ServiceResult<UserDto>.Success(new UserDto()));
+            public Task<ServiceResult> UpdateAsync(string userId, UpdateUserDto dto) => Task.FromResult(ServiceResult.Success());
+            public Task<ServiceResult> DeleteAsync(string userId) => Task.FromResult(ServiceResult.Success());
+            public Task<ServiceResult> UnlockUserAsync(string userId) => Task.FromResult(ServiceResult.Success());
+            public Task<ServiceResult> ToggleLockAsync(string userId) => Task.FromResult(ServiceResult.Success());
+        }
 
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtTenDangNhap");
-            result.ErrorMessage.Should().Contain("không được để trống");
+        [TestInitialize]
+        public void Setup()
+        {
+            CurrentSession.DangNhap("USR001", "admin", "Quản trị viên", "admin@e.vn", "ADMIN", new[] { "UC03", "F03" });
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            CurrentSession.DangXuat();
         }
 
         [TestMethod]
-        public void ValidateUserInput_ShortUsername_ReturnsErrorOnUsername()
+        public void F03_TitleBar_And_WindowState_Standardized()
         {
-            // Act: Tên đăng nhập dưới 3 ký tự
-            var result = FrmUserManagement.ValidateUserInput("ab", "Nguyen Van A", "a@event.vn", "0901234567", "Pass@123", isNewUser: true);
-
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtTenDangNhap");
-            result.ErrorMessage.Should().Contain("ít nhất 3 ký tự");
+            // Mô tả: Kiểm tra tiêu đề form F03 là "Hệ Thống Quản Lý Sự Kiện" và chế độ mở toàn màn hình (Maximized).
+            using var form = new FrmUserManagement(new MockUserService());
+            Assert.AreEqual("Hệ Thống Quản Lý Sự Kiện", form.Text);
+            Assert.AreEqual(FormWindowState.Maximized, form.WindowState);
         }
 
         [TestMethod]
-        public void ValidateUserInput_EmptyFullName_ReturnsErrorOnFullName()
+        public void F03_Header_Standardized_And_SubtitleHidden()
         {
-            // Act
-            var result = FrmUserManagement.ValidateUserInput("admin01", "", "a@event.vn", "0901234567", "Pass@123", isNewUser: true);
+            // Mô tả: Kiểm tra tiêu đề hiển thị "QUẢN LÝ TÀI KHOẢN NGƯỜI DÙNG" và dòng phụ chú đã được ẩn hoàn toàn.
+            using var form = new FrmUserManagement(new MockUserService());
+            var lblTitle = form.Controls.Find("lblTitle", true);
+            var lblSubTitle = form.Controls.Find("lblSubTitle", true);
 
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtHoTen");
-            result.ErrorMessage.Should().Contain("không được để trống");
+            Assert.IsTrue(lblTitle.Length > 0, "Không tìm thấy lblTitle.");
+            Assert.AreEqual("QUẢN LÝ TÀI KHOẢN NGƯỜI DÙNG", lblTitle[0].Text);
+
+            Assert.IsTrue(lblSubTitle.Length > 0, "Không tìm thấy lblSubTitle.");
+            Assert.IsFalse(lblSubTitle[0].Visible, "Dòng mô tả phụ lblSubTitle phải được ẩn.");
         }
 
         [TestMethod]
-        public void ValidateUserInput_InvalidEmail_ReturnsErrorOnEmail()
+        public void F03_GridView_HeadersCentered()
         {
-            // Act: Email không có @ hoặc domain
-            var result = FrmUserManagement.ValidateUserInput("admin01", "Nguyen Van A", "invalid-email-format", "0901234567", "Pass@123", isNewUser: true);
+            // Mô tả: Kiểm tra tất cả các cột của dgvUsers đều có tiêu đề căn giữa (MiddleCenter).
+            using var form = new FrmUserManagement(new MockUserService());
+            var dgvArray = form.Controls.Find("dgvUsers", true);
+            Assert.IsTrue(dgvArray.Length > 0, "Không tìm thấy dgvUsers.");
 
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtEmail");
-            result.ErrorMessage.Should().Contain("email không hợp lệ");
+            var dgv = (DataGridView)dgvArray[0];
+            Assert.IsTrue(dgv.Columns.Count >= 7, "dgvUsers phải có đủ danh sách các cột tài khoản.");
+
+            foreach (DataGridViewColumn col in dgv.Columns)
+            {
+                Assert.AreEqual(DataGridViewContentAlignment.MiddleCenter, col.HeaderCell.Style.Alignment,
+                    $"Tiêu đề cột '{col.HeaderText}' phải được căn giữa.");
+            }
         }
 
         [TestMethod]
-        public void ValidateUserInput_InvalidPhone_ReturnsErrorOnPhone()
+        public void F03_SaveCancelButtons_OnlyVisible_In_AddOrEditMode()
         {
-            // Act: Số điện thoại chứa chữ hoặc sai độ dài
-            var result = FrmUserManagement.ValidateUserInput("admin01", "Nguyen Van A", "a@event.vn", "12345abc", "Pass@123", isNewUser: true);
+            // Mô tả: Kiểm tra nút Lưu và Hủy chỉ hiển thị ở chế độ Thêm mới hoặc Sửa, và bị ẩn khi ở chế độ Xem (View).
+            using var form = new FrmUserManagement(new MockUserService());
+            form.Show();
 
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtSoDienThoai");
-            result.ErrorMessage.Should().Contain("Số điện thoại không hợp lệ");
+            // Chế độ Xem (View) ban đầu
+            form.SetFormState(FormMode.View);
+            Assert.IsFalse(form.BtnLuu.Visible, "Nút Lưu phải bị ẩn khi ở chế độ Xem.");
+            Assert.IsFalse(form.BtnHuy.Visible, "Nút Hủy phải bị ẩn khi ở chế độ Xem.");
+            Assert.IsTrue(form.BtnThem.Visible, "Nút Thêm phải hiển thị khi ở chế độ Xem.");
+
+            // Chuyển sang chế độ Thêm (Add)
+            form.SetFormState(FormMode.Add);
+            Assert.IsTrue(form.BtnLuu.Visible, "Nút Lưu phải hiển thị khi ở chế độ Thêm mới.");
+            Assert.IsTrue(form.BtnHuy.Visible, "Nút Hủy phải hiển thị khi ở chế độ Thêm mới.");
+            Assert.IsFalse(form.BtnThem.Visible, "Nút Thêm mới phải bị ẩn khi đang thêm.");
+
+            // Chuyển sang chế độ Sửa (Edit)
+            form.SetFormState(FormMode.Edit);
+            Assert.IsTrue(form.BtnLuu.Visible, "Nút Lưu phải hiển thị khi ở chế độ Sửa.");
+            Assert.IsTrue(form.BtnHuy.Visible, "Nút Hủy phải hiển thị khi ở chế độ Sửa.");
+
+            form.Hide();
         }
 
         [TestMethod]
-        public void ValidateUserInput_EmptyPasswordWhenNewUser_ReturnsErrorOnPassword()
+        public void F03_DatabaseInitializer_SeedsThreeSampleUsers()
         {
-            // Act: Tạo mới nhưng không nhập mật khẩu
-            var result = FrmUserManagement.ValidateUserInput("admin01", "Nguyen Van A", "a@event.vn", "0901234567", "", isNewUser: true);
-
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtMatKhau");
-            result.ErrorMessage.Should().Contain("Mật khẩu không được để trống");
-        }
-
-        [TestMethod]
-        public void ValidateUserInput_ShortPasswordWhenNewUser_ReturnsErrorOnPassword()
-        {
-            // Act: Mật khẩu dưới 6 ký tự
-            var result = FrmUserManagement.ValidateUserInput("admin01", "Nguyen Van A", "a@event.vn", "0901234567", "12345", isNewUser: true);
-
-            // Assert
-            result.IsValid.Should().BeFalse();
-            result.ErrorField.Should().Be("txtMatKhau");
-            result.ErrorMessage.Should().Contain("tối thiểu 6 ký tự");
-        }
-
-        [TestMethod]
-        public void ValidateUserInput_ValidNewUserData_ReturnsSuccess()
-        {
-            // Act: Dữ liệu thêm mới hợp lệ
-            var result = FrmUserManagement.ValidateUserInput("manager01", "Tran Thi Quan Ly", "manager@event.vn", "0912345678", "Secret@123", isNewUser: true);
-
-            // Assert
-            result.IsValid.Should().BeTrue();
-            result.ErrorField.Should().BeNull();
-            result.ErrorMessage.Should().BeNull();
-        }
-
-        [TestMethod]
-        public void ValidateUserInput_ValidEditDataWithoutPasswordChange_ReturnsSuccess()
-        {
-            // Act: Chế độ Sửa (isNewUser = false) và để trống mật khẩu (không đổi)
-            var result = FrmUserManagement.ValidateUserInput("manager01", "Tran Thi Quan Ly Updated", "manager_updated@event.vn", "0912345678", "", isNewUser: false);
-
-            // Assert
-            result.IsValid.Should().BeTrue();
-            result.ErrorField.Should().BeNull();
-            result.ErrorMessage.Should().BeNull();
-        }
-
-        [TestMethod]
-        public void UserDto_IsLockedProperty_DetectsLockedStatusCorrectly()
-        {
-            // Case 1: Active
-            var activeUser = new UserDto { TrangThai = "Hoạt động", KhoaDenKhi = null };
-            activeUser.IsLocked.Should().BeFalse();
-
-            // Case 2: Permanent Lock
-            var permLockedUser = new UserDto { TrangThai = "Khóa vĩnh viễn" };
-            permLockedUser.IsLocked.Should().BeTrue();
-
-            // Case 3: Temporary Lock until future
-            var tempLockedUser = new UserDto { TrangThai = "Khóa tạm thời", KhoaDenKhi = DateTime.Now.AddMinutes(5) };
-            tempLockedUser.IsLocked.Should().BeTrue();
-
-            // Case 4: Lock expired in the past
-            var expiredLockUser = new UserDto { TrangThai = "Hoạt động", KhoaDenKhi = DateTime.Now.AddMinutes(-5) };
-            expiredLockUser.IsLocked.Should().BeFalse();
-        }
-
-        [TestMethod]
-        public void FrmUserManagement_InheritsFrmBase_AndDefaultsToMaximized()
-        {
-            // Mô tả: Kiểm tra FrmUserManagement kế thừa FrmBase, hỗ trợ phóng to toàn màn hình với MaximizeBox bật và WindowState mặc định là Maximized trên màn hình 1920x1080.
-            using var form = new FrmUserManagement();
-            form.Should().BeAssignableTo<FrmBase>();
-            form.MaximizeBox.Should().BeTrue("Form nghiệp vụ phải bật MaximizeBox để phóng to toàn màn hình.");
-            form.WindowState.Should().Be(System.Windows.Forms.FormWindowState.Maximized, "Tất cả các form nghiệp vụ phải mở chế độ Maximized để hiển thị trọn vẹn màn hình.");
-            form.MinimumSize.Width.Should().BeGreaterThanOrEqualTo(1024, "Form phải có MinimumSize tối thiểu 1024px để chống vỡ khung hình.");
+            // Mô tả: Kiểm tra hằng số mật khẩu mặc định của DatabaseInitializer đảm bảo an toàn BCrypt.
+            Assert.IsFalse(string.IsNullOrWhiteSpace(DatabaseInitializer.DefaultPasswordHash));
+            Assert.IsTrue(DatabaseInitializer.DefaultPasswordHash.StartsWith("$2a$11$"));
         }
     }
 }

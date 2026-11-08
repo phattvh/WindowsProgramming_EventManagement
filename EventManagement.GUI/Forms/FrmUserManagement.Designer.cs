@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmUserManagement
     {
@@ -82,14 +82,14 @@
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.Padding = new System.Windows.Forms.Padding(18, 12, 18, 12);
-            this.pnlTop.Size = new System.Drawing.Size(1060, 68);
+            this.pnlTop.Size = new System.Drawing.Size(1060, 56);
             this.pnlTop.TabIndex = 0;
 
             // lblTitle
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.lblTitle.Location = new System.Drawing.Point(15, 9);
+            this.lblTitle.Location = new System.Drawing.Point(15, 13);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(395, 31);
             this.lblTitle.TabIndex = 0;
@@ -100,9 +100,10 @@
             this.lblSubTitle.ForeColor = System.Drawing.Color.Gray;
             this.lblSubTitle.Location = new System.Drawing.Point(17, 39);
             this.lblSubTitle.Name = "lblSubTitle";
-            this.lblSubTitle.Size = new System.Drawing.Size(490, 20);
+            this.lblSubTitle.Size = new System.Drawing.Size(0, 20);
             this.lblSubTitle.TabIndex = 1;
-            this.lblSubTitle.Text = "Quản trị danh sách người dùng, vai trò phân quyền và mở khóa bảo mật hệ thống";
+            this.lblSubTitle.Text = "";
+            this.lblSubTitle.Visible = false;
 
             // pnlSearch
             this.pnlSearch.Controls.Add(this.lblTimKiem);
@@ -114,7 +115,7 @@
             this.pnlSearch.Controls.Add(this.btnTimKiem);
             this.pnlSearch.Controls.Add(this.btnLamMoi);
             this.pnlSearch.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlSearch.Location = new System.Drawing.Point(0, 68);
+            this.pnlSearch.Location = new System.Drawing.Point(0, 56);
             this.pnlSearch.Name = "pnlSearch";
             this.pnlSearch.Size = new System.Drawing.Size(1060, 52);
             this.pnlSearch.TabIndex = 1;
@@ -564,7 +565,8 @@
             this.MaximizeBox = true;
             this.Name = "FrmUserManagement";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "F03 - Quản lý tài khoản người dùng";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FrmUserManagement_Load);
             this.pnlTop.ResumeLayout(false);
             this.pnlTop.PerformLayout();

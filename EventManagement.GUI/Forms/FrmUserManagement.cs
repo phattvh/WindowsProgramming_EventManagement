@@ -24,6 +24,13 @@ namespace EventManagement.GUI.Forms
         private List<UserDto> _currentList = new();
         private UserDto? _selectedUser;
 
+        public Button BtnThem => btnThem;
+        public Button BtnSua => btnSua;
+        public Button BtnXoa => btnXoa;
+        public Button BtnLuu => btnLuu;
+        public Button BtnHuy => btnHuy;
+        public Button BtnMoKhoa => btnMoKhoa;
+
         public FrmUserManagement() : this(new UserService())
         {
         }
@@ -32,7 +39,23 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _userService = userService;
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            this.WindowState = FormWindowState.Maximized;
             dgvUsers.AutoGenerateColumns = false;
+
+            foreach (DataGridViewColumn col in dgvUsers.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            colMaNguoiDung.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSoDienThoai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNhomQuyen.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSoLanSai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colKhoaDenKhi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            grpDetail.Resize += (s, e) => LayoutDetailGroup();
+            LayoutDetailGroup();
         }
 
         private async void FrmUserManagement_Load(object sender, EventArgs e)
@@ -54,8 +77,56 @@ namespace EventManagement.GUI.Forms
             cboNhomQuyen.SelectedIndex = 2;    // "STAFF"
             cboTrangThai.SelectedIndex = 0;    // "Hoạt động"
 
+            LayoutDetailGroup();
             await LoadDataAsync();
             SetFormState(FormMode.View);
+        }
+
+        public void LayoutDetailGroup()
+        {
+            int totalW = grpDetail.ClientSize.Width - 40;
+            if (totalW < 300) return;
+            int colW = totalW / 3;
+
+            // Cột 1
+            int c1X = 20;
+            lblMaNguoiDung.Location = new Point(c1X, 30);
+            txtMaNguoiDung.Location = new Point(c1X + 115, 26);
+            txtMaNguoiDung.Width = Math.Max(100, colW - 130);
+
+            lblHoTen.Location = new Point(c1X, 70);
+            txtHoTen.Location = new Point(c1X + 115, 66);
+            txtHoTen.Width = Math.Max(100, colW - 130);
+
+            lblNhomQuyen.Location = new Point(c1X, 110);
+            cboNhomQuyen.Location = new Point(c1X + 115, 106);
+            cboNhomQuyen.Width = Math.Max(100, colW - 130);
+
+            // Cột 2
+            int c2X = c1X + colW + 15;
+            lblTenDangNhap.Location = new Point(c2X, 30);
+            txtTenDangNhap.Location = new Point(c2X + 115, 26);
+            txtTenDangNhap.Width = Math.Max(100, colW - 130);
+
+            lblEmail.Location = new Point(c2X, 70);
+            txtEmail.Location = new Point(c2X + 115, 66);
+            txtEmail.Width = Math.Max(100, colW - 130);
+
+            lblTrangThai.Location = new Point(c2X, 110);
+            cboTrangThai.Location = new Point(c2X + 115, 106);
+            cboTrangThai.Width = Math.Max(100, colW - 130);
+
+            // Cột 3
+            int c3X = c2X + colW + 15;
+            lblMatKhau.Location = new Point(c3X, 30);
+            txtMatKhau.Location = new Point(c3X + 90, 26);
+            txtMatKhau.Width = Math.Max(100, colW - 105);
+
+            lblSoDienThoai.Location = new Point(c3X, 70);
+            txtSoDienThoai.Location = new Point(c3X + 90, 66);
+            txtSoDienThoai.Width = Math.Max(100, colW - 105);
+
+            lblThongTinKhoa.Location = new Point(20, 150);
         }
 
         public async Task LoadDataAsync()
@@ -84,7 +155,7 @@ namespace EventManagement.GUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi nạp danh sách tài khoản: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tải danh sách tài khoản người dùng. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -105,6 +176,13 @@ namespace EventManagement.GUI.Forms
                     txtSoDienThoai.Enabled = false;
                     cboNhomQuyen.Enabled = false;
                     cboTrangThai.Enabled = false;
+
+                    btnThem.Visible = true;
+                    btnSua.Visible = true;
+                    btnXoa.Visible = true;
+                    btnMoKhoa.Visible = true;
+                    btnLuu.Visible = false;
+                    btnHuy.Visible = false;
 
                     btnThem.Enabled = true;
                     btnSua.Enabled = _selectedUser != null;
@@ -131,6 +209,13 @@ namespace EventManagement.GUI.Forms
                     cboTrangThai.Enabled = true;
                     cboTrangThai.SelectedItem = "Hoạt động";
 
+                    btnThem.Visible = false;
+                    btnSua.Visible = false;
+                    btnXoa.Visible = false;
+                    btnMoKhoa.Visible = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
+
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
@@ -138,6 +223,9 @@ namespace EventManagement.GUI.Forms
                     btnHuy.Enabled = true;
                     btnMoKhoa.Enabled = false;
                     dgvUsers.Enabled = false;
+
+                    btnLuu.Location = new Point(0, 7);
+                    btnHuy.Location = new Point(120, 7);
 
                     txtTenDangNhap.Focus();
                     break;
@@ -154,6 +242,13 @@ namespace EventManagement.GUI.Forms
                     cboNhomQuyen.Enabled = true;
                     cboTrangThai.Enabled = true;
 
+                    btnThem.Visible = false;
+                    btnSua.Visible = false;
+                    btnXoa.Visible = false;
+                    btnMoKhoa.Visible = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
+
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
@@ -161,6 +256,9 @@ namespace EventManagement.GUI.Forms
                     btnHuy.Enabled = true;
                     btnMoKhoa.Enabled = false;
                     dgvUsers.Enabled = false;
+
+                    btnLuu.Location = new Point(0, 7);
+                    btnHuy.Location = new Point(120, 7);
 
                     txtHoTen.Focus();
                     break;
