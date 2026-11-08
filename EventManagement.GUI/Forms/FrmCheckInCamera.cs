@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,6 +10,7 @@ using EventManagement.BLL.Services;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
 using EventManagement.GUI.Common;
+using EventManagement.Core.Session;
 using ZXing;
 using ZXing.Windows.Compatibility;
 
@@ -311,7 +312,7 @@ namespace EventManagement.GUI.Forms
             {
                 MaSuKien = selectedEventId,
                 MaQRLuocDoc = rawCode,
-                NguoiCheckIn = "Admin",
+                NguoiCheckIn = CurrentSession.TenDangNhap ?? "STAFF",
                 PhuongThuc = method
             };
 

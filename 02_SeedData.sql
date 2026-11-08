@@ -58,7 +58,7 @@ SELECT 'STAFF', MaChucNang,
 FROM dbo.ChucNang;
 GO
 
--- seed: NguoiDung Admin --
+-- seed: NguoiDung (3 tai khoan mau: admin, manager1, staff1) --
 INSERT INTO dbo.NguoiDung 
 (
     MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, LanDoiMatKhauGanNhat, SoLanDangNhapSai, KhoaDenKhi
@@ -67,11 +67,37 @@ VALUES
 (
     'USR001', 
     'admin', 
-    '$2a$11$Vn9HCdEIZew5LLR7UcYHH.0eTE9n3Jj928xQ7TJq8mQauMf9sOe0y', 
+    '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', 
     N'Quản trị viên Hệ thống', 
     'admin@eventmanagement.vn', 
     '0901234567', 
     'ADMIN', 
+    N'Hoạt động', 
+    GETDATE(), 
+    0, 
+    NULL
+),
+(
+    'USR002', 
+    'manager1', 
+    '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', 
+    N'Trần Minh Tâm (Trưởng BTC)', 
+    'tam.tran@eventhub.vn', 
+    '0918765432', 
+    'MANAGER', 
+    N'Hoạt động', 
+    GETDATE(), 
+    0, 
+    NULL
+),
+(
+    'USR003', 
+    'staff1', 
+    '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', 
+    N'Lê Thị Hương (Soát vé)', 
+    'huong.le@eventhub.vn', 
+    '0987112233', 
+    'STAFF', 
     N'Hoạt động', 
     GETDATE(), 
     0, 

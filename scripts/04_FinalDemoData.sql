@@ -107,11 +107,8 @@ IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE TenDangNhap = 'staff1')
     INSERT INTO dbo.NguoiDung (MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, SoLanDangNhapSai) VALUES
     ('USR003', 'staff1', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Lê Thị Hương (Soát vé)', 'huong.le@eventhub.vn', '0987112233', 'STAFF', N'Hoạt động', 0);
 
-IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE TenDangNhap = 'locked_user')
-    INSERT INTO dbo.NguoiDung (MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, SoLanDangNhapSai) VALUES
-    ('USR004', 'locked_user', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Nguyễn Văn Khóa', 'locked@eventhub.vn', '0933445566', 'STAFF', N'Khóa tạm thời', 5);
 
-PRINT N'-> Đã sẵn sàng 4 tài khoản người dùng mẫu phục vụ bảo vệ đồ án.';
+PRINT N'-> Đã sẵn sàng 3 tài khoản người dùng mẫu (admin, manager1, staff1) phục vụ phân quyền.';
 GO
 
 -- 5. DANH MỤC LOẠI SỰ KIỆN (LoaiSuKien)
