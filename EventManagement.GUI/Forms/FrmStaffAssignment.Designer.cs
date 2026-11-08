@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmStaffAssignment
     {
@@ -726,8 +726,8 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.dgvPhanCong);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.pnlHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "FrmStaffAssignment";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Phân công nhân sự theo ca trực (F15)";

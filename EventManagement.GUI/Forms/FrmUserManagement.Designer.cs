@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmUserManagement
     {
@@ -216,6 +216,7 @@ namespace EventManagement.GUI.Forms
             this.colTrangThai,
             this.colSoLanSai,
             this.colKhoaDenKhi});
+            this.dgvUsers.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvUsers.Location = new System.Drawing.Point(18, 126);
             this.dgvUsers.MultiSelect = false;
             this.dgvUsers.Name = "dgvUsers";
@@ -308,6 +309,7 @@ namespace EventManagement.GUI.Forms
             this.grpDetail.Controls.Add(this.lblTrangThai);
             this.grpDetail.Controls.Add(this.cboTrangThai);
             this.grpDetail.Controls.Add(this.lblThongTinKhoa);
+            this.grpDetail.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.grpDetail.Location = new System.Drawing.Point(18, 386);
             this.grpDetail.Name = "grpDetail";
             this.grpDetail.Size = new System.Drawing.Size(1024, 185);
@@ -452,6 +454,7 @@ namespace EventManagement.GUI.Forms
             this.pnlButtons.Controls.Add(this.btnLuu);
             this.pnlButtons.Controls.Add(this.btnHuy);
             this.pnlButtons.Controls.Add(this.btnMoKhoa);
+            this.pnlButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlButtons.Location = new System.Drawing.Point(18, 580);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(1024, 50);
@@ -557,8 +560,8 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.dgvUsers);
             this.Controls.Add(this.pnlSearch);
             this.Controls.Add(this.pnlTop);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "FrmUserManagement";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "F03 - Quản lý tài khoản người dùng";

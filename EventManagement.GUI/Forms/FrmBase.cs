@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -39,6 +39,69 @@ namespace EventManagement.GUI.Forms
             this.StartPosition = FormStartPosition.CenterScreen;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             this.DoubleBuffered = true;
+            this.MinimumSize = new Size(1024, 680);
+
+            if (!(this is FrmLogin))
+            {
+                this.MaximizeBox = true;
+                this.WindowState = FormWindowState.Maximized;
+            }
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (!DesignMode && !(this is FrmLogin))
+            {
+                this.MaximizeBox = true;
+                this.FormBorderStyle = FormBorderStyle.Sizable;
+                this.WindowState = FormWindowState.Maximized;
+                ApplyResponsiveLayout(this);
+            }
+        }
+
+        /// <summary>
+        /// Tự động thích ứng giao diện toàn màn hình cho mọi độ phân giải (1920x1080, 1366x768, 2K, 4K)
+        /// Tự động canh chỉnh Anchor và Column Fill cho các DataGridView và Container.
+        /// </summary>
+        protected virtual void ApplyResponsiveLayout(Control container)
+        {
+            if (container == null) return;
+
+            foreach (Control c in container.Controls)
+            {
+                if (c is DataGridView dgv)
+                {
+                    if (dgv.Dock == DockStyle.None)
+                    {
+                        dgv.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+                    }
+                    dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                }
+                else if (c is GroupBox grp && grp.Dock == DockStyle.None)
+                {
+                    if (grp.Top >= container.ClientSize.Height * 0.4)
+                    {
+                        grp.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+                    }
+                }
+                else if (c is Panel pnl && pnl.Dock == DockStyle.None)
+                {
+                    string name = pnl.Name.ToLowerInvariant();
+                    if (name.Contains("button") || pnl.Top >= container.ClientSize.Height * 0.75)
+                    {
+                        pnl.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+                    }
+                    else if (name.Contains("filter") || name.Contains("search") || name.Contains("kpi") || pnl.Top < container.ClientSize.Height * 0.4)
+                    {
+                        pnl.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                    }
+                }
+                else if (c is TabControl tab && tab.Dock == DockStyle.None)
+                {
+                    tab.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+                }
+            }
         }
 
         protected virtual void ApplyStandardTheme()

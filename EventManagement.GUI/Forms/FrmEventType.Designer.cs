@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmEventType
     {
@@ -133,6 +133,7 @@ namespace EventManagement.GUI.Forms
             this.pnlFilter.Controls.Add(this.lblLocTrangThai);
             this.pnlFilter.Controls.Add(this.txtTimKiem);
             this.pnlFilter.Controls.Add(this.lblTimKiem);
+            this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilter.Location = new System.Drawing.Point(16, 64);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(888, 48);
@@ -237,6 +238,7 @@ namespace EventManagement.GUI.Forms
             this.dgvLoaiSuKien.AlternatingRowsDefaultCellStyle = dgvAltRowStyle;
 
             this.dgvLoaiSuKien.EnableHeadersVisualStyles = false;
+            this.dgvLoaiSuKien.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvLoaiSuKien.Location = new System.Drawing.Point(16, 120);
             this.dgvLoaiSuKien.MultiSelect = false;
             this.dgvLoaiSuKien.Name = "dgvLoaiSuKien";
@@ -309,6 +311,7 @@ namespace EventManagement.GUI.Forms
             this.grbThongTin.Controls.Add(this.txtMaLoaiSK);
             this.grbThongTin.Controls.Add(this.lblMaLoaiSK);
             this.grbThongTin.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.grbThongTin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.grbThongTin.Location = new System.Drawing.Point(16, 360);
             this.grbThongTin.Name = "grbThongTin";
             this.grbThongTin.Size = new System.Drawing.Size(888, 136);
@@ -493,8 +496,8 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.dgvLoaiSuKien);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.pnlHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "FrmEventType";
             this.Text = "Quản lý loại sự kiện";
             this.KeyPreview = true;

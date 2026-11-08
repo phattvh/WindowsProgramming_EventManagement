@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmSponsor
     {
@@ -184,6 +184,7 @@ namespace EventManagement.GUI.Forms
             this.pnlFilter.Controls.Add(this.lblLocGoi);
             this.pnlFilter.Controls.Add(this.txtTimKiem);
             this.pnlFilter.Controls.Add(this.lblTimKiem);
+            this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilter.Location = new System.Drawing.Point(20, 62);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(1020, 48);
@@ -330,6 +331,7 @@ namespace EventManagement.GUI.Forms
             this.dgvNhaTaiTro.AlternatingRowsDefaultCellStyle = dgvAltRowStyle;
 
             this.dgvNhaTaiTro.EnableHeadersVisualStyles = false;
+            this.dgvNhaTaiTro.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvNhaTaiTro.Location = new System.Drawing.Point(20, 118);
             this.dgvNhaTaiTro.MultiSelect = false;
             this.dgvNhaTaiTro.Name = "dgvNhaTaiTro";
@@ -736,6 +738,7 @@ namespace EventManagement.GUI.Forms
             this.pnlButtons.Controls.Add(this.btnXoa);
             this.pnlButtons.Controls.Add(this.btnSua);
             this.pnlButtons.Controls.Add(this.btnThem);
+            this.pnlButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlButtons.Location = new System.Drawing.Point(20, 565);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(1020, 58);
@@ -831,9 +834,9 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.pnlHeader);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.KeyPreview = true;
-            this.MaximizeBox = false;
+            this.MaximizeBox = true;
             this.Name = "FrmSponsor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quản lý nhà tài trợ và đối tác";

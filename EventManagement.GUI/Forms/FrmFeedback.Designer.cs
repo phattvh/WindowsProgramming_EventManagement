@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmFeedback
     {
@@ -173,6 +173,7 @@ namespace EventManagement.GUI.Forms
             this.pnlKpi.Controls.Add(this.lblKpiTongPhTitle);
             this.pnlKpi.Controls.Add(this.lblKpiDiemTbValue);
             this.pnlKpi.Controls.Add(this.lblKpiDiemTbTitle);
+            this.pnlKpi.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlKpi.Location = new System.Drawing.Point(20, 58);
             this.pnlKpi.Name = "pnlKpi";
             this.pnlKpi.Size = new System.Drawing.Size(1020, 42);
@@ -262,6 +263,7 @@ namespace EventManagement.GUI.Forms
             this.pnlFilter.Controls.Add(this.lblLocMucSao);
             this.pnlFilter.Controls.Add(this.cboLocSuKien);
             this.pnlFilter.Controls.Add(this.lblLocSuKien);
+            this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilter.Location = new System.Drawing.Point(20, 106);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(1020, 48);
@@ -401,6 +403,7 @@ namespace EventManagement.GUI.Forms
             this.dgvPhanHoi.AlternatingRowsDefaultCellStyle = dgvAltRowStyle;
 
             this.dgvPhanHoi.EnableHeadersVisualStyles = false;
+            this.dgvPhanHoi.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvPhanHoi.Location = new System.Drawing.Point(20, 160);
             this.dgvPhanHoi.MultiSelect = false;
             this.dgvPhanHoi.Name = "dgvPhanHoi";
@@ -496,6 +499,7 @@ namespace EventManagement.GUI.Forms
             this.grbThongTin.Controls.Add(this.lblMaPhanHoi);
             this.grbThongTin.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grbThongTin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
+            this.grbThongTin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.grbThongTin.Location = new System.Drawing.Point(20, 348);
             this.grbThongTin.Name = "grbThongTin";
             this.grbThongTin.Size = new System.Drawing.Size(1020, 205);
@@ -752,9 +756,9 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.pnlKpi);
             this.Controls.Add(this.pnlHeader);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.KeyPreview = true;
-            this.MaximizeBox = false;
+            this.MaximizeBox = true;
             this.Name = "FrmFeedback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quản lý khảo sát và phản hồi sau sự kiện";

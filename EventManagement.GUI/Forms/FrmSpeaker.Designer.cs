@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmSpeaker
     {
@@ -166,6 +166,7 @@ namespace EventManagement.GUI.Forms
             this.pnlFilter.Controls.Add(this.lblLocTrangThai);
             this.pnlFilter.Controls.Add(this.txtTimKiem);
             this.pnlFilter.Controls.Add(this.lblTimKiem);
+            this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilter.Location = new System.Drawing.Point(20, 62);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(1020, 48);
@@ -282,6 +283,7 @@ namespace EventManagement.GUI.Forms
             this.dgvDienGia.AlternatingRowsDefaultCellStyle = dgvAltRowStyle;
 
             this.dgvDienGia.EnableHeadersVisualStyles = false;
+            this.dgvDienGia.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvDienGia.Location = new System.Drawing.Point(20, 118);
             this.dgvDienGia.MultiSelect = false;
             this.dgvDienGia.Name = "dgvDienGia";
@@ -629,6 +631,7 @@ namespace EventManagement.GUI.Forms
             this.pnlButtons.Controls.Add(this.btnXoa);
             this.pnlButtons.Controls.Add(this.btnSua);
             this.pnlButtons.Controls.Add(this.btnThem);
+            this.pnlButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlButtons.Location = new System.Drawing.Point(20, 565);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(1020, 58);
@@ -721,8 +724,8 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.dgvDienGia);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.pnlHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "FrmSpeaker";
             this.Text = "Quản lý diễn giả và khách mời";
             this.KeyPreview = true;

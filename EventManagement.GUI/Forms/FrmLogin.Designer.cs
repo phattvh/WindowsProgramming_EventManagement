@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmLogin
     {
@@ -19,7 +19,6 @@ namespace EventManagement.GUI.Forms
         {
             this.components = new System.ComponentModel.Container();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.lblSubTitle = new System.Windows.Forms.Label();
             this.lblUsername = new System.Windows.Forms.Label();
             this.txtUsername = new System.Windows.Forms.TextBox();
             this.lblPassword = new System.Windows.Forms.Label();
@@ -35,82 +34,77 @@ namespace EventManagement.GUI.Forms
 
             // lblTitle
             this.lblTitle.AutoSize = true;
-            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
-            this.lblTitle.Location = new System.Drawing.Point(25, 25);
+            this.lblTitle.Location = new System.Drawing.Point(26, 25);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(288, 35);
+            this.lblTitle.Size = new System.Drawing.Size(308, 37);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "ĐĂNG NHẬP HỆ THỐNG";
 
-            // lblSubTitle
-            this.lblSubTitle.AutoSize = true;
-            this.lblSubTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblSubTitle.ForeColor = System.Drawing.Color.Gray;
-            this.lblSubTitle.Location = new System.Drawing.Point(27, 62);
-            this.lblSubTitle.Name = "lblSubTitle";
-            this.lblSubTitle.Size = new System.Drawing.Size(277, 20);
-            this.lblSubTitle.TabIndex = 1;
-            this.lblSubTitle.Text = "Hệ Thống Quản Lý Sự Kiện & Hội Nghị";
-
             // lblUsername
             this.lblUsername.AutoSize = true;
-            this.lblUsername.Location = new System.Drawing.Point(27, 95);
+            this.lblUsername.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblUsername.Location = new System.Drawing.Point(28, 75);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(110, 20);
-            this.lblUsername.TabIndex = 2;
+            this.lblUsername.Size = new System.Drawing.Size(123, 21);
+            this.lblUsername.TabIndex = 1;
             this.lblUsername.Text = "Tên đăng nhập:";
 
             // txtUsername
-            this.txtUsername.Location = new System.Drawing.Point(30, 118);
+            this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtUsername.Location = new System.Drawing.Point(30, 100);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(375, 27);
-            this.txtUsername.TabIndex = 3;
+            this.txtUsername.Size = new System.Drawing.Size(360, 30);
+            this.txtUsername.TabIndex = 2;
 
             // lblPassword
             this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(27, 158);
+            this.lblPassword.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblPassword.Location = new System.Drawing.Point(28, 140);
             this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(73, 20);
-            this.lblPassword.TabIndex = 4;
+            this.lblPassword.Size = new System.Drawing.Size(82, 21);
+            this.lblPassword.TabIndex = 3;
             this.lblPassword.Text = "Mật khẩu:";
 
             // txtPassword
-            this.txtPassword.Location = new System.Drawing.Point(30, 181);
+            this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.txtPassword.Location = new System.Drawing.Point(30, 165);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '•';
-            this.txtPassword.Size = new System.Drawing.Size(375, 27);
-            this.txtPassword.TabIndex = 5;
+            this.txtPassword.Size = new System.Drawing.Size(360, 30);
+            this.txtPassword.TabIndex = 4;
 
             // chkShowPassword
             this.chkShowPassword.AutoSize = true;
-            this.chkShowPassword.Location = new System.Drawing.Point(30, 218);
+            this.chkShowPassword.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.chkShowPassword.Location = new System.Drawing.Point(30, 203);
             this.chkShowPassword.Name = "chkShowPassword";
             this.chkShowPassword.Size = new System.Drawing.Size(127, 24);
-            this.chkShowPassword.TabIndex = 6;
+            this.chkShowPassword.TabIndex = 5;
             this.chkShowPassword.Text = "Hiện mật khẩu";
             this.chkShowPassword.UseVisualStyleBackColor = true;
             this.chkShowPassword.CheckedChanged += new System.EventHandler(this.chkShowPassword_CheckedChanged);
 
             // lblLockoutNotice
             this.lblLockoutNotice.ForeColor = System.Drawing.Color.Red;
-            this.lblLockoutNotice.Location = new System.Drawing.Point(27, 245);
+            this.lblLockoutNotice.Location = new System.Drawing.Point(30, 232);
             this.lblLockoutNotice.Name = "lblLockoutNotice";
-            this.lblLockoutNotice.Size = new System.Drawing.Size(378, 38);
-            this.lblLockoutNotice.TabIndex = 7;
+            this.lblLockoutNotice.Size = new System.Drawing.Size(360, 36);
+            this.lblLockoutNotice.TabIndex = 6;
             this.lblLockoutNotice.Visible = false;
 
             // btnLogin
-            this.btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(13)))), ((int)(((byte)(110)))), ((int)(((byte)(253)))));
+            this.btnLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
             this.btnLogin.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnLogin.FlatAppearance.BorderSize = 0;
             this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(30, 290);
+            this.btnLogin.Location = new System.Drawing.Point(30, 275);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(180, 42);
-            this.btnLogin.TabIndex = 8;
+            this.btnLogin.Size = new System.Drawing.Size(170, 42);
+            this.btnLogin.TabIndex = 7;
             this.btnLogin.Text = "Đăng Nhập";
             this.btnLogin.UseVisualStyleBackColor = false;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
@@ -123,10 +117,10 @@ namespace EventManagement.GUI.Forms
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnExit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.btnExit.Location = new System.Drawing.Point(225, 290);
+            this.btnExit.Location = new System.Drawing.Point(220, 275);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(180, 42);
-            this.btnExit.TabIndex = 9;
+            this.btnExit.Size = new System.Drawing.Size(170, 42);
+            this.btnExit.TabIndex = 8;
             this.btnExit.Text = "Thoát";
             this.btnExit.UseVisualStyleBackColor = false;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
@@ -142,7 +136,7 @@ namespace EventManagement.GUI.Forms
             // FrmLogin
             this.AcceptButton = this.btnLogin;
             this.CancelButton = this.btnExit;
-            this.ClientSize = new System.Drawing.Size(438, 355);
+            this.ClientSize = new System.Drawing.Size(420, 345);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.lblLockoutNotice);
@@ -151,13 +145,13 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.lblUsername);
-            this.Controls.Add(this.lblSubTitle);
             this.Controls.Add(this.lblTitle);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FrmLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Hệ Thống Quản Lý Sự Kiện - Đăng Nhập";
+            this.Text = "Đăng Nhập Hệ Thống";
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -166,7 +160,6 @@ namespace EventManagement.GUI.Forms
         #endregion
 
         private System.Windows.Forms.Label lblTitle;
-        private System.Windows.Forms.Label lblSubTitle;
         private System.Windows.Forms.Label lblUsername;
         public System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Label lblPassword;

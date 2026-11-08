@@ -1,4 +1,4 @@
-using EventManagement.GUI.Forms;
+﻿using EventManagement.GUI.Forms;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -94,6 +94,23 @@ namespace EventManagement.Tests
 
             // Assert
             seconds.Should().Be(0);
+        }
+        [TestMethod]
+        public void FrmLogin_LayoutAndDimensions_AreProperlyProportioned_WithoutSubTitle()
+        {
+            // Mô tả: Kiểm tra Form Đăng nhập F01 không còn hiển thị subtitle 'Hệ Thống Quản Lý Sự Kiện & Hội Nghị', có kích thước dialog cân đối (<= 450x400) và không bị ép full màn hình.
+            using var form = new FrmLogin();
+
+            form.MaximizeBox.Should().BeFalse("Form Đăng nhập phải ở dạng hộp thoại cố định, không cho phóng to toàn màn hình.");
+            form.WindowState.Should().Be(System.Windows.Forms.FormWindowState.Normal, "Form Đăng nhập phải hiển thị ở chế độ Normal giữa màn hình.");
+            form.ClientSize.Width.Should().BeInRange(380, 460, "Chiều rộng form đăng nhập phải cân đối.");
+            form.ClientSize.Height.Should().BeInRange(320, 390, "Chiều cao form đăng nhập phải gọn gàng, vừa vặn.");
+
+            // Kiểm tra không còn control nào chứa chữ phụ đề dài
+            foreach (System.Windows.Forms.Control c in form.Controls)
+            {
+                c.Text.Should().NotContain("Hệ Thống Quản Lý Sự Kiện & Hội Nghị", "Đã lược bỏ dòng phụ đề dài theo yêu cầu giao diện.");
+            }
         }
     }
 }

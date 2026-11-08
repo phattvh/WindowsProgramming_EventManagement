@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmSchedule
     {
@@ -182,6 +182,7 @@ namespace EventManagement.GUI.Forms
             this.pnlFilter.Controls.Add(this.lblLocDienGia);
             this.pnlFilter.Controls.Add(this.cboLocSuKien);
             this.pnlFilter.Controls.Add(this.lblLocSuKien);
+            this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlFilter.Location = new System.Drawing.Point(20, 66);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(1060, 46);
@@ -313,6 +314,7 @@ namespace EventManagement.GUI.Forms
             this.dgvLichTrinh.DefaultCellStyle = dgvRowStyle;
             this.dgvLichTrinh.EnableHeadersVisualStyles = false;
             this.dgvLichTrinh.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.dgvLichTrinh.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvLichTrinh.Location = new System.Drawing.Point(20, 120);
             this.dgvLichTrinh.MultiSelect = false;
             this.dgvLichTrinh.Name = "dgvLichTrinh";
@@ -423,6 +425,7 @@ namespace EventManagement.GUI.Forms
             this.grbThongTin.Controls.Add(this.lblMaLichTrinh);
             this.grbThongTin.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grbThongTin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(58)))), ((int)(((byte)(138)))));
+            this.grbThongTin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.grbThongTin.Location = new System.Drawing.Point(20, 390);
             this.grbThongTin.Name = "grbThongTin";
             this.grbThongTin.Size = new System.Drawing.Size(1060, 240);
@@ -648,6 +651,7 @@ namespace EventManagement.GUI.Forms
             this.pnlButtons.Controls.Add(this.btnXoa);
             this.pnlButtons.Controls.Add(this.btnSua);
             this.pnlButtons.Controls.Add(this.btnThem);
+            this.pnlButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlButtons.Location = new System.Drawing.Point(20, 642);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(1060, 48);
@@ -743,8 +747,8 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.dgvLichTrinh);
             this.Controls.Add(this.pnlFilter);
             this.Controls.Add(this.pnlHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            this.MaximizeBox = true;
             this.Name = "FrmSchedule";
             this.Text = "Quản lý lịch trình / chương trình tiết mục";
             this.KeyPreview = true;

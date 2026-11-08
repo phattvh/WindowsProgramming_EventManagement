@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -204,5 +204,14 @@ namespace EventManagement.Tests
             lblCard4Value!.Text.Should().Contain("80.0");
         }
         // Mô tả: Test này thẩm định luồng đổ dữ liệu thực tế lên 4 Cards KPI số liệu to rõ và nạp danh sách sự kiện 7 ngày tới theo đúng chuẩn Mẫu 1.
+        [TestMethod]
+        public void FrmDashboard_InheritsFrmBase_AndDefaultsToMaximized()
+        {
+            // Mô tả: Kiểm tra FrmDashboard kế thừa FrmBase, hỗ trợ phóng to toàn màn hình với MaximizeBox bật và WindowState mặc định là Maximized trên màn hình 1920x1080.
+            using var form = new FrmDashboard();
+            form.Should().BeAssignableTo<FrmBase>();
+            form.MaximizeBox.Should().BeTrue("Dashboard phải bật MaximizeBox để phóng to toàn màn hình.");
+            form.WindowState.Should().Be(System.Windows.Forms.FormWindowState.Maximized, "Dashboard phải mở chế độ Maximized để hiển thị toàn bộ biểu đồ và bảng trên màn hình.");
+        }
     }
 }

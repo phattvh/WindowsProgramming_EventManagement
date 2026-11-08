@@ -139,5 +139,16 @@ namespace EventManagement.Tests
             var expiredLockUser = new UserDto { TrangThai = "Hoạt động", KhoaDenKhi = DateTime.Now.AddMinutes(-5) };
             expiredLockUser.IsLocked.Should().BeFalse();
         }
+
+        [TestMethod]
+        public void FrmUserManagement_InheritsFrmBase_AndDefaultsToMaximized()
+        {
+            // Mô tả: Kiểm tra FrmUserManagement kế thừa FrmBase, hỗ trợ phóng to toàn màn hình với MaximizeBox bật và WindowState mặc định là Maximized trên màn hình 1920x1080.
+            using var form = new FrmUserManagement();
+            form.Should().BeAssignableTo<FrmBase>();
+            form.MaximizeBox.Should().BeTrue("Form nghiệp vụ phải bật MaximizeBox để phóng to toàn màn hình.");
+            form.WindowState.Should().Be(System.Windows.Forms.FormWindowState.Maximized, "Tất cả các form nghiệp vụ phải mở chế độ Maximized để hiển thị trọn vẹn màn hình.");
+            form.MinimumSize.Width.Should().BeGreaterThanOrEqualTo(1024, "Form phải có MinimumSize tối thiểu 1024px để chống vỡ khung hình.");
+        }
     }
 }
