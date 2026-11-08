@@ -67,7 +67,7 @@ VALUES
 (
     'USR001', 
     'admin', 
-    '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', 
+    '$2a$11$Vn9HCdEIZew5LLR7UcYHH.0eTE9n3Jj928xQ7TJq8mQauMf9sOe0y', 
     N'Quản trị viên Hệ thống', 
     'admin@eventmanagement.vn', 
     '0901234567', 
@@ -80,7 +80,7 @@ VALUES
 (
     'USR002', 
     'manager1', 
-    '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', 
+    '$2a$11$Vn9HCdEIZew5LLR7UcYHH.0eTE9n3Jj928xQ7TJq8mQauMf9sOe0y', 
     N'Trần Minh Tâm (Trưởng BTC)', 
     'tam.tran@eventhub.vn', 
     '0918765432', 
@@ -93,7 +93,7 @@ VALUES
 (
     'USR003', 
     'staff1', 
-    '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', 
+    '$2a$11$Vn9HCdEIZew5LLR7UcYHH.0eTE9n3Jj928xQ7TJq8mQauMf9sOe0y', 
     N'Lê Thị Hương (Soát vé)', 
     'huong.le@eventhub.vn', 
     '0987112233', 
