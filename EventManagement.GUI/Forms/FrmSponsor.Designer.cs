@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmSponsor
     {
@@ -839,7 +839,7 @@
             this.MaximizeBox = true;
             this.Name = "FrmSponsor";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Quản lý nhà tài trợ và đối tác";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.Load += new System.EventHandler(this.FrmSponsor_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmSponsor_KeyDown);
             this.pnlHeader.ResumeLayout(false);

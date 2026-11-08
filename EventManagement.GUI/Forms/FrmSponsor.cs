@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,16 @@ namespace EventManagement.GUI.Forms
         private List<SponsorDto> _currentList = new();
         private bool _isLoading = true;
 
+        public Button BtnThem => btnThem;
+        public Button BtnSua => btnSua;
+        public Button BtnXoa => btnXoa;
+        public Button BtnLuu => btnLuu;
+        public Button BtnHuy => btnHuy;
+        public Button BtnLamMoi => btnLamMoi;
+        public DataGridView DgvNhaTaiTro => dgvNhaTaiTro;
+        public GroupBox GrbThongTin => grbThongTin;
+        public Panel PnlFilter => pnlFilter;
+
         public FrmSponsor() : this(new SponsorService())
         {
         }
@@ -31,11 +42,21 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _sponsorService = sponsorService;
+
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             ApplyCustomStyles();
+
+            // Lắng nghe sự kiện co giãn để bố cục responsive cân đối toàn màn hình
+            grbThongTin.Resize += (s, e) => AdjustInputLayout();
+            pnlButtons.Resize += (s, e) => AdjustButtonLayout();
+            pnlFilter.Resize += (s, e) => AdjustFilterLayout();
+            this.Resize += (s, e) => { AdjustInputLayout(); AdjustButtonLayout(); AdjustFilterLayout(); };
         }
 
         private void ApplyCustomStyles()
         {
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+
             StyleButton(btnThem, ButtonRole.Success);
             StyleButton(btnSua, ButtonRole.Primary);
             StyleButton(btnXoa, ButtonRole.Danger);
@@ -44,7 +65,136 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnLamMoi, ButtonRole.Secondary);
             StyleButton(btnXuatExcel, ButtonRole.Secondary);
 
+            StyleDataGridView(dgvNhaTaiTro);
             dgvNhaTaiTro.AutoGenerateColumns = false;
+
+            // Điều chỉnh tỷ lệ cột: mã, gói, giá trị, SĐT, hình thức, trạng thái nhỏ lại; tên tổ chức & người đại diện to ra
+            colMaNhaTaiTro.FillWeight = 50;
+            colTenToChuc.FillWeight = 160;
+            colNguoiDaiDien.FillWeight = 130;
+            colSoDienThoai.FillWeight = 65;
+            colEmail.FillWeight = 100;
+            colGoiTaiTro.FillWeight = 60;
+            colGiaTriTaiTro.FillWeight = 70;
+            colHinhThucTaiTro.FillWeight = 60;
+            colTrangThai.FillWeight = 60;
+
+            dgvNhaTaiTro.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvNhaTaiTro.ScrollBars = ScrollBars.Both;
+
+            foreach (DataGridViewColumn col in dgvNhaTaiTro.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            AdjustInputLayout();
+            AdjustButtonLayout();
+            AdjustFilterLayout();
+        }
+
+        /// <summary>
+        /// Tự động cân đối thông tin chi tiết nhà tài trợ thành 3 cột đều nhau trên toàn màn hình (Responsive 1920x1080)
+        /// </summary>
+        private void AdjustInputLayout()
+        {
+            if (grbThongTin == null) return;
+            int clientW = grbThongTin.ClientSize.Width;
+            int margin = 20;
+            int gap = 25;
+            int colWidth = (clientW - (margin * 2) - (gap * 2)) / 3;
+            if (colWidth < 220) colWidth = 220;
+
+            int col1X = margin;
+            int col2X = margin + colWidth + gap;
+            int col3X = margin + (colWidth * 2) + (gap * 2);
+
+            int labelW = 115;
+            int inputW = colWidth - labelW - 10;
+
+            // Cột 1: Thông tin tổ chức
+            // Row 1: Mã NTT
+            lblMaNhaTaiTro.Location = new Point(col1X, 31);
+            txtMaNhaTaiTro.Location = new Point(col1X + labelW, 28);
+            txtMaNhaTaiTro.Size = new Size(inputW, 23);
+
+            // Row 2: Tên tổ chức (*)
+            lblTenToChuc.Location = new Point(col1X, 65);
+            txtTenToChuc.Location = new Point(col1X + labelW, 62);
+            txtTenToChuc.Size = new Size(inputW, 23);
+
+            // Row 3: Người đại diện
+            lblNguoiDaiDien.Location = new Point(col1X, 99);
+            txtNguoiDaiDien.Location = new Point(col1X + labelW, 96);
+            txtNguoiDaiDien.Size = new Size(inputW, 23);
+
+            // Row 4: Địa chỉ
+            lblDiaChi.Location = new Point(col1X, 133);
+            txtDiaChi.Location = new Point(col1X + labelW, 130);
+            txtDiaChi.Size = new Size(inputW, 23);
+
+            // Cột 2: Liên hệ & Trạng thái
+            // Row 1: Số điện thoại
+            lblSoDienThoai.Location = new Point(col2X, 31);
+            txtSoDienThoai.Location = new Point(col2X + labelW, 28);
+            txtSoDienThoai.Size = new Size(inputW, 23);
+
+            // Row 2: Email
+            lblEmail.Location = new Point(col2X, 65);
+            txtEmail.Location = new Point(col2X + labelW, 62);
+            txtEmail.Size = new Size(inputW, 23);
+
+            // Row 3: Trạng thái
+            lblTrangThai.Location = new Point(col2X, 99);
+            cboTrangThai.Location = new Point(col2X + labelW, 96);
+            cboTrangThai.Size = new Size(inputW, 23);
+
+            // Row 4: Ghi chú
+            lblGhiChu.Location = new Point(col2X, 133);
+            txtGhiChu.Location = new Point(col2X + labelW, 130);
+            txtGhiChu.Size = new Size(inputW, 23);
+
+            // Cột 3: Gói & Giá trị tài trợ
+            // Row 1: Gói tài trợ
+            lblGoiTaiTro.Location = new Point(col3X, 31);
+            cboGoiTaiTro.Location = new Point(col3X + labelW, 28);
+            cboGoiTaiTro.Size = new Size(inputW, 23);
+
+            // Row 2: Tổng giá trị
+            lblGiaTriTaiTro.Location = new Point(col3X, 65);
+            nudGiaTriTaiTro.Location = new Point(col3X + labelW, 62);
+            nudGiaTriTaiTro.Size = new Size(inputW, 23);
+
+            // Row 3: Hình thức
+            lblHinhThuc.Location = new Point(col3X, 99);
+            cboHinhThuc.Location = new Point(col3X + labelW, 96);
+            cboHinhThuc.Size = new Size(inputW, 23);
+        }
+
+        private void AdjustButtonLayout()
+        {
+            if (pnlButtons == null) return;
+            int rightEdge = pnlButtons.ClientSize.Width - 15;
+            btnHuy.Location = new Point(rightEdge - btnHuy.Width, 10);
+            btnLuu.Location = new Point(btnHuy.Left - btnLuu.Width - 10, 10);
+        }
+
+        private void AdjustFilterLayout()
+        {
+            if (pnlFilter == null) return;
+            btnLamMoi.Location = new Point(pnlFilter.ClientSize.Width - btnLamMoi.Width - 15, 8);
+            int filterRight = btnLamMoi.Left - 15;
+            cboLocTrangThai.Location = new Point(filterRight - cboLocTrangThai.Width, 11);
+            lblLocTrangThai.Location = new Point(cboLocTrangThai.Left - lblLocTrangThai.Width - 8, 14);
+
+            int goiRight = lblLocTrangThai.Left - 15;
+            cboLocGoiTaiTro.Location = new Point(goiRight - cboLocGoiTaiTro.Width, 11);
+            lblLocGoi.Location = new Point(cboLocGoiTaiTro.Left - lblLocGoi.Width - 8, 14);
+
+            int searchWidth = lblLocGoi.Left - 15 - txtTimKiem.Left;
+            if (searchWidth > 150)
+            {
+                txtTimKiem.Width = searchWidth;
+            }
         }
 
         private void FrmSponsor_Load(object sender, EventArgs e)
@@ -119,6 +269,9 @@ namespace EventManagement.GUI.Forms
             errBaoLoi.Clear();
         }
 
+        /// <summary>
+        /// Nút Lưu và Hủy chỉ hiển thị khi Thêm hoặc Sửa
+        /// </summary>
         private void SetFormState(FormMode mode)
         {
             _currentMode = mode;
@@ -142,6 +295,8 @@ namespace EventManagement.GUI.Forms
             btnThem.Enabled = !isEditing;
             btnSua.Enabled = !isEditing && _currentList.Count > 0;
             btnXoa.Enabled = !isEditing && _currentList.Count > 0;
+            btnLuu.Visible = isEditing;
+            btnHuy.Visible = isEditing;
             btnLuu.Enabled = isEditing;
             btnHuy.Enabled = isEditing;
 
@@ -197,7 +352,7 @@ namespace EventManagement.GUI.Forms
             }
 
             var confirm = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa/ngừng hợp tác với nhà tài trợ '{selected.TenToChuc}' (Mã: {selected.MaNhaTaiTro})?\n\nLưu ý: Nếu đối tác đã tham gia tài trợ sự kiện, hệ thống sẽ thực hiện Soft Delete (BR-20).",
+                $"Bạn có chắc chắn muốn xóa/ngừng hợp tác với nhà tài trợ '{selected.TenToChuc}' (Mã: {selected.MaNhaTaiTro})?",
                 "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -255,7 +410,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi lưu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(result.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -302,16 +457,16 @@ namespace EventManagement.GUI.Forms
             {
                 try
                 {
-                    var sb = new StringBuilder();
-                    sb.AppendLine("Mã NTT,Tên tổ chức / Doanh nghiệp,Người đại diện,Điện thoại,Email,Gói tài trợ,Tổng giá trị (VNĐ),Hình thức,Trạng thái,Địa chỉ,Ghi chú");
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("Mã NTT,Tên tổ chức,Người đại diện,Số ĐT,Email,Gói tài trợ,Giá trị,Hình thức,Trạng thái,Địa chỉ,Ghi chú");
 
                     foreach (var s in _currentList)
                     {
-                        sb.AppendLine($"\"{s.MaNhaTaiTro}\",\"{EscapeCsv(s.TenToChuc)}\",\"{EscapeCsv(s.NguoiDaiDien)}\",\"{s.SoDienThoai}\",\"{s.Email}\",\"{s.GoiTaiTro}\",{s.TongGiaTriTaiTro},\"{s.HinhThucTaiTro}\",\"{s.TrangThai}\",\"{EscapeCsv(s.DiaChi)}\",\"{EscapeCsv(s.GhiChu)}\"");
+                        sb.AppendLine($"\"{s.MaNhaTaiTro}\",\"{s.TenToChuc}\",\"{s.NguoiDaiDien}\",\"{s.SoDienThoai}\",\"{s.Email}\",\"{s.GoiTaiTro}\",\"{s.TongGiaTriTaiTro}\",\"{s.HinhThucTaiTro}\",\"{s.TrangThai}\",\"{s.DiaChi}\",\"{s.GhiChu}\"");
                     }
 
                     File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
-                    MessageBox.Show("Xuất danh sách nhà tài trợ thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Xuất file Excel (CSV) thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -320,16 +475,24 @@ namespace EventManagement.GUI.Forms
             }
         }
 
-        private static string EscapeCsv(string? value)
+        private void SelectRowByCode(string code)
         {
-            if (string.IsNullOrEmpty(value)) return string.Empty;
-            return value.Replace("\"", "\"\"");
+            for (int i = 0; i < dgvNhaTaiTro.Rows.Count; i++)
+            {
+                if (dgvNhaTaiTro.Rows[i].DataBoundItem is SponsorDto item &&
+                    item.MaNhaTaiTro.Equals(code, StringComparison.OrdinalIgnoreCase))
+                {
+                    dgvNhaTaiTro.Rows[i].Selected = true;
+                    DisplaySelectedRow(item);
+                    break;
+                }
+            }
         }
 
         private bool ValidateInputs()
         {
-            errBaoLoi.Clear();
             bool isValid = true;
+            errBaoLoi.Clear();
 
             if (string.IsNullOrWhiteSpace(txtMaNhaTaiTro.Text))
             {
@@ -339,51 +502,22 @@ namespace EventManagement.GUI.Forms
 
             if (string.IsNullOrWhiteSpace(txtTenToChuc.Text))
             {
-                errBaoLoi.SetError(txtTenToChuc, "Tên tổ chức/doanh nghiệp tài trợ không được để trống.");
+                errBaoLoi.SetError(txtTenToChuc, "Tên tổ chức không được để trống.");
                 isValid = false;
             }
 
-            if (!string.IsNullOrWhiteSpace(txtEmail.Text))
+            if (nudGiaTriTaiTro.Value < 0)
             {
-                string emailPattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-                if (!System.Text.RegularExpressions.Regex.IsMatch(txtEmail.Text.Trim(), emailPattern))
-                {
-                    errBaoLoi.SetError(txtEmail, "Địa chỉ Email không đúng định dạng.");
-                    isValid = false;
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(txtSoDienThoai.Text))
-            {
-                string phonePattern = @"^[0-9]{8,15}$";
-                if (!System.Text.RegularExpressions.Regex.IsMatch(txtSoDienThoai.Text.Trim(), phonePattern))
-                {
-                    errBaoLoi.SetError(txtSoDienThoai, "Số điện thoại phải từ 8 đến 15 chữ số.");
-                    isValid = false;
-                }
+                errBaoLoi.SetError(nudGiaTriTaiTro, "Giá trị tài trợ không được âm.");
+                isValid = false;
             }
 
             return isValid;
         }
 
-        private void SelectRowByCode(string code)
-        {
-            foreach (DataGridViewRow row in dgvNhaTaiTro.Rows)
-            {
-                if (row.DataBoundItem is SponsorDto dto && string.Equals(dto.MaNhaTaiTro, code, StringComparison.OrdinalIgnoreCase))
-                {
-                    row.Selected = true;
-                    DisplaySelectedRow(dto);
-                    break;
-                }
-            }
-        }
-
         private void dgvNhaTaiTro_SelectionChanged(object sender, EventArgs e)
         {
-            if (_isLoading || _currentMode != FormMode.View) return;
-
-            if (dgvNhaTaiTro.CurrentRow?.DataBoundItem is SponsorDto selected)
+            if (_currentMode == FormMode.View && dgvNhaTaiTro.CurrentRow?.DataBoundItem is SponsorDto selected)
             {
                 DisplaySelectedRow(selected);
             }
@@ -408,39 +542,15 @@ namespace EventManagement.GUI.Forms
         {
             if (_currentMode == FormMode.View)
             {
-                if (e.KeyCode == Keys.F2)
-                {
-                    btnThem.PerformClick();
-                    e.Handled = true;
-                }
-                else if (e.KeyCode == Keys.F3)
-                {
-                    btnSua.PerformClick();
-                    e.Handled = true;
-                }
-                else if (e.KeyCode == Keys.Delete && !(ActiveControl is TextBoxBase))
-                {
-                    btnXoa.PerformClick();
-                    e.Handled = true;
-                }
-                else if (e.KeyCode == Keys.F5)
-                {
-                    btnLamMoi.PerformClick();
-                    e.Handled = true;
-                }
+                if (e.KeyCode == Keys.F2) { btnThem.PerformClick(); e.Handled = true; }
+                else if (e.KeyCode == Keys.F3) { btnSua.PerformClick(); e.Handled = true; }
+                else if (e.KeyCode == Keys.Delete && !(ActiveControl is TextBoxBase)) { btnXoa.PerformClick(); e.Handled = true; }
+                else if (e.KeyCode == Keys.F5) { btnLamMoi.PerformClick(); e.Handled = true; }
             }
             else
             {
-                if (e.Control && e.KeyCode == Keys.S)
-                {
-                    btnLuu.PerformClick();
-                    e.Handled = true;
-                }
-                else if (e.KeyCode == Keys.Escape)
-                {
-                    btnHuy.PerformClick();
-                    e.Handled = true;
-                }
+                if (e.Control && e.KeyCode == Keys.S) { btnLuu.PerformClick(); e.Handled = true; }
+                else if (e.KeyCode == Keys.Escape) { btnHuy.PerformClick(); e.Handled = true; }
             }
         }
     }
