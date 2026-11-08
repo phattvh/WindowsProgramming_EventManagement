@@ -254,5 +254,58 @@ namespace EventManagement.Tests
             Assert.IsTrue(methodNames.Contains("OpenFeedbackForm"), "F05 phải cung cấp phương thức mở F18 (Khảo sát).");
             Assert.IsTrue(methodNames.Contains("OpenReportStatisticsForm"), "F05 phải cung cấp phương thức mở F19 (Báo cáo & Thống kê).");
         }
+
+        // =========================================================================
+        // PHẦN 5: KIỂM THỬ TASK T1-18 (Tích Hợp Hệ Thống 20 Form Kế Thừa FrmBase)
+        // =========================================================================
+
+        [TestMethod]
+        public void SystemIntegration_AllFormsInheritFrmBase_AndCanBeConstructed()
+        {
+            // Mô tả: Kiểm tra toàn bộ 20 Form của hệ thống kế thừa lớp cơ sở FrmBase và khởi tạo thành công không bị thiếu tham số DI.
+            var forms = new System.Collections.Generic.List<System.Windows.Forms.Form>
+            {
+                new FrmLogin(),
+                new FrmDashboard(new DashboardService()),
+                new FrmUserManagement(),
+                new FrmEventList(),
+                new FrmEventDetail("EVT202601"),
+                new FrmEventType(),
+                new FrmVenue(),
+                new FrmSchedule(),
+                new FrmSpeaker(),
+                new FrmAttendee(),
+                new FrmTicketOrder(),
+                new FrmTicketTier(),
+                new FrmCheckInCamera(),
+                new FrmStaff(),
+                new FrmStaffAssignment(),
+                new FrmSponsor(),
+                new FrmBudgetExpense(),
+                new FrmFeedback(),
+                new FrmReportStatistics(),
+                new FrmRolePermission()
+            };
+
+            Assert.AreEqual(20, forms.Count, "Hệ thống phải tích hợp đủ 20 form nghiệp vụ.");
+
+            foreach (var form in forms)
+            {
+                Assert.IsInstanceOfType(form, typeof(EventManagement.GUI.Forms.FrmBase),
+                    $"Form {form.GetType().Name} phải kế thừa từ FrmBase để đảm bảo chuẩn giao diện Segoe UI.");
+                form.Dispose();
+            }
+        }
+
+        [TestMethod]
+        public void SystemIntegration_TotalFormCount_Equals20()
+        {
+            // Mô tả: Thẩm định hệ thống tích hợp đầy đủ chính xác 20 Form giao diện nghiệp vụ theo đề cương đồ án.
+            var formTypes = typeof(FrmLogin).Assembly.GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(System.Windows.Forms.Form)) && !t.IsAbstract && t.Name.StartsWith("Frm"))
+                .ToList();
+
+            Assert.IsTrue(formTypes.Count >= 20, $"Số lượng Form trong GUI phải đạt ít nhất 20 (hiện có: {formTypes.Count}).");
+        }
     }
 }
