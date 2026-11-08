@@ -22,6 +22,17 @@ namespace EventManagement.GUI.Forms
         private List<RoleDto> _roles = new();
         private List<PhanQuyenMatrixDto> _currentMatrix = new();
 
+        public Label LblTitle => lblTitle;
+        public Label LblSubTitle => lblSubTitle;
+        public Button BtnLuu => btnLuu;
+        public Button BtnThemNhom => btnThemNhom;
+        public Button BtnXoaNhom => btnXoaNhom;
+        public Button BtnChonTatCa => btnChonTatCa;
+        public Button BtnBoChonTatCa => btnBoChonTatCa;
+        public Button BtnDong => btnDong;
+        public ComboBox CboNhomQuyen => cboNhomQuyen;
+        public DataGridView DgvPhanQuyen => dgvPhanQuyen;
+
         public FrmRolePermission() : this(new RolePermissionService())
         {
         }
@@ -30,7 +41,14 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _rolePermissionService = rolePermissionService;
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            this.WindowState = FormWindowState.Maximized;
             dgvPhanQuyen.AutoGenerateColumns = false;
+
+            foreach (DataGridViewColumn col in dgvPhanQuyen.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
         }
 
         private async void FrmRolePermission_Load(object sender, EventArgs e)
@@ -67,7 +85,7 @@ namespace EventManagement.GUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải danh mục vai trò: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tải danh mục vai trò. Chi tiết: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -89,18 +107,18 @@ namespace EventManagement.GUI.Forms
 
                 if (isAdmin)
                 {
-                    lblGhiChuAdmin.Text = "🛡️ Nhóm Quản trị viên (ADMIN) mặc định toàn quyền hệ thống, không thể thu hồi.";
+                    lblGhiChuAdmin.Text = "Nhóm Quản trị viên (ADMIN) mặc định toàn quyền hệ thống, không thể thu hồi.";
                     lblGhiChuAdmin.ForeColor = Color.FromArgb(37, 99, 235);
                 }
                 else
                 {
-                    lblGhiChuAdmin.Text = "ℹ️ Đánh dấu các chức năng cho phép nhóm này truy cập, sau đó nhấn 'Lưu ma trận'.";
+                    lblGhiChuAdmin.Text = "Đánh dấu các chức năng cho phép nhóm này truy cập, sau đó nhấn 'Lưu thay đổi'.";
                     lblGhiChuAdmin.ForeColor = Color.FromArgb(180, 83, 9);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải ma trận phân quyền: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tải ma trận phân quyền: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -142,17 +160,17 @@ namespace EventManagement.GUI.Forms
                 var result = await _rolePermissionService.SavePermissionMatrixAsync(roleId, _currentMatrix);
                 if (result.IsSuccess)
                 {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(result.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     await LoadMatrixAsync(roleId);
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Không thể lưu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(result.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi lưu phân quyền: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Có lỗi xảy ra khi lưu phân quyền: " + ex.Message, "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -189,7 +207,7 @@ namespace EventManagement.GUI.Forms
                 var validation = ValidateRoleInput(code, name);
                 if (!validation.IsValid)
                 {
-                    MessageBox.Show(validation.ErrorMessage, "Lỗi dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(validation.ErrorMessage, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -201,13 +219,13 @@ namespace EventManagement.GUI.Forms
 
                 if (result.IsSuccess)
                 {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(result.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     await LoadRolesAsync();
                     cboNhomQuyen.SelectedValue = code;
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Lỗi tạo nhóm quyền", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(result.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -220,8 +238,8 @@ namespace EventManagement.GUI.Forms
             if (role == null) return;
 
             var confirm = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa nhóm quyền '{role.TenNhomQuyen}' ({role.MaNhomQuyen})?",
-                "Xác nhận xóa nhóm quyền",
+                $"Bạn có chắc chắn muốn xóa vai trò '{role.TenNhomQuyen}' ({role.MaNhomQuyen}) không?",
+                "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -230,12 +248,12 @@ namespace EventManagement.GUI.Forms
                 var result = await _rolePermissionService.DeleteRoleAsync(roleId);
                 if (result.IsSuccess)
                 {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(result.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     await LoadRolesAsync();
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(result.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
