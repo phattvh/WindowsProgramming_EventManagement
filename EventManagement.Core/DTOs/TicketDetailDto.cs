@@ -9,6 +9,7 @@ namespace EventManagement.Core.DTOs
     {
         public string MaVe { get; set; } = string.Empty;
         public string MaDangKy { get; set; } = string.Empty;
+        public string MaSuKien { get; set; } = string.Empty;
         public string TenSuKien { get; set; } = string.Empty;
         public string TenHangVe { get; set; } = string.Empty;
         public decimal GiaVe { get; set; }

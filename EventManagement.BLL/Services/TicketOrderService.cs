@@ -74,6 +74,7 @@ namespace EventManagement.BLL.Services
             {
                 MaVe = "VE00001",
                 MaDangKy = "REG001",
+                MaSuKien = "EVT202601",
                 TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
                 TenHangVe = "Vé VIP (Full-access)",
                 GiaVe = 800000m,
@@ -87,6 +88,7 @@ namespace EventManagement.BLL.Services
             {
                 MaVe = "VE00002",
                 MaDangKy = "REG002",
+                MaSuKien = "EVT202601",
                 TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
                 TenHangVe = "Vé Tiêu chuẩn (Standard)",
                 GiaVe = 200000m,
@@ -100,6 +102,7 @@ namespace EventManagement.BLL.Services
             {
                 MaVe = "VE00003",
                 MaDangKy = "REG003",
+                MaSuKien = "EVT202601",
                 TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
                 TenHangVe = "Vé Tiêu chuẩn (Standard)",
                 GiaVe = 200000m,
@@ -127,9 +130,24 @@ namespace EventManagement.BLL.Services
             if (string.IsNullOrWhiteSpace(maSuKien))
                 return _ticketTiers.ToList();
 
-            return _ticketTiers
+            var list = _ticketTiers
                 .Where(t => string.Equals(t.MaSuKien, maSuKien.Trim(), StringComparison.OrdinalIgnoreCase))
                 .ToList();
+
+            if (list.Count == 0)
+            {
+                list.Add(new TicketTierSummaryDto
+                {
+                    MaHangVe = "HV-" + maSuKien.Trim(),
+                    MaSuKien = maSuKien.Trim(),
+                    TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                    GiaVe = 250000m,
+                    SoLuongPhatHanh = 500,
+                    SoLuongDaBan = 0
+                });
+            }
+
+            return list;
         }
 
         public ServiceResult<List<TicketDetailDto>> GetTicketsByEvent(string? maSuKien)
@@ -137,9 +155,11 @@ namespace EventManagement.BLL.Services
             if (string.IsNullOrWhiteSpace(maSuKien))
                 return ServiceResult<List<TicketDetailDto>>.Success(_issuedTickets.ToList());
 
+            var trimmed = maSuKien.Trim();
             var list = _issuedTickets
-                .Where(t => t.TenSuKien.Contains(maSuKien, StringComparison.OrdinalIgnoreCase)
-                    || t.MaDangKy.Contains(maSuKien, StringComparison.OrdinalIgnoreCase))
+                .Where(t => string.Equals(t.MaSuKien, trimmed, StringComparison.OrdinalIgnoreCase)
+                    || t.TenSuKien.Contains(trimmed, StringComparison.OrdinalIgnoreCase)
+                    || t.MaDangKy.Contains(trimmed, StringComparison.OrdinalIgnoreCase))
                 .OrderByDescending(t => t.NgayDangKy)
                 .ToList();
 
@@ -247,6 +267,7 @@ namespace EventManagement.BLL.Services
                     {
                         MaVe = ticketCode,
                         MaDangKy = orderCode,
+                        MaSuKien = request.MaSuKien.Trim(),
                         TenSuKien = eventName,
                         TenHangVe = tier.TenHangVe,
                         GiaVe = unitPrice,

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -461,7 +461,7 @@ namespace EventManagement.GUI.Forms
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new Size(420, 25);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "📅 CHI TIẾT SỰ KIỆN & ĐIỀU PHỐI TRUNG TÂM";
+            this.lblTitle.Text = "CHI TIẾT SỰ KIỆN";
 
             // lblSubtitle
             this.lblSubtitle.AutoSize = true;
@@ -1034,7 +1034,7 @@ namespace EventManagement.GUI.Forms
             this.btnMoF08.Name = "btnMoF08";
             this.btnMoF08.Size = new Size(190, 34);
             this.btnMoF08.TabIndex = 1;
-            this.btnMoF08.Text = "↗️ Quản lý lịch trình (F08)";
+            this.btnMoF08.Text = "Quản lý lịch trình";
             this.btnMoF08.UseVisualStyleBackColor = true;
             this.btnMoF08.Click += new EventHandler(this.btnMoF08_Click);
 
@@ -1393,7 +1393,7 @@ namespace EventManagement.GUI.Forms
             this.btnMoF15.Name = "btnMoF15";
             this.btnMoF15.Size = new Size(200, 34);
             this.btnMoF15.TabIndex = 1;
-            this.btnMoF15.Text = "↗️ Quản lý phân công (F15)";
+            this.btnMoF15.Text = "Quản lý phân công";
             this.btnMoF15.UseVisualStyleBackColor = true;
             this.btnMoF15.Click += new EventHandler(this.btnMoF15_Click);
 
@@ -1489,7 +1489,7 @@ namespace EventManagement.GUI.Forms
             this.btnMoF16.Name = "btnMoF16";
             this.btnMoF16.Size = new Size(180, 34);
             this.btnMoF16.TabIndex = 1;
-            this.btnMoF16.Text = "↗️ Quản lý tài trợ (F16)";
+            this.btnMoF16.Text = "Quản lý tài trợ";
             this.btnMoF16.UseVisualStyleBackColor = true;
             this.btnMoF16.Click += new EventHandler(this.btnMoF16_Click);
 
@@ -1582,7 +1582,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab8Header.Name = "lblTab8Header";
             this.lblTab8Header.Size = new Size(330, 19);
             this.lblTab8Header.TabIndex = 0;
-            this.lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH & BẢNG KHOẢN MỤC CHI";
+            this.lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH";
 
             this.lblThanhDoNganSach.AutoSize = true;
             this.lblThanhDoNganSach.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
@@ -1613,7 +1613,7 @@ namespace EventManagement.GUI.Forms
             this.btnMoF17.Name = "btnMoF17";
             this.btnMoF17.Size = new Size(180, 34);
             this.btnMoF17.TabIndex = 4;
-            this.btnMoF17.Text = "↗️ Quản lý chi phí (F17)";
+            this.btnMoF17.Text = "Quản lý chi phí";
             this.btnMoF17.UseVisualStyleBackColor = true;
             this.btnMoF17.Click += new EventHandler(this.btnMoF17_Click);
 
@@ -1699,7 +1699,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab9Header.Name = "lblTab9Header";
             this.lblTab9Header.Size = new Size(420, 19);
             this.lblTab9Header.TabIndex = 0;
-            this.lblTab9Header.Text = "TỔNG HỢP Ý KIẾN ĐÓNG GÓP & ĐÁNH GIÁ CỦA NGƯỜI THAM DỰ";
+            this.lblTab9Header.Text = "Ý KIẾN ĐÓNG GÓP";
 
             this.lblDiemTrungBinh.AutoSize = true;
             this.lblDiemTrungBinh.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
@@ -1725,7 +1725,7 @@ namespace EventManagement.GUI.Forms
             this.btnMoF18.Name = "btnMoF18";
             this.btnMoF18.Size = new Size(180, 34);
             this.btnMoF18.TabIndex = 3;
-            this.btnMoF18.Text = "↗️ Quản lý phản hồi (F18)";
+            this.btnMoF18.Text = "Quản lý phản hồi";
             this.btnMoF18.UseVisualStyleBackColor = true;
             this.btnMoF18.Click += new EventHandler(this.btnMoF18_Click);
 
@@ -1832,7 +1832,7 @@ namespace EventManagement.GUI.Forms
             this.MinimumSize = new Size(1200, 780);
             this.Name = "FrmEventDetail";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Text = "Chi tiết sự kiện & Điều phối trung tâm";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.Load += new EventHandler(this.FrmEventDetail_Load);
             this.KeyDown += new KeyEventHandler(this.FrmEventDetail_KeyDown);
 

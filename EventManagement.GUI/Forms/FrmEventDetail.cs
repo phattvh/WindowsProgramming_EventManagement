@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -49,6 +49,101 @@ namespace EventManagement.GUI.Forms
         private List<SponsorDto> _sponsorsCache = new();
         private List<ExpenseDto> _expensesCache = new();
         private List<FeedbackDto> _feedbackCache = new();
+
+        private Button? btnMoF09;
+        private Label? lblTab2Footer;
+        private Label? lblTab3Footer;
+        private Label? lblTab4Footer;
+        private Label? lblTab5Footer;
+        private Label? lblTab6Footer;
+        private Label? lblTab7Footer;
+        private Label? lblTab8Footer;
+        private Label? lblTab9Footer;
+
+        private void DistributeKpiCards()
+        {
+            if (pnlKPICards == null) return;
+            var cards = new[] { pnlCardVe, pnlCardCheckIn, pnlCardDoanhThu, pnlCardChiPhi, pnlCardNganSach };
+            int padding = 12;
+            int gap = 10;
+            int totalW = pnlKPICards.ClientSize.Width - (padding * 2) - (gap * (cards.Length - 1));
+            if (totalW <= 0) return;
+            int cardW = totalW / cards.Length;
+            int curLeft = padding;
+            for (int i = 0; i < cards.Length; i++)
+            {
+                int w = (i == cards.Length - 1) ? (pnlKPICards.ClientSize.Width - padding - curLeft) : cardW;
+                cards[i].Location = new Point(curLeft, 7);
+                cards[i].Size = new Size(Math.Max(100, w), 56);
+                curLeft += w + gap;
+            }
+        }
+
+        private void DistributeTab1()
+        {
+            if (tabThongTin == null || grpThongTinChung == null || grpThoiGianNganSach == null || pnlTab1Actions == null) return;
+            int pad = 15;
+            int gap = 15;
+            int w = tabThongTin.ClientSize.Width - (pad * 2) - gap;
+            int halfW = Math.Max(300, w / 2);
+            int h = Math.Max(380, tabThongTin.ClientSize.Height - 75);
+
+            grpThongTinChung.Location = new Point(pad, pad);
+            grpThongTinChung.Size = new Size(halfW, h);
+
+            grpThoiGianNganSach.Location = new Point(pad + halfW + gap, pad);
+            grpThoiGianNganSach.Size = new Size(Math.Max(300, tabThongTin.ClientSize.Width - pad - (pad + halfW + gap)), h);
+
+            pnlTab1Actions.Location = new Point(pad, tabThongTin.ClientSize.Height - 55);
+            pnlTab1Actions.Size = new Size(tabThongTin.ClientSize.Width - (pad * 2), 48);
+
+            int leftInputW = halfW - 25 - txtTenSuKien.Left;
+            if (leftInputW > 150)
+            {
+                txtTenSuKien.Width = leftInputW;
+                cboLoaiSK.Width = Math.Min(350, leftInputW);
+                cboDiaDiem.Width = leftInputW;
+                txtNguoiPhuTrach.Width = Math.Min(350, leftInputW);
+                cboTrangThai.Width = Math.Min(220, leftInputW);
+            }
+
+            int rightInputW = grpThoiGianNganSach.Width - 25 - txtMoTa.Left;
+            if (rightInputW > 150)
+            {
+                txtMoTa.Width = rightInputW;
+                txtMoTa.Height = Math.Max(100, h - txtMoTa.Top - 20);
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            DistributeKpiCards();
+            DistributeTab1();
+        }
+
+        private Panel CreateTabFooter(TabPage tab, out Label lblFooter)
+        {
+            var pnl = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 32,
+                BackColor = Color.FromArgb(248, 250, 252),
+                Padding = new Padding(12, 6, 12, 6)
+            };
+            lblFooter = new Label
+            {
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI Semibold", 9F, FontStyle.Italic),
+                ForeColor = Color.FromArgb(71, 85, 105),
+                TextAlign = ContentAlignment.MiddleLeft,
+                Text = string.Empty
+            };
+            pnl.Controls.Add(lblFooter);
+            tab.Controls.Add(pnl);
+            pnl.BringToFront();
+            return pnl;
+        }
 
         public FrmEventDetail() : this(string.Empty)
         {
@@ -142,32 +237,84 @@ namespace EventManagement.GUI.Forms
 
         private void ApplyCustomStyles()
         {
-            // Button Roles
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            lblTitle.Text = "CHI TIẾT SỰ KIỆN";
+            lblSubtitle.Visible = false;
+
+            // Button Roles & Styling
             StyleButton(btnSuaThongTin, ButtonRole.Primary);
             StyleButton(btnLuuThongTin, ButtonRole.Success);
             StyleButton(btnHuyThongTin, ButtonRole.Secondary);
 
-            StyleButton(btnMoF08, ButtonRole.Secondary);
-            StyleButton(btnMoF15, ButtonRole.Secondary);
-            StyleButton(btnMoF16, ButtonRole.Secondary);
-            StyleButton(btnMoF17, ButtonRole.Secondary);
-            StyleButton(btnMoF18, ButtonRole.Secondary);
+            StyleButton(btnMoF08, ButtonRole.Primary);
+            btnMoF08.Text = "Quản lý lịch trình";
+
+            StyleButton(btnMoF15, ButtonRole.Primary);
+            btnMoF15.Text = "Quản lý phân công";
+
+            StyleButton(btnMoF16, ButtonRole.Primary);
+            btnMoF16.Text = "Quản lý tài trợ";
+
+            StyleButton(btnMoF17, ButtonRole.Primary);
+            btnMoF17.Text = "Quản lý chi phí";
+
+            StyleButton(btnMoF18, ButtonRole.Primary);
+            btnMoF18.Text = "Quản lý phản hồi";
 
             StyleButton(btnDong, ButtonRole.Secondary);
             StyleButton(btnLamMoi, ButtonRole.Secondary);
             StyleButton(btnXuatBaoCao, ButtonRole.Primary);
 
-            // Style all 8 DataGridViews using FrmBase standard
-            StyleDataGridView(dgvLichTrinh);
-            StyleDataGridView(dgvDienGia);
-            StyleDataGridView(dgvNguoiThamGia);
-            StyleDataGridView(dgvHangVe);
-            StyleDataGridView(dgvNhanSu);
-            StyleDataGridView(dgvTaiTro);
-            StyleDataGridView(dgvChiPhi);
-            StyleDataGridView(dgvDanhGia);
+            // Tab 3 Button
+            if (btnMoF09 == null)
+            {
+                btnMoF09 = new Button
+                {
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                    Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
+                    Location = new Point(pnlTab3Toolbar.Width - 225, 5),
+                    Size = new Size(215, 34),
+                    Text = "Quản lý diễn giả & khách mời"
+                };
+                StyleButton(btnMoF09, ButtonRole.Primary);
+                btnMoF09.Click += (s, e) => OpenSpeakerForm();
+                pnlTab3Toolbar.Controls.Add(btnMoF09);
+            }
 
-            // Wire double-click drill-down navigation (Task T2-19)
+            // Create Footers
+            if (lblTab2Footer == null) CreateTabFooter(tabLichTrinh, out lblTab2Footer);
+            if (lblTab3Footer == null) CreateTabFooter(tabDienGia, out lblTab3Footer);
+            if (lblTab4Footer == null) CreateTabFooter(tabNguoiThamGia, out lblTab4Footer);
+            if (lblTab5Footer == null) CreateTabFooter(tabVe, out lblTab5Footer);
+            if (lblTab6Footer == null) CreateTabFooter(tabNhanSu, out lblTab6Footer);
+            if (lblTab7Footer == null) CreateTabFooter(tabTaiTro, out lblTab7Footer);
+            if (lblTab8Footer == null) CreateTabFooter(tabChiPhi, out lblTab8Footer);
+            if (lblTab9Footer == null) CreateTabFooter(tabDanhGia, out lblTab9Footer);
+
+            // Send DataGridViews to back so Dock.Bottom footers take effect cleanly
+            dgvLichTrinh.SendToBack();
+            dgvDienGia.SendToBack();
+            dgvNguoiThamGia.SendToBack();
+            dgvHangVe.SendToBack();
+            dgvNhanSu.SendToBack();
+            dgvTaiTro.SendToBack();
+            dgvChiPhi.SendToBack();
+            dgvDanhGia.SendToBack();
+
+            // Style all 8 DataGridViews
+            DataGridView[] allGrids = { dgvLichTrinh, dgvDienGia, dgvNguoiThamGia, dgvHangVe, dgvNhanSu, dgvTaiTro, dgvChiPhi, dgvDanhGia };
+            foreach (var dgv in allGrids)
+            {
+                StyleDataGridView(dgv);
+                dgv.EnableHeadersVisualStyles = false;
+                dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                foreach (DataGridViewColumn col in dgv.Columns)
+                {
+                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
+
+            // Wire double-click drill-down navigation
             dgvLichTrinh.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenScheduleForm(); };
             dgvDienGia.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenSpeakerForm(); };
             dgvNguoiThamGia.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenAttendeeForm(); };
@@ -177,24 +324,57 @@ namespace EventManagement.GUI.Forms
             dgvChiPhi.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenBudgetExpenseForm(); };
             dgvDanhGia.CellDoubleClick += (s, e) => { if (e.RowIndex >= 0) OpenFeedbackForm(); };
 
-            // Configure cell alignments and formats
+            // Tab 2
+            colLT_Ma.HeaderText = "Mã Lịch Trình";
+            colLT_Ten.HeaderText = "Tên Tiết Mục / Hoạt Động";
+            colLT_BatDau.HeaderText = "Thời Gian Bắt Đầu";
+            colLT_KetThuc.HeaderText = "Thời Gian Kết Thúc";
+            colLT_DienGia.HeaderText = "Diễn Giả Đảm Nhận";
+            colLT_Phong.Visible = false;
+            colLT_GhiChu.Visible = false;
             colLT_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colLT_BatDau.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colLT_KetThuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colLT_BatDau.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
             colLT_KetThuc.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
 
+            // Tab 3
+            colDG_Ma.HeaderText = "Mã Diễn Giả"; colDG_Ma.Width = 100;
+            colDG_Ten.HeaderText = "Họ và Tên"; colDG_Ten.Width = 200;
+            colDG_ChucVu.HeaderText = "Chức Vụ"; colDG_ChucVu.Width = 180;
+            colDG_DonVi.HeaderText = "Đơn Vị Công Tác"; colDG_DonVi.Width = 220;
+            colDG_Email.HeaderText = "Email"; colDG_Email.Width = 190;
+            colDG_SDT.HeaderText = "Số Điện Thoại"; colDG_SDT.Width = 110;
+            colDG_TietMuc.HeaderText = "Tiết Mục Đảm Nhận"; colDG_TietMuc.Width = 130;
+            colDG_TrangThai.HeaderText = "Trạng Thái";
             colDG_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_SDT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_TietMuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_TrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Tab 4
+            colNTG_MaVe.HeaderText = "Mã Vé";
+            colNTG_Ten.HeaderText = "Họ và Tên";
+            colNTG_HangVe.HeaderText = "Hạng Vé";
+            colNTG_Email.HeaderText = "Email";
+            colNTG_MaQR.HeaderText = "Mã QR";
+            colNTG_NgayDangKy.HeaderText = "Ngày Đăng Ký";
+            colNTG_TrangThai.HeaderText = "Trạng Thái Vé";
             colNTG_MaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNTG_MaQR.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNTG_NgayDangKy.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNTG_NgayDangKy.DefaultCellStyle.Format = "dd/MM/yyyy";
             colNTG_TrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Tab 5
+            colHV_Ma.HeaderText = "Mã Hạng Vé";
+            colHV_Ten.HeaderText = "Tên Hạng Vé";
+            colHV_Gia.HeaderText = "Giá Vé";
+            colHV_PhatHanh.HeaderText = "Phát Hành";
+            colHV_DaBan.HeaderText = "Đã Bán";
+            colHV_ConLai.HeaderText = "Còn Lại";
+            colHV_TyLe.HeaderText = "Tỷ Lệ Bán";
+            colHV_DoanhThu.HeaderText = "Doanh Thu Dự Kiến";
             colHV_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colHV_Gia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colHV_PhatHanh.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -203,32 +383,120 @@ namespace EventManagement.GUI.Forms
             colHV_TyLe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colHV_DoanhThu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
 
+            // Tab 6
+            colNS_MaPhanCong.HeaderText = "Mã Phân Công"; colNS_MaPhanCong.Width = 120;
+            colNS_MaNhanSu.HeaderText = "Mã Nhân Sự"; colNS_MaNhanSu.Width = 110;
+            colNS_Ten.HeaderText = "Họ và Tên Nhân Sự"; colNS_Ten.Width = 220;
+            colNS_PhongBan.HeaderText = "Phòng Ban"; colNS_PhongBan.Width = 150;
+            colNS_NhiemVu.HeaderText = "Nhiệm Vụ Phân Công"; colNS_NhiemVu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNS_BatDau.HeaderText = "Thời Gian Bắt Đầu"; colNS_BatDau.Width = 150;
+            colNS_KetThuc.HeaderText = "Thời Gian Kết Thúc"; colNS_KetThuc.Width = 150;
+            colNS_TrangThai.Visible = false;
             colNS_MaPhanCong.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNS_MaNhanSu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNS_BatDau.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNS_KetThuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNS_BatDau.DefaultCellStyle.Format = "HH:mm dd/MM/yyyy";
             colNS_KetThuc.DefaultCellStyle.Format = "HH:mm dd/MM/yyyy";
-            colNS_TrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Tab 7
+            colTT_Ma.HeaderText = "Mã NTT"; colTT_Ma.Width = 85;
+            colTT_Ten.HeaderText = "Tên Tổ Chức Tài Trợ"; colTT_Ten.Width = 250;
+            colTT_DaiDien.HeaderText = "Người Đại Diện"; colTT_DaiDien.Width = 170;
+            colTT_GiaTri.HeaderText = "Giá Trị Tài Trợ"; colTT_GiaTri.Width = 140;
+            colTT_HinhThuc.HeaderText = "Hình Thức"; colTT_HinhThuc.Width = 100;
+            colTT_SDT.HeaderText = "Số Điện Thoại"; colTT_SDT.Width = 105;
+            colTT_Goi.Visible = false;
+            colTT_TrangThai.Visible = false;
             colTT_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            colTT_Goi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colTT_GiaTri.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colTT_SDT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            colTT_TrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            if (dgvTaiTro.Columns["colTT_Email"] == null)
+            {
+                var colTT_Email = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "Email",
+                    HeaderText = "Email",
+                    Width = 180,
+                    Name = "colTT_Email"
+                };
+                colTT_Email.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvTaiTro.Columns.Add(colTT_Email);
+            }
+            if (dgvTaiTro.Columns["colTT_DiaChi"] == null)
+            {
+                var colTT_DiaChi = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "DiaChi",
+                    HeaderText = "Địa Chỉ",
+                    Width = 200,
+                    Name = "colTT_DiaChi"
+                };
+                colTT_DiaChi.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvTaiTro.Columns.Add(colTT_DiaChi);
+            }
+            if (dgvTaiTro.Columns["colTT_GhiChu"] == null)
+            {
+                var colTT_GhiChu = new DataGridViewTextBoxColumn
+                {
+                    DataPropertyName = "GhiChu",
+                    HeaderText = "Ghi Chú",
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                    Name = "colTT_GhiChu"
+                };
+                colTT_GhiChu.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                dgvTaiTro.Columns.Add(colTT_GhiChu);
+            }
+
+            // Tab 8
+            lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH";
+            lblTab8Header.Location = new Point(10, 12);
+            lblThanhDoNganSach.Location = new Point(190, 14);
+            prgNganSach.Location = new Point(310, 12); prgNganSach.Size = new Size(200, 20);
+            lblNganSachInfo.Location = new Point(520, 14);
+            btnMoF17.Location = new Point(pnlTab8Toolbar.Width - 190, 6);
+            pnlTab8Toolbar.Height = 45;
+
+            colCP_Ma.HeaderText = "Mã Chi Phí";
+            colCP_KhoanMuc.HeaderText = "Khoản Mục Chi";
+            colCP_SoTien.HeaderText = "Số Tiền Chi";
+            colCP_NgayChi.HeaderText = "Ngày Chi";
+            colCP_NguoiLap.HeaderText = "Người Đề Xuất / Duyệt";
+            colCP_TrangThai.HeaderText = "Trạng Thái";
+            colCP_DienGiai.HeaderText = "Diễn Giải Chi Tiết";
             colCP_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colCP_SoTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colCP_NgayChi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colCP_NgayChi.DefaultCellStyle.Format = "dd/MM/yyyy";
             colCP_TrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Tab 9
+            lblTab9Header.Text = "Ý KIẾN ĐÓNG GÓP";
+            lblTab9Header.Location = new Point(10, 8);
+            lblDiemTrungBinh.Location = new Point(10, 32);
+            lblTyLeHaiLong.Location = new Point(230, 32);
+            btnMoF18.Location = new Point(pnlTab9Toolbar.Width - 190, 10);
+            pnlTab9Toolbar.Height = 58;
+
+            colDG_MaPhanHoi.HeaderText = "Mã Phản Hồi";
+            colDG_NguoiGui.HeaderText = "Người Tham Gia";
+            colDG_Diem.HeaderText = "Điểm Đánh Giá";
+            colDG_NgayGui.HeaderText = "Ngày Đánh Giá";
+            colDG_NoiDung.HeaderText = "Nội Dung Ý Kiến";
             colDG_MaPhanHoi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_Diem.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_NgayGui.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            // Wire responsive events
+            pnlKPICards.Resize += (s, e) => DistributeKpiCards();
+            tabThongTin.Resize += (s, e) => DistributeTab1();
+            DistributeKpiCards();
+            DistributeTab1();
+
             SetTab1EditMode(false);
         }
+
 
         private void LoadLookups()
         {
@@ -481,9 +749,9 @@ namespace EventManagement.GUI.Forms
             txtNguoiPhuTrach.BackColor = back;
             txtMoTa.BackColor = back;
 
-            btnSuaThongTin.Enabled = !isEditing;
-            btnLuuThongTin.Enabled = isEditing;
-            btnHuyThongTin.Enabled = isEditing;
+            btnSuaThongTin.Visible = !isEditing;
+            btnLuuThongTin.Visible = isEditing;
+            btnHuyThongTin.Visible = isEditing;
 
             errBaoLoi.Clear();
         }
@@ -579,12 +847,14 @@ namespace EventManagement.GUI.Forms
             _scheduleCache = res.IsSuccess && res.Data != null ? res.Data : new List<ScheduleItemDto>();
             dgvLichTrinh.DataSource = null;
             dgvLichTrinh.DataSource = _scheduleCache;
-            lblTab2Header.Text = $"DANH SÁCH TIẾT MỤC / NỘI DUNG CHƯƠNG TRÌNH ({_scheduleCache.Count} TIẾT MỤC)";
+            lblTab2Header.Text = "DANH SÁCH CÁC TIẾT MỤC / NỘI DUNG CHƯƠNG TRÌNH SỰ KIỆN";
+            if (lblTab2Footer != null)
+                lblTab2Footer.Text = $"Số tiết mục đang có: {_scheduleCache.Count} tiết mục";
         }
 
         private void btnMoF08_Click(object sender, EventArgs e)
         {
-            using var frm = new FrmSchedule();
+            using var frm = new FrmSchedule(_maSuKien);
             frm.ShowDialog(this);
             LoadTab2_LichTrinh(_maSuKien);
         }
@@ -598,7 +868,6 @@ namespace EventManagement.GUI.Forms
             var res = _speakerService.GetAll();
             var allSpeakers = res.IsSuccess && res.Data != null ? res.Data : new List<SpeakerDto>();
 
-            // If schedules have specific speakers assigned, match them; otherwise show all speakers active
             var speakerIdsInEvent = _scheduleCache
                 .Where(s => !string.IsNullOrEmpty(s.MaDienGia))
                 .Select(s => s.MaDienGia!)
@@ -616,7 +885,9 @@ namespace EventManagement.GUI.Forms
 
             dgvDienGia.DataSource = null;
             dgvDienGia.DataSource = _speakerCache;
-            lblTab3Header.Text = $"DANH SÁCH DIỄN GIẢ & KHÁCH MỜI THAM GIA ({_speakerCache.Count} DIỄN GIẢ)";
+            lblTab3Header.Text = "DANH SÁCH DIỄN GIẢ & KHÁCH MỜI THAM GIA";
+            if (lblTab3Footer != null)
+                lblTab3Footer.Text = $"Số diễn giả tham gia: {_speakerCache.Count} diễn giả";
         }
 
         #endregion
@@ -651,7 +922,9 @@ namespace EventManagement.GUI.Forms
 
             dgvNguoiThamGia.DataSource = null;
             dgvNguoiThamGia.DataSource = filtered;
-            lblTab4Header.Text = $"DANH SÁCH ĐĂNG KÝ VÉ & TÌNH TRẠNG THAM DỰ ({filtered.Count} VÉ / ĐẠI BIỂU)";
+            lblTab4Header.Text = "DANH SÁCH ĐĂNG KÝ VÉ & TÌNH TRẠNG THAM DỰ";
+            if (lblTab4Footer != null)
+                lblTab4Footer.Text = $"Số người tham gia: {filtered.Count} người";
         }
 
         #endregion
@@ -676,7 +949,9 @@ namespace EventManagement.GUI.Forms
 
             dgvHangVe.DataSource = null;
             dgvHangVe.DataSource = viewItems;
-            lblTab5Header.Text = $"CƠ CẤU HẠNG VÉ, GIÁ PHÁT HÀNH & TỒN KHO ({viewItems.Count} HẠNG VÉ)";
+            lblTab5Header.Text = "CƠ CẤU HẠNG VÉ, GIÁ PHÁT HÀNH & TỒN KHO";
+            if (lblTab5Footer != null)
+                lblTab5Footer.Text = $"Số hạng vé: {viewItems.Count} hạng vé";
         }
 
         #endregion
@@ -689,7 +964,9 @@ namespace EventManagement.GUI.Forms
             _staffAssignmentsCache = res.IsSuccess && res.Data != null ? res.Data : new List<StaffAssignmentDto>();
             dgvNhanSu.DataSource = null;
             dgvNhanSu.DataSource = _staffAssignmentsCache;
-            lblTab6Header.Text = $"DANH SÁCH NHÂN SỰ & CA TRỰC PHÂN CÔNG ({_staffAssignmentsCache.Count} LƯỢT PHÂN CÔNG)";
+            lblTab6Header.Text = "DANH SÁCH NHÂN SỰ & CA TRỰC";
+            if (lblTab6Footer != null)
+                lblTab6Footer.Text = $"Số việc phân công: {_staffAssignmentsCache.Count} lượt phân công";
         }
 
         private void btnMoF15_Click(object sender, EventArgs e)
@@ -709,7 +986,9 @@ namespace EventManagement.GUI.Forms
             _sponsorsCache = res.IsSuccess && res.Data != null ? res.Data : new List<SponsorDto>();
             dgvTaiTro.DataSource = null;
             dgvTaiTro.DataSource = _sponsorsCache;
-            lblTab7Header.Text = $"DANH SÁCH NHÀ TÀI TRỢ & ĐỐI TÁC ({_sponsorsCache.Count} ĐƠN VỊ)";
+            lblTab7Header.Text = "DANH SÁCH NHÀ TÀI TRỢ & ĐỐI TÁC";
+            if (lblTab7Footer != null)
+                lblTab7Footer.Text = $"Số nhà tài trợ: {_sponsorsCache.Count} đơn vị";
         }
 
         private void btnMoF16_Click(object sender, EventArgs e)
@@ -766,6 +1045,9 @@ namespace EventManagement.GUI.Forms
                     lblNganSachInfo.ForeColor = ColorSuccess;
                 }
             }
+            lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH";
+            if (lblTab8Footer != null)
+                lblTab8Footer.Text = $"Tổng số khoản chi: {_expensesCache.Count} khoản mục";
         }
 
         private void btnMoF17_Click(object sender, EventArgs e)
@@ -809,6 +1091,10 @@ namespace EventManagement.GUI.Forms
                 lblDiemTrungBinh.Text = $"⭐ Điểm trung bình: 0.0 / 5.0 (0 phản hồi)";
                 lblTyLeHaiLong.Text = $"👍 Tỷ lệ hài lòng: 0% (0 đánh giá tích cực)";
             }
+
+            lblTab9Header.Text = "Ý KIẾN ĐÓNG GÓP";
+            if (lblTab9Footer != null)
+                lblTab9Footer.Text = $"Số ý kiến đóng góp: {_feedbackCache.Count} phản hồi";
         }
 
         private void btnMoF18_Click(object sender, EventArgs e)
@@ -816,7 +1102,9 @@ namespace EventManagement.GUI.Forms
             using var frm = new FrmFeedback();
             frm.ShowDialog(this);
             LoadTab9_DanhGia(_maSuKien);
+            UpdateKPICards();
         }
+
 
         #endregion
 
@@ -826,7 +1114,7 @@ namespace EventManagement.GUI.Forms
 
         public void OpenScheduleForm()
         {
-            using var frm = new FrmSchedule();
+            using var frm = new FrmSchedule(_maSuKien);
             frm.ShowDialog(this);
             LoadTab2_LichTrinh(_maSuKien);
         }

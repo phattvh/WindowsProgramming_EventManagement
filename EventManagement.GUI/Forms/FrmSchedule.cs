@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -26,15 +26,38 @@ namespace EventManagement.GUI.Forms
         private List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> _eventList = new();
         private List<(string MaDienGia, string HoTen)> _speakerList = new();
 
-        public FrmSchedule() : this(new ScheduleService())
+                private string? _initialMaSuKien;
+
+        public FrmSchedule() : this(new ScheduleService(), null)
         {
         }
 
-        public FrmSchedule(IScheduleService scheduleService)
+        public FrmSchedule(string? maSuKien) : this(new ScheduleService(), maSuKien)
         {
+        }
+
+        public FrmSchedule(IScheduleService scheduleService) : this(scheduleService, null)
+        {
+        }
+
+        public FrmSchedule(IScheduleService scheduleService, string? maSuKien)
+        {
+            _initialMaSuKien = maSuKien;
             InitializeComponent();
             _scheduleService = scheduleService ?? new ScheduleService();
             ApplyCustomStyles();
+
+            if (!string.IsNullOrWhiteSpace(_initialMaSuKien))
+            {
+                for (int i = 0; i < cboLocSuKien.Items.Count; i++)
+                {
+                    if (cboLocSuKien.Items[i]?.ToString()?.StartsWith(_initialMaSuKien, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        cboLocSuKien.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
         }
 
         private void ApplyCustomStyles()
