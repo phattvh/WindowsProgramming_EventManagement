@@ -47,5 +47,42 @@ namespace EventManagement.Tests
             Assert.IsTrue(sqlContent.Contains("11111111-2222-3333-4444-555555555502"), "Script phải chứa mã QR GUID cố định để quét webcam live.");
             Assert.IsTrue(sqlContent.Contains("BR-14"), "Script phải có kịch bản chi vượt 80% ngân sách để kiểm tra đổi màu cam.");
         }
+
+        // =========================================================================
+        // PHẦN 2: KIỂM THỬ TASK T1-19 (Cấu Hình CSDL SQL Server & Fallback An Toàn)
+        // =========================================================================
+
+        [TestMethod]
+        public void DatabaseConfig_CandidateServers_ContainsStandardLocalInstances()
+        {
+            // Mô tả: Kiểm tra danh sách máy chủ SQL ứng viên có chứa các instance cục bộ chuẩn: ., (localdb)\mssqllocaldb, .\SQLEXPRESS, localhost, 127.0.0.1.
+            var candidates = EventManagement.DAL.DatabaseConfigHelper.DefaultCandidateServers;
+            Assert.IsNotNull(candidates);
+            Assert.IsTrue(candidates.Length >= 4);
+            CollectionAssert.Contains(candidates, ".");
+            CollectionAssert.Contains(candidates, @"(localdb)\mssqllocaldb");
+            CollectionAssert.Contains(candidates, @".\SQLEXPRESS");
+            CollectionAssert.Contains(candidates, "localhost");
+        }
+
+        [TestMethod]
+        public void DatabaseConfig_FindWorkingConnectionString_ReturnsValidFallbackOrLiveConn()
+        {
+            // Mô tả: Kiểm tra hàm FindWorkingConnectionString tự động tìm chuỗi kết nối đang chạy hoặc fallback an toàn không bao giờ throw Exception gây sập app.
+            var result = EventManagement.DAL.DatabaseConfigHelper.FindWorkingConnectionString(1);
+            Assert.IsNotNull(result);
+            Assert.IsFalse(string.IsNullOrWhiteSpace(result.ConnectionString), "Chuỗi kết nối không bao giờ được rỗng (Fail-Safe).");
+            Assert.IsTrue(result.ConnectionString.Contains("EventManagementDb"), "Chuỗi kết nối phải trỏ đến CSDL EventManagementDb.");
+        }
+
+        [TestMethod]
+        public void DatabaseConfig_GetEffectiveConnectionString_ReturnsNonEmptyValidString()
+        {
+            // Mô tả: Kiểm tra hàm GetEffectiveConnectionString luôn trả về chuỗi kết nối hợp lệ có đầy đủ Server và Database phục vụ DbContext.
+            string connStr = EventManagement.DAL.DatabaseConfigHelper.GetEffectiveConnectionString();
+            Assert.IsFalse(string.IsNullOrWhiteSpace(connStr));
+            Assert.IsTrue(connStr.Contains("Server=") || connStr.Contains("Data Source="));
+            Assert.IsTrue(connStr.Contains("EventManagementDb"));
+        }
     }
 }

@@ -14,6 +14,18 @@ namespace EventManagement.DAL
         public const string FallbackConnectionString = "Server=.;Database=EventManagementDb;Trusted_Connection=True;TrustServerCertificate=True;";
 
         /// <summary>
+        /// Danh sách máy chủ SQL Server ứng viên cục bộ phổ biến cho môi trường chạy máy chấm thi / bảo vệ đồ án.
+        /// </summary>
+        public static readonly string[] DefaultCandidateServers = new[]
+        {
+            ".",
+            @"(localdb)\mssqllocaldb",
+            @".\SQLEXPRESS",
+            "localhost",
+            "127.0.0.1"
+        };
+
+        /// <summary>
         /// Lấy chuỗi kết nối từ App.config hoặc chuỗi dự phòng mặc định nếu cấu hình chưa có.
         /// </summary>
         public static string GetConnectionString(string connectionName = DefaultConnectionName)
@@ -122,6 +134,55 @@ namespace EventManagement.DAL
             {
                 return (false, $"Lỗi kết nối CSDL: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Tự động dò tìm một chuỗi kết nối SQL Server đang hoạt động trong danh sách ứng viên (T1-19).
+        /// Sử dụng non-blocking timeout để không làm treo giao diện.
+        /// </summary>
+        public static (bool Found, string ConnectionString, string ServerName) FindWorkingConnectionString(int timeoutSecondsPerServer = 1)
+        {
+            // 1. Thử chuỗi kết nối từ App.config trước tiên
+            var configuredConn = GetConnectionString();
+            if (!string.IsNullOrWhiteSpace(configuredConn))
+            {
+                var configuredTest = TestConnection(configuredConn, timeoutSecondsPerServer);
+                if (configuredTest.Success)
+                {
+                    try
+                    {
+                        var b = new SqlConnectionStringBuilder(configuredConn);
+                        return (true, configuredConn, b.DataSource);
+                    }
+                    catch
+                    {
+                        return (true, configuredConn, "ConfiguredServer");
+                    }
+                }
+            }
+
+            // 2. Thử lần lượt các máy chủ cục bộ ứng viên
+            foreach (var server in DefaultCandidateServers)
+            {
+                var candidateConn = BuildConnectionString(server, "EventManagementDb", true, timeoutSeconds: timeoutSecondsPerServer);
+                var test = TestConnection(candidateConn, timeoutSecondsPerServer);
+                if (test.Success)
+                {
+                    return (true, candidateConn, server);
+                }
+            }
+
+            // 3. Fallback an toàn về chuỗi mặc định, không bao giờ ném Exception làm sập app (Fail-Safe)
+            return (false, FallbackConnectionString, "FallbackServer");
+        }
+
+        /// <summary>
+        /// Lấy chuỗi kết nối hiệu dụng tối ưu: ưu tiên kết nối sống hoặc fallback an toàn (T1-19).
+        /// </summary>
+        public static string GetEffectiveConnectionString()
+        {
+            var result = FindWorkingConnectionString(1);
+            return !string.IsNullOrWhiteSpace(result.ConnectionString) ? result.ConnectionString : FallbackConnectionString;
         }
 
         /// <summary>
