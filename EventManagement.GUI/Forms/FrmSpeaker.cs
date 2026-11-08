@@ -23,6 +23,16 @@ namespace EventManagement.GUI.Forms
         private FormMode _currentMode = FormMode.View;
         private List<SpeakerDto> _currentList = new();
 
+        public Button BtnThem => btnThem;
+        public Button BtnSua => btnSua;
+        public Button BtnXoa => btnXoa;
+        public Button BtnLuu => btnLuu;
+        public Button BtnHuy => btnHuy;
+        public Button BtnLamMoi => btnLamMoi;
+        public DataGridView DgvDienGia => dgvDienGia;
+        public GroupBox GrbThongTin => grbThongTin;
+        public Panel PnlFilter => pnlFilter;
+
         public FrmSpeaker() : this(new SpeakerService())
         {
         }
@@ -31,11 +41,21 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _speakerService = speakerService;
+
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             ApplyCustomStyles();
+
+            // Lắng nghe sự kiện co giãn để bố cục responsive cân đối toàn màn hình
+            grbThongTin.Resize += (s, e) => AdjustInputLayout();
+            pnlButtons.Resize += (s, e) => AdjustButtonLayout();
+            pnlFilter.Resize += (s, e) => AdjustFilterLayout();
+            this.Resize += (s, e) => { AdjustInputLayout(); AdjustButtonLayout(); AdjustFilterLayout(); };
         }
 
         private void ApplyCustomStyles()
         {
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+
             StyleButton(btnThem, ButtonRole.Success);
             StyleButton(btnSua, ButtonRole.Primary);
             StyleButton(btnXoa, ButtonRole.Danger);
@@ -45,8 +65,113 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnLamMoi, ButtonRole.Secondary);
             StyleButton(btnChonAnh, ButtonRole.Secondary);
 
+            StyleDataGridView(dgvDienGia);
             dgvDienGia.AutoGenerateColumns = false;
+            dgvDienGia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDienGia.ScrollBars = ScrollBars.Both;
+
+            foreach (DataGridViewColumn col in dgvDienGia.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
+
+            AdjustInputLayout();
+            AdjustButtonLayout();
+            AdjustFilterLayout();
+        }
+
+        /// <summary>
+        /// Tự động cân đối hồ sơ chi tiết 2 cột dàn đều toàn màn hình và avatar cố định góc phải
+        /// </summary>
+        private void AdjustInputLayout()
+        {
+            if (grbThongTin == null) return;
+            int clientW = grbThongTin.ClientSize.Width;
+
+            // Ảnh đại diện cố định bên phải
+            int avatarWidth = 140;
+            int avatarHeight = 165;
+            picAvatar.Size = new Size(avatarWidth, avatarHeight);
+            picAvatar.Location = new Point(clientW - avatarWidth - 20, 25);
+
+            int contentWidth = picAvatar.Left - 40;
+            if (contentWidth < 400) contentWidth = 400;
+
+            // Chia đều 2 cột thông tin chi tiết
+            int colWidth = (contentWidth - 20) / 2;
+            int col1X = 20;
+            int col2X = 20 + colWidth + 20;
+            int labelW = 120;
+            int inputW = colWidth - labelW - 10;
+
+            // Dòng 1: Mã diễn giả | Họ tên
+            lblMaDienGia.Location = new Point(col1X, 31);
+            txtMaDienGia.Location = new Point(col1X + labelW, 28);
+            txtMaDienGia.Size = new Size(inputW, 23);
+
+            lblHoTen.Location = new Point(col2X, 31);
+            txtHoTen.Location = new Point(col2X + labelW, 28);
+            txtHoTen.Size = new Size(inputW, 23);
+
+            // Dòng 2: Chức vụ | Đơn vị công tác
+            lblChucVu.Location = new Point(col1X, 65);
+            txtChucVu.Location = new Point(col1X + labelW, 62);
+            txtChucVu.Size = new Size(inputW, 23);
+
+            lblDonViCongTac.Location = new Point(col2X, 65);
+            txtDonViCongTac.Location = new Point(col2X + labelW, 62);
+            txtDonViCongTac.Size = new Size(inputW, 23);
+
+            // Dòng 3: Số điện thoại | Email
+            lblSoDienThoai.Location = new Point(col1X, 99);
+            txtSoDienThoai.Location = new Point(col1X + labelW, 96);
+            txtSoDienThoai.Size = new Size(inputW, 23);
+
+            lblEmail.Location = new Point(col2X, 99);
+            txtEmail.Location = new Point(col2X + labelW, 96);
+            txtEmail.Size = new Size(inputW, 23);
+
+            // Dòng 4: Trạng thái | Hình ảnh & Nút chọn ảnh
+            lblTrangThai.Location = new Point(col1X, 133);
+            cboTrangThai.Location = new Point(col1X + labelW, 130);
+            cboTrangThai.Size = new Size(inputW, 23);
+
+            lblHinhAnh.Location = new Point(col2X, 133);
+            int btnWidth = 70;
+            txtHinhAnh.Location = new Point(col2X + labelW, 130);
+            txtHinhAnh.Size = new Size(inputW - btnWidth - 5, 23);
+            btnChonAnh.Location = new Point(txtHinhAnh.Right + 5, 129);
+            btnChonAnh.Size = new Size(btnWidth, 25);
+
+            // Dòng 5: Tiểu sử trải rộng toàn bộ chiều rộng nội dung
+            lblTieuSu.Location = new Point(col1X, 167);
+            txtTieuSu.Location = new Point(col1X + labelW, 164);
+            txtTieuSu.Size = new Size(contentWidth - labelW, 36);
+        }
+
+        private void AdjustButtonLayout()
+        {
+            if (pnlButtons == null) return;
+            int rightEdge = pnlButtons.ClientSize.Width - 15;
+            btnHuy.Location = new Point(rightEdge - btnHuy.Width, 10);
+            btnLuu.Location = new Point(btnHuy.Left - btnLuu.Width - 10, 10);
+        }
+
+        private void AdjustFilterLayout()
+        {
+            if (pnlFilter == null) return;
+            btnLamMoi.Location = new Point(pnlFilter.ClientSize.Width - btnLamMoi.Width - 15, 8);
+            int statusRight = btnLamMoi.Left - 15;
+            cboLocTrangThai.Location = new Point(statusRight - cboLocTrangThai.Width, 11);
+            lblLocTrangThai.Location = new Point(cboLocTrangThai.Left - lblLocTrangThai.Width - 8, 14);
+
+            int searchWidth = lblLocTrangThai.Left - 15 - txtTimKiem.Left;
+            if (searchWidth > 150)
+            {
+                txtTimKiem.Width = searchWidth;
+            }
         }
 
         private void FrmSpeaker_Load(object sender, EventArgs e)
@@ -150,6 +275,7 @@ namespace EventManagement.GUI.Forms
 
         /// <summary>
         /// Bộ máy quản lý 3 trạng thái màn hình (Xem - Thêm - Sửa) theo chuẩn mục 5 docs/08
+        /// Nút Lưu và Hủy chỉ hiển thị khi Thêm hoặc Sửa
         /// </summary>
         private void SetFormState(FormMode mode)
         {
@@ -175,8 +301,8 @@ namespace EventManagement.GUI.Forms
                     btnSua.Enabled = hasRows;
                     btnXoa.Enabled = hasRows;
                     btnXuatExcel.Enabled = _currentList.Count > 0;
-                    btnLuu.Enabled = false;
-                    btnHuy.Enabled = false;
+                    btnLuu.Visible = false;
+                    btnHuy.Visible = false;
 
                     dgvDienGia.Enabled = true;
                     pnlFilter.Enabled = true;
@@ -207,6 +333,8 @@ namespace EventManagement.GUI.Forms
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
                     btnXuatExcel.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
@@ -231,6 +359,8 @@ namespace EventManagement.GUI.Forms
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
                     btnXuatExcel.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
@@ -315,7 +445,7 @@ namespace EventManagement.GUI.Forms
 
             var confirm = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xóa hồ sơ diễn giả '{selected.HoTen}' (Mã: {selected.MaDienGia})?",
-                "Xác nhận xóa diễn giả",
+                "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -330,12 +460,12 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                // Xử lý vi phạm quy tắc BR-20: Diễn giả đã tham gia tiết mục
+                // Xử lý thông báo diễn giả đã tham gia tiết mục lịch trình
                 if (result.ErrorCode == "BR-20")
                 {
                     var opt = MessageBox.Show(
-                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái diễn giả này sang 'Ngừng hợp tác' theo quy tắc BR-20 thay vì xóa vĩnh viễn?",
-                        "Cảnh báo nghiệp vụ BR-20",
+                        $"Diễn giả này đã tham gia vào các tiết mục trong chương trình, không thể xóa trực tiếp.\n\nBạn có muốn chuyển trạng thái diễn giả sang 'Ngừng hợp tác'?",
+                        "Cảnh báo",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning);
 
@@ -401,7 +531,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi thực thi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(result.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

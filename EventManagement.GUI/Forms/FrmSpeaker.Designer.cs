@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmSpeaker
     {
@@ -727,7 +727,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.MaximizeBox = true;
             this.Name = "FrmSpeaker";
-            this.Text = "Quản lý diễn giả và khách mời";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.KeyPreview = true;
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmSpeaker_KeyDown);
             this.Load += new System.EventHandler(this.FrmSpeaker_Load);
