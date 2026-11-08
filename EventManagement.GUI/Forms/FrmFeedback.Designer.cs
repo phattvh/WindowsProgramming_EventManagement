@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmFeedback
     {
@@ -14,6 +14,8 @@
         private System.Windows.Forms.Label lblKpiTongPhValue;
         private System.Windows.Forms.Label lblKpiHaiLongTitle;
         private System.Windows.Forms.Label lblKpiHaiLongValue;
+        private System.Windows.Forms.Label lblKpiDanhGiaXauTitle;
+        private System.Windows.Forms.Label lblKpiDanhGiaXauValue;
 
         private System.Windows.Forms.Panel pnlFilter;
         private System.Windows.Forms.Label lblLocSuKien;
@@ -85,6 +87,8 @@
             this.lblKpiTongPhValue = new System.Windows.Forms.Label();
             this.lblKpiHaiLongTitle = new System.Windows.Forms.Label();
             this.lblKpiHaiLongValue = new System.Windows.Forms.Label();
+            this.lblKpiDanhGiaXauTitle = new System.Windows.Forms.Label();
+            this.lblKpiDanhGiaXauValue = new System.Windows.Forms.Label();
 
             this.pnlFilter = new System.Windows.Forms.Panel();
             this.lblLocSuKien = new System.Windows.Forms.Label();
@@ -160,13 +164,15 @@
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(420, 25);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "💬 QUẢN LÝ KHẢO SÁT VÀ Ý KIẾN PHẢN HỒI";
+            this.lblTitle.Text = "QUẢN LÝ KHẢO SÁT & Ý KIẾN PHẢN HỒI";
 
             // 
             // pnlKpi
             // 
             this.pnlKpi.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
             this.pnlKpi.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlKpi.Controls.Add(this.lblKpiDanhGiaXauValue);
+            this.pnlKpi.Controls.Add(this.lblKpiDanhGiaXauTitle);
             this.pnlKpi.Controls.Add(this.lblKpiHaiLongValue);
             this.pnlKpi.Controls.Add(this.lblKpiHaiLongTitle);
             this.pnlKpi.Controls.Add(this.lblKpiTongPhValue);
@@ -250,6 +256,28 @@
             this.lblKpiHaiLongValue.Size = new System.Drawing.Size(59, 20);
             this.lblKpiHaiLongValue.TabIndex = 5;
             this.lblKpiHaiLongValue.Text = "100 %";
+            // 
+            // lblKpiDanhGiaXauTitle
+            // 
+            this.lblKpiDanhGiaXauTitle.AutoSize = true;
+            this.lblKpiDanhGiaXauTitle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblKpiDanhGiaXauTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
+            this.lblKpiDanhGiaXauTitle.Location = new System.Drawing.Point(920, 13);
+            this.lblKpiDanhGiaXauTitle.Name = "lblKpiDanhGiaXauTitle";
+            this.lblKpiDanhGiaXauTitle.Size = new System.Drawing.Size(155, 15);
+            this.lblKpiDanhGiaXauTitle.TabIndex = 6;
+            this.lblKpiDanhGiaXauTitle.Text = "Tỷ lệ đánh giá xấu (1 - 2 sao):";
+            // 
+            // lblKpiDanhGiaXauValue
+            // 
+            this.lblKpiDanhGiaXauValue.AutoSize = true;
+            this.lblKpiDanhGiaXauValue.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblKpiDanhGiaXauValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.lblKpiDanhGiaXauValue.Location = new System.Drawing.Point(1080, 10);
+            this.lblKpiDanhGiaXauValue.Name = "lblKpiDanhGiaXauValue";
+            this.lblKpiDanhGiaXauValue.Size = new System.Drawing.Size(45, 20);
+            this.lblKpiDanhGiaXauValue.TabIndex = 7;
+            this.lblKpiDanhGiaXauValue.Text = "0 %";
 
             // 
             // pnlFilter
@@ -761,7 +789,7 @@
             this.MaximizeBox = true;
             this.Name = "FrmFeedback";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Quản lý khảo sát và phản hồi sau sự kiện";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.Load += new System.EventHandler(this.FrmFeedback_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmFeedback_KeyDown);
             this.pnlHeader.ResumeLayout(false);

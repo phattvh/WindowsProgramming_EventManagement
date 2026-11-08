@@ -23,6 +23,19 @@ namespace EventManagement.GUI.Forms
         private List<FeedbackDto> _currentList = new();
         private bool _isLoading = true;
 
+        public Button BtnThem => btnThem;
+        public Button BtnSua => btnSua;
+        public Button BtnXoa => btnXoa;
+        public Button BtnLuu => btnLuu;
+        public Button BtnHuy => btnHuy;
+        public Button BtnLamMoi => btnLamMoi;
+        public DataGridView DgvPhanHoi => dgvPhanHoi;
+        public Panel PnlKpi => pnlKpi;
+        public Label LblKpiDanhGiaXauValue => lblKpiDanhGiaXauValue;
+        public Label LblKpiHaiLongValue => lblKpiHaiLongValue;
+        public Label LblKpiDiemTbValue => lblKpiDiemTbValue;
+        public Label LblKpiTongPhValue => lblKpiTongPhValue;
+
         public FrmFeedback() : this(new FeedbackService())
         {
         }
@@ -45,6 +58,49 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnLamMoi, ButtonRole.Secondary);
 
             dgvPhanHoi.AutoGenerateColumns = false;
+
+            foreach (DataGridViewColumn col in dgvPhanHoi.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            dgvPhanHoi.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            colMaPhanHoi.FillWeight = 10;
+            colTenSuKien.FillWeight = 20;
+            colTenNguoiThamGia.FillWeight = 15;
+            colEmail.FillWeight = 15;
+            colSoSaoText.FillWeight = 12;
+            colNoiDungPhanHoi.FillWeight = 20;
+            colNgayDanhGia.FillWeight = 12;
+
+            btnLamMoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtTimKiem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            pnlKpi.Resize += (s, e) => LayoutKpiCards();
+            LayoutKpiCards();
+        }
+
+        private void LayoutKpiCards()
+        {
+            if (pnlKpi == null) return;
+            int totalWidth = pnlKpi.ClientSize.Width;
+            if (totalWidth <= 0) return;
+            int sectionWidth = totalWidth / 4;
+
+            int x0 = 15;
+            lblKpiDiemTbTitle.Location = new System.Drawing.Point(x0, 13);
+            lblKpiDiemTbValue.Location = new System.Drawing.Point(x0 + lblKpiDiemTbTitle.Width + 6, 10);
+
+            int x1 = sectionWidth + 10;
+            lblKpiTongPhTitle.Location = new System.Drawing.Point(x1, 13);
+            lblKpiTongPhValue.Location = new System.Drawing.Point(x1 + lblKpiTongPhTitle.Width + 6, 10);
+
+            int x2 = sectionWidth * 2 + 10;
+            lblKpiHaiLongTitle.Location = new System.Drawing.Point(x2, 13);
+            lblKpiHaiLongValue.Location = new System.Drawing.Point(x2 + lblKpiHaiLongTitle.Width + 6, 10);
+
+            int x3 = sectionWidth * 3 + 10;
+            lblKpiDanhGiaXauTitle.Location = new System.Drawing.Point(x3, 13);
+            lblKpiDanhGiaXauValue.Location = new System.Drawing.Point(x3 + lblKpiDanhGiaXauTitle.Width + 6, 10);
         }
 
         private void FrmFeedback_Load(object sender, EventArgs e)
@@ -145,6 +201,14 @@ namespace EventManagement.GUI.Forms
                 lblKpiTongPhValue.Text = $"{s.TongSoPhanHoi} ý kiến";
                 lblKpiHaiLongValue.Text = $"{s.TyLeHaiLong:0.#} %";
 
+                double tyLeDanhGiaXau = s.TongSoPhanHoi > 0
+                    ? Math.Round((double)(s.SoLuong1Sao + s.SoLuong2Sao) / s.TongSoPhanHoi * 100.0, 1)
+                    : 0;
+                lblKpiDanhGiaXauValue.Text = $"{tyLeDanhGiaXau:0.#} %";
+                lblKpiDanhGiaXauValue.ForeColor = tyLeDanhGiaXau > 0
+                    ? System.Drawing.Color.FromArgb(220, 38, 38)
+                    : System.Drawing.Color.FromArgb(71, 85, 105);
+
                 // Tô màu sinh động theo chỉ số hài lòng
                 if (s.DiemTrungBinh >= 4.5)
                     lblKpiDiemTbValue.ForeColor = System.Drawing.Color.FromArgb(22, 163, 74); // Xanh lá
@@ -206,11 +270,32 @@ namespace EventManagement.GUI.Forms
             txtNoiDungPhanHoi.ReadOnly = !isEditing;
 
             // Nút bấm
+            btnThem.Visible = !isEditing;
+            btnSua.Visible = !isEditing;
+            btnXoa.Visible = !isEditing;
+            btnXuatExcel.Visible = !isEditing;
+
+            btnLuu.Visible = isEditing;
+            btnHuy.Visible = isEditing;
+
             btnThem.Enabled = !isEditing;
             btnSua.Enabled = !isEditing && _currentList.Count > 0;
             btnXoa.Enabled = !isEditing && _currentList.Count > 0;
             btnLuu.Enabled = isEditing;
             btnHuy.Enabled = isEditing;
+
+            if (isEditing)
+            {
+                btnLuu.Location = new System.Drawing.Point(15, 10);
+                btnHuy.Location = new System.Drawing.Point(155, 10);
+            }
+            else
+            {
+                btnThem.Location = new System.Drawing.Point(15, 10);
+                btnSua.Location = new System.Drawing.Point(145, 10);
+                btnXoa.Location = new System.Drawing.Point(275, 10);
+                btnXuatExcel.Location = new System.Drawing.Point(405, 10);
+            }
 
             // Danh sách & bộ lọc
             dgvPhanHoi.Enabled = !isEditing;
@@ -259,7 +344,7 @@ namespace EventManagement.GUI.Forms
             }
 
             var confirm = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa phản hồi '{selected.MaPhanHoi}' của '{selected.TenNguoiThamGia}'?",
+                $"Bạn có chắc chắn muốn xóa phản hồi [{selected.MaPhanHoi}] của người tham gia [{selected.TenNguoiThamGia}] không?",
                 "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);

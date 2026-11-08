@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -1210,7 +1210,7 @@ namespace EventManagement.GUI.Forms
         private void btnLamMoi_Click(object sender, EventArgs e)
         {
             ReloadAllTabs();
-            MessageBox.Show("Đã làm mới toàn bộ dữ liệu 9 phân hệ của sự kiện!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Đã làm mới dữ liệu sự kiện!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnXuatBaoCao_Click(object sender, EventArgs e)
