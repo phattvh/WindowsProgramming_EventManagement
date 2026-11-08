@@ -42,6 +42,13 @@ namespace EventManagement.GUI.Forms
 
         private void InitCustomStylesAndBindings()
         {
+            // Tiêu đề form và kích thước toàn màn hình
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            this.WindowState = FormWindowState.Maximized;
+            lblBannerTitle.Text = "BÁO CÁO THỐNG KÊ";
+            lblBannerSubtitle.Visible = false;
+            lblBannerSubtitle.Text = string.Empty;
+
             // Định kiểu các nút theo FrmBase chuẩn Design Rules
             StyleButton(btnXem, ButtonRole.Primary);
             StyleButton(btnIn, ButtonRole.Secondary);
@@ -51,6 +58,9 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvReportData);
             dgvReportData.AutoGenerateColumns = false;
+
+            pnlKpiBottom.Resize += (s, e) => LayoutKpiBottom();
+            LayoutKpiBottom();
 
             // Thiết lập ngày mặc định (đầu tháng đến cuối tháng hiện tại)
             var now = DateTime.Today;
@@ -87,6 +97,22 @@ namespace EventManagement.GUI.Forms
 
             // Tải dữ liệu mặc định ban đầu
             ExecuteLoadReport();
+        }
+
+        private void LayoutKpiBottom()
+        {
+            int totalW = pnlKpiBottom.ClientSize.Width;
+            if (totalW < 400) return;
+            int colW = totalW / 4;
+            lblTongThu.Location = new Point(15, 13);
+            lblTongThu.Width = colW - 20;
+            lblTongChi.Location = new Point(colW + 10, 13);
+            lblTongChi.Width = colW - 20;
+            lblChenhLech.Location = new Point(colW * 2 + 10, 13);
+            lblChenhLech.Width = colW - 20;
+            lblTrangThai.Location = new Point(colW * 3 + 10, 13);
+            lblTrangThai.Width = colW - 25;
+            lblTrangThai.TextAlign = ContentAlignment.MiddleRight;
         }
 
         private void LoadEventDropdown()
@@ -185,25 +211,34 @@ namespace EventManagement.GUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi tải báo cáo quyết toán: {ex.Message}", "Lỗi Báo Cáo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tải dữ liệu báo cáo quyết toán. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void SetupSettlementGridColumns()
         {
             dgvReportData.Columns.Clear();
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 50 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Mã chi phí", Width = 100 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Khoản mục chi", Width = 180 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nội dung / Diễn giải", Width = 220 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Ngày chi", Width = 100 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Người chi", Width = 140 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Số tiền", Width = 130 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", Width = 150 });
+            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45 };
+            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã chi phí", Width = 90 };
+            var colKhoanMuc = new DataGridViewTextBoxColumn { HeaderText = "Khoản mục chi", Width = 200 };
+            var colNoiDung = new DataGridViewTextBoxColumn { HeaderText = "Nội dung", Width = 300, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colNgay = new DataGridViewTextBoxColumn { HeaderText = "Ngày chi", Width = 100 };
+            var colNguoi = new DataGridViewTextBoxColumn { HeaderText = "Người chi", Width = 120 };
+            var colTien = new DataGridViewTextBoxColumn { HeaderText = "Số tiền", Width = 110 };
+            var colTrangThai = new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", Width = 110 };
 
-            dgvReportData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvReportData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvReportData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvReportData.Columns.AddRange(colStt, colMa, colKhoanMuc, colNoiDung, colNgay, colNguoi, colTien, colTrangThai);
+
+            foreach (DataGridViewColumn col in dgvReportData.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNgay.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
         #endregion
 
@@ -242,26 +277,34 @@ namespace EventManagement.GUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi tải báo cáo vé điện tử: {ex.Message}", "Lỗi Báo Cáo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tải dữ liệu báo cáo vé điện tử. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void SetupTicketGridColumns()
         {
             dgvReportData.Columns.Clear();
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 50 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Mã vé", Width = 100 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Tên sự kiện", Width = 200 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Hạng vé", Width = 120 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Đơn giá", Width = 110 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Người tham gia", Width = 160 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Email", Width = 160 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Mã QR Check-in", Width = 140 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Ngày xuất vé", Width = 130 });
+            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 50 };
+            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã vé", Width = 100 };
+            var colSuKien = new DataGridViewTextBoxColumn { HeaderText = "Tên sự kiện", Width = 250, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colHangVe = new DataGridViewTextBoxColumn { HeaderText = "Hạng vé", Width = 120 };
+            var colDonGia = new DataGridViewTextBoxColumn { HeaderText = "Đơn giá", Width = 110 };
+            var colNguoiThamGia = new DataGridViewTextBoxColumn { HeaderText = "Người tham gia", Width = 160 };
+            var colEmail = new DataGridViewTextBoxColumn { HeaderText = "Email", Width = 160 };
+            var colMaQR = new DataGridViewTextBoxColumn { HeaderText = "Mã QR Check-in", Width = 140 };
+            var colNgay = new DataGridViewTextBoxColumn { HeaderText = "Ngày xuất vé", Width = 130 };
 
-            dgvReportData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvReportData.Columns[4].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvReportData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvReportData.Columns.AddRange(colStt, colMa, colSuKien, colHangVe, colDonGia, colNguoiThamGia, colEmail, colMaQR, colNgay);
+
+            foreach (DataGridViewColumn col in dgvReportData.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colDonGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colNgay.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
         #endregion
 
@@ -316,32 +359,41 @@ namespace EventManagement.GUI.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Lỗi tải thống kê KPI: {ex.Message}", "Lỗi Báo Cáo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Không thể tải dữ liệu thống kê KPI. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private void SetupKpiGridColumns()
         {
             dgvReportData.Columns.Clear();
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Mã SK", Width = 80 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Tên sự kiện", Width = 190 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Địa điểm", Width = 130 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Thời gian bắt đầu", Width = 125 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Phát hành", Width = 80 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Đã bán", Width = 75 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Check-in", Width = 75 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "% Bán vé", Width = 80 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "% Tham dự", Width = 85 });
-            dgvReportData.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Doanh thu", Width = 120 });
+            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45 };
+            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã SK", Width = 80 };
+            var colSuKien = new DataGridViewTextBoxColumn { HeaderText = "Tên sự kiện", Width = 250, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill };
+            var colDiaDiem = new DataGridViewTextBoxColumn { HeaderText = "Địa điểm", Width = 150 };
+            var colBatDau = new DataGridViewTextBoxColumn { HeaderText = "Thời gian bắt đầu", Width = 135 };
+            var colPhatHanh = new DataGridViewTextBoxColumn { HeaderText = "Phát hành", Width = 85 };
+            var colDaBan = new DataGridViewTextBoxColumn { HeaderText = "Đã bán", Width = 80 };
+            var colCheckIn = new DataGridViewTextBoxColumn { HeaderText = "Check-in", Width = 80 };
+            var colTyLeBan = new DataGridViewTextBoxColumn { HeaderText = "% Bán vé", Width = 85 };
+            var colTyLeThamDu = new DataGridViewTextBoxColumn { HeaderText = "% Tham dự", Width = 90 };
+            var colDoanhThu = new DataGridViewTextBoxColumn { HeaderText = "Doanh thu", Width = 130 };
 
-            dgvReportData.Columns[0].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvReportData.Columns[5].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvReportData.Columns[6].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvReportData.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvReportData.Columns[8].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvReportData.Columns[9].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvReportData.Columns[10].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvReportData.Columns.AddRange(colStt, colMa, colSuKien, colDiaDiem, colBatDau, colPhatHanh, colDaBan, colCheckIn, colTyLeBan, colTyLeThamDu, colDoanhThu);
+
+            foreach (DataGridViewColumn col in dgvReportData.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colBatDau.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colPhatHanh.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colDaBan.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colCheckIn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colTyLeBan.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colTyLeThamDu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colDoanhThu.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
         }
         #endregion
 
@@ -372,7 +424,7 @@ namespace EventManagement.GUI.Forms
             printDialog.Document = _printDoc;
             printDialog.UseEXDialog = true;
 
-            if (printDialog.ShowDialog() == DialogResult.OK)
+            if (printDialog.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
@@ -380,7 +432,7 @@ namespace EventManagement.GUI.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Không thể thực hiện in: {ex.Message}", "Lỗi In Ấn", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Không thể thực hiện in ấn. Vui lòng kiểm tra lại thiết bị máy in.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -567,7 +619,7 @@ namespace EventManagement.GUI.Forms
                 _ => $"ThongKeKpi_{DateTime.Now:yyyyMMdd_HHmmss}.csv"
             };
 
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (sfd.ShowDialog(this) == DialogResult.OK)
             {
                 try
                 {
@@ -594,11 +646,11 @@ namespace EventManagement.GUI.Forms
                         File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
                     }
 
-                    MessageBox.Show($"Xuất báo cáo thành công ra file:\n{sfd.FileName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Xuất dữ liệu báo cáo thành công ra file:\n{sfd.FileName}", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Lỗi xuất file: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Có lỗi xảy ra trong quá trình xuất dữ liệu. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }

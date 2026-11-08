@@ -69,7 +69,7 @@ namespace EventManagement.GUI.Forms
             this.pnlTopBanner.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTopBanner.Location = new System.Drawing.Point(0, 0);
             this.pnlTopBanner.Name = "pnlTopBanner";
-            this.pnlTopBanner.Size = new System.Drawing.Size(1104, 65);
+            this.pnlTopBanner.Size = new System.Drawing.Size(1104, 58);
             this.pnlTopBanner.TabIndex = 0;
             // 
             // lblBannerSubtitle
@@ -79,20 +79,21 @@ namespace EventManagement.GUI.Forms
             this.lblBannerSubtitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.lblBannerSubtitle.Location = new System.Drawing.Point(16, 38);
             this.lblBannerSubtitle.Name = "lblBannerSubtitle";
-            this.lblBannerSubtitle.Size = new System.Drawing.Size(465, 15);
+            this.lblBannerSubtitle.Size = new System.Drawing.Size(0, 15);
             this.lblBannerSubtitle.TabIndex = 1;
-            this.lblBannerSubtitle.Text = "Hệ thống tổng hợp quyết toán tài chính, quản lý vé điện tử và chỉ số hoạt động sự kiện";
+            this.lblBannerSubtitle.Text = "";
+            this.lblBannerSubtitle.Visible = false;
             // 
             // lblBannerTitle
             // 
             this.lblBannerTitle.AutoSize = true;
             this.lblBannerTitle.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblBannerTitle.ForeColor = System.Drawing.Color.White;
-            this.lblBannerTitle.Location = new System.Drawing.Point(15, 9);
+            this.lblBannerTitle.Location = new System.Drawing.Point(15, 16);
             this.lblBannerTitle.Name = "lblBannerTitle";
-            this.lblBannerTitle.Size = new System.Drawing.Size(438, 25);
+            this.lblBannerTitle.Size = new System.Drawing.Size(220, 25);
             this.lblBannerTitle.TabIndex = 0;
-            this.lblBannerTitle.Text = "F19 - BÁO CÁO & THỐNG KÊ TỔNG HỢP SỰ KIỆN";
+            this.lblBannerTitle.Text = "BÁO CÁO THỐNG KÊ";
             // 
             // grpFilter
             // 
@@ -112,9 +113,9 @@ namespace EventManagement.GUI.Forms
             this.grpFilter.Dock = System.Windows.Forms.DockStyle.Top;
             this.grpFilter.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.grpFilter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.grpFilter.Location = new System.Drawing.Point(0, 65);
+            this.grpFilter.Location = new System.Drawing.Point(0, 58);
             this.grpFilter.Name = "grpFilter";
-            this.grpFilter.Size = new System.Drawing.Size(1104, 100);
+            this.grpFilter.Size = new System.Drawing.Size(1104, 108);
             this.grpFilter.TabIndex = 1;
             this.grpFilter.TabStop = false;
             this.grpFilter.Text = "Bộ lọc & Tùy chọn báo cáo";
@@ -124,7 +125,7 @@ namespace EventManagement.GUI.Forms
             this.pnlReportType.Controls.Add(this.radTongHop);
             this.pnlReportType.Controls.Add(this.radVeDienTu);
             this.pnlReportType.Controls.Add(this.radQuyetToan);
-            this.pnlReportType.Location = new System.Drawing.Point(90, 60);
+            this.pnlReportType.Location = new System.Drawing.Point(90, 68);
             this.pnlReportType.Name = "pnlReportType";
             this.pnlReportType.Size = new System.Drawing.Size(560, 30);
             this.pnlReportType.TabIndex = 11;
@@ -453,7 +454,8 @@ namespace EventManagement.GUI.Forms
             this.MinimumSize = new System.Drawing.Size(950, 550);
             this.Name = "FrmReportStatistics";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "F19 - Báo Cáo & Thống Kê Tổng Hợp Sự Kiện";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.pnlTopBanner.ResumeLayout(false);
             this.pnlTopBanner.PerformLayout();
             this.grpFilter.ResumeLayout(false);

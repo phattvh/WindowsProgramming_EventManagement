@@ -183,7 +183,7 @@ namespace EventManagement.Tests
             // Kiểm tra khởi tạo màn hình F19 không phụ thuộc UI, không gây văng Exception
             using var form = new FrmReportStatistics(_reportService);
             Assert.IsNotNull(form);
-            Assert.AreEqual("F19 - Báo Cáo & Thống Kê Tổng Hợp Sự Kiện", form.Text);
+            Assert.AreEqual("Hệ Thống Quản Lý Sự Kiện", form.Text);
             Assert.IsNotNull(form.Font);
             Assert.AreEqual("Segoe UI", form.Font.FontFamily.Name);
         }
