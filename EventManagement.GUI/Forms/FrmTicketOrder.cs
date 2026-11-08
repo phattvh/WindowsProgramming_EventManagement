@@ -28,6 +28,16 @@ namespace EventManagement.GUI.Forms
         private List<TicketTierSummaryDto> _currentTiers = new();
         private List<TicketDetailDto> _lastIssuedTickets = new();
 
+        public Button BtnXacNhan => btnXacNhan;
+        public Button BtnLamMoi => btnLamMoi;
+        public ComboBox CboSuKien => cboSuKien;
+        public ComboBox CboHangVe => cboHangVe;
+        public DataGridView DgvNguoiDiCung => dgvNguoiDiCung;
+        public DataGridView DgvIssuedTickets => dgvIssuedTickets;
+        public GroupBox GrpOrderInfo => grpOrderInfo;
+        public GroupBox GrpIssuedTickets => grpIssuedTickets;
+        public Label LblSubTitle => lblSubTitle;
+
         public FrmTicketOrder() : this(new TicketOrderService())
         {
         }
@@ -48,9 +58,49 @@ namespace EventManagement.GUI.Forms
             StyleDataGridView(dgvNguoiDiCung);
             StyleDataGridView(dgvIssuedTickets);
 
+            foreach (DataGridViewColumn col in dgvNguoiDiCung.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            foreach (DataGridViewColumn col in dgvIssuedTickets.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
             dgvIssuedTickets.AutoGenerateColumns = false;
+            dgvIssuedTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            colMaVe.FillWeight = 12;
+            colAttendeeName.FillWeight = 24;
+            colMaQR.FillWeight = 32;
+            colHangVeName.FillWeight = 16;
+            colGiaVe.FillWeight = 16;
             colGiaVe.DefaultCellStyle.Format = "N0";
             colGiaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            // Anchor controls inside grpOrderInfo for full-screen layout
+            cboSuKien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cboHangVe.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            pnlTotalMoney.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            grpBuyer.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtHoTen.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtSoDienThoai.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtEmail.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtDonVi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnXacNhan.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnLamMoi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            this.Resize += (s, e) =>
+            {
+                if (scMain != null && scMain.Width > 800)
+                {
+                    scMain.SplitterDistance = Math.Max(520, (int)(scMain.Width * 0.42));
+                }
+            };
+            if (scMain != null && scMain.Width > 800)
+            {
+                scMain.SplitterDistance = Math.Max(520, (int)(scMain.Width * 0.42));
+            }
 
             _isLoading = true;
             LoadEvents();
@@ -59,6 +109,11 @@ namespace EventManagement.GUI.Forms
             if (cboSuKien.Items.Count > 0)
             {
                 cboSuKien.SelectedIndex = 0;
+                string maSuKien = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+                if (!string.IsNullOrEmpty(maSuKien))
+                {
+                    LoadTicketTiers(maSuKien);
+                }
             }
 
             SyncAttendeeGridRows((int)nudSoLuong.Value);
@@ -238,17 +293,16 @@ namespace EventManagement.GUI.Forms
             }
 
             int qty = (int)nudSoLuong.Value;
-            // BR-10: Kiểm tra 1-10 vé
             if (qty < 1 || qty > 10)
             {
-                errorProvider.SetError(nudSoLuong, "Số lượng vé mỗi đơn hàng phải từ 1 đến 10 vé (BR-10).");
+                errorProvider.SetError(nudSoLuong, "Số lượng vé mỗi đơn hàng phải từ 1 đến 10 vé.");
                 isValid = false;
             }
 
-            // BR-09: Kiểm tra số lượng tồn
+            // Kiểm tra số lượng tồn
             if (tier != null && tier.SoLuongConLai < qty)
             {
-                errorProvider.SetError(nudSoLuong, $"Hạng vé chỉ còn lại {tier.SoLuongConLai} vé, không đủ đáp ứng số lượng {qty} (BR-09).");
+                errorProvider.SetError(nudSoLuong, $"Hạng vé chỉ còn lại {tier.SoLuongConLai} vé, không đủ đáp ứng số lượng {qty}.");
                 isValid = false;
             }
 
@@ -331,7 +385,7 @@ namespace EventManagement.GUI.Forms
                     BindIssuedTickets(_lastIssuedTickets);
 
                     MessageBox.Show(
-                        $"Đặt vé thành công!\nMã đơn đăng ký: {result.Data.MaDangKy}\nTổng cộng: {result.Data.SoLuong} vé đã được phát hành với mã QR token duy nhất (BR-17).",
+                        $"Đặt vé thành công!\nMã đơn đăng ký: {result.Data.MaDangKy}\nTổng cộng: {result.Data.SoLuong} vé đã được phát hành kèm mã QR hợp lệ.",
                         "Thành công",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);

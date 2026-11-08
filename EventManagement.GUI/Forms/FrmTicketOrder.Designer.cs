@@ -104,7 +104,7 @@ namespace EventManagement.GUI.Forms
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(433, 25);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "ĐĂNG KÝ VÉ & BÁN VÉ SỰ KIỆN (FORM F11)";
+            this.lblTitle.Text = "ĐĂNG KÝ VÉ SỰ KIỆN";
             // 
             // lblSubTitle
             // 
@@ -116,6 +116,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Size = new System.Drawing.Size(569, 15);
             this.lblSubTitle.TabIndex = 1;
             this.lblSubTitle.Text = "Cho phép mua 1–10 vé (BR-10), kiểm soát kho vé (BR-09), tự sinh mã QR GUID (BR-17) & Transaction (BR-18)";
+            this.lblSubTitle.Visible = false;
             // 
             // scMain
             // 
@@ -160,7 +161,7 @@ namespace EventManagement.GUI.Forms
             this.grpOrderInfo.Size = new System.Drawing.Size(452, 635);
             this.grpOrderInfo.TabIndex = 0;
             this.grpOrderInfo.TabStop = false;
-            this.grpOrderInfo.Text = "THÔNG TIN ĐẶT VÉ & THANH TOÁN";
+            this.grpOrderInfo.Text = "THÔNG TIN ĐẶT VÉ";
             // 
             // lblSuKien
             // 
@@ -213,7 +214,7 @@ namespace EventManagement.GUI.Forms
             this.lblTierInfo.Name = "lblTierInfo";
             this.lblTierInfo.Size = new System.Drawing.Size(262, 15);
             this.lblTierInfo.TabIndex = 4;
-            this.lblTierInfo.Text = "Đơn giá: 0 VNĐ | Khả dụng trong kho: 0 vé (BR-09)";
+            this.lblTierInfo.Text = "Đơn giá: 0 VNĐ | Khả dụng trong kho: 0 vé";
             // 
             // lblSoLuong
             // 
@@ -259,7 +260,7 @@ namespace EventManagement.GUI.Forms
             this.lblSoLuongHint.Name = "lblSoLuongHint";
             this.lblSoLuongHint.Size = new System.Drawing.Size(183, 15);
             this.lblSoLuongHint.TabIndex = 7;
-            this.lblSoLuongHint.Text = "(Tối đa 1–10 vé/đơn theo BR-10)";
+            this.lblSoLuongHint.Text = "(Tối đa 1–10 vé/đơn)";
             // 
             // pnlTotalMoney
             // 
@@ -445,7 +446,7 @@ namespace EventManagement.GUI.Forms
             this.grpAttendees.Size = new System.Drawing.Size(668, 240);
             this.grpAttendees.TabIndex = 0;
             this.grpAttendees.TabStop = false;
-            this.grpAttendees.Text = "DANH SÁCH NGƯỜI SỬ DỤNG VÉ (BR-10)";
+            this.grpAttendees.Text = "DANH SÁCH NGƯỜI SỬ DỤNG VÉ";
             // 
             // dgvNguoiDiCung
             // 
@@ -464,12 +465,12 @@ namespace EventManagement.GUI.Forms
             this.colSTT.HeaderText = "Vé Số";
             this.colSTT.Name = "colSTT";
             this.colSTT.ReadOnly = true;
-            this.colSTT.Width = 80;
+            this.colSTT.Width = 60;
             // 
             // colTenNguoiThamDu
             // 
             this.colTenNguoiThamDu.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colTenNguoiThamDu.HeaderText = "Họ và Tên Người Sử Dụng Vé (Nhập trực tiếp)";
+            this.colTenNguoiThamDu.HeaderText = "Họ và tên người sử dụng vé";
             this.colTenNguoiThamDu.Name = "colTenNguoiThamDu";
             // 
             // grpIssuedTickets
@@ -484,7 +485,7 @@ namespace EventManagement.GUI.Forms
             this.grpIssuedTickets.Size = new System.Drawing.Size(668, 345);
             this.grpIssuedTickets.TabIndex = 0;
             this.grpIssuedTickets.TabStop = false;
-            this.grpIssuedTickets.Text = "DANH SÁCH VÉ ĐIỆN TỬ VỪA PHÁT HÀNH (MÃ QR GUID BR-17)";
+            this.grpIssuedTickets.Text = "DANH SÁCH VÉ ĐIỆN TỬ";
             // 
             // dgvIssuedTickets
             // 
@@ -518,7 +519,7 @@ namespace EventManagement.GUI.Forms
             // colMaQR
             // 
             this.colMaQR.DataPropertyName = "MaQR";
-            this.colMaQR.HeaderText = "Token Mã QR (GUID)";
+            this.colMaQR.HeaderText = "Mã QR (Token)";
             this.colMaQR.Name = "colMaQR";
             this.colMaQR.Width = 170;
             // 
@@ -586,7 +587,7 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.pnlTopHeader);
             this.MinimumSize = new System.Drawing.Size(1100, 680);
             this.Name = "FrmTicketOrder";
-            this.Text = "Đăng Ký Vé & Bán Vé Sự Kiện (F11)";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.pnlTopHeader.ResumeLayout(false);
             this.pnlTopHeader.PerformLayout();
             this.scMain.Panel1.ResumeLayout(false);
