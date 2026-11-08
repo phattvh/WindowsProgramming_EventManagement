@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmLogin
     {
@@ -153,7 +153,7 @@
             this.MinimizeBox = false;
             this.Name = "FrmLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Đăng Nhập Hệ Thống";
+            this.Text = "Hệ thống quản lý sự kiện";
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

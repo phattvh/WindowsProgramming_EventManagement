@@ -1,4 +1,4 @@
-﻿using EventManagement.GUI.Forms;
+using EventManagement.GUI.Forms;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -101,6 +101,7 @@ namespace EventManagement.Tests
             // Mô tả: Kiểm tra Form Đăng nhập F01 không còn hiển thị subtitle 'Hệ Thống Quản Lý Sự Kiện & Hội Nghị', có kích thước dialog cân đối (<= 450x400) và không bị ép full màn hình.
             using var form = new FrmLogin();
 
+            form.Text.Should().Be("Hệ thống quản lý sự kiện", "Thanh tiêu đề Form đăng nhập phải là 'Hệ thống quản lý sự kiện' theo chuẩn hóa");
             form.MaximizeBox.Should().BeFalse("Form Đăng nhập phải ở dạng hộp thoại cố định, không cho phóng to toàn màn hình.");
             form.WindowState.Should().Be(System.Windows.Forms.FormWindowState.Normal, "Form Đăng nhập phải hiển thị ở chế độ Normal giữa màn hình.");
             form.ClientSize.Width.Should().BeInRange(380, 460, "Chiều rộng form đăng nhập phải cân đối.");

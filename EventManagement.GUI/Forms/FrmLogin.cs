@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,6 +24,7 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _authService = authService;
+            this.Text = "Hệ thống quản lý sự kiện";
             this.ClientSize = new System.Drawing.Size(420, 345);
             this.MinimumSize = new System.Drawing.Size(436, 384);
             this.MaximumSize = new System.Drawing.Size(436, 384);
