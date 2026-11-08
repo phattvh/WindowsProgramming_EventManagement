@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -26,7 +26,18 @@ namespace EventManagement.GUI.Forms
         private List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> _eventList = new();
         private List<(string MaDienGia, string HoTen)> _speakerList = new();
 
-                private string? _initialMaSuKien;
+        private string? _initialMaSuKien;
+
+        public Label LblSubtitle => lblSubtitle;
+        public Label LblKiemTraStatus => lblKiemTraStatus;
+        public Button BtnKiemTraXungDot => btnKiemTraXungDot;
+        public Button BtnThem => btnThem;
+        public Button BtnSua => btnSua;
+        public Button BtnXoa => btnXoa;
+        public Button BtnLuu => btnLuu;
+        public Button BtnHuy => btnHuy;
+        public DataGridView DgvLichTrinh => dgvLichTrinh;
+        public GroupBox GrbThongTin => grbThongTin;
 
         public FrmSchedule() : this(new ScheduleService(), null)
         {
@@ -45,7 +56,24 @@ namespace EventManagement.GUI.Forms
             _initialMaSuKien = maSuKien;
             InitializeComponent();
             _scheduleService = scheduleService ?? new ScheduleService();
+
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            lblSubtitle.Visible = false;
+            btnKiemTraXungDot.Visible = false;
+
             ApplyCustomStyles();
+
+            // Lắng nghe thay đổi dữ liệu để tự động kiểm tra xung đột thời gian thực
+            dtpBatDau.ValueChanged += (s, e) => AutoCheckConflict();
+            dtpKetThuc.ValueChanged += (s, e) => AutoCheckConflict();
+            txtDiaDiemChiTiet.TextChanged += (s, e) => AutoCheckConflict();
+            cboDienGia.SelectedIndexChanged += (s, e) => AutoCheckConflict();
+            cboSuKien.SelectedIndexChanged += (s, e) => AutoCheckConflict();
+
+            // Lắng nghe thay đổi kích thước container để cân đối giao diện responsive
+            grbThongTin.Resize += (s, e) => AdjustInputLayout();
+            pnlFilter.Resize += (s, e) => AdjustFilterLayout();
+            this.Resize += (s, e) => { AdjustInputLayout(); AdjustFilterLayout(); };
 
             if (!string.IsNullOrWhiteSpace(_initialMaSuKien))
             {
@@ -62,6 +90,10 @@ namespace EventManagement.GUI.Forms
 
         private void ApplyCustomStyles()
         {
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            lblSubtitle.Visible = false;
+            btnKiemTraXungDot.Visible = false;
+
             StyleButton(btnThem, ButtonRole.Success);
             StyleButton(btnSua, ButtonRole.Primary);
             StyleButton(btnXoa, ButtonRole.Danger);
@@ -72,10 +104,157 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvLichTrinh);
             dgvLichTrinh.AutoGenerateColumns = false;
-            dgvLichTrinh.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dgvLichTrinh.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvLichTrinh.ScrollBars = ScrollBars.Both;
 
+            foreach (DataGridViewColumn col in dgvLichTrinh.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
             LoadAuxiliaryData();
+            AdjustInputLayout();
+            AdjustFilterLayout();
+        }
+
+        /// <summary>
+        /// Tự động dàn đều 2 cột thông tin chi tiết trên toàn bộ chiều rộng (Responsive 1920x1080)
+        /// </summary>
+        private void AdjustInputLayout()
+        {
+            if (grbThongTin == null) return;
+            int clientW = grbThongTin.ClientSize.Width;
+            int margin = 20;
+            int gap = 30;
+            int colWidth = (clientW - (margin * 2) - gap) / 2;
+            if (colWidth < 250) colWidth = 250;
+
+            int col1X = margin;
+            int col2X = margin + colWidth + gap;
+
+            int labelWidth = 140;
+            int inputWidth = colWidth - labelWidth;
+
+            // Dòng 1: Mã lịch trình | Sự kiện
+            int r1Y = 28;
+            lblMaLichTrinh.Location = new Point(col1X, r1Y + 3);
+            txtMaLichTrinh.Location = new Point(col1X + labelWidth, r1Y);
+            txtMaLichTrinh.Size = new Size(inputWidth, 23);
+
+            lblSuKien.Location = new Point(col2X, r1Y + 3);
+            cboSuKien.Location = new Point(col2X + labelWidth, r1Y);
+            cboSuKien.Size = new Size(inputWidth, 23);
+
+            // Dòng 2: Tên tiết mục | Diễn giả
+            int r2Y = 62;
+            lblTenTietMuc.Location = new Point(col1X, r2Y + 3);
+            txtTenTietMuc.Location = new Point(col1X + labelWidth, r2Y);
+            txtTenTietMuc.Size = new Size(inputWidth, 23);
+
+            lblDienGia.Location = new Point(col2X, r2Y + 3);
+            cboDienGia.Location = new Point(col2X + labelWidth, r2Y);
+            cboDienGia.Size = new Size(inputWidth, 23);
+
+            // Dòng 3: Bắt đầu | Kết thúc
+            int r3Y = 96;
+            lblBatDau.Location = new Point(col1X, r3Y + 3);
+            dtpBatDau.Location = new Point(col1X + labelWidth, r3Y);
+            dtpBatDau.Size = new Size(inputWidth, 23);
+
+            lblKetThuc.Location = new Point(col2X, r3Y + 3);
+            dtpKetThuc.Location = new Point(col2X + labelWidth, r3Y);
+            dtpKetThuc.Size = new Size(inputWidth, 23);
+
+            // Dòng 4: Phòng / Hội trường | Ghi chú
+            int r4Y = 130;
+            lblDiaDiemChiTiet.Location = new Point(col1X, r4Y + 3);
+            txtDiaDiemChiTiet.Location = new Point(col1X + labelWidth, r4Y);
+            txtDiaDiemChiTiet.Size = new Size(inputWidth, 23);
+
+            lblGhiChu.Location = new Point(col2X, r4Y + 3);
+            txtGhiChu.Location = new Point(col2X + labelWidth, r4Y);
+            txtGhiChu.Size = new Size(inputWidth, 23);
+
+            // Dòng 5: Nhãn trạng thái kiểm tra xung đột tự động đặt tại góc trái dưới
+            lblKiemTraStatus.Location = new Point(col1X, 168);
+            lblKiemTraStatus.Size = new Size(clientW - (margin * 2), 24);
+        }
+
+        private void AdjustFilterLayout()
+        {
+            if (pnlFilter == null) return;
+            btnLamMoi.Location = new Point(pnlFilter.ClientSize.Width - btnLamMoi.Width - 10, 7);
+            int searchRight = btnLamMoi.Left - 15;
+            int searchWidth = searchRight - txtTimKiem.Left;
+            if (searchWidth > 150)
+            {
+                txtTimKiem.Width = searchWidth;
+            }
+        }
+
+        /// <summary>
+        /// Tự động kiểm tra xung đột lịch trình, phòng chức năng và diễn giả tức thì
+        /// Hiển thị chữ xanh khi hợp lệ, chữ đỏ cảnh báo khi có xung đột
+        /// </summary>
+        private void AutoCheckConflict()
+        {
+            if (_isLoading) return;
+            if (_currentMode == FormMode.View)
+            {
+                lblKiemTraStatus.Text = "✅ Khung giờ & phòng hợp lệ, không có xung đột";
+                lblKiemTraStatus.ForeColor = ColorSuccess;
+                return;
+            }
+
+            var eventItem = cboSuKien.SelectedItem as ComboBoxItem;
+            if (eventItem == null || string.IsNullOrWhiteSpace(eventItem.Value))
+            {
+                lblKiemTraStatus.Text = "ℹ️ Vui lòng chọn sự kiện áp dụng.";
+                lblKiemTraStatus.ForeColor = ColorTextMuted;
+                return;
+            }
+
+            if (dtpKetThuc.Value <= dtpBatDau.Value)
+            {
+                lblKiemTraStatus.Text = "❌ Thời gian kết thúc phải lớn hơn thời gian bắt đầu!";
+                lblKiemTraStatus.ForeColor = ColorDanger;
+                return;
+            }
+
+            string? maDienGia = null;
+            string? tenDienGia = null;
+            if (cboDienGia.SelectedItem is ComboBoxItem speakerItem && !string.IsNullOrWhiteSpace(speakerItem.Value))
+            {
+                maDienGia = speakerItem.Value;
+                tenDienGia = speakerItem.Text;
+            }
+
+            var tempDto = new ScheduleItemDto
+            {
+                MaLichTrinh = txtMaLichTrinh.Text.Trim(),
+                MaSuKien = eventItem.Value,
+                TenSuKien = eventItem.Text,
+                TenTietMuc = txtTenTietMuc.Text.Trim(),
+                ThoiGianBatDau = dtpBatDau.Value,
+                ThoiGianKetThuc = dtpKetThuc.Value,
+                MaDienGia = maDienGia,
+                TenDienGia = tenDienGia,
+                DiaDiemChiTiet = string.IsNullOrWhiteSpace(txtDiaDiemChiTiet.Text) ? null : txtDiaDiemChiTiet.Text.Trim(),
+                GhiChu = string.IsNullOrWhiteSpace(txtGhiChu.Text) ? null : txtGhiChu.Text.Trim()
+            };
+
+            string? excludeId = _currentMode == FormMode.Edit ? tempDto.MaLichTrinh : null;
+            var checkRes = _scheduleService.CheckConflict(tempDto, excludeId);
+            if (checkRes.IsSuccess)
+            {
+                lblKiemTraStatus.Text = "✅ Khung giờ & phòng hợp lệ, không có xung đột";
+                lblKiemTraStatus.ForeColor = ColorSuccess;
+            }
+            else
+            {
+                lblKiemTraStatus.Text = "❌ Phát hiện xung đột lịch trình / trùng phòng / trùng diễn giả!";
+                lblKiemTraStatus.ForeColor = ColorDanger;
+            }
         }
 
         private void LoadAuxiliaryData()
@@ -214,7 +393,7 @@ namespace EventManagement.GUI.Forms
             txtDiaDiemChiTiet.Text = dto.DiaDiemChiTiet ?? string.Empty;
             txtGhiChu.Text = dto.GhiChu ?? string.Empty;
 
-            lblKiemTraStatus.Text = "Tiết mục hiện tại hợp lệ, không có xung đột.";
+            lblKiemTraStatus.Text = "✅ Khung giờ & phòng hợp lệ, không có xung đột";
             lblKiemTraStatus.ForeColor = ColorSuccess;
             errBaoLoi.Clear();
         }
@@ -240,8 +419,8 @@ namespace EventManagement.GUI.Forms
                 dtpKetThuc.Value = DateTime.Now.AddHours(1);
             }
 
-            lblKiemTraStatus.Text = "Bấm để kiểm tra giao thoa phòng & trùng lịch diễn giả tức thì";
-            lblKiemTraStatus.ForeColor = ColorTextMuted;
+            lblKiemTraStatus.Text = "✅ Khung giờ & phòng hợp lệ, không có xung đột";
+            lblKiemTraStatus.ForeColor = ColorSuccess;
             errBaoLoi.Clear();
         }
 
@@ -257,6 +436,7 @@ namespace EventManagement.GUI.Forms
 
         /// <summary>
         /// Quản lý 3 trạng thái màn hình (Xem - Thêm - Sửa) theo chuẩn Archetype 2 docs/08
+        /// Nút Lưu và Hủy chỉ hiển thị khi Thêm hoặc Sửa
         /// </summary>
         private void SetFormState(FormMode mode)
         {
@@ -274,14 +454,14 @@ namespace EventManagement.GUI.Forms
                     cboDienGia.Enabled = false;
                     txtDiaDiemChiTiet.ReadOnly = true;
                     txtGhiChu.ReadOnly = true;
-                    btnKiemTraXungDot.Enabled = false;
+                    btnKiemTraXungDot.Visible = false;
 
                     btnThem.Enabled = true;
                     bool hasRows = dgvLichTrinh.CurrentRow != null;
                     btnSua.Enabled = hasRows;
                     btnXoa.Enabled = hasRows;
-                    btnLuu.Enabled = false;
-                    btnHuy.Enabled = false;
+                    btnLuu.Visible = false;
+                    btnHuy.Visible = false;
 
                     dgvLichTrinh.Enabled = true;
                     pnlFilter.Enabled = true;
@@ -301,7 +481,7 @@ namespace EventManagement.GUI.Forms
                     cboDienGia.Enabled = true;
                     txtDiaDiemChiTiet.ReadOnly = false;
                     txtGhiChu.ReadOnly = false;
-                    btnKiemTraXungDot.Enabled = true;
+                    btnKiemTraXungDot.Visible = false;
 
                     ClearInputs();
                     txtMaLichTrinh.Text = SuggestNextCode();
@@ -309,12 +489,15 @@ namespace EventManagement.GUI.Forms
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
                     dgvLichTrinh.Enabled = false;
                     pnlFilter.Enabled = false;
                     txtTenTietMuc.Focus();
+                    AutoCheckConflict();
                     break;
 
                 case FormMode.Edit:
@@ -326,17 +509,20 @@ namespace EventManagement.GUI.Forms
                     cboDienGia.Enabled = true;
                     txtDiaDiemChiTiet.ReadOnly = false;
                     txtGhiChu.ReadOnly = false;
-                    btnKiemTraXungDot.Enabled = true;
+                    btnKiemTraXungDot.Visible = false;
 
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
                     dgvLichTrinh.Enabled = false;
                     pnlFilter.Enabled = false;
                     txtTenTietMuc.Focus();
+                    AutoCheckConflict();
                     break;
             }
         }
@@ -405,7 +591,7 @@ namespace EventManagement.GUI.Forms
 
             var confirm = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xóa tiết mục '{selected.TenTietMuc}' (Mã: {selected.MaLichTrinh}) khỏi lịch trình sự kiện?",
-                "Xác nhận xóa lịch trình",
+                "Xác nhận xóa",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
             );
@@ -470,7 +656,7 @@ namespace EventManagement.GUI.Forms
                         sb.AppendLine($"• {err}");
                     }
                 }
-                MessageBox.Show(sb.ToString(), "Xung đột lịch trình (Quy tắc vi phạm)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(sb.ToString(), "Cảnh báo trùng lịch trình", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -557,40 +743,7 @@ namespace EventManagement.GUI.Forms
 
         private void btnKiemTraXungDot_Click(object sender, EventArgs e)
         {
-            if (!ValidateInputs(out var dto)) return;
-
-            string? excludeId = _currentMode == FormMode.Edit ? dto.MaLichTrinh : null;
-            var checkRes = _scheduleService.CheckConflict(dto, excludeId);
-
-            if (checkRes.IsSuccess)
-            {
-                lblKiemTraStatus.Text = "✅ Hợp lệ: Không có xung đột phòng và diễn giả.";
-                lblKiemTraStatus.ForeColor = ColorSuccess;
-                MessageBox.Show(
-                    "Tuyệt vời! Khung giờ, phòng chức năng và diễn giả hoàn toàn khả dụng (Thỏa mãn 100% quy tắc BR-05 & BR-06).",
-                    "Kiểm tra thành công",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
-            }
-            else
-            {
-                lblKiemTraStatus.Text = "⚠️ Phát hiện xung đột! Vui lòng xem chi tiết.";
-                lblKiemTraStatus.ForeColor = ColorDanger;
-
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(checkRes.Message);
-                if (checkRes.Errors != null && checkRes.Errors.Count > 0)
-                {
-                    sb.AppendLine("\nChi tiết đối kháng:");
-                    foreach (var err in checkRes.Errors)
-                    {
-                        sb.AppendLine($"• {err}");
-                    }
-                }
-
-                MessageBox.Show(sb.ToString(), "Cảnh báo xung đột lịch trình (BR-05/BR-06)", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            AutoCheckConflict();
         }
 
         private bool ValidateInputs(out ScheduleItemDto dto)
