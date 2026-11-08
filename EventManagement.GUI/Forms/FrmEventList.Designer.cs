@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmEventList
     {
@@ -66,7 +66,7 @@
         private System.Windows.Forms.Label lblNganSach;
         private System.Windows.Forms.NumericUpDown nudNganSach;
         private System.Windows.Forms.Label lblNguoiPhuTrach;
-        private System.Windows.Forms.TextBox txtNguoiPhuTrach;
+        private System.Windows.Forms.ComboBox cboNguoiPhuTrach;
         private System.Windows.Forms.Label lblTrangThai;
         private System.Windows.Forms.ComboBox cboTrangThai;
         private System.Windows.Forms.Label lblMoTa;
@@ -162,7 +162,7 @@
             this.lblNganSach = new System.Windows.Forms.Label();
             this.nudNganSach = new System.Windows.Forms.NumericUpDown();
             this.lblNguoiPhuTrach = new System.Windows.Forms.Label();
-            this.txtNguoiPhuTrach = new System.Windows.Forms.TextBox();
+            this.cboNguoiPhuTrach = new System.Windows.Forms.ComboBox();
 
             this.lblMoTa = new System.Windows.Forms.Label();
             this.txtMoTa = new System.Windows.Forms.TextBox();
@@ -224,7 +224,8 @@
             this.lblSubtitle.Name = "lblSubtitle";
             this.lblSubtitle.Size = new System.Drawing.Size(510, 15);
             this.lblSubtitle.TabIndex = 1;
-            this.lblSubtitle.Text = "Quản lý thông tin, phân loại sự kiện, theo dõi trạng thái và kiểm soát lịch tổ chức";
+            this.lblSubtitle.Text = "";
+            this.lblSubtitle.Visible = false;
 
             // 
             // pnlFilter
@@ -578,7 +579,8 @@
             this.pnlSummary.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlSummary.Location = new System.Drawing.Point(0, 415);
             this.pnlSummary.Name = "pnlSummary";
-            this.pnlSummary.Size = new System.Drawing.Size(1184, 28);
+            this.pnlSummary.Padding = new System.Windows.Forms.Padding(10, 8, 10, 8);
+            this.pnlSummary.Size = new System.Drawing.Size(1184, 38);
             this.pnlSummary.TabIndex = 3;
 
             // 
@@ -670,7 +672,7 @@
             this.grbThongTin.Controls.Add(this.lblNganSach);
             this.grbThongTin.Controls.Add(this.nudNganSach);
             this.grbThongTin.Controls.Add(this.lblNguoiPhuTrach);
-            this.grbThongTin.Controls.Add(this.txtNguoiPhuTrach);
+            this.grbThongTin.Controls.Add(this.cboNguoiPhuTrach);
             this.grbThongTin.Controls.Add(this.lblMoTa);
             this.grbThongTin.Controls.Add(this.txtMoTa);
             this.grbThongTin.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -905,11 +907,12 @@
             // 
             // txtNguoiPhuTrach
             // 
-            this.txtNguoiPhuTrach.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtNguoiPhuTrach.Location = new System.Drawing.Point(665, 95);
-            this.txtNguoiPhuTrach.Name = "txtNguoiPhuTrach";
-            this.txtNguoiPhuTrach.Size = new System.Drawing.Size(235, 23);
-            this.txtNguoiPhuTrach.TabIndex = 19;
+            this.cboNguoiPhuTrach.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cboNguoiPhuTrach.Location = new System.Drawing.Point(665, 95);
+            this.cboNguoiPhuTrach.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
+            this.cboNguoiPhuTrach.Name = "cboNguoiPhuTrach";
+            this.cboNguoiPhuTrach.Size = new System.Drawing.Size(235, 23);
+            this.cboNguoiPhuTrach.TabIndex = 19;
 
             // 
             // lblMoTa
@@ -1071,7 +1074,7 @@
             this.MinimumSize = new System.Drawing.Size(1200, 720);
             this.Name = "FrmEventList";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Quản lý danh sách sự kiện tổng thể";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.KeyPreview = true;
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmEventList_KeyDown);
             this.Load += new System.EventHandler(this.FrmEventList_Load);

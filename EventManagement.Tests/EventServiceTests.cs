@@ -269,6 +269,23 @@ namespace EventManagement.Tests
         }
 
         [TestMethod]
+        public void BR02_CancelEvent_WhenCompleted_ReturnsFailed()
+        {
+            // Mô tả: Kiểm tra nghiệp vụ trạng thái sự kiện đã hoàn thành thì không thể hủy sự kiện
+            var all = _eventService.GetAll().Data;
+            Assert.IsNotNull(all);
+            var evt = all.FirstOrDefault(x => x.TrangThai == "Đã hoàn thành");
+            if (evt == null)
+            {
+                all[0].TrangThai = "Đã hoàn thành";
+                evt = all[0];
+            }
+            var result = _eventService.CancelEvent(evt.MaSuKien);
+            Assert.IsFalse(result.IsSuccess);
+            Assert.IsTrue(result.Message.Contains("không thể thực hiện thao tác hủy"));
+        }
+
+        [TestMethod]
         public void BR02_DeleteEvent_NoTicketsSold_ReturnsSuccess()
         {
             // EVT202606 có 0 vé bán -> Cho phép xóa
@@ -349,6 +366,25 @@ namespace EventManagement.Tests
             var updated = _eventService.GetById("EVT202602").Data!;
             Assert.AreEqual("Lê Thanh Hằng (Cập nhật)", updated.NguoiPhuTrach);
             Assert.AreEqual(110000000m, updated.NganSachDuKien);
+        }
+
+        [TestMethod]
+        public void FrmEventList_TitleAndButtons_FollowRequirements()
+        {
+            // Mô tả: Kiểm tra FrmEventList có tiêu đề "Hệ Thống Quản Lý Sự Kiện", các nút Lưu/Hủy mặc định ẩn ở chế độ xem, và subtitle được ẩn đi.
+            using var form = new EventManagement.GUI.Forms.FrmEventList(_eventService);
+            Assert.AreEqual("Hệ Thống Quản Lý Sự Kiện", form.Text);
+            var btnLuu = form.Controls.Find("btnLuu", true).FirstOrDefault() as System.Windows.Forms.Button;
+            var btnHuy = form.Controls.Find("btnHuy", true).FirstOrDefault() as System.Windows.Forms.Button;
+            var lblSubtitle = form.Controls.Find("lblSubtitle", true).FirstOrDefault() as System.Windows.Forms.Label;
+            Assert.IsNotNull(btnLuu);
+            Assert.IsNotNull(btnHuy);
+            Assert.IsFalse(btnLuu.Visible, "Nút Lưu phải ẩn ở chế độ xem");
+            Assert.IsFalse(btnHuy.Visible, "Nút Hủy phải ẩn ở chế độ xem");
+            if (lblSubtitle != null)
+            {
+                Assert.IsFalse(lblSubtitle.Visible, "Dòng phụ đề dài phải được ẩn");
+            }
         }
     }
 }

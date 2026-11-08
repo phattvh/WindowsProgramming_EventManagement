@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -124,13 +124,56 @@ namespace EventManagement.GUI.Forms
             // Khoảng thời gian mặc định cho bộ lọc
             dtpLocTuNgay.Value = DateTime.Now.AddMonths(-1);
             dtpLocDenNgay.Value = DateTime.Now.AddMonths(2);
+
+            // 4. Nạp danh mục Người phụ trách từ CSDL
+            cboNguoiPhuTrach.Items.Clear();
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var userList = db.NguoiDungs.OrderBy(u => u.HoTen).Select(u => u.HoTen).ToList();
+                foreach (var name in userList)
+                {
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        cboNguoiPhuTrach.Items.Add(name);
+                    }
+                }
+            }
+            catch { }
+
+            if (cboNguoiPhuTrach.Items.Count == 0)
+            {
+                cboNguoiPhuTrach.Items.AddRange(new object[]
+                {
+                    "Quản trị viên Hệ thống",
+                    "Trần Minh Tâm (Trưởng BTC)",
+                    "Lê Thị Hương (Soát vé)",
+                    "Nguyễn Văn An",
+                    "Phạm Hoàng Nam"
+                });
+            }
         }
 
         private void FrmEventList_Load(object sender, EventArgs e)
         {
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             _isLoading = false;
+            DistributeSummaryStats();
+            this.Resize += (s, ev) => DistributeSummaryStats();
             LoadData();
             SetFormState(FormMode.View);
+        }
+
+        public void DistributeSummaryStats()
+        {
+            var labels = new[] { lblTongSo, lblDangDienRa, lblSapDienRa, lblChuanBi, lblDaHoanThanh, lblDaHuy };
+            int totalWidth = pnlSummary.ClientSize.Width - 20;
+            if (totalWidth <= 100) return;
+            int colWidth = totalWidth / labels.Length;
+            for (int i = 0; i < labels.Length; i++)
+            {
+                labels[i].Location = new Point(10 + i * colWidth, 10);
+            }
         }
 
         public void LoadData()
@@ -216,7 +259,8 @@ namespace EventManagement.GUI.Forms
             dtpNgayKetThuc.Value = dto.NgayKetThuc;
             nudSucChua.Value = dto.SucChua > 0 ? Math.Min(dto.SucChua, nudSucChua.Maximum) : 500;
             nudNganSach.Value = dto.NganSachDuKien >= 0 ? Math.Min(dto.NganSachDuKien, nudNganSach.Maximum) : 0;
-            txtNguoiPhuTrach.Text = dto.NguoiPhuTrach ?? string.Empty;
+            cboNguoiPhuTrach.Text = dto.NguoiPhuTrach ?? string.Empty;
+            btnHuySuKien.Enabled = _currentMode == FormMode.View && dto.TrangThai != "Đã hoàn thành" && dto.TrangThai != "Đã hủy";
             cboTrangThai.SelectedItem = dto.TrangThai;
             txtMoTa.Text = dto.MoTa ?? string.Empty;
 
@@ -233,7 +277,7 @@ namespace EventManagement.GUI.Forms
             dtpNgayKetThuc.Value = DateTime.Now.Date.AddDays(1).AddHours(17);
             nudSucChua.Value = 500;
             nudNganSach.Value = 100000000m;
-            txtNguoiPhuTrach.Clear();
+            cboNguoiPhuTrach.Text = string.Empty;
             cboTrangThai.SelectedItem = "Chuẩn bị";
             txtMoTa.Clear();
             errBaoLoi.Clear();
@@ -254,14 +298,14 @@ namespace EventManagement.GUI.Forms
             dtpNgayKetThuc.Enabled = isEditing;
             nudSucChua.Enabled = isEditing;
             nudNganSach.Enabled = isEditing;
-            txtNguoiPhuTrach.ReadOnly = !isEditing;
+            cboNguoiPhuTrach.Enabled = isEditing;
             cboTrangThai.Enabled = isEditing;
             txtMoTa.ReadOnly = !isEditing;
 
             // Màu nền các ô nhập liệu hỗ trợ trực quan
             Color bgInput = isEditing ? Color.White : Color.FromArgb(248, 250, 252);
             txtTenSuKien.BackColor = bgInput;
-            txtNguoiPhuTrach.BackColor = bgInput;
+            cboNguoiPhuTrach.BackColor = bgInput;
             txtMoTa.BackColor = bgInput;
             txtMaSuKien.BackColor = Color.FromArgb(241, 245, 249);
 
@@ -273,8 +317,34 @@ namespace EventManagement.GUI.Forms
             btnChiTiet.Enabled = !isEditing && _currentList.Count > 0;
             btnXuatExcel.Enabled = !isEditing;
 
+            btnLuu.Visible = isEditing;
+            btnHuy.Visible = isEditing;
             btnLuu.Enabled = isEditing;
             btnHuy.Enabled = isEditing;
+
+
+            if (mode == FormMode.Add)
+            {
+                cboTrangThai.Items.Clear();
+                cboTrangThai.Items.AddRange(new object[] { "Chuẩn bị", "Sắp diễn ra", "Đang diễn ra" });
+                cboTrangThai.SelectedItem = "Chuẩn bị";
+            }
+            else
+            {
+                string? prevSelected = cboTrangThai.SelectedItem?.ToString();
+                cboTrangThai.Items.Clear();
+                cboTrangThai.Items.AddRange(new object[] { "Chuẩn bị", "Sắp diễn ra", "Đang diễn ra", "Đã hoàn thành", "Đã hủy" });
+                if (!string.IsNullOrEmpty(prevSelected) && cboTrangThai.Items.Contains(prevSelected))
+                {
+                    cboTrangThai.SelectedItem = prevSelected;
+                }
+            }
+
+            if (!isEditing && dgvSuKien.CurrentRow?.DataBoundItem is EventListDto curDto && curDto.TrangThai == "Đã hoàn thành")
+            {
+                btnHuySuKien.Enabled = false;
+            }
+
 
             dgvSuKien.Enabled = !isEditing;
             pnlFilter.Enabled = !isEditing;
@@ -343,7 +413,7 @@ namespace EventManagement.GUI.Forms
             }
 
             var confirm = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa vĩnh viễn sự kiện:\n\n[{dto.MaSuKien}] {dto.TenSuKien}\n\nLưu ý: Hành động này không thể hoàn tác!",
+                $"Bạn có chắc chắn muốn xóa sự kiện:\n\n[{dto.MaSuKien}] {dto.TenSuKien}\n\nLưu ý: Hành động này không thể hoàn tác!",
                 "Xác nhận xóa sự kiện",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
@@ -387,6 +457,12 @@ namespace EventManagement.GUI.Forms
             if (dgvSuKien.CurrentRow == null || dgvSuKien.CurrentRow.DataBoundItem is not EventListDto dto)
             {
                 MessageBox.Show("Vui lòng chọn một sự kiện để hủy!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (dto.TrangThai == "Đã hoàn thành")
+            {
+                MessageBox.Show("Sự kiện đã hoàn thành không thể thực hiện thao tác hủy!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -468,7 +544,7 @@ namespace EventManagement.GUI.Forms
                 NgayKetThuc = dtpNgayKetThuc.Value,
                 SucChua = (int)nudSucChua.Value,
                 NganSachDuKien = nudNganSach.Value,
-                NguoiPhuTrach = string.IsNullOrWhiteSpace(txtNguoiPhuTrach.Text) ? "Chưa phân công" : txtNguoiPhuTrach.Text.Trim(),
+                NguoiPhuTrach = string.IsNullOrWhiteSpace(cboNguoiPhuTrach.Text) ? "Chưa phân công" : cboNguoiPhuTrach.Text.Trim(),
                 TrangThai = cboTrangThai.SelectedItem?.ToString() ?? "Chuẩn bị",
                 MoTa = txtMoTa.Text.Trim()
             };
