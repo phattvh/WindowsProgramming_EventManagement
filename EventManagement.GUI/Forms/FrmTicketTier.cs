@@ -46,6 +46,14 @@ namespace EventManagement.GUI.Forms
         private Button _btnCancel = null!;
         private ErrorProvider _errorProvider = null!;
 
+        public DataGridView DgvTiers => _dgvTiers;
+        public Button BtnAdd => _btnAdd;
+        public Button BtnEdit => _btnEdit;
+        public Button BtnDelete => _btnDelete;
+        public Button BtnSave => _btnSave;
+        public Button BtnCancel => _btnCancel;
+        public GroupBox GrpDetails => _grpDetails;
+
         public FrmTicketTier()
         {
             _tierService = new TicketTierService();
@@ -58,7 +66,7 @@ namespace EventManagement.GUI.Forms
 
         private void InitializeComponent()
         {
-            this.Text = "F12 - Quản lý Hạng vé & Kho vé Sự kiện";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.Size = new Size(1050, 700);
             this.MinimumSize = new Size(950, 620);
 
@@ -74,7 +82,7 @@ namespace EventManagement.GUI.Forms
             };
             _lblTitle = new Label
             {
-                Text = "QUẢN LÝ HẠNG VÉ & KHO VÉ SỰ KIỆN (F12)",
+                Text = "QUẢN LÝ HẠNG VÉ & KHO VÉ",
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 Dock = DockStyle.Fill,
@@ -117,7 +125,7 @@ namespace EventManagement.GUI.Forms
             _pnlSearch.Controls.AddRange(new Control[] { lblEvent, _cboEventFilter, lblSearch, _txtSearch, _btnSearch, _btnResetSearch });
 
             // 3. DataGridView
-            _dgvTiers = new DataGridView { Dock = DockStyle.Fill };
+            _dgvTiers = new DataGridView { Dock = DockStyle.Fill, AutoGenerateColumns = false };
             StyleDataGridView(_dgvTiers);
             SetupColumns();
             _dgvTiers.SelectionChanged += DgvTiers_SelectionChanged;
@@ -210,14 +218,19 @@ namespace EventManagement.GUI.Forms
         private void SetupColumns()
         {
             _dgvTiers.Columns.Clear();
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaHangVe", HeaderText = "Mã vé", Width = 90 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaSuKien", HeaderText = "Mã sự kiện", Width = 110 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TenHangVe", HeaderText = "Tên hạng vé", Width = 220 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "GiaVe", HeaderText = "Giá vé (VNĐ)", Width = 120, DefaultCellStyle = { Format = "#,##0" } });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongPhatHanh", HeaderText = "Phát hành", Width = 100 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongDaBan", HeaderText = "Đã bán", Width = 90 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongConLai", HeaderText = "Còn lại", Width = 90 });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaHangVe", HeaderText = "Mã vé", Width = 80 });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaSuKien", HeaderText = "Mã sự kiện", Width = 90 });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TenHangVe", HeaderText = "Tên hạng vé", Width = 280 });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "GiaVe", HeaderText = "Đơn giá (VNĐ)", Width = 110, DefaultCellStyle = { Format = "#,##0" } });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongPhatHanh", HeaderText = "Phát hành", Width = 85 });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongDaBan", HeaderText = "Đã bán", Width = 85 });
+            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongConLai", HeaderText = "Còn vé", Width = 85 });
             _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TrangThai", HeaderText = "Trạng thái kho", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+
+            foreach (DataGridViewColumn col in _dgvTiers.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
         }
 
         private void LoadDataToGrid(IEnumerable<HangVe> data)
@@ -283,12 +296,31 @@ namespace EventManagement.GUI.Forms
             _dtpDongBan.Enabled = isEditing;
             _dgvTiers.Enabled = !isEditing;
 
+            _btnAdd.Visible = !isEditing;
+            _btnEdit.Visible = !isEditing;
+            _btnDelete.Visible = !isEditing;
+
+            _btnSave.Visible = isEditing;
+            _btnCancel.Visible = isEditing;
+
             _btnAdd.Enabled = !isEditing;
             _btnEdit.Enabled = !isEditing && _dgvTiers.CurrentRow != null;
             _btnDelete.Enabled = !isEditing && _dgvTiers.CurrentRow != null;
 
             _btnSave.Enabled = isEditing;
             _btnCancel.Enabled = isEditing;
+
+            if (isEditing)
+            {
+                _btnSave.Location = new Point(20, 10);
+                _btnCancel.Location = new Point(140, 10);
+            }
+            else
+            {
+                _btnAdd.Location = new Point(20, 10);
+                _btnEdit.Location = new Point(120, 10);
+                _btnDelete.Location = new Point(220, 10);
+            }
         }
 
         private void BtnAdd_Click(object? sender, EventArgs e)
@@ -313,13 +345,13 @@ namespace EventManagement.GUI.Forms
                 if (item.SoLuongDaBan > 0)
                 {
                     MessageBox.Show(
-                        $"Không thể xóa hạng vé '{item.TenHangVe}' vì đã có {item.SoLuongDaBan} vé được bán ra! (BR-08)",
-                        "Ràng buộc nghiệp vụ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        $"Không thể xóa hạng vé '{item.TenHangVe}' vì đã có {item.SoLuongDaBan} vé được bán ra.",
+                        "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
                 var confirm = MessageBox.Show(
-                    $"Bạn có chắc chắn muốn xóa hạng vé '{item.TenHangVe}' ({item.MaHangVe})?",
+                    $"Bạn có chắc chắn muốn xóa hạng vé '{item.TenHangVe}' ({item.MaHangVe}) không?",
                     "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (confirm == DialogResult.Yes)
@@ -370,7 +402,7 @@ namespace EventManagement.GUI.Forms
                     if (!checkBr08.IsSuccess)
                     {
                         _errorProvider.SetError(_nudPhatHanh, checkBr08.Message);
-                        MessageBox.Show(checkBr08.Message, "Vi phạm quy tắc BR-08", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show(checkBr08.Message, "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
 

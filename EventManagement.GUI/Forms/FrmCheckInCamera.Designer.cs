@@ -109,6 +109,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Size = new System.Drawing.Size(595, 15);
             this.lblSubTitle.TabIndex = 1;
             this.lblSubTitle.Text = "Thẩm định QR Token theo thời gian thực (BR-11) • Kiểm soát vào cổng một chiều chống quét trùng lặp (BR-12)";
+            this.lblSubTitle.Visible = false;
             // 
             // lblTitle
             // 
@@ -117,9 +118,9 @@ namespace EventManagement.GUI.Forms
             this.lblTitle.ForeColor = System.Drawing.Color.White;
             this.lblTitle.Location = new System.Drawing.Point(16, 10);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(496, 28);
+            this.lblTitle.Size = new System.Drawing.Size(360, 28);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "SOÁT VÉ & ĐIỂM DANH SỰ KIỆN (CHECK-IN CAMERA)";
+            this.lblTitle.Text = "SOÁT VÉ & ĐIỂM DANH SỰ KIỆN";
             // 
             // pnlTopBar
             // 
@@ -669,7 +670,7 @@ namespace EventManagement.GUI.Forms
             this.MinimumSize = new System.Drawing.Size(1000, 680);
             this.Name = "FrmCheckInCamera";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "F13 - Soát vé & Điểm danh sự kiện (Check-in Camera)";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.pnlTopHeader.ResumeLayout(false);
             this.pnlTopHeader.PerformLayout();
             this.pnlTopBar.ResumeLayout(false);

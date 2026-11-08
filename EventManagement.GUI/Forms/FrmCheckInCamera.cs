@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -34,6 +34,14 @@ namespace EventManagement.GUI.Forms
         private DateTime _lastScanTime = DateTime.MinValue;
         private string _lastScannedCode = string.Empty;
         private List<(string MaSuKien, string TenSuKien)> _events = new();
+
+        public ComboBox CboSuKien => cboSuKien;
+        public ComboBox CboCamera => cboCamera;
+        public Button BtnBatCamera => btnBatCamera;
+        public Button BtnTatCamera => btnTatCamera;
+        public Button BtnCheckInManual => btnCheckInManual;
+        public DataGridView DgvRecentCheckIns => dgvRecentCheckIns;
+        public Label LblSubTitle => lblSubTitle;
 
         public FrmCheckInCamera() : this(new CheckInService())
         {
@@ -73,6 +81,35 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvRecentCheckIns);
             dgvRecentCheckIns.AutoGenerateColumns = false;
+
+            foreach (DataGridViewColumn col in dgvRecentCheckIns.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colMaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colPhuongThuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colKetQua.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvRecentCheckIns.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            colThoiGian.FillWeight = 16;
+            colMaVe.FillWeight = 12;
+            colTenNguoi.FillWeight = 26;
+            colHangVe.FillWeight = 18;
+            colPhuongThuc.FillWeight = 14;
+            colKetQua.FillWeight = 14;
+
+            this.Resize += (s, e) =>
+            {
+                if (scMain != null && scMain.Width > 800)
+                {
+                    scMain.SplitterDistance = Math.Max(460, (int)(scMain.Width * 0.40));
+                }
+            };
+            if (scMain != null && scMain.Width > 800)
+            {
+                scMain.SplitterDistance = Math.Max(460, (int)(scMain.Width * 0.40));
+            }
 
             LoadEvents();
             LoadCameraDevices();
