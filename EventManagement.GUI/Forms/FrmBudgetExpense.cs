@@ -25,6 +25,20 @@ namespace EventManagement.GUI.Forms
         private List<ExpenseDto> _currentList = new();
         private List<(string MaSuKien, string TenSuKien, decimal NganSachDuKien)> _events = new();
 
+        public Button BtnThem => btnThem;
+        public Button BtnSua => btnSua;
+        public Button BtnXoa => btnXoa;
+        public Button BtnLuu => btnLuu;
+        public Button BtnHuy => btnHuy;
+        public Button BtnLamMoi => btnLamMoi;
+        public DataGridView DgvChiPhi => dgvChiPhi;
+        public Panel PnlBudgetCards => pnlBudgetCards;
+        public Panel PnlCardBudget => pnlCardBudget;
+        public Panel PnlCardSpent => pnlCardSpent;
+        public Panel PnlCardRemaining => pnlCardRemaining;
+        public Panel PnlCardPercent => pnlCardPercent;
+        public Label LblSubTitle => lblSubTitle;
+
         public FrmBudgetExpense() : this(new BudgetService())
         {
         }
@@ -49,12 +63,73 @@ namespace EventManagement.GUI.Forms
             StyleDataGridView(dgvChiPhi);
             dgvChiPhi.AutoGenerateColumns = false;
 
+            foreach (DataGridViewColumn col in dgvChiPhi.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            dgvChiPhi.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            colMaChiPhi.FillWeight = 10;
+            colKhoanMucChi.FillWeight = 22;
+            colSoTien.FillWeight = 15;
+            colNgayChi.FillWeight = 11;
+            colNguoiLap.FillWeight = 14;
+            colTrangThai.FillWeight = 10;
+            colDienGiai.FillWeight = 18;
+
+            // Anchor filter bar & details
+            btnLamMoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            txtSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            cboFilterSuKien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            txtMaChiPhi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cboFormSuKien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtKhoanMucChi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            nudSoTien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            dtpNgayChi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtNguoiLapPhieu.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cboTrangThai.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtDienGiai.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+
+            pnlBudgetCards.Resize += (s, e) => LayoutBudgetCards();
+            this.Resize += (s, e) =>
+            {
+                if (scContent != null && scContent.Width > 800)
+                {
+                    scContent.SplitterDistance = (int)(scContent.Width * 0.62);
+                }
+            };
+            LayoutBudgetCards();
+
             LoadEventDropdowns();
             _isLoading = false;
 
             // Nạp dữ liệu ban đầu
             LoadExpensesAndBudgetSummary();
             SetFormMode(FormMode.View);
+        }
+
+        private void LayoutBudgetCards()
+        {
+            if (pnlBudgetCards == null) return;
+            int pad = 12;
+            int gap = 12;
+            int totalWidth = pnlBudgetCards.ClientSize.Width - pad * 2;
+            if (totalWidth <= 0) return;
+            int cardWidth = (totalWidth - gap * 3) / 4;
+            if (cardWidth < 180) cardWidth = 180;
+
+            pnlCardBudget.Location = new Point(pad, 10);
+            pnlCardBudget.Width = cardWidth;
+
+            pnlCardSpent.Location = new Point(pad + cardWidth + gap, 10);
+            pnlCardSpent.Width = cardWidth;
+
+            pnlCardRemaining.Location = new Point(pad + (cardWidth + gap) * 2, 10);
+            pnlCardRemaining.Width = cardWidth;
+
+            pnlCardPercent.Location = new Point(pad + (cardWidth + gap) * 3, 10);
+            pnlCardPercent.Width = Math.Max(cardWidth, totalWidth - (cardWidth + gap) * 3);
         }
 
         private void LoadEventDropdowns()
@@ -202,14 +277,14 @@ namespace EventManagement.GUI.Forms
                 pnlAlertBanner.BackColor = Color.FromArgb(254, 226, 226); // Đỏ nhạt
                 lblAlertIcon.Text = "🚨";
                 lblAlertStatus.ForeColor = ColorDanger;
-                lblAlertStatus.Text = $"CẢNH BÁO BỘI CHI (BR-15): Chi phí đã vượt quá 100% ngân sách được duyệt ({ratio:F1}%).";
+                lblAlertStatus.Text = $"CẢNH BÁO BỘI CHI: Chi phí đã vượt quá 100% ngân sách được duyệt ({ratio:F1}%).";
             }
             else if (ratio >= 80.0)
             {
                 pnlAlertBanner.BackColor = Color.FromArgb(254, 243, 199); // Vàng cam nhạt
                 lblAlertIcon.Text = "⚠️";
                 lblAlertStatus.ForeColor = ColorWarning;
-                lblAlertStatus.Text = $"CẢNH BÁO TIỆM CẬN (BR-15): Chi phí đã chạm ngưỡng {ratio:F1}% ngân sách dự kiến (≥ 80%).";
+                lblAlertStatus.Text = $"CẢNH BÁO TIỆM CẬN: Chi phí đã chạm ngưỡng {ratio:F1}% ngân sách dự kiến (≥ 80%).";
             }
             else
             {
@@ -258,11 +333,31 @@ namespace EventManagement.GUI.Forms
             cboTrangThai.Enabled = isEditing;
             txtDienGiai.ReadOnly = !isEditing;
 
+            btnThem.Visible = !isEditing;
+            btnSua.Visible = !isEditing;
+            btnXoa.Visible = !isEditing;
+            btnXuatExcel.Visible = !isEditing;
             btnThem.Enabled = !isEditing;
             btnSua.Enabled = !isEditing && dgvChiPhi.CurrentRow != null;
             btnXoa.Enabled = !isEditing && dgvChiPhi.CurrentRow != null;
+
+            btnLuu.Visible = isEditing;
+            btnHuy.Visible = isEditing;
             btnLuu.Enabled = isEditing;
             btnHuy.Enabled = isEditing;
+
+            if (isEditing)
+            {
+                btnLuu.Location = new Point(8, 12);
+                btnHuy.Location = new Point(138, 12);
+            }
+            else
+            {
+                btnThem.Location = new Point(8, 12);
+                btnSua.Location = new Point(138, 12);
+                btnXoa.Location = new Point(268, 12);
+                btnXuatExcel.Location = new Point(8, 56);
+            }
 
             dgvChiPhi.Enabled = !isEditing;
             cboFilterSuKien.Enabled = !isEditing;
@@ -358,7 +453,7 @@ namespace EventManagement.GUI.Forms
             if (dgvChiPhi.CurrentRow?.DataBoundItem is not ExpenseDto dto) return;
 
             var confirm = MessageBox.Show(
-                $"Bạn có chắc chắn muốn xóa phiếu chi [{dto.MaChiPhi} - {dto.KhoanMucChi}] số tiền {dto.SoTien:N0} VNĐ?",
+                $"Bạn có chắc chắn muốn xóa phiếu chi [{dto.MaChiPhi} - {dto.KhoanMucChi}] với số tiền {dto.SoTien:N0} VNĐ không?",
                 "Xác Nhận Xóa Phiếu Chi",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -395,7 +490,7 @@ namespace EventManagement.GUI.Forms
             decimal soTien = nudSoTien.Value;
             if (soTien <= 0)
             {
-                errorProvider.SetError(nudSoTien, "Số tiền chi phí bắt buộc phải lớn hơn 0 theo quy tắc BR-14.");
+                errorProvider.SetError(nudSoTien, "Số tiền chi phí phải lớn hơn 0 VNĐ.");
                 nudSoTien.Focus();
                 return;
             }
@@ -439,7 +534,7 @@ namespace EventManagement.GUI.Forms
                 if (alert != null && alert.IsOverBudget)
                 {
                     MessageBox.Show(
-                        $"{notice}\n\n🚨 CẢNH BÁO BỘI CHI (BR-15): Tổng chi phí đã vượt ngân sách dự kiến ({alert.TyLeSuDung:F1}%).",
+                        $"{notice}\n\n🚨 CẢNH BÁO BỘI CHI: Tổng chi phí đã vượt quá ngân sách dự kiến ({alert.TyLeSuDung:F1}%).",
                         "Cảnh Báo Bội Chi",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
@@ -447,7 +542,7 @@ namespace EventManagement.GUI.Forms
                 else if (alert != null && alert.IsWarning80)
                 {
                     MessageBox.Show(
-                        $"{notice}\n\n⚠️ CẢNH BÁO (BR-15): Khoản chi này làm tổng chi chạm mốc {alert.TyLeSuDung:F1}% ngân sách dự kiến (≥ 80%).",
+                        $"{notice}\n\n⚠️ CẢNH BÁO: Khoản chi này làm tổng chi đạt {alert.TyLeSuDung:F1}% ngân sách dự kiến (đạt ngưỡng 80%).",
                         "Cảnh Báo Ngân Sách",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);

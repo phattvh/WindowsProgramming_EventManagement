@@ -120,7 +120,7 @@ namespace EventManagement.GUI.Forms
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(490, 25);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "QUẢN LÝ CHI PHÍ & NGÂN SÁCH SỰ KIỆN (FORM F17)";
+            this.lblTitle.Text = "QUẢN LÝ CHI PHÍ & NGÂN SÁCH SỰ KIỆN";
             // 
             // lblSubTitle
             // 
@@ -132,6 +132,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Size = new System.Drawing.Size(534, 15);
             this.lblSubTitle.TabIndex = 1;
             this.lblSubTitle.Text = "Kiểm soát chi tiêu, định mức tài chính và tự động cảnh báo bội chi đa tầng theo quy tắc BR-14, BR-15";
+            this.lblSubTitle.Visible = false;
             // 
             // pnlFilterBar
             // 
@@ -770,7 +771,7 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.pnlTopHeader);
             this.MinimumSize = new System.Drawing.Size(1100, 680);
             this.Name = "FrmBudgetExpense";
-            this.Text = "Quản Lý Chi Phí & Ngân Sách Sự Kiện (F17)";
+            this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.pnlTopHeader.ResumeLayout(false);
             this.pnlTopHeader.PerformLayout();
             this.pnlFilterBar.ResumeLayout(false);
