@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -154,8 +154,32 @@ namespace EventManagement.GUI
             }
 
             ApplicationConfiguration.Initialize();
-            // Mặc định khởi chạy FrmSchedule (F08) cho kiểm tra giao diện
-            Application.Run(new FrmDashboard());
+            // Vòng đời đăng nhập và quản lý phiên làm việc (Session Lifecycle):
+            // 1. Mở FrmLogin để người dùng đăng nhập tài khoản (admin, manager1, staff1,...)
+            // 2. Vào FrmDashboard với quyền tương ứng
+            // 3. Người dùng bấm "Đăng xuất" -> Dashboard đóng lại và mở lại FrmLogin để chuyển tài khoản
+            // 4. Người dùng bấm "Thoát" hoặc đóng dấu [X] trên FrmLogin -> Thoát ứng dụng
+            while (true)
+            {
+                using (var loginForm = new FrmLogin())
+                {
+                    if (loginForm.ShowDialog() != DialogResult.OK)
+                    {
+                        break;
+                    }
+                }
+
+                DialogResult dashResult;
+                using (var dashboard = new FrmDashboard())
+                {
+                    dashResult = dashboard.ShowDialog();
+                }
+
+                if (dashResult != DialogResult.Retry && CurrentSession.IsLoggedIn)
+                {
+                    break;
+                }
+            }
         }
 
         private static void RunDay5AutomatedTests()

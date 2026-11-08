@@ -1,4 +1,4 @@
--- ==============================================================================
+﻿-- ==============================================================================
 -- DỰ ÁN: HỆ THỐNG QUẢN LÝ SỰ KIỆN (EVENT MANAGEMENT SYSTEM)
 -- SCRIPT 04: NẠP DỮ LIỆU MẪU TOÀN DIỆN CHO NGÀY BẢO VỆ ĐỒ ÁN (DAY 9 / TASK T3-25)
 -- Chuẩn bị cho 6 Kịch bản Kiểm thử Tích hợp End-to-End (E2E) Ngày 10
@@ -95,21 +95,21 @@ PRINT N'-> Đã hoàn thiện ma trận phân quyền 3 tầng người dùng.';
 GO
 
 -- 4. TÀI KHOẢN NGƯỜI DÙNG DEMO (NguoiDung - BCrypt Hash)
-IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = 'ND001')
+IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE TenDangNhap = 'admin')
     INSERT INTO dbo.NguoiDung (MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, SoLanDangNhapSai) VALUES
-    ('ND001', 'admin', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Quản trị viên Hệ thống', 'admin@eventhub.vn', '0909123456', 'ADMIN', N'Hoạt động', 0);
+    ('USR001', 'admin', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Quản trị viên Hệ thống', 'admin@eventhub.vn', '0909123456', 'ADMIN', N'Hoạt động', 0);
 
-IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = 'ND002')
+IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE TenDangNhap = 'manager1')
     INSERT INTO dbo.NguoiDung (MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, SoLanDangNhapSai) VALUES
-    ('ND002', 'manager1', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Trần Minh Tâm (Trưởng BTC)', 'tam.tran@eventhub.vn', '0918765432', 'MANAGER', N'Hoạt động', 0);
+    ('USR002', 'manager1', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Trần Minh Tâm (Trưởng BTC)', 'tam.tran@eventhub.vn', '0918765432', 'MANAGER', N'Hoạt động', 0);
 
-IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = 'ND003')
+IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE TenDangNhap = 'staff1')
     INSERT INTO dbo.NguoiDung (MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, SoLanDangNhapSai) VALUES
-    ('ND003', 'staff1', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Lê Thị Hương (Soát vé)', 'huong.le@eventhub.vn', '0987112233', 'STAFF', N'Hoạt động', 0);
+    ('USR003', 'staff1', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Lê Thị Hương (Soát vé)', 'huong.le@eventhub.vn', '0987112233', 'STAFF', N'Hoạt động', 0);
 
-IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE MaNguoiDung = 'ND004')
+IF NOT EXISTS (SELECT 1 FROM dbo.NguoiDung WHERE TenDangNhap = 'locked_user')
     INSERT INTO dbo.NguoiDung (MaNguoiDung, TenDangNhap, MatKhauHash, HoTen, Email, SoDienThoai, MaNhomQuyen, TrangThai, SoLanDangNhapSai) VALUES
-    ('ND004', 'locked_user', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Nguyễn Văn Khóa', 'locked@eventhub.vn', '0933445566', 'STAFF', N'Khóa', 5);
+    ('USR004', 'locked_user', '$2a$11$w1pXw2a05dKsqP0Y49iQ5uJ8g61uR3jS.B6Q4Bq3z8oA4R3d9v6bK', N'Nguyễn Văn Khóa', 'locked@eventhub.vn', '0933445566', 'STAFF', N'Khóa tạm thời', 5);
 
 PRINT N'-> Đã sẵn sàng 4 tài khoản người dùng mẫu phục vụ bảo vệ đồ án.';
 GO

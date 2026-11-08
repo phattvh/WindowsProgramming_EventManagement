@@ -229,7 +229,7 @@ namespace EventManagement.GUI.Forms
             if (confirm == DialogResult.Yes)
             {
                 CurrentSession.DangXuat();
-                this.DialogResult = DialogResult.OK;
+                this.DialogResult = DialogResult.Retry;
                 this.Close();
             }
         }

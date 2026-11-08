@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,11 +24,21 @@ namespace EventManagement.GUI.Forms
         {
             InitializeComponent();
             _authService = authService;
+            this.Load += FrmLogin_Load;
         }
 
         private void chkShowPassword_CheckedChanged(object sender, EventArgs e)
         {
             txtPassword.PasswordChar = chkShowPassword.Checked ? '\0' : '•';
+        }
+
+        private void FrmLogin_Load(object? sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtUsername.Text))
+            {
+                txtUsername.Text = "admin";
+                txtPassword.Text = "Admin@123";
+            }
         }
 
         private async void btnLogin_Click(object sender, EventArgs e)
