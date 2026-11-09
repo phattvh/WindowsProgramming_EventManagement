@@ -75,7 +75,7 @@ namespace EventManagement.GUI.Forms
             var row = dgvUpcoming.Rows[e.RowIndex];
             var evt = row.DataBoundItem as UpcomingEventDto;
             string eventCode = evt?.MaSuKien ?? "EVT202601";
-            PermissionHelper.SafeLaunchDialog(this, "UC05", () => new FrmEventDetail(eventCode), $"Chi tiết sự kiện {eventCode} (F05)");
+            PermissionHelper.SafeLaunchDialog(this, "UC05", () => new FrmEventDetail(eventCode), $"Chi tiết sự kiện {eventCode}");
             _ = RefreshDashboardAsync();
         }
 
@@ -90,7 +90,7 @@ namespace EventManagement.GUI.Forms
             {
                 var hoTen = CurrentSession.HoTen ?? "Người dùng";
                 var role = CurrentSession.MaNhomQuyen ?? "Khách";
-                lblUserGreeting.Text = $"Xin chào: {hoTen}\n({role})";
+                lblUserGreeting.Text = $"Xin chào: {hoTen} ({role})";
 
                 // Rà soát phân quyền động toàn bộ các nút trong thanh công cụ Lối tắt tác nghiệp (AD-4 Lớp 1)
                 PermissionHelper.ApplyAuthorization(flpQuickButtons, hideInsteadOfDisable: true);
@@ -101,7 +101,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                lblUserGreeting.Text = "Xin chào: Quản trị viên (Khách)";
+                lblUserGreeting.Text = "Xin chào: Quản trị viên";
                 CanAccessAdminFeatures = true;
 
                 // Khi chạy độc lập không đăng nhập: Hiển thị đầy đủ để demo
@@ -256,43 +256,43 @@ namespace EventManagement.GUI.Forms
 
         private void btnNavEvents_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC04", () => new FrmEventList(), "Danh sách sự kiện tổng thể (F04)");
+            PermissionHelper.SafeLaunchDialog(this, "UC04", () => new FrmEventList(), "Danh sách sự kiện tổng thể");
             _ = RefreshDashboardAsync();
         }
 
         private void btnNavTickets_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC11", () => new FrmTicketOrder(), "Đăng ký & Bán vé sự kiện (F11)");
+            PermissionHelper.SafeLaunchDialog(this, "UC11", () => new FrmTicketOrder(), "Đăng ký & Bán vé sự kiện");
         }
 
         private void btnNavCheckIn_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC13", () => new FrmCheckInCamera(), "Soát vé qua Webcam QR (F13)");
+            PermissionHelper.SafeLaunchDialog(this, "UC13", () => new FrmCheckInCamera(), "Soát vé qua Webcam QR");
         }
 
         private void btnNavTicketTiers_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC12", () => new FrmTicketTier(), "Quản lý hạng vé sự kiện (F12)");
+            PermissionHelper.SafeLaunchDialog(this, "UC12", () => new FrmTicketTier(), "Quản lý hạng vé sự kiện");
         }
 
         private void btnNavExpenses_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC17", () => new FrmBudgetExpense(), "Quản lý ngân sách & chi phí (F17)");
+            PermissionHelper.SafeLaunchDialog(this, "UC17", () => new FrmBudgetExpense(), "Quản lý ngân sách & chi phí");
         }
 
         private void btnNavReports_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC19", () => new FrmReportStatistics(), "Báo cáo & Thống kê sự kiện (F19)");
+            PermissionHelper.SafeLaunchDialog(this, "UC19", () => new FrmReportStatistics(), "Báo cáo & Thống kê sự kiện");
         }
 
         private void btnNavUsers_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC03", () => new FrmUserManagement(), "Quản lý người dùng & Mở khóa (F03)");
+            PermissionHelper.SafeLaunchDialog(this, "UC03", () => new FrmUserManagement(), "Quản lý người dùng & Mở khóa");
         }
 
         private void btnNavRoles_Click(object sender, EventArgs e)
         {
-            PermissionHelper.SafeLaunchDialog(this, "UC20", () => new FrmRolePermission(), "Quản lý phân quyền & Nhóm quyền (F20)");
+            PermissionHelper.SafeLaunchDialog(this, "UC20", () => new FrmRolePermission(), "Quản lý phân quyền & Nhóm quyền");
         }
     }
 }

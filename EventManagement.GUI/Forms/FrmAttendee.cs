@@ -55,7 +55,7 @@ namespace EventManagement.GUI.Forms
 
         private void InitializeComponent()
         {
-            this.Text = "F10 - Quản lý Người tham gia Sự kiện";
+            this.Text = "Quản lý Người tham gia Sự kiện";
             this.Size = new Size(1000, 680);
             this.MinimumSize = new Size(900, 600);
 
@@ -71,7 +71,7 @@ namespace EventManagement.GUI.Forms
             };
             _lblTitle = new Label
             {
-                Text = "QUẢN LÝ HỒ SƠ NGƯỜI THAM GIA (F10)",
+                Text = "QUẢN LÝ HỒ SƠ NGƯỜI THAM GIA",
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 Dock = DockStyle.Fill,

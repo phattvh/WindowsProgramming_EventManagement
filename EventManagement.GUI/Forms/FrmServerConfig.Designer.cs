@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmServerConfig
     {
@@ -44,7 +44,7 @@
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(262, 28);
             this.lblTitle.TabIndex = 0;
-            this.lblTitle.Text = "CẤU HÌNH MÁY CHỦ CSDL (AD-6)";
+            this.lblTitle.Text = "CẤU HÌNH MÁY CHỦ CSDL";
             // 
             // lblDescription
             // 
@@ -222,7 +222,7 @@
             this.MinimizeBox = false;
             this.Name = "FrmServerConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Cấu hình Máy chủ Cơ sở Dữ liệu (AD-6)";
+            this.Text = "Cấu hình Máy chủ Cơ sở Dữ liệu";
             this.pnlSqlAuth.ResumeLayout(false);
             this.pnlSqlAuth.PerformLayout();
             this.ResumeLayout(false);

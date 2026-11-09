@@ -60,7 +60,7 @@ namespace EventManagement.GUI.Forms
 
         private async void FrmUserManagement_Load(object sender, EventArgs e)
         {
-            if (CurrentSession.IsLoggedIn && !PermissionHelper.CheckAccessAndNotify(this, "UC03", "Quản lý người dùng (F03)"))
+            if (CurrentSession.IsLoggedIn && !PermissionHelper.CheckAccessAndNotify(this, "UC03", "Quản lý người dùng"))
             {
                 this.Close();
                 return;

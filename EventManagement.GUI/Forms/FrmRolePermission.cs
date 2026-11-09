@@ -53,7 +53,7 @@ namespace EventManagement.GUI.Forms
 
         private async void FrmRolePermission_Load(object sender, EventArgs e)
         {
-            if (CurrentSession.IsLoggedIn && !PermissionHelper.CheckAccessAndNotify(this, "UC20", "Phân quyền & Nhóm quyền (F20)"))
+            if (CurrentSession.IsLoggedIn && !PermissionHelper.CheckAccessAndNotify(this, "UC20", "Phân quyền & Nhóm quyền"))
             {
                 this.Close();
                 return;

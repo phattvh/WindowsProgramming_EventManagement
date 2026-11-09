@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -628,7 +628,7 @@ namespace EventManagement.GUI.Forms
             this.lblCardChiPhiTitle.Name = "lblCardChiPhiTitle";
             this.lblCardChiPhiTitle.Size = new Size(116, 13);
             this.lblCardChiPhiTitle.TabIndex = 0;
-            this.lblCardChiPhiTitle.Text = "TỔNG THỰC CHI (F17)";
+            this.lblCardChiPhiTitle.Text = "TỔNG THỰC CHI";
 
             this.lblCardChiPhiValue.AutoSize = true;
             this.lblCardChiPhiValue.Font = new Font("Segoe UI", 12F, FontStyle.Bold);

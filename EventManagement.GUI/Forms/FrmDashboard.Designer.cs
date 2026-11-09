@@ -130,8 +130,6 @@ namespace EventManagement.GUI.Forms
             // pnlUserInfo
             // 
             this.pnlUserInfo.Controls.Add(this.lblUserGreeting);
-            this.pnlUserInfo.Controls.Add(this.btnChangePassword);
-            this.pnlUserInfo.Controls.Add(this.btnLogout);
             this.pnlUserInfo.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnlUserInfo.Location = new System.Drawing.Point(634, 0);
             this.pnlUserInfo.Name = "pnlUserInfo";
@@ -140,10 +138,13 @@ namespace EventManagement.GUI.Forms
             // 
             // lblUserGreeting
             // 
+            this.lblUserGreeting.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblUserGreeting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblUserGreeting.ForeColor = System.Drawing.Color.White;
-            this.lblUserGreeting.Location = new System.Drawing.Point(5, 10);
+            this.lblUserGreeting.Location = new System.Drawing.Point(0, 0);
             this.lblUserGreeting.Name = "lblUserGreeting";
-            this.lblUserGreeting.Size = new System.Drawing.Size(280, 45);
+            this.lblUserGreeting.Padding = new System.Windows.Forms.Padding(0, 0, 20, 0);
+            this.lblUserGreeting.Size = new System.Drawing.Size(500, 65);
             this.lblUserGreeting.TabIndex = 0;
             this.lblUserGreeting.Text = "Xin chào: Quản trị viên (Admin)";
             this.lblUserGreeting.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -225,11 +226,11 @@ namespace EventManagement.GUI.Forms
             // lblCard1Value
             // 
             this.lblCard1Value.AutoSize = true;
-            this.lblCard1Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblCard1Value.Font = new System.Drawing.Font("Segoe UI", 17F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblCard1Value.ForeColor = System.Drawing.Color.White;
             this.lblCard1Value.Location = new System.Drawing.Point(6, 26);
             this.lblCard1Value.Name = "lblCard1Value";
-            this.lblCard1Value.Size = new System.Drawing.Size(39, 46);
+            this.lblCard1Value.Size = new System.Drawing.Size(39, 38);
             this.lblCard1Value.TabIndex = 1;
             this.lblCard1Value.Text = "0";
             // 
@@ -271,11 +272,11 @@ namespace EventManagement.GUI.Forms
             // lblCard2Value
             // 
             this.lblCard2Value.AutoSize = true;
-            this.lblCard2Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblCard2Value.Font = new System.Drawing.Font("Segoe UI", 17F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblCard2Value.ForeColor = System.Drawing.Color.White;
             this.lblCard2Value.Location = new System.Drawing.Point(6, 26);
             this.lblCard2Value.Name = "lblCard2Value";
-            this.lblCard2Value.Size = new System.Drawing.Size(39, 46);
+            this.lblCard2Value.Size = new System.Drawing.Size(39, 38);
             this.lblCard2Value.TabIndex = 1;
             this.lblCard2Value.Text = "0";
             // 
@@ -319,9 +320,9 @@ namespace EventManagement.GUI.Forms
             this.lblCard3Value.AutoSize = true;
             this.lblCard3Value.Font = new System.Drawing.Font("Segoe UI", 17F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblCard3Value.ForeColor = System.Drawing.Color.White;
-            this.lblCard3Value.Location = new System.Drawing.Point(6, 28);
+            this.lblCard3Value.Location = new System.Drawing.Point(6, 26);
             this.lblCard3Value.Name = "lblCard3Value";
-            this.lblCard3Value.Size = new System.Drawing.Size(63, 40);
+            this.lblCard3Value.Size = new System.Drawing.Size(63, 38);
             this.lblCard3Value.TabIndex = 1;
             this.lblCard3Value.Text = "0 đ";
             // 
@@ -363,11 +364,11 @@ namespace EventManagement.GUI.Forms
             // lblCard4Value
             // 
             this.lblCard4Value.AutoSize = true;
-            this.lblCard4Value.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblCard4Value.Font = new System.Drawing.Font("Segoe UI", 17F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblCard4Value.ForeColor = System.Drawing.Color.White;
             this.lblCard4Value.Location = new System.Drawing.Point(6, 26);
             this.lblCard4Value.Name = "lblCard4Value";
-            this.lblCard4Value.Size = new System.Drawing.Size(107, 46);
+            this.lblCard4Value.Size = new System.Drawing.Size(107, 38);
             this.lblCard4Value.TabIndex = 1;
             this.lblCard4Value.Text = "0.0 %";
             // 

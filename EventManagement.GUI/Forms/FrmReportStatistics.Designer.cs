@@ -162,7 +162,7 @@ namespace EventManagement.GUI.Forms
             this.radQuyetToan.Size = new System.Drawing.Size(162, 19);
             this.radQuyetToan.TabIndex = 0;
             this.radQuyetToan.TabStop = true;
-            this.radQuyetToan.Text = "1. Quyết toán thu chi (F17)";
+            this.radQuyetToan.Text = "1. Quyết toán thu chi";
             this.radQuyetToan.UseVisualStyleBackColor = true;
             // 
             // lblLoaiBaoCao

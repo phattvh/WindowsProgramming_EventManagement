@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -150,6 +150,76 @@ namespace EventManagement.GUI
             {
                 ApplicationConfiguration.Initialize();
                 Application.Run(new FrmReportStatistics());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f01" || args[0] == "--login"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmLogin());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f03" || args[0] == "--users"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmUserManagement());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f06" || args[0] == "--event-type"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmEventType());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f07" || args[0] == "--venue"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmVenue());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f09" || args[0] == "--speaker"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmSpeaker());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f10" || args[0] == "--attendee"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmAttendee());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f12" || args[0] == "--ticket-tier"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmTicketTier());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f14" || args[0] == "--staff"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmStaff());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--f20" || args[0] == "--roles" || args[0] == "--permissions"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmRolePermission());
+                return;
+            }
+
+            if (args.Length > 0 && (args[0] == "--uc21" || args[0] == "--change-password"))
+            {
+                ApplicationConfiguration.Initialize();
+                Application.Run(new FrmChangePassword());
                 return;
             }
 
