@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -82,9 +82,6 @@ namespace EventManagement.Tests
             usersItem.Should().NotBeNull();
             usersItem!.ShortcutKeys.Should().Be(Keys.Control | Keys.Shift | Keys.U);
 
-            var rolesItem = adminMenu.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text.IndexOf("phân quyền", StringComparison.OrdinalIgnoreCase) >= 0);
-            rolesItem.Should().NotBeNull();
-            rolesItem!.ShortcutKeys.Should().Be(Keys.Control | Keys.Shift | Keys.Q);
 
             var helpMenu = (ToolStripMenuItem)menu.Items[6];
             var shortcutsHelpItem = helpMenu.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text.IndexOf("phím tắt", StringComparison.OrdinalIgnoreCase) >= 0);
@@ -146,8 +143,6 @@ namespace EventManagement.Tests
             var usersItem = adminMenu.DropDownItems.OfType<ToolStripMenuItem>().First(x => x.Tag?.ToString() == "UC03");
             usersItem.Enabled.Should().BeFalse();
 
-            var rolesItem = adminMenu.DropDownItems.OfType<ToolStripMenuItem>().First(x => x.Tag?.ToString() == "UC20");
-            rolesItem.Enabled.Should().BeFalse();
         }
     }
 }

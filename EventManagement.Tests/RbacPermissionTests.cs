@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using EventManagement.Core.Security;
@@ -274,7 +274,6 @@ namespace EventManagement.Tests
             form.IsButtonAuthorized(form.btnNavExpenses).Should().BeTrue();
             form.IsButtonAuthorized(form.btnNavReports).Should().BeTrue();
             form.IsButtonAuthorized(form.btnNavUsers).Should().BeTrue();
-            form.IsButtonAuthorized(form.btnNavRoles).Should().BeTrue();
             form.IsButtonAuthorized(form.btnRefresh).Should().BeTrue();
         }
         // Mô tả: Test này đảm bảo màn hình trung tâm Dashboard F02 kích hoạt toàn bộ 8 lối tắt tác nghiệp và chức năng quản trị hệ thống cho tài khoản Admin.
@@ -298,7 +297,6 @@ namespace EventManagement.Tests
             form.IsButtonAuthorized(form.btnNavCheckIn).Should().BeTrue();   // Soát vé F13
 
             form.IsButtonAuthorized(form.btnNavUsers).Should().BeFalse();    // Ẩn Người dùng F03
-            form.IsButtonAuthorized(form.btnNavRoles).Should().BeFalse();    // Ẩn Phân quyền F20
             form.IsButtonAuthorized(form.btnNavExpenses).Should().BeFalse(); // Ẩn Ngân sách F17
         }
         // Mô tả: Test này thẩm định việc thực thi phân quyền động thực tế trên Form F02 ở Ngày 8: Nhân viên đăng nhập không bao giờ nhìn thấy các nút quản trị người dùng hoặc số liệu ngân sách nội bộ.
@@ -324,7 +322,6 @@ namespace EventManagement.Tests
             form.IsButtonAuthorized(form.btnNavReports).Should().BeTrue();
 
             form.IsButtonAuthorized(form.btnNavUsers).Should().BeFalse();
-            form.IsButtonAuthorized(form.btnNavRoles).Should().BeFalse();
         }
         // Mô tả: Test này đảm bảo màn hình Dashboard đáp ứng hoàn hảo ma trận phân quyền thực tế của doanh nghiệp: Quản lý xem được đầy đủ nghiệp vụ vận hành và tài chính nhưng không can thiệp vào tài khoản hệ thống.
     }

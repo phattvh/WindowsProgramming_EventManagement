@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
 using EventManagement.Core.Session;
@@ -162,7 +162,6 @@ namespace EventManagement.GUI.Forms
             // 6. MENU QUẢN TRỊ NGƯỜI DÙNG (&Q)
             var mnuAdmin = new ToolStripMenuItem("&Quản trị");
             mnuAdmin.DropDownItems.Add(CreateMenuItem("Quản lý người dùng & Mở khóa", Keys.Control | Keys.Shift | Keys.U, "UC03", (s, e) => NavigateTo("UC03", () => new FrmUserManagement(), "Quản lý người dùng")));
-            mnuAdmin.DropDownItems.Add(CreateMenuItem("Nhóm quyền & Phân quyền", Keys.Control | Keys.Shift | Keys.Q, "UC20", (s, e) => NavigateTo("UC20", () => new FrmRolePermission(), "Nhóm quyền & Phân quyền")));
 
             // 7. MENU TRỢ GIÚP (&G)
             var mnuHelp = new ToolStripMenuItem("&Trợ giúp");

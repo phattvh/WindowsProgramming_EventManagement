@@ -97,7 +97,7 @@ namespace EventManagement.GUI.Forms
                 DistributeQuickButtons();
 
                 CanAccessAdminFeatures = CurrentSession.IsAdmin 
-                    || (CurrentSession.CoQuyen("UC03") && CurrentSession.CoQuyen("UC20"));
+                    || CurrentSession.CoQuyen("UC03");
             }
             else
             {
@@ -288,11 +288,6 @@ namespace EventManagement.GUI.Forms
         private void btnNavUsers_Click(object sender, EventArgs e)
         {
             PermissionHelper.SafeLaunchDialog(this, "UC03", () => new FrmUserManagement(), "Quản lý người dùng & Mở khóa");
-        }
-
-        private void btnNavRoles_Click(object sender, EventArgs e)
-        {
-            PermissionHelper.SafeLaunchDialog(this, "UC20", () => new FrmRolePermission(), "Quản lý phân quyền & Nhóm quyền");
         }
     }
 }

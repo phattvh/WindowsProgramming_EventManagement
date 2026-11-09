@@ -301,7 +301,7 @@ namespace EventManagement.Tests
         [TestMethod]
         public void ValidateRoleInput_EmptyCode_ReturnsError()
         {
-            var result = FrmRolePermission.ValidateRoleInput("", "Tên vai trò");
+            var result = RolePermissionService.ValidateRoleInput("", "Tên vai trò");
             result.IsValid.Should().BeFalse();
             result.ErrorMessage.Should().Contain("không được để trống");
         }
@@ -309,7 +309,7 @@ namespace EventManagement.Tests
         [TestMethod]
         public void ValidateRoleInput_InvalidCodeFormat_ReturnsError()
         {
-            var result = FrmRolePermission.ValidateRoleInput("a", "Tên vai trò");
+            var result = RolePermissionService.ValidateRoleInput("a", "Tên vai trò");
             result.IsValid.Should().BeFalse();
             result.ErrorMessage.Should().Contain("3 đến 20");
         }
@@ -317,7 +317,7 @@ namespace EventManagement.Tests
         [TestMethod]
         public void ValidateRoleInput_EmptyName_ReturnsError()
         {
-            var result = FrmRolePermission.ValidateRoleInput("AUDITOR", "");
+            var result = RolePermissionService.ValidateRoleInput("AUDITOR", "");
             result.IsValid.Should().BeFalse();
             result.ErrorMessage.Should().Contain("Tên nhóm quyền không được để trống");
         }
@@ -325,9 +325,10 @@ namespace EventManagement.Tests
         [TestMethod]
         public void ValidateRoleInput_ValidData_ReturnsSuccess()
         {
-            var result = FrmRolePermission.ValidateRoleInput("AUDITOR", "Kiểm toán viên");
+            var result = RolePermissionService.ValidateRoleInput("AUDITOR", "Kiểm toán viên");
             result.IsValid.Should().BeTrue();
             result.ErrorMessage.Should().BeNull();
         }
     }
 }
+

@@ -209,12 +209,6 @@ namespace EventManagement.GUI
                 return;
             }
 
-            if (args.Length > 0 && (args[0] == "--f20" || args[0] == "--roles" || args[0] == "--permissions"))
-            {
-                ApplicationConfiguration.Initialize();
-                Application.Run(new FrmRolePermission());
-                return;
-            }
 
             if (args.Length > 0 && (args[0] == "--uc21" || args[0] == "--change-password"))
             {
@@ -1122,14 +1116,12 @@ namespace EventManagement.GUI
                 AssertTest("STAFF: Hiển thị nút Bán vé (F11)", frm.IsButtonAuthorized(frm.btnNavTickets));
                 AssertTest("STAFF: Hiển thị nút Soát vé (F13)", frm.IsButtonAuthorized(frm.btnNavCheckIn));
                 AssertTest("STAFF: Ẩn nút Quản lý người dùng (F03)", !frm.IsButtonAuthorized(frm.btnNavUsers));
-                AssertTest("STAFF: Ẩn nút Phân quyền (F20)", !frm.IsButtonAuthorized(frm.btnNavRoles));
 
                 // Kiểm thử ADMIN
                 CurrentSession.DangNhap("ADM", "admin", "Quản Trị Viên", "admin@e.vn", "ADMIN");
                 frm.ApplyUserSessionAndPermissions();
                 AssertTest("ADMIN: Toàn quyền truy cập Quản trị viên (CanAccessAdminFeatures = true)", frm.CanAccessAdminFeatures);
                 AssertTest("ADMIN: Hiển thị nút Quản lý người dùng (F03)", frm.IsButtonAuthorized(frm.btnNavUsers));
-                AssertTest("ADMIN: Hiển thị nút Phân quyền (F20)", frm.IsButtonAuthorized(frm.btnNavRoles));
                 AssertTest("ADMIN: Hiển thị nút Chi phí & Ngân sách (F17)", frm.IsButtonAuthorized(frm.btnNavExpenses));
             }
             finally

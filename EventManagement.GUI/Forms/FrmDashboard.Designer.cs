@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmDashboard
     {
@@ -51,7 +51,6 @@ namespace EventManagement.GUI.Forms
             this.btnNavExpenses = new System.Windows.Forms.Button();
             this.btnNavReports = new System.Windows.Forms.Button();
             this.btnNavUsers = new System.Windows.Forms.Button();
-            this.btnNavRoles = new System.Windows.Forms.Button();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.pnlChartsContainer = new System.Windows.Forms.Panel();
             this.tblCharts = new System.Windows.Forms.TableLayoutPanel();
@@ -415,7 +414,6 @@ namespace EventManagement.GUI.Forms
             this.flpQuickButtons.Controls.Add(this.btnNavExpenses);
             this.flpQuickButtons.Controls.Add(this.btnNavReports);
             this.flpQuickButtons.Controls.Add(this.btnNavUsers);
-            this.flpQuickButtons.Controls.Add(this.btnNavRoles);
             this.flpQuickButtons.Controls.Add(this.btnRefresh);
             this.flpQuickButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpQuickButtons.Location = new System.Drawing.Point(115, 6);
@@ -498,19 +496,7 @@ namespace EventManagement.GUI.Forms
             this.btnNavUsers.Tag = "UC03";
             this.btnNavUsers.Text = "👥 Người dùng";
             this.btnNavUsers.UseVisualStyleBackColor = true;
-            this.btnNavUsers.Click += new System.EventHandler(this.btnNavUsers_Click);
-            // 
-            // btnNavRoles
-            // 
-            this.btnNavRoles.Location = new System.Drawing.Point(730, 3);
-            this.btnNavRoles.Name = "btnNavRoles";
-            this.btnNavRoles.Size = new System.Drawing.Size(105, 30);
-            this.btnNavRoles.TabIndex = 7;
-            this.btnNavRoles.Tag = "UC20";
-            this.btnNavRoles.Text = "🛡️ Phân quyền";
-            this.btnNavRoles.UseVisualStyleBackColor = true;
-            this.btnNavRoles.Click += new System.EventHandler(this.btnNavRoles_Click);
-            // 
+            this.btnNavUsers.Click += new System.EventHandler(this.btnNavUsers_Click);            // 
             // btnRefresh
             // 
             this.btnRefresh.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
@@ -864,7 +850,6 @@ namespace EventManagement.GUI.Forms
         public System.Windows.Forms.Button btnNavExpenses;
         public System.Windows.Forms.Button btnNavReports;
         public System.Windows.Forms.Button btnNavUsers;
-        public System.Windows.Forms.Button btnNavRoles;
         public System.Windows.Forms.Button btnRefresh;
 
         protected System.Windows.Forms.Panel pnlChartsContainer;

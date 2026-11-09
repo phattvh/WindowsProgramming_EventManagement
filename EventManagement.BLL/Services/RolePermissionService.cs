@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace EventManagement.BLL.Services
 {
     /// <summary>
-    /// Triển khai dịch vụ Quản lý nhóm quyền & Phân quyền ma trận động F20 (Task T1-14 - Thành viên 1)
+    /// Triển khai dịch vụ Quản lý nhóm quyền & Phân quyền
     /// </summary>
     public class RolePermissionService : IRolePermissionService
     {
@@ -227,6 +227,30 @@ namespace EventManagement.BLL.Services
 
             await _context.SaveChangesAsync();
             return ServiceResult.Success($"Đã xóa nhóm quyền '{role.TenNhomQuyen}' thành công!");
+        }
+
+        /// <summary>
+        /// Logic thẩm định dữ liệu đầu vào khi tạo nhóm quyền mới
+        /// </summary>
+        public static (bool IsValid, string? ErrorMessage) ValidateRoleInput(string roleCode, string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(roleCode))
+            {
+                return (false, "Mã nhóm quyền không được để trống!");
+            }
+
+            string cleanCode = roleCode.Trim().ToUpper();
+            if (!Regex.IsMatch(cleanCode, "^[A-Z0-9_]{3,20}$"))
+            {
+                return (false, "Mã nhóm quyền phải từ 3 đến 20 ký tự (chữ hoa không dấu, số hoặc gạch dưới)!");
+            }
+
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                return (false, "Tên nhóm quyền không được để trống!");
+            }
+
+            return (true, null);
         }
     }
 }
