@@ -124,50 +124,50 @@ namespace EventManagement.GUI.Forms
 
             // 1. MENU HỆ THỐNG (&H)
             var mnuSystem = new ToolStripMenuItem("&Hệ thống");
-            mnuSystem.DropDownItems.Add(CreateMenuItem("Trang chủ / Dashboard", Keys.Control | Keys.Shift | Keys.H, "UC02", (s, e) => NavigateTo("UC02", () => new FrmDashboard(), "Trang chủ / Dashboard")));
+            mnuSystem.DropDownItems.Add(CreateMenuItem("Trang chủ", Keys.Control | Keys.Shift | Keys.H, "UC02", (s, e) => NavigateTo("UC02", () => new FrmDashboard(), "Trang chủ")));
             mnuSystem.DropDownItems.Add(CreateMenuItem("Cấu hình máy chủ", Keys.None, "UC00", (s, e) => NavigateTo("UC00", () => new FrmServerConfig(), "Cấu hình máy chủ")));
-            mnuSystem.DropDownItems.Add(CreateMenuItem("Đổi mật khẩu tài khoản", Keys.Control | Keys.Shift | Keys.W, "UC21", (s, e) => NavigateTo("UC21", () => new FrmChangePassword(), "Đổi mật khẩu tài khoản")));
+            mnuSystem.DropDownItems.Add(CreateMenuItem("Đổi mật khẩu", Keys.Control | Keys.Shift | Keys.W, "UC21", (s, e) => NavigateTo("UC21", () => new FrmChangePassword(), "Đổi mật khẩu")));
             mnuSystem.DropDownItems.Add(new ToolStripSeparator());
-            mnuSystem.DropDownItems.Add(CreateMenuItem("Đăng xuất tài khoản", Keys.Control | Keys.Shift | Keys.L, null, (s, e) => PerformLogout()));
-            mnuSystem.DropDownItems.Add(CreateMenuItem("Thoát ứng dụng", Keys.Alt | Keys.F4, null, (s, e) => PerformExit()));
+            mnuSystem.DropDownItems.Add(CreateMenuItem("Đăng xuất", Keys.Control | Keys.Shift | Keys.L, null, (s, e) => PerformLogout()));
+            mnuSystem.DropDownItems.Add(CreateMenuItem("Thoát", Keys.Alt | Keys.F4, null, (s, e) => PerformExit()));
 
             // 2. MENU SỰ KIỆN (&S)
             var mnuEvents = new ToolStripMenuItem("&Sự kiện");
-            mnuEvents.DropDownItems.Add(CreateMenuItem("Danh sách sự kiện tổng thể", Keys.Control | Keys.Shift | Keys.E, "UC04", (s, e) => NavigateTo("UC04", () => new FrmEventList(), "Danh sách sự kiện")));
+            mnuEvents.DropDownItems.Add(CreateMenuItem("Danh sách sự kiện", Keys.Control | Keys.Shift | Keys.E, "UC04", (s, e) => NavigateTo("UC04", () => new FrmEventList(), "Danh sách sự kiện")));
             mnuEvents.DropDownItems.Add(CreateMenuItem("Chi tiết sự kiện", Keys.None, "UC05", (s, e) => NavigateTo("UC05", () => new FrmEventDetail(), "Chi tiết sự kiện")));
-            mnuEvents.DropDownItems.Add(CreateMenuItem("Lịch trình sự kiện", Keys.Control | Keys.Shift | Keys.S, "UC08", (s, e) => NavigateTo("UC08", () => new FrmSchedule(), "Lịch trình sự kiện")));
-            mnuEvents.DropDownItems.Add(CreateMenuItem("Phân loại sự kiện", Keys.None, "UC06", (s, e) => NavigateTo("UC06", () => new FrmEventType(), "Phân loại sự kiện")));
-            mnuEvents.DropDownItems.Add(CreateMenuItem("Địa điểm tổ chức sự kiện", Keys.None, "UC07", (s, e) => NavigateTo("UC07", () => new FrmVenue(), "Địa điểm tổ chức")));
+            mnuEvents.DropDownItems.Add(CreateMenuItem("Lịch trình", Keys.Control | Keys.Shift | Keys.S, "UC08", (s, e) => NavigateTo("UC08", () => new FrmSchedule(), "Lịch trình")));
+            mnuEvents.DropDownItems.Add(CreateMenuItem("Loại sự kiện", Keys.None, "UC06", (s, e) => NavigateTo("UC06", () => new FrmEventType(), "Loại sự kiện")));
+            mnuEvents.DropDownItems.Add(CreateMenuItem("Địa điểm tổ chức", Keys.None, "UC07", (s, e) => NavigateTo("UC07", () => new FrmVenue(), "Địa điểm tổ chức")));
 
             // 3. MENU VÉ & SOÁT VÉ (&V)
-            var mnuTickets = new ToolStripMenuItem("&Vé & Soát vé");
-            mnuTickets.DropDownItems.Add(CreateMenuItem("Đăng ký & Bán vé sự kiện", Keys.Control | Keys.Shift | Keys.T, "UC11", (s, e) => NavigateTo("UC11", () => new FrmTicketOrder(), "Đăng ký & Bán vé")));
-            mnuTickets.DropDownItems.Add(CreateMenuItem("Quản lý hạng vé sự kiện", Keys.None, "UC12", (s, e) => NavigateTo("UC12", () => new FrmTicketTier(), "Quản lý hạng vé")));
-            mnuTickets.DropDownItems.Add(CreateMenuItem("Soát vé qua Webcam QR", Keys.Control | Keys.Shift | Keys.K, "UC13", (s, e) => NavigateTo("UC13", () => new FrmCheckInCamera(), "Soát vé qua QR")));
+            var mnuTickets = new ToolStripMenuItem("&Vé && Soát vé");
+            mnuTickets.DropDownItems.Add(CreateMenuItem("Đăng ký && Bán vé", Keys.Control | Keys.Shift | Keys.T, "UC11", (s, e) => NavigateTo("UC11", () => new FrmTicketOrder(), "Đăng ký & Bán vé")));
+            mnuTickets.DropDownItems.Add(CreateMenuItem("Hạng vé", Keys.None, "UC12", (s, e) => NavigateTo("UC12", () => new FrmTicketTier(), "Hạng vé")));
+            mnuTickets.DropDownItems.Add(CreateMenuItem("Soát vé QR", Keys.Control | Keys.Shift | Keys.K, "UC13", (s, e) => NavigateTo("UC13", () => new FrmCheckInCamera(), "Soát vé QR")));
 
             // 4. MENU NHÂN SỰ & ĐỐI TÁC (&N)
-            var mnuStaff = new ToolStripMenuItem("&Nhân sự & Đối tác");
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Hồ sơ nhân viên", Keys.None, "UC14", (s, e) => NavigateTo("UC14", () => new FrmStaff(), "Hồ sơ nhân viên")));
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Phân công nhiệm vụ nhân sự", Keys.None, "UC15", (s, e) => NavigateTo("UC15", () => new FrmStaffAssignment(), "Phân công nhân sự")));
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Quản lý diễn giả", Keys.Control | Keys.Shift | Keys.J, "UC09", (s, e) => NavigateTo("UC09", () => new FrmSpeaker(), "Quản lý diễn giả")));
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Người tham dự sự kiện", Keys.None, "UC10", (s, e) => NavigateTo("UC10", () => new FrmAttendee(), "Người tham dự")));
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Nhà tài trợ sự kiện", Keys.None, "UC16", (s, e) => NavigateTo("UC16", () => new FrmSponsor(), "Nhà tài trợ")));
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Đánh giá & Phản hồi sự kiện", Keys.None, "UC18", (s, e) => NavigateTo("UC18", () => new FrmFeedback(), "Đánh giá & Phản hồi")));
+            var mnuStaff = new ToolStripMenuItem("&Nhân sự && Đối tác");
+            mnuStaff.DropDownItems.Add(CreateMenuItem("Danh mục nhân sự", Keys.None, "UC14", (s, e) => NavigateTo("UC14", () => new FrmStaff(), "Danh mục nhân sự")));
+            mnuStaff.DropDownItems.Add(CreateMenuItem("Phân công ca trực", Keys.None, "UC15", (s, e) => NavigateTo("UC15", () => new FrmStaffAssignment(), "Phân công ca trực")));
+            mnuStaff.DropDownItems.Add(CreateMenuItem("Diễn giả && Khách mời", Keys.Control | Keys.Shift | Keys.J, "UC09", (s, e) => NavigateTo("UC09", () => new FrmSpeaker(), "Diễn giả & Khách mời")));
+            mnuStaff.DropDownItems.Add(CreateMenuItem("Hồ sơ người tham dự", Keys.None, "UC10", (s, e) => NavigateTo("UC10", () => new FrmAttendee(), "Hồ sơ người tham dự")));
+            mnuStaff.DropDownItems.Add(CreateMenuItem("Nhà tài trợ", Keys.None, "UC16", (s, e) => NavigateTo("UC16", () => new FrmSponsor(), "Nhà tài trợ")));
+            mnuStaff.DropDownItems.Add(CreateMenuItem("Khảo sát && Phản hồi", Keys.None, "UC18", (s, e) => NavigateTo("UC18", () => new FrmFeedback(), "Khảo sát & Phản hồi")));
 
             // 5. MENU TÀI CHÍNH & BÁO CÁO (&T)
-            var mnuFinance = new ToolStripMenuItem("&Tài chính & BC");
-            mnuFinance.DropDownItems.Add(CreateMenuItem("Quản lý ngân sách & Chi phí", Keys.Control | Keys.Shift | Keys.B, "UC17", (s, e) => NavigateTo("UC17", () => new FrmBudgetExpense(), "Ngân sách & Chi phí")));
-            mnuFinance.DropDownItems.Add(CreateMenuItem("Báo cáo & Thống kê tài chính", Keys.Control | Keys.Shift | Keys.R, "UC19", (s, e) => NavigateTo("UC19", () => new FrmReportStatistics(), "Báo cáo & Thống kê")));
+            var mnuFinance = new ToolStripMenuItem("&Tài chính && BC");
+            mnuFinance.DropDownItems.Add(CreateMenuItem("Ngân sách && Chi phí", Keys.Control | Keys.Shift | Keys.B, "UC17", (s, e) => NavigateTo("UC17", () => new FrmBudgetExpense(), "Ngân sách & Chi phí")));
+            mnuFinance.DropDownItems.Add(CreateMenuItem("Báo cáo && Thống kê", Keys.Control | Keys.Shift | Keys.R, "UC19", (s, e) => NavigateTo("UC19", () => new FrmReportStatistics(), "Báo cáo & Thống kê")));
 
             // 6. MENU QUẢN TRỊ NGƯỜI DÙNG (&Q)
             var mnuAdmin = new ToolStripMenuItem("&Quản trị");
-            mnuAdmin.DropDownItems.Add(CreateMenuItem("Quản lý người dùng & Mở khóa", Keys.Control | Keys.Shift | Keys.U, "UC03", (s, e) => NavigateTo("UC03", () => new FrmUserManagement(), "Quản lý người dùng")));
+            mnuAdmin.DropDownItems.Add(CreateMenuItem("Quản lý người dùng", Keys.Control | Keys.Shift | Keys.U, "UC03", (s, e) => NavigateTo("UC03", () => new FrmUserManagement(), "Quản lý người dùng")));
 
             // 7. MENU TRỢ GIÚP (&G)
             var mnuHelp = new ToolStripMenuItem("&Trợ giúp");
-            mnuHelp.DropDownItems.Add(CreateMenuItem("Danh mục phím tắt hệ thống", Keys.F1, null, (s, e) => ShowShortcutsHelpDialog()));
+            mnuHelp.DropDownItems.Add(CreateMenuItem("Hướng dẫn phím tắt", Keys.F1, null, (s, e) => ShowShortcutsHelpDialog()));
             mnuHelp.DropDownItems.Add(new ToolStripSeparator());
-            mnuHelp.DropDownItems.Add(CreateMenuItem("Giới thiệu phần mềm (About)", Keys.None, null, (s, e) => ShowAboutDialog()));
+            mnuHelp.DropDownItems.Add(CreateMenuItem("Giới thiệu phần mềm", Keys.None, null, (s, e) => ShowAboutDialog()));
 
             _navMenuStrip.Items.AddRange(new ToolStripItem[]
             {

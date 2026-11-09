@@ -42,7 +42,7 @@ namespace EventManagement.Tests
             menu.Should().NotBeNull();
             menu!.Items.Count.Should().Be(7);
 
-            string[] expectedMenus = { "&Hệ thống", "&Sự kiện", "&Vé & Soát vé", "&Nhân sự & Đối tác", "&Tài chính & BC", "&Quản trị", "&Trợ giúp" };
+            string[] expectedMenus = { "&Hệ thống", "&Sự kiện", "&Vé && Soát vé", "&Nhân sự && Đối tác", "&Tài chính && BC", "&Quản trị", "&Trợ giúp" };
             for (int i = 0; i < expectedMenus.Length; i++)
             {
                 menu.Items[i].Text.Should().Be(expectedMenus[i]);
@@ -50,7 +50,7 @@ namespace EventManagement.Tests
 
             // Kiểm tra các phím tắt chính
             var systemMenu = (ToolStripMenuItem)menu.Items[0];
-            var dashboardItem = systemMenu.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text.IndexOf("Dashboard", StringComparison.OrdinalIgnoreCase) >= 0);
+            var dashboardItem = systemMenu.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text.IndexOf("Trang chủ", StringComparison.OrdinalIgnoreCase) >= 0);
             dashboardItem.Should().NotBeNull();
             dashboardItem!.ShortcutKeys.Should().Be(Keys.Control | Keys.Shift | Keys.H);
 
@@ -64,7 +64,7 @@ namespace EventManagement.Tests
             ticketOrderItem.Should().NotBeNull();
             ticketOrderItem!.ShortcutKeys.Should().Be(Keys.Control | Keys.Shift | Keys.T);
 
-            var checkInItem = ticketMenu.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text.IndexOf("Webcam QR", StringComparison.OrdinalIgnoreCase) >= 0);
+            var checkInItem = ticketMenu.DropDownItems.OfType<ToolStripMenuItem>().FirstOrDefault(x => x.Text.IndexOf("Soát vé QR", StringComparison.OrdinalIgnoreCase) >= 0);
             checkInItem.Should().NotBeNull();
             checkInItem!.ShortcutKeys.Should().Be(Keys.Control | Keys.Shift | Keys.K);
 
