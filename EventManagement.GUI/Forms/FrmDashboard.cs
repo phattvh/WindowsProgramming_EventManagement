@@ -114,6 +114,7 @@ namespace EventManagement.GUI.Forms
 
         public void DistributeQuickButtons()
         {
+            if (!pnlQuickAccess.Visible) return;
             var visibleButtons = System.Linq.Enumerable.ToList(System.Linq.Enumerable.Where(System.Linq.Enumerable.OfType<Button>(flpQuickButtons.Controls), b => b.Visible));
             if (visibleButtons.Count == 0) return;
             int availableWidth = flpQuickButtons.ClientSize.Width - 10;

@@ -128,6 +128,7 @@
             // 
             // pnlUserInfo
             // 
+            this.pnlUserInfo.Controls.Add(this.btnRefresh);
             this.pnlUserInfo.Controls.Add(this.lblUserGreeting);
             this.pnlUserInfo.Dock = System.Windows.Forms.DockStyle.Right;
             this.pnlUserInfo.Location = new System.Drawing.Point(634, 0);
@@ -137,13 +138,15 @@
             // 
             // lblUserGreeting
             // 
-            this.lblUserGreeting.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblUserGreeting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblUserGreeting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblUserGreeting.ForeColor = System.Drawing.Color.White;
             this.lblUserGreeting.Location = new System.Drawing.Point(0, 0);
             this.lblUserGreeting.Name = "lblUserGreeting";
-            this.lblUserGreeting.Padding = new System.Windows.Forms.Padding(0, 0, 20, 0);
-            this.lblUserGreeting.Size = new System.Drawing.Size(500, 65);
+            this.lblUserGreeting.Padding = new System.Windows.Forms.Padding(0, 0, 15, 0);
+            this.lblUserGreeting.Size = new System.Drawing.Size(355, 65);
             this.lblUserGreeting.TabIndex = 0;
             this.lblUserGreeting.Text = "Xin chào: Quản trị viên (Admin)";
             this.lblUserGreeting.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -393,6 +396,7 @@
             this.pnlQuickAccess.Padding = new System.Windows.Forms.Padding(15, 6, 15, 6);
             this.pnlQuickAccess.Size = new System.Drawing.Size(1134, 48);
             this.pnlQuickAccess.TabIndex = 2;
+            this.pnlQuickAccess.Visible = false;
             // 
             // lblQuickAccess
             // 
@@ -414,7 +418,6 @@
             this.flpQuickButtons.Controls.Add(this.btnNavExpenses);
             this.flpQuickButtons.Controls.Add(this.btnNavReports);
             this.flpQuickButtons.Controls.Add(this.btnNavUsers);
-            this.flpQuickButtons.Controls.Add(this.btnRefresh);
             this.flpQuickButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpQuickButtons.Location = new System.Drawing.Point(115, 6);
             this.flpQuickButtons.Name = "flpQuickButtons";
@@ -499,19 +502,17 @@
             this.btnNavUsers.Click += new System.EventHandler(this.btnNavUsers_Click);            // 
             // btnRefresh
             // 
-            this.btnRefresh.BackColor = System.Drawing.Color.FromArgb(52, 152, 219);
+            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefresh.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(41)))), ((int)(((byte)(128)))), ((int)(((byte)(185)))));
+            this.btnRefresh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnRefresh.FlatAppearance.BorderSize = 0;
+            this.btnRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnRefresh.ForeColor = System.Drawing.Color.White;
-            this.btnRefresh.Location = new System.Drawing.Point(841, 3);
+            this.btnRefresh.Location = new System.Drawing.Point(365, 16);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(110, 30);
-            this.btnRefresh.TabIndex = 8;
-            this.btnRefresh.Text = "🔄 Làm mới (F5)";
-            this.btnRefresh.UseVisualStyleBackColor = false;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            this.btnRefresh.Location = new System.Drawing.Point(815, 3);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(120, 30);
-            this.btnRefresh.TabIndex = 7;
+            this.btnRefresh.Size = new System.Drawing.Size(120, 32);
+            this.btnRefresh.TabIndex = 1;
             this.btnRefresh.Text = "🔄 Làm mới (F5)";
             this.btnRefresh.UseVisualStyleBackColor = false;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
