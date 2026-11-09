@@ -105,22 +105,22 @@ INSERT INTO dbo.SuKien (MaSuKien, TenSuKien, MaLoaiSK, MaDiaDiem, NgayBatDau, Ng
 ('EVT202601', N'Hội nghị Công nghệ Vietnam Tech Summit 2026', 'LSK01', 'DD001', 
  '2026-12-15 08:00:00', '2026-12-15 17:30:00', N'Mở đăng ký', 
  N'Hội nghị công nghệ thường niên quy tụ hơn 1000 chuyên gia, kỹ sư và lãnh đạo công nghệ hàng đầu.', 
- 'banner_techsummit2026.png', 'USR004'),
+ 'banner_techsummit2026.png', 'USR002'),
 
 ('EVT202602', N'Đại nhạc hội Sinh viên Youth Wave Fest 2026', 'LSK02', 'DD002', 
  '2026-12-25 18:00:00', '2026-12-25 23:00:00', N'Dự kiến', 
  N'Đêm nhạc hội giao lưu văn nghệ dành cho sinh viên các trường đại học với dàn nghệ sĩ trẻ nổi tiếng.', 
- 'banner_musicfest2026.png', 'USR004'),
+ 'banner_musicfest2026.png', 'USR002'),
 
 ('EVT202603', N'Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026', 'LSK01', 'DD003', 
  '2026-01-10 08:30:00', '2026-01-10 12:00:00', N'Đã kết thúc', 
  N'Chia sẻ kinh nghiệm xây dựng sản phẩm và gọi vốn khởi nghiệp trong kỷ nguyên số.', 
- 'banner_startup2026.png', 'USR004'),
+ 'banner_startup2026.png', 'USR002'),
 
 ('EVT202604', N'Triển lãm Thiết bị & Trải nghiệm AR/VR', 'LSK03', 'DD001', 
  '2026-05-20 09:00:00', '2026-05-21 17:00:00', N'Hủy', 
  N'Khu trưng bày kính thực tế ảo và mô phỏng vũ trụ ảo (Đã hủy do thay đổi kế hoạch đối tác).', 
- 'banner_arvr2026.png', 'USR005');
+ 'banner_arvr2026.png', 'USR006');
 GO
 
 -- -----------------------------------------------------------------------------------
@@ -205,12 +205,12 @@ GO
 
 -- -----------------------------------------------------------------------------------
 -- 14. SOÁT VÉ CHECK-IN (F13 - CheckIn)
--- Ghi chú: Bản ghi này chứng minh vé VE003_1 đã check-in lúc 08:15:00 bởi nhân viên staff1 (USR008).
+-- Ghi chú: Bản ghi này chứng minh vé VE003_1 đã check-in lúc 08:15:00 bởi nhân viên staff1 (USR003).
 --          Khi người test quét lại mã QR_EVT202601_003_1, phần mềm sẽ hiển thị cảnh báo:
 --          "Vé này đã được check-in vào lúc 2026-12-15 08:15:00 bởi staff1" (BR-12).
 -- -----------------------------------------------------------------------------------
 INSERT INTO dbo.CheckIn (MaCheckIn, MaVe, ThoiGianCheckIn, NguoiThucHien, HinhThucCheckIn, GhiChu) VALUES
-('CK001', 'VE003_1', '2026-12-15 08:15:00', 'USR008', N'Webcam QR Code', N'Check-in hợp lệ tại Cổng chính A');
+('CK001', 'VE003_1', '2026-12-15 08:15:00', 'USR003', N'Webcam QR Code', N'Check-in hợp lệ tại Cổng chính A');
 GO
 
 -- -----------------------------------------------------------------------------------
@@ -235,9 +235,9 @@ GO
 --      THANH TIẾN ĐỘ VÀ GIAO DIỆN SẼ LẬP TỨC ĐỔI MÀU VÀNG CẢNH BÁO BỘI CHI (BR-15)!
 -- -----------------------------------------------------------------------------------
 INSERT INTO dbo.ChiPhiSuKien (MaChiPhi, MaSuKien, KhoanMucChi, SoTien, NgayChi, NguoiDuyet, GhiChu) VALUES
-('CP001', 'EVT202601', N'Thuê mặt bằng Hội trường Grand Ballroom', 45000000, '2026-11-05 10:00:00', 'USR004', N'Thanh toán đợt 1 tiền thuê địa điểm White Palace'),
-('CP002', 'EVT202601', N'Hệ thống Âm thanh, Ánh sáng & Màn LED P3', 20000000, '2026-11-20 15:30:00', 'USR004', N'Trọn gói dàn âm thanh biểu diễn chuyên nghiệp'),
-('CP003', 'EVT202601', N'In ấn Backdrop, Standee & Thẻ đeo sự kiện', 10000000, '2026-12-01 09:15:00', 'USR004', N'In ấn vật phẩm nhận diện thương hiệu');
+('CP001', 'EVT202601', N'Thuê mặt bằng Hội trường Grand Ballroom', 45000000, '2026-11-05 10:00:00', 'USR002', N'Thanh toán đợt 1 tiền thuê địa điểm White Palace'),
+('CP002', 'EVT202601', N'Hệ thống Âm thanh, Ánh sáng & Màn LED P3', 20000000, '2026-11-20 15:30:00', 'USR002', N'Trọn gói dàn âm thanh biểu diễn chuyên nghiệp'),
+('CP003', 'EVT202601', N'In ấn Backdrop, Standee & Thẻ đeo sự kiện', 10000000, '2026-12-01 09:15:00', 'USR002', N'In ấn vật phẩm nhận diện thương hiệu');
 GO
 
 -- -----------------------------------------------------------------------------------
