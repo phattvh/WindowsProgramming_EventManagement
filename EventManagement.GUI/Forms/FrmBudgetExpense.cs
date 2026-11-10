@@ -71,6 +71,7 @@ namespace EventManagement.GUI.Forms
             colMaChiPhi.FillWeight = 10;
             colKhoanMucChi.FillWeight = 22;
             colSoTien.FillWeight = 15;
+            colSoTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNgayChi.FillWeight = 11;
             colNguoiLap.FillWeight = 14;
             colTrangThai.FillWeight = 10;
