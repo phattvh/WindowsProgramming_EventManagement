@@ -148,20 +148,20 @@ namespace EventManagement.GUI.Forms
 
             // Hàng 1
             var lblMa = new Label { Text = "Mã tham gia:", Location = new Point(15, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtMa = new TextBox { Location = new Point(100, 25), Width = 110, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
+            _txtMa = new TextBox { Location = new Point(110, 25), Width = 100, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
 
             var lblHoTen = new Label { Text = "Họ và tên (*):", Location = new Point(225, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtHoTen = new TextBox { Location = new Point(310, 25), Width = 200 };
+            _txtHoTen = new TextBox { Location = new Point(325, 25), Width = 185 };
 
-            var lblGioiTinh = new Label { Text = "Giới tính:", Location = new Point(520, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _cboGioiTinh = new ComboBox { Location = new Point(585, 25), Width = 90, DropDownStyle = ComboBoxStyle.DropDownList };
+            var lblGioiTinh = new Label { Text = "Giới tính:", Location = new Point(525, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _cboGioiTinh = new ComboBox { Location = new Point(598, 25), Width = 85, DropDownStyle = ComboBoxStyle.DropDownList };
             _cboGioiTinh.Items.AddRange(new object[] { "Nam", "Nữ", "Khác" });
             _cboGioiTinh.SelectedIndex = 0;
 
-            var lblNgaySinh = new Label { Text = "Ngày sinh:", Location = new Point(690, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            var lblNgaySinh = new Label { Text = "Ngày sinh:", Location = new Point(698, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
             _dtpNgaySinh = new DateTimePicker
             {
-                Location = new Point(760, 25),
+                Location = new Point(778, 25),
                 Width = 135,
                 Format = DateTimePickerFormat.Custom,
                 CustomFormat = "dd/MM/yyyy"
@@ -169,13 +169,13 @@ namespace EventManagement.GUI.Forms
 
             // Hàng 2
             var lblEmail = new Label { Text = "Email (*):", Location = new Point(15, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtEmail = new TextBox { Location = new Point(100, 65), Width = 200 };
+            _txtEmail = new TextBox { Location = new Point(110, 65), Width = 190 };
 
             var lblSdt = new Label { Text = "Điện thoại (*):", Location = new Point(315, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtSoDienThoai = new TextBox { Location = new Point(405, 65), Width = 150 };
+            _txtSoDienThoai = new TextBox { Location = new Point(420, 65), Width = 145 };
 
-            var lblDonVi = new Label { Text = "Đơn vị công tác:", Location = new Point(575, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtDonVi = new TextBox { Location = new Point(680, 65), Width = 230 };
+            var lblDonVi = new Label { Text = "Đơn vị công tác:", Location = new Point(580, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _txtDonVi = new TextBox { Location = new Point(698, 65), Width = 235 };
 
             _grpDetails.Controls.AddRange(new Control[] {
                 lblMa, _txtMa, lblHoTen, _txtHoTen, lblGioiTinh, _cboGioiTinh, lblNgaySinh, _dtpNgaySinh,

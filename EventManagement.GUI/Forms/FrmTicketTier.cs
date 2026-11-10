@@ -142,31 +142,31 @@ namespace EventManagement.GUI.Forms
             };
 
             var lblMa = new Label { Text = "Mã hạng vé:", Location = new Point(20, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtMa = new TextBox { Location = new Point(115, 25), Width = 110, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
+            _txtMa = new TextBox { Location = new Point(110, 25), Width = 105, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
 
-            var lblEventCode = new Label { Text = "Mã sự kiện (*):", Location = new Point(245, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtMaSuKien = new TextBox { Location = new Point(340, 25), Width = 120 };
+            var lblEventCode = new Label { Text = "Mã sự kiện (*):", Location = new Point(235, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _txtMaSuKien = new TextBox { Location = new Point(350, 25), Width = 115 };
 
             var lblTen = new Label { Text = "Tên hạng vé (*):", Location = new Point(480, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtTen = new TextBox { Location = new Point(590, 25), Width = 210 };
+            _txtTen = new TextBox { Location = new Point(600, 25), Width = 205 };
 
-            var lblGia = new Label { Text = "Giá vé (VNĐ):", Location = new Point(820, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _nudGiaVe = new NumericUpDown { Location = new Point(910, 25), Width = 110, Maximum = 100000000, Increment = 50000 };
+            var lblGia = new Label { Text = "Giá vé (VNĐ):", Location = new Point(825, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _nudGiaVe = new NumericUpDown { Location = new Point(925, 25), Width = 110, Maximum = 100000000, Increment = 50000 };
 
             var lblPhatHanh = new Label { Text = "Số phát hành (*):", Location = new Point(20, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _nudPhatHanh = new NumericUpDown { Location = new Point(125, 65), Width = 100, Maximum = 100000, Minimum = 1, Value = 100 };
+            _nudPhatHanh = new NumericUpDown { Location = new Point(140, 65), Width = 90, Maximum = 100000, Minimum = 1, Value = 100 };
 
-            var lblDaBan = new Label { Text = "Đã bán ra:", Location = new Point(245, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtDaBan = new TextBox { Location = new Point(320, 65), Width = 80, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
+            var lblDaBan = new Label { Text = "Đã bán ra:", Location = new Point(250, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _txtDaBan = new TextBox { Location = new Point(335, 65), Width = 80, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
 
-            var lblConLai = new Label { Text = "Còn khả dụng:", Location = new Point(420, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _txtConLai = new TextBox { Location = new Point(515, 65), Width = 80, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
+            var lblConLai = new Label { Text = "Còn khả dụng:", Location = new Point(440, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _txtConLai = new TextBox { Location = new Point(545, 65), Width = 80, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
 
             var lblMoBan = new Label { Text = "Mở bán từ:", Location = new Point(20, 108), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _dtpMoBan = new DateTimePicker { Location = new Point(95, 105), Width = 145, Format = DateTimePickerFormat.Short };
+            _dtpMoBan = new DateTimePicker { Location = new Point(115, 105), Width = 140, Format = DateTimePickerFormat.Short };
 
-            var lblDongBan = new Label { Text = "Đến hết ngày:", Location = new Point(260, 108), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _dtpDongBan = new DateTimePicker { Location = new Point(350, 105), Width = 145, Format = DateTimePickerFormat.Short };
+            var lblDongBan = new Label { Text = "Đến hết ngày:", Location = new Point(275, 108), AutoSize = true, Font = new Font("Segoe UI", 9F) };
+            _dtpDongBan = new DateTimePicker { Location = new Point(380, 105), Width = 140, Format = DateTimePickerFormat.Short };
 
             _grpDetails.Controls.AddRange(new Control[] {
                 lblMa, _txtMa, lblEventCode, _txtMaSuKien, lblTen, _txtTen, lblGia, _nudGiaVe,
