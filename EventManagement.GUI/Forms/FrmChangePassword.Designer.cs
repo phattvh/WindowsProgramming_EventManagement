@@ -167,8 +167,8 @@
             this.Controls.Add(this.lblCurrentPassword);
             this.Controls.Add(this.lblSubHeader);
             this.Controls.Add(this.lblHeader);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            this.MaximizeBox = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FrmChangePassword";
             this.ShowInTaskbar = false;

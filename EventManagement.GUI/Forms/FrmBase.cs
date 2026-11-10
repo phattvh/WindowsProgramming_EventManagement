@@ -55,7 +55,9 @@ namespace EventManagement.GUI.Forms
             this.AutoScaleMode = AutoScaleMode.Dpi;
             this.DoubleBuffered = true;
 
-            if (this is not FrmLogin)
+            bool isDialog = this is FrmLogin || this is FrmChangePassword || this is FrmServerConfig;
+
+            if (!isDialog)
             {
                 this.MinimumSize = new Size(1024, 680);
                 this.MaximizeBox = true;
@@ -63,15 +65,30 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                this.MinimumSize = new Size(420, 345);
-                this.MaximumSize = new Size(436, 384);
                 this.MaximizeBox = false;
                 this.MinimizeBox = false;
                 this.WindowState = FormWindowState.Normal;
+                this.FormBorderStyle = FormBorderStyle.FixedDialog;
+
+                if (this is FrmLogin)
+                {
+                    this.MinimumSize = new Size(420, 345);
+                    this.MaximumSize = new Size(436, 384);
+                }
+                else if (this is FrmChangePassword)
+                {
+                    this.MinimumSize = new Size(445, 380);
+                    this.MaximumSize = new Size(460, 400);
+                }
+                else if (this is FrmServerConfig)
+                {
+                    this.MinimumSize = new Size(505, 410);
+                    this.MaximumSize = new Size(520, 430);
+                }
             }
 
-            // Tự động tắt menu điều hướng trên các hộp thoại nhỏ/đăng nhập
-            if (this is FrmLogin || this is FrmChangePassword || this is FrmServerConfig)
+            // Tu dong tat menu dieu huong tren cac hop thoai nho/dang nhap
+            if (isDialog)
             {
                 EnableGlobalNavigationMenu = false;
             }
@@ -80,7 +97,40 @@ namespace EventManagement.GUI.Forms
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            if (!DesignMode && this is not FrmLogin)
+            bool isDialog = this is FrmLogin || this is FrmChangePassword || this is FrmServerConfig;
+
+            if (isDialog)
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.MaximizeBox = false;
+                this.MinimizeBox = false;
+                this.FormBorderStyle = FormBorderStyle.FixedDialog;
+
+                if (this is FrmLogin)
+                {
+                    this.ClientSize = new Size(420, 345);
+                }
+                else if (this is FrmChangePassword)
+                {
+                    this.ClientSize = new Size(445, 380);
+                }
+                else if (this is FrmServerConfig)
+                {
+                    this.ClientSize = new Size(505, 410);
+                }
+
+                if (this.Owner != null)
+                {
+                    this.CenterToParent();
+                }
+                else
+                {
+                    this.CenterToScreen();
+                }
+                return;
+            }
+
+            if (!DesignMode)
             {
                 this.MaximizeBox = true;
                 this.FormBorderStyle = FormBorderStyle.Sizable;
@@ -92,12 +142,6 @@ namespace EventManagement.GUI.Forms
                 }
 
                 ApplyResponsiveLayout(this);
-            }
-            else if (!DesignMode && this is FrmLogin)
-            {
-                this.WindowState = FormWindowState.Normal;
-                this.ClientSize = new Size(420, 345);
-                this.CenterToScreen();
             }
         }
 

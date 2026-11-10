@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmServerConfig
     {
@@ -217,8 +217,8 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.lblServer);
             this.Controls.Add(this.lblDescription);
             this.Controls.Add(this.lblTitle);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-            this.MaximizeBox = true;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FrmServerConfig";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
