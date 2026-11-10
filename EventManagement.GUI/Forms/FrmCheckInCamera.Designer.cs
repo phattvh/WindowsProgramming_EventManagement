@@ -52,6 +52,7 @@ namespace EventManagement.GUI.Forms
             this.pnlKpi4 = new System.Windows.Forms.Panel();
             this.lblKpiTyLe = new System.Windows.Forms.Label();
             this.lblKpiTitle4 = new System.Windows.Forms.Label();
+            this.pnlSpacerKpi = new System.Windows.Forms.Panel();
             this.pnlSpacer = new System.Windows.Forms.Panel();
             this.pnlStatusBanner = new System.Windows.Forms.Panel();
             this.lblStatusDetail = new System.Windows.Forms.Label();
@@ -227,6 +228,7 @@ namespace EventManagement.GUI.Forms
             this.scMain.Panel2.Controls.Add(this.grpRecent);
             this.scMain.Panel2.Controls.Add(this.pnlSpacer);
             this.scMain.Panel2.Controls.Add(this.pnlStatusBanner);
+            this.scMain.Panel2.Controls.Add(this.pnlSpacerKpi);
             this.scMain.Panel2.Controls.Add(this.pnlKpis);
             this.scMain.Panel2.Padding = new System.Windows.Forms.Padding(12);
             this.scMain.Size = new System.Drawing.Size(1200, 572);
@@ -475,6 +477,14 @@ namespace EventManagement.GUI.Forms
             this.lblKpiTitle4.Size = new System.Drawing.Size(95, 13);
             this.lblKpiTitle4.TabIndex = 0;
             this.lblKpiTitle4.Text = "TỶ LỆ VÀO CỔNG";
+            // 
+            // pnlSpacerKpi
+            // 
+            this.pnlSpacerKpi.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSpacerKpi.Location = new System.Drawing.Point(12, 76);
+            this.pnlSpacerKpi.Name = "pnlSpacerKpi";
+            this.pnlSpacerKpi.Size = new System.Drawing.Size(712, 12);
+            this.pnlSpacerKpi.TabIndex = 4;
             // 
             // pnlSpacer
             // 
@@ -744,6 +754,7 @@ namespace EventManagement.GUI.Forms
         private System.Windows.Forms.Panel pnlKpi4;
         private System.Windows.Forms.Label lblKpiTyLe;
         private System.Windows.Forms.Label lblKpiTitle4;
+        private System.Windows.Forms.Panel pnlSpacerKpi;
         private System.Windows.Forms.Panel pnlSpacer;
         private System.Windows.Forms.Panel pnlStatusBanner;
         private System.Windows.Forms.Label lblStatusDetail;
