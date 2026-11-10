@@ -559,7 +559,7 @@
             this.btnInVe.Name = "btnInVe";
             this.btnInVe.Size = new System.Drawing.Size(160, 30);
             this.btnInVe.TabIndex = 0;
-            this.btnInVe.Text = "In Vé Điện Tử (RDLC)";
+            this.btnInVe.Text = "In vé điện tử";
             this.btnInVe.UseVisualStyleBackColor = true;
             this.btnInVe.Click += new System.EventHandler(this.btnInVe_Click);
             // 

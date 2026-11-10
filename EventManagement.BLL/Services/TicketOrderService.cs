@@ -259,9 +259,19 @@ namespace EventManagement.BLL.Services
                     string qrCode = $"EVT-QR-{Guid.NewGuid().ToString("N")[..12].ToUpper()}";
 
                     string attendeeName = request.HoTenNguoiMua;
-                    if (i > 0 && request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count >= i && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i - 1]))
+                    if (request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count == request.SoLuongMua && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i]))
                     {
+                        // Trường hợp danh sách người đi cùng bao gồm cả người mua (đầy đủ N người từ bảng nhập liệu)
+                        attendeeName = request.DanhSachNguoiDiCung[i].Trim();
+                    }
+                    else if (i > 0 && request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count >= i && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i - 1]))
+                    {
+                        // Trường hợp danh sách người đi cùng chỉ chứa các người đi kèm (N - 1 người)
                         attendeeName = request.DanhSachNguoiDiCung[i - 1].Trim();
+                    }
+                    else if (i > 0 && request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count > i && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i]))
+                    {
+                        attendeeName = request.DanhSachNguoiDiCung[i].Trim();
                     }
                     else if (i > 0)
                     {

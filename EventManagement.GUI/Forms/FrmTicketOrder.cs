@@ -54,6 +54,7 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnXacNhan, ButtonRole.Success);
             StyleButton(btnLamMoi, ButtonRole.Secondary);
             StyleButton(btnInVe, ButtonRole.Primary);
+            btnInVe.Text = "In vé điện tử";
 
             StyleDataGridView(dgvNguoiDiCung);
             StyleDataGridView(dgvIssuedTickets);
@@ -102,6 +103,8 @@ namespace EventManagement.GUI.Forms
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
+            dgvIssuedTickets.CellDoubleClick -= dgvIssuedTickets_CellDoubleClick;
+            dgvIssuedTickets.CellDoubleClick += dgvIssuedTickets_CellDoubleClick;
 
             // Anchor controls inside grpOrderInfo for full-screen layout
             cboSuKien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -497,33 +500,33 @@ namespace EventManagement.GUI.Forms
                 return;
             }
 
-            var sb = new StringBuilder();
-            sb.AppendLine("==================================================");
-            sb.AppendLine("             DANH SÁCH VÉ SỰ KIỆN");
-            sb.AppendLine($"Sự kiện: {cboSuKien.Text}");
-            sb.AppendLine($"Người mua: {txtHoTen.Text} - SĐT: {txtSoDienThoai.Text}");
-            sb.AppendLine($"Ngày xuất vé: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
-            sb.AppendLine("==================================================");
-
-            foreach (var t in _lastIssuedTickets)
+            int selectedIndex = 0;
+            if (dgvIssuedTickets.SelectedRows.Count > 0)
             {
-                sb.AppendLine($"Mã vé     : {t.MaVe}");
-                sb.AppendLine($"Họ tên    : {t.TenNguoiThamGia}");
-                sb.AppendLine($"Hạng vé   : {t.TenHangVe}");
-                sb.AppendLine($"Giá vé    : {t.GiaVe:N0} đ");
-                sb.AppendLine($"QR Token  : {t.MaQR}");
-                sb.AppendLine("--------------------------------------------------");
+                selectedIndex = dgvIssuedTickets.SelectedRows[0].Index;
             }
 
-            using (var sfd = new SaveFileDialog())
+            using var dlg = new FrmTicketPrintDialog(
+                cboSuKien.Text,
+                txtHoTen.Text.Trim(),
+                txtSoDienThoai.Text.Trim(),
+                _lastIssuedTickets,
+                selectedIndex);
+            dlg.ShowDialog(this);
+        }
+
+        private void dgvIssuedTickets_CellDoubleClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (_lastIssuedTickets == null || _lastIssuedTickets.Count == 0) return;
+            if (e.RowIndex >= 0 && e.RowIndex < _lastIssuedTickets.Count)
             {
-                sfd.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-                sfd.FileName = $"DanhSachVe_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    System.IO.File.WriteAllText(sfd.FileName, sb.ToString(), Encoding.UTF8);
-                    MessageBox.Show($"Đã lưu danh sách vé ra file thành công:\n{sfd.FileName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                using var dlg = new FrmTicketPrintDialog(
+                    cboSuKien.Text,
+                    txtHoTen.Text.Trim(),
+                    txtSoDienThoai.Text.Trim(),
+                    _lastIssuedTickets,
+                    e.RowIndex);
+                dlg.ShowDialog(this);
             }
         }
 
