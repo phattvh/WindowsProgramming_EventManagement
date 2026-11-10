@@ -1,4 +1,4 @@
-﻿namespace EventManagement.GUI.Forms
+namespace EventManagement.GUI.Forms
 {
     partial class FrmTicketOrder
     {
@@ -100,7 +100,7 @@
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(16, 9);
+            this.lblTitle.Location = new System.Drawing.Point(16, 19);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(433, 25);
             this.lblTitle.TabIndex = 0;
