@@ -52,6 +52,7 @@ namespace EventManagement.GUI.Forms
             this.pnlKpi4 = new System.Windows.Forms.Panel();
             this.lblKpiTyLe = new System.Windows.Forms.Label();
             this.lblKpiTitle4 = new System.Windows.Forms.Label();
+            this.pnlSpacer = new System.Windows.Forms.Panel();
             this.pnlStatusBanner = new System.Windows.Forms.Panel();
             this.lblStatusDetail = new System.Windows.Forms.Label();
             this.lblStatusTitle = new System.Windows.Forms.Label();
@@ -224,6 +225,7 @@ namespace EventManagement.GUI.Forms
             // scMain.Panel2
             // 
             this.scMain.Panel2.Controls.Add(this.grpRecent);
+            this.scMain.Panel2.Controls.Add(this.pnlSpacer);
             this.scMain.Panel2.Controls.Add(this.pnlStatusBanner);
             this.scMain.Panel2.Controls.Add(this.pnlKpis);
             this.scMain.Panel2.Padding = new System.Windows.Forms.Padding(12);
@@ -270,7 +272,7 @@ namespace EventManagement.GUI.Forms
             this.grpManual.Size = new System.Drawing.Size(436, 120);
             this.grpManual.TabIndex = 1;
             this.grpManual.TabStop = false;
-            this.grpManual.Text = "Nhập mã vé / Token thủ công (Dự phòng)";
+            this.grpManual.Text = "Nhập mã vé / Token thủ công";
             // 
             // lblManualHint
             // 
@@ -473,6 +475,14 @@ namespace EventManagement.GUI.Forms
             this.lblKpiTitle4.Size = new System.Drawing.Size(95, 13);
             this.lblKpiTitle4.TabIndex = 0;
             this.lblKpiTitle4.Text = "TỶ LỆ VÀO CỔNG";
+            // 
+            // pnlSpacer
+            // 
+            this.pnlSpacer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSpacer.Location = new System.Drawing.Point(12, 167);
+            this.pnlSpacer.Name = "pnlSpacer";
+            this.pnlSpacer.Size = new System.Drawing.Size(712, 12);
+            this.pnlSpacer.TabIndex = 3;
             // 
             // pnlStatusBanner
             // 
@@ -734,6 +744,7 @@ namespace EventManagement.GUI.Forms
         private System.Windows.Forms.Panel pnlKpi4;
         private System.Windows.Forms.Label lblKpiTyLe;
         private System.Windows.Forms.Label lblKpiTitle4;
+        private System.Windows.Forms.Panel pnlSpacer;
         private System.Windows.Forms.Panel pnlStatusBanner;
         private System.Windows.Forms.Label lblStatusDetail;
         private System.Windows.Forms.Label lblStatusTitle;

@@ -212,7 +212,7 @@ namespace EventManagement.GUI.Forms
                     cboCamera.SelectedIndex = 0;
                     btnBatCamera.Enabled = false;
                     btnTatCamera.Enabled = false;
-                    lblFooterStatus.Text = "Trạng thái camera: Không tìm thấy camera phần cứng. Vui lòng dùng ô nhập mã dự phòng.";
+                    lblFooterStatus.Text = "Trạng thái camera: Không tìm thấy camera phần cứng. Vui lòng dùng ô nhập mã thủ công.";
                 }
             }
             catch (Exception ex)
