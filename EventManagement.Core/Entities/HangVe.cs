@@ -23,8 +23,29 @@ namespace EventManagement.Core.Entities
         public DateTime? ThoiGianDongBan { get; set; }
 
         // Thuộc tính tiện ích tính toán tồn kho (BR-09)
-        public int SoLuongConLai => SoLuongPhatHanh - SoLuongDaBan;
+        public int SoLuongConLai => Math.Max(0, SoLuongPhatHanh - SoLuongDaBan);
         public bool ConVe => SoLuongConLai > 0;
+
+        /// <summary>
+        /// Trạng thái kho vé phục vụ hiển thị trực quan trên giao diện
+        /// </summary>
+        public string TrangThaiKho
+        {
+            get
+            {
+                if (ThoiGianDongBan.HasValue && DateTime.Now > ThoiGianDongBan.Value)
+                    return "Đã đóng bán";
+                if (ThoiGianMoBan.HasValue && DateTime.Now < ThoiGianMoBan.Value)
+                    return "Chưa mở bán";
+                if (SoLuongConLai <= 0)
+                    return "Hết vé";
+                if (SoLuongConLai <= 10)
+                    return "Sắp hết vé";
+                return "Đang mở bán";
+            }
+        }
+
+        public string TrangThai => TrangThaiKho;
 
         // Navigation properties
         public virtual SuKien? SuKien { get; set; }
