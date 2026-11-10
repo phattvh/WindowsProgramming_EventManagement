@@ -112,6 +112,14 @@ namespace EventManagement.GUI.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
+            colMaLichTrinh.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNgayDienRa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colKhungGio.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTenSuKien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            colTenTietMuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            colDiaDiemChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            colTenDienGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
             LoadAuxiliaryData();
             AdjustInputLayout();
             AdjustFilterLayout();

@@ -43,7 +43,17 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnHuy, ButtonRole.Secondary);
             StyleButton(btnLamMoi, ButtonRole.Secondary);
 
+            StyleDataGridView(dgvDiaDiem);
             dgvDiaDiem.AutoGenerateColumns = false;
+            foreach (DataGridViewColumn col in dgvDiaDiem.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            colMaDiaDiem.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSucChuaToiDa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSoSuKienToChuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSoDienThoai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
         }
 
@@ -134,6 +144,8 @@ namespace EventManagement.GUI.Forms
                     bool hasRows = dgvDiaDiem.CurrentRow != null;
                     btnSua.Enabled = hasRows;
                     btnXoa.Enabled = hasRows;
+                    btnLuu.Visible = false;
+                    btnHuy.Visible = false;
                     btnLuu.Enabled = false;
                     btnHuy.Enabled = false;
 
@@ -163,6 +175,8 @@ namespace EventManagement.GUI.Forms
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
@@ -184,6 +198,8 @@ namespace EventManagement.GUI.Forms
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
