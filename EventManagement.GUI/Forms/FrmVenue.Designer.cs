@@ -140,7 +140,7 @@
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(18, 12);
+            this.lblTitle.Location = new System.Drawing.Point(18, 15);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(306, 28);
             this.lblTitle.TabIndex = 0;
@@ -157,7 +157,7 @@
             this.pnlFilter.Controls.Add(this.txtTimKiem);
             this.pnlFilter.Controls.Add(this.lblTimKiem);
             this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlFilter.Location = new System.Drawing.Point(16, 64);
+            this.pnlFilter.Location = new System.Drawing.Point(16, 92);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(968, 48);
             this.pnlFilter.TabIndex = 1;
@@ -237,8 +237,8 @@
             dgvHeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(244)))), ((int)(((byte)(246)))));
             dgvHeaderStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             dgvHeaderStyle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            dgvHeaderStyle.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dgvHeaderStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dgvHeaderStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            dgvHeaderStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
             this.dgvDiaDiem.ColumnHeadersDefaultCellStyle = dgvHeaderStyle;
             this.dgvDiaDiem.ColumnHeadersHeight = 34;
             this.dgvDiaDiem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
@@ -266,14 +266,14 @@
 
             this.dgvDiaDiem.EnableHeadersVisualStyles = false;
             this.dgvDiaDiem.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvDiaDiem.Location = new System.Drawing.Point(16, 120);
+            this.dgvDiaDiem.Location = new System.Drawing.Point(16, 150);
             this.dgvDiaDiem.MultiSelect = false;
             this.dgvDiaDiem.Name = "dgvDiaDiem";
             this.dgvDiaDiem.ReadOnly = true;
             this.dgvDiaDiem.RowHeadersVisible = false;
             this.dgvDiaDiem.RowTemplate.Height = 30;
             this.dgvDiaDiem.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvDiaDiem.Size = new System.Drawing.Size(968, 230);
+            this.dgvDiaDiem.Size = new System.Drawing.Size(968, 200);
             this.dgvDiaDiem.TabIndex = 2;
             this.dgvDiaDiem.SelectionChanged += new System.EventHandler(this.dgvDiaDiem_SelectionChanged);
 
@@ -565,6 +565,7 @@
             this.pnlButtons.Controls.Add(this.btnXoa);
             this.pnlButtons.Controls.Add(this.btnSua);
             this.pnlButtons.Controls.Add(this.btnThem);
+            this.pnlButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlButtons.Location = new System.Drawing.Point(16, 545);
             this.pnlButtons.Name = "pnlButtons";
             this.pnlButtons.Size = new System.Drawing.Size(968, 56);
@@ -610,7 +611,8 @@
             // btnLuu
             // 
             this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnLuu.Location = new System.Drawing.Point(670, 10);
+            this.btnLuu.Location = new System.Drawing.Point(358, 10);
+            this.btnLuu.Visible = false;
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(130, 36);
             this.btnLuu.TabIndex = 3;
@@ -622,7 +624,8 @@
             // btnHuy
             // 
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnHuy.Location = new System.Drawing.Point(815, 10);
+            this.btnHuy.Location = new System.Drawing.Point(468, 10);
+            this.btnHuy.Visible = false;
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(130, 36);
             this.btnHuy.TabIndex = 4;

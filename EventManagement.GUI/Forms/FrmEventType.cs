@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -42,7 +42,34 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnHuy, ButtonRole.Secondary);
             StyleButton(btnLamMoi, ButtonRole.Secondary);
 
+            StyleDataGridView(dgvLoaiSuKien);
             dgvLoaiSuKien.AutoGenerateColumns = false;
+            foreach (DataGridViewColumn col in dgvLoaiSuKien.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            colMaLoaiSK.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSoSuKien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Bố trí thanh lọc và bảng không bị đè bởi Header
+            pnlFilter.Top = pnlHeader.Bottom + 10;
+            dgvLoaiSuKien.Top = pnlFilter.Bottom + 10;
+            if (pnlButtons != null)
+            {
+                dgvLoaiSuKien.Height = Math.Max(120, pnlButtons.Top - 10 - dgvLoaiSuKien.Top);
+            }
+
+            // Tối ưu độ rộng cột để không bị cắt cụt mô tả
+            colMaLoaiSK.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colMaLoaiSK.Width = 100;
+            colTenLoaiSK.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colTenLoaiSK.Width = 220;
+            colSoSuKien.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colSoSuKien.Width = 100;
+            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colTrangThai.Width = 120;
+            colMoTa.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
         }
 
@@ -122,6 +149,8 @@ namespace EventManagement.GUI.Forms
                     bool hasRows = dgvLoaiSuKien.CurrentRow != null;
                     btnSua.Enabled = hasRows;
                     btnXoa.Enabled = hasRows;
+                    btnLuu.Visible = false;
+                    btnHuy.Visible = false;
                     btnLuu.Enabled = false;
                     btnHuy.Enabled = false;
 
@@ -147,6 +176,8 @@ namespace EventManagement.GUI.Forms
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 
@@ -164,6 +195,8 @@ namespace EventManagement.GUI.Forms
                     btnThem.Enabled = false;
                     btnSua.Enabled = false;
                     btnXoa.Enabled = false;
+                    btnLuu.Visible = true;
+                    btnHuy.Visible = true;
                     btnLuu.Enabled = true;
                     btnHuy.Enabled = true;
 

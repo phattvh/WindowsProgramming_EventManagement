@@ -51,6 +51,7 @@ namespace EventManagement.GUI.Forms
         private List<FeedbackDto> _feedbackCache = new();
 
         private Button? btnMoF09;
+        private Button? btnMoF12;
         private Label? lblTab2Footer;
         private Label? lblTab3Footer;
         private Label? lblTab4Footer;
@@ -141,7 +142,7 @@ namespace EventManagement.GUI.Forms
             };
             pnl.Controls.Add(lblFooter);
             tab.Controls.Add(pnl);
-            pnl.BringToFront();
+            pnl.SendToBack();
             return pnl;
         }
 
@@ -240,6 +241,19 @@ namespace EventManagement.GUI.Forms
             this.Text = "Hệ Thống Quản Lý Sự Kiện";
             lblTitle.Text = "CHI TIẾT SỰ KIỆN";
             lblSubtitle.Visible = false;
+            lblTitle.Location = new Point(16, 19);
+
+            tabMain.SizeMode = TabSizeMode.Normal;
+            tabMain.Padding = new Point(14, 8);
+
+            lblTab2Header.UseMnemonic = false;
+            lblTab3Header.UseMnemonic = false;
+            lblTab4Header.UseMnemonic = false;
+            lblTab5Header.UseMnemonic = false;
+            lblTab6Header.UseMnemonic = false;
+            lblTab7Header.UseMnemonic = false;
+            lblTab8Header.UseMnemonic = false;
+            lblTab9Header.UseMnemonic = false;
 
             // Button Roles & Styling
             StyleButton(btnSuaThongTin, ButtonRole.Primary);
@@ -281,6 +295,22 @@ namespace EventManagement.GUI.Forms
                 pnlTab3Toolbar.Controls.Add(btnMoF09);
             }
 
+            // Tab 5 Button
+            if (btnMoF12 == null)
+            {
+                btnMoF12 = new Button
+                {
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                    Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold),
+                    Location = new Point(pnlTab5Toolbar.Width - 190, 5),
+                    Size = new Size(180, 34),
+                    Text = "Quản lý hạng vé"
+                };
+                StyleButton(btnMoF12, ButtonRole.Primary);
+                btnMoF12.Click += (s, e) => OpenTicketTierForm();
+                pnlTab5Toolbar.Controls.Add(btnMoF12);
+            }
+
             // Create Footers
             if (lblTab2Footer == null) CreateTabFooter(tabLichTrinh, out lblTab2Footer);
             if (lblTab3Footer == null) CreateTabFooter(tabDienGia, out lblTab3Footer);
@@ -291,21 +321,36 @@ namespace EventManagement.GUI.Forms
             if (lblTab8Footer == null) CreateTabFooter(tabChiPhi, out lblTab8Footer);
             if (lblTab9Footer == null) CreateTabFooter(tabDanhGia, out lblTab9Footer);
 
-            // Send DataGridViews to back so Dock.Bottom footers take effect cleanly
-            dgvLichTrinh.SendToBack();
-            dgvDienGia.SendToBack();
-            dgvNguoiThamGia.SendToBack();
-            dgvHangVe.SendToBack();
-            dgvNhanSu.SendToBack();
-            dgvTaiTro.SendToBack();
-            dgvChiPhi.SendToBack();
-            dgvDanhGia.SendToBack();
+            // Send toolbars and footers to back so they dock to Top/Bottom edges first
+            pnlTab2Toolbar.SendToBack();
+            pnlTab3Toolbar.SendToBack();
+            pnlTab4Toolbar.SendToBack();
+            pnlTab5Toolbar.SendToBack();
+            pnlTab6Toolbar.SendToBack();
+            pnlTab7Toolbar.SendToBack();
+            pnlTab8Toolbar.SendToBack();
+            pnlTab9Toolbar.SendToBack();
+
+            // Bring DataGridViews to front so Dock.Fill occupies only the space between Top toolbar and Bottom footer
+            dgvLichTrinh.BringToFront();
+            dgvDienGia.BringToFront();
+            dgvNguoiThamGia.BringToFront();
+            dgvHangVe.BringToFront();
+            dgvNhanSu.BringToFront();
+            dgvTaiTro.BringToFront();
+            dgvChiPhi.BringToFront();
+            dgvDanhGia.BringToFront();
 
             // Style all 8 DataGridViews
             DataGridView[] allGrids = { dgvLichTrinh, dgvDienGia, dgvNguoiThamGia, dgvHangVe, dgvNhanSu, dgvTaiTro, dgvChiPhi, dgvDanhGia };
             foreach (var dgv in allGrids)
             {
+                dgv.AutoGenerateColumns = false;
                 StyleDataGridView(dgv);
+                dgv.EnableHeadersVisualStyles = false;
+                dgv.ColumnHeadersHeight = 36;
+                dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+                dgv.RowHeadersVisible = false;
                 dgv.EnableHeadersVisualStyles = false;
                 dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 foreach (DataGridViewColumn col in dgv.Columns)
@@ -845,6 +890,7 @@ namespace EventManagement.GUI.Forms
         {
             var res = _scheduleService.GetAll(maSuKien: maSuKien);
             _scheduleCache = res.IsSuccess && res.Data != null ? res.Data : new List<ScheduleItemDto>();
+            dgvLichTrinh.AutoGenerateColumns = false;
             dgvLichTrinh.DataSource = null;
             dgvLichTrinh.DataSource = _scheduleCache;
             lblTab2Header.Text = "DANH SÁCH CÁC TIẾT MỤC / NỘI DUNG CHƯƠNG TRÌNH SỰ KIỆN";
@@ -883,6 +929,7 @@ namespace EventManagement.GUI.Forms
                 _speakerCache = allSpeakers.Take(5).ToList();
             }
 
+            dgvDienGia.AutoGenerateColumns = false;
             dgvDienGia.DataSource = null;
             dgvDienGia.DataSource = _speakerCache;
             lblTab3Header.Text = "DANH SÁCH DIỄN GIẢ & KHÁCH MỜI THAM GIA";
@@ -920,6 +967,7 @@ namespace EventManagement.GUI.Forms
                 ).ToList();
             }
 
+            dgvNguoiThamGia.AutoGenerateColumns = false;
             dgvNguoiThamGia.DataSource = null;
             dgvNguoiThamGia.DataSource = filtered;
             lblTab4Header.Text = "DANH SÁCH ĐĂNG KÝ VÉ & TÌNH TRẠNG THAM DỰ";
@@ -947,6 +995,7 @@ namespace EventManagement.GUI.Forms
                 DoanhThuFormatted = (t.SoLuongDaBan * t.GiaVe).ToString("#,##0") + " VNĐ"
             }).ToList();
 
+            dgvHangVe.AutoGenerateColumns = false;
             dgvHangVe.DataSource = null;
             dgvHangVe.DataSource = viewItems;
             lblTab5Header.Text = "CƠ CẤU HẠNG VÉ, GIÁ PHÁT HÀNH & TỒN KHO";
@@ -962,6 +1011,7 @@ namespace EventManagement.GUI.Forms
         {
             var res = _staffAssignmentService.GetAll(maSuKien: maSuKien);
             _staffAssignmentsCache = res.IsSuccess && res.Data != null ? res.Data : new List<StaffAssignmentDto>();
+            dgvNhanSu.AutoGenerateColumns = false;
             dgvNhanSu.DataSource = null;
             dgvNhanSu.DataSource = _staffAssignmentsCache;
             lblTab6Header.Text = "DANH SÁCH NHÂN SỰ & CA TRỰC";
@@ -984,6 +1034,7 @@ namespace EventManagement.GUI.Forms
         {
             var res = _sponsorService.GetAll();
             _sponsorsCache = res.IsSuccess && res.Data != null ? res.Data : new List<SponsorDto>();
+            dgvTaiTro.AutoGenerateColumns = false;
             dgvTaiTro.DataSource = null;
             dgvTaiTro.DataSource = _sponsorsCache;
             lblTab7Header.Text = "DANH SÁCH NHÀ TÀI TRỢ & ĐỐI TÁC";
@@ -1018,6 +1069,7 @@ namespace EventManagement.GUI.Forms
                 x.DienGiai
             }).ToList();
 
+            dgvChiPhi.AutoGenerateColumns = false;
             dgvChiPhi.DataSource = null;
             dgvChiPhi.DataSource = viewExpenses;
 
@@ -1076,6 +1128,7 @@ namespace EventManagement.GUI.Forms
                 f.NoiDungPhanHoi
             }).ToList();
 
+            dgvDanhGia.AutoGenerateColumns = false;
             dgvDanhGia.DataSource = null;
             dgvDanhGia.DataSource = viewFeedback;
 
