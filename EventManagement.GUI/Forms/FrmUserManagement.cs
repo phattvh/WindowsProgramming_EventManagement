@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -23,6 +23,8 @@ namespace EventManagement.GUI.Forms
         private FormMode _currentMode = FormMode.View;
         private List<UserDto> _currentList = new();
         private UserDto? _selectedUser;
+        private bool _isInitializing = true;
+        private bool _isLoading = false;
 
         public Button BtnThem => btnThem;
         public Button BtnSua => btnSua;
@@ -72,12 +74,20 @@ namespace EventManagement.GUI.Forms
             btnMoKhoa.Tag = "UC03";
             PermissionHelper.ApplyAuthorization(pnlButtons, hideInsteadOfDisable: false);
 
-            cboLocNhomQuyen.SelectedIndex = 0; // "Tất cả"
-            cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
-            cboNhomQuyen.SelectedIndex = 2;    // "STAFF"
-            cboTrangThai.SelectedIndex = 0;    // "Hoạt động"
+            _isInitializing = true;
+            try
+            {
+                cboLocNhomQuyen.SelectedIndex = 0; // "Tất cả"
+                cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
+                cboNhomQuyen.SelectedIndex = 2;    // "STAFF"
+                cboTrangThai.SelectedIndex = 0;    // "Hoạt động"
 
-            LayoutDetailGroup();
+                LayoutDetailGroup();
+            }
+            finally
+            {
+                _isInitializing = false;
+            }
             await LoadDataAsync();
             SetFormState(FormMode.View);
         }
@@ -131,6 +141,8 @@ namespace EventManagement.GUI.Forms
 
         public async Task LoadDataAsync()
         {
+            if (_isLoading) return;
+            _isLoading = true;
             string? keyword = txtTimKiem.Text.Trim();
             string? roleFilter = cboLocNhomQuyen.SelectedItem?.ToString();
             string? statusFilter = cboLocTrangThai.SelectedItem?.ToString();
@@ -156,6 +168,10 @@ namespace EventManagement.GUI.Forms
             catch (Exception ex)
             {
                 MessageBox.Show("Không thể tải danh sách tài khoản người dùng. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            finally
+            {
+                _isLoading = false;
             }
         }
 
@@ -494,6 +510,7 @@ namespace EventManagement.GUI.Forms
 
         private async void Filter_Changed(object sender, EventArgs e)
         {
+            if (_isInitializing) return;
             await LoadDataAsync();
         }
 
@@ -504,9 +521,17 @@ namespace EventManagement.GUI.Forms
 
         private async void btnLamMoi_Click(object sender, EventArgs e)
         {
-            txtTimKiem.Text = string.Empty;
-            cboLocNhomQuyen.SelectedIndex = 0;
-            cboLocTrangThai.SelectedIndex = 0;
+            _isInitializing = true;
+            try
+            {
+                txtTimKiem.Text = string.Empty;
+                cboLocNhomQuyen.SelectedIndex = 0;
+                cboLocTrangThai.SelectedIndex = 0;
+            }
+            finally
+            {
+                _isInitializing = false;
+            }
             await LoadDataAsync();
         }
 
