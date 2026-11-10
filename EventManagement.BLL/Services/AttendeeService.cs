@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using EventManagement.Core.Common;
+using EventManagement.Core.DTOs;
 using EventManagement.Core.Entities;
 
 namespace EventManagement.BLL.Services
@@ -104,6 +105,113 @@ namespace EventManagement.BLL.Services
             }
 
             return $"NTG{(maxNumber + 1):D3}";
+        }
+
+        /// <summary>
+        /// Tra cứu lịch sử đăng ký vé và tham gia sự kiện của một cá nhân
+        /// </summary>
+        public List<AttendeeEventHistoryDto> GetAttendeeEventHistory(string maNguoiThamGia)
+        {
+            if (string.IsNullOrWhiteSpace(maNguoiThamGia))
+                return new List<AttendeeEventHistoryDto>();
+
+            var historyData = new Dictionary<string, List<AttendeeEventHistoryDto>>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["NTG001"] = new List<AttendeeEventHistoryDto>
+                {
+                    new AttendeeEventHistoryDto
+                    {
+                        MaSuKien = "EVT202601",
+                        TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
+                        TenHangVe = "Vé VIP (Full-access)",
+                        NgayDangKy = new DateTime(2026, 11, 2, 9, 30, 0),
+                        SoLuong = 1,
+                        TongTien = 800000m,
+                        TrangThaiThanhToan = "Đã thanh toán",
+                        TrangThaiCheckIn = "Đã check-in",
+                        ThoiGianCheckIn = new DateTime(2026, 11, 2, 8, 15, 0)
+                    },
+                    new AttendeeEventHistoryDto
+                    {
+                        MaSuKien = "EVT202602",
+                        TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
+                        TenHangVe = "Vé Workshop Tiêu chuẩn",
+                        NgayDangKy = new DateTime(2026, 11, 5, 14, 10, 0),
+                        SoLuong = 1,
+                        TongTien = 500000m,
+                        TrangThaiThanhToan = "Đã thanh toán",
+                        TrangThaiCheckIn = "Chưa check-in",
+                        ThoiGianCheckIn = null
+                    }
+                },
+                ["NTG002"] = new List<AttendeeEventHistoryDto>
+                {
+                    new AttendeeEventHistoryDto
+                    {
+                        MaSuKien = "EVT202601",
+                        TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
+                        TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                        NgayDangKy = new DateTime(2026, 11, 3, 10, 0, 0),
+                        SoLuong = 2,
+                        TongTien = 400000m,
+                        TrangThaiThanhToan = "Đã thanh toán",
+                        TrangThaiCheckIn = "Đã check-in",
+                        ThoiGianCheckIn = new DateTime(2026, 11, 3, 8, 45, 0)
+                    }
+                },
+                ["NTG003"] = new List<AttendeeEventHistoryDto>
+                {
+                    new AttendeeEventHistoryDto
+                    {
+                        MaSuKien = "EVT202603",
+                        TenSuKien = "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT",
+                        TenHangVe = "Vé Đại biểu Khoa học",
+                        NgayDangKy = new DateTime(2026, 11, 1, 8, 0, 0),
+                        SoLuong = 1,
+                        TongTien = 150000m,
+                        TrangThaiThanhToan = "Đã thanh toán",
+                        TrangThaiCheckIn = "Đã check-in",
+                        ThoiGianCheckIn = new DateTime(2026, 11, 1, 7, 55, 0)
+                    }
+                },
+                ["NTG004"] = new List<AttendeeEventHistoryDto>
+                {
+                    new AttendeeEventHistoryDto
+                    {
+                        MaSuKien = "EVT202602",
+                        TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
+                        TenHangVe = "Vé Workshop Tiêu chuẩn",
+                        NgayDangKy = new DateTime(2026, 11, 6, 16, 20, 0),
+                        SoLuong = 1,
+                        TongTien = 500000m,
+                        TrangThaiThanhToan = "Đã thanh toán",
+                        TrangThaiCheckIn = "Chưa check-in",
+                        ThoiGianCheckIn = null
+                    }
+                },
+                ["NTG005"] = new List<AttendeeEventHistoryDto>
+                {
+                    new AttendeeEventHistoryDto
+                    {
+                        MaSuKien = "EVT202601",
+                        TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
+                        TenHangVe = "Vé VIP (Full-access)",
+                        NgayDangKy = new DateTime(2026, 11, 4, 11, 15, 0),
+                        SoLuong = 1,
+                        TongTien = 800000m,
+                        TrangThaiThanhToan = "Đã thanh toán",
+                        TrangThaiCheckIn = "Đã check-in",
+                        ThoiGianCheckIn = new DateTime(2026, 11, 4, 8, 30, 0)
+                    }
+                }
+            };
+
+            if (historyData.TryGetValue(maNguoiThamGia.Trim(), out var list))
+            {
+                return list;
+            }
+
+            return new List<AttendeeEventHistoryDto>();
         }
     }
 }
