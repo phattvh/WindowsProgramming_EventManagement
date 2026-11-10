@@ -190,7 +190,7 @@ namespace EventManagement.DAL
         /// </summary>
         public static DbContextOptions<AppDbContext> CreateDefaultOptions(string? connectionString = null)
         {
-            var connStr = string.IsNullOrWhiteSpace(connectionString) ? GetConnectionString() : connectionString;
+            var connStr = string.IsNullOrWhiteSpace(connectionString) ? GetEffectiveConnectionString() : connectionString;
             return new DbContextOptionsBuilder<AppDbContext>()
                 .UseSqlServer(connStr)
                 .Options;
