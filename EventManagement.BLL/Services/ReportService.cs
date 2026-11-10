@@ -227,7 +227,8 @@ namespace EventManagement.BLL.Services
             int stt = 1;
             foreach (var cp in settlement.DanhSachChiPhi)
             {
-                sb.AppendLine($"{stt++};{cp.MaChiPhi};\"{cp.KhoanMucChi}\";\"{cp.DienGiai}\";{cp.NgayChi:dd/MM/yyyy};\"{cp.NguoiLapPhieu}\";{cp.SoTien:N0}");
+                string nguoiChi = !string.IsNullOrWhiteSpace(cp.TenNguoiLapPhieu) ? $"{cp.NguoiLapPhieu} - {cp.TenNguoiLapPhieu}" : cp.NguoiLapPhieu;
+                sb.AppendLine($"{stt++};{cp.MaChiPhi};\"{cp.KhoanMucChi}\";\"{cp.DienGiai}\";{cp.NgayChi:dd/MM/yyyy};\"{nguoiChi}\";{cp.SoTien:N0}");
             }
             sb.AppendLine($"TỔNG THỰC CHI (B);;;;;;{settlement.TongThucChi:N0}");
             sb.AppendLine();

@@ -203,7 +203,7 @@ namespace EventManagement.GUI.Forms
                         chiPhi.KhoanMucChi,
                         chiPhi.DienGiai ?? "",
                         chiPhi.NgayChi.ToString("dd/MM/yyyy"),
-                        chiPhi.NguoiLapPhieu,
+                        (!string.IsNullOrWhiteSpace(chiPhi.TenNguoiLapPhieu) ? $"{chiPhi.NguoiLapPhieu} - {chiPhi.TenNguoiLapPhieu}" : chiPhi.NguoiLapPhieu),
                         chiPhi.SoTien.ToString("#,##0") + " VNĐ",
                         chiPhi.TrangThai ?? ""
                     );
@@ -234,14 +234,14 @@ namespace EventManagement.GUI.Forms
         private void SetupSettlementGridColumns()
         {
             dgvReportData.Columns.Clear();
-            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45, MinimumWidth = 45 };
-            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã chi phí", Width = 95, MinimumWidth = 90 };
-            var colKhoanMuc = new DataGridViewTextBoxColumn { HeaderText = "Khoản mục chi", Width = 300, MinimumWidth = 240, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 115 };
-            var colNoiDung = new DataGridViewTextBoxColumn { HeaderText = "Nội dung", Width = 260, MinimumWidth = 180, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 85 };
-            var colNgay = new DataGridViewTextBoxColumn { HeaderText = "Ngày chi", Width = 100, MinimumWidth = 95 };
-            var colNguoi = new DataGridViewTextBoxColumn { HeaderText = "Người chi", Width = 95, MinimumWidth = 85 };
-            var colTien = new DataGridViewTextBoxColumn { HeaderText = "Số tiền", Width = 135, MinimumWidth = 120 };
-            var colTrangThai = new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", Width = 105, MinimumWidth = 95 };
+            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 40, MinimumWidth = 38 };
+            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã chi phí", Width = 80, MinimumWidth = 75 };
+            var colKhoanMuc = new DataGridViewTextBoxColumn { HeaderText = "Khoản mục chi", Width = 320, MinimumWidth = 260, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 115 };
+            var colNoiDung = new DataGridViewTextBoxColumn { HeaderText = "Nội dung", Width = 280, MinimumWidth = 220, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 95 };
+            var colNgay = new DataGridViewTextBoxColumn { HeaderText = "Ngày chi", Width = 90, MinimumWidth = 85 };
+            var colNguoi = new DataGridViewTextBoxColumn { HeaderText = "Người chi", Width = 190, MinimumWidth = 160 };
+            var colTien = new DataGridViewTextBoxColumn { HeaderText = "Số tiền", Width = 125, MinimumWidth = 110 };
+            var colTrangThai = new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", Width = 85, MinimumWidth = 80 };
 
             dgvReportData.Columns.AddRange(colStt, colMa, colKhoanMuc, colNoiDung, colNgay, colNguoi, colTien, colTrangThai);
 
@@ -252,7 +252,7 @@ namespace EventManagement.GUI.Forms
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
+            colNguoi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             colNgay.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -301,7 +301,7 @@ namespace EventManagement.GUI.Forms
         private void SetupTicketGridColumns()
         {
             dgvReportData.Columns.Clear();
-            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45, MinimumWidth = 45 };
+            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 40, MinimumWidth = 38 };
             var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã vé", Width = 95, MinimumWidth = 90 };
             var colSuKien = new DataGridViewTextBoxColumn { HeaderText = "Tên sự kiện", Width = 260, MinimumWidth = 200, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 110 };
             var colHangVe = new DataGridViewTextBoxColumn { HeaderText = "Hạng vé", Width = 110, MinimumWidth = 95 };
@@ -320,6 +320,7 @@ namespace EventManagement.GUI.Forms
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNguoiThamGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             colHangVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDonGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
@@ -386,7 +387,7 @@ namespace EventManagement.GUI.Forms
         private void SetupKpiGridColumns()
         {
             dgvReportData.Columns.Clear();
-            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45, MinimumWidth = 45 };
+            var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 40, MinimumWidth = 38 };
             var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã SK", Width = 80 };
             var colSuKien = new DataGridViewTextBoxColumn { HeaderText = "Tên sự kiện", Width = 260, MinimumWidth = 200, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 110 };
             var colDiaDiem = new DataGridViewTextBoxColumn { HeaderText = "Địa điểm", Width = 180, MinimumWidth = 150, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 85 };
@@ -407,7 +408,6 @@ namespace EventManagement.GUI.Forms
 
             colStt.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
             colBatDau.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colPhatHanh.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colDaBan.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
