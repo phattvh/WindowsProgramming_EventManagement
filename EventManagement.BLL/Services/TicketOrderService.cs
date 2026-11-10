@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using EventManagement.Core.Common;
@@ -136,7 +136,7 @@ namespace EventManagement.BLL.Services
 
             if (list.Count == 0)
             {
-                list.Add(new TicketTierSummaryDto
+                var fallbackTier = new TicketTierSummaryDto
                 {
                     MaHangVe = "HV-" + maSuKien.Trim(),
                     MaSuKien = maSuKien.Trim(),
@@ -144,7 +144,12 @@ namespace EventManagement.BLL.Services
                     GiaVe = 250000m,
                     SoLuongPhatHanh = 500,
                     SoLuongDaBan = 0
-                });
+                };
+                lock (_syncLock)
+                {
+                    _ticketTiers.Add(fallbackTier);
+                }
+                list.Add(fallbackTier);
             }
 
             return list;

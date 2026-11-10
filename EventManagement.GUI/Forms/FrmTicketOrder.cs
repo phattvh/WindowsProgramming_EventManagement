@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -58,25 +58,50 @@ namespace EventManagement.GUI.Forms
             StyleDataGridView(dgvNguoiDiCung);
             StyleDataGridView(dgvIssuedTickets);
 
+            // Bảng danh sách người sử dụng vé: Căn giữa tiêu đề và cột STT
+            dgvNguoiDiCung.EnableHeadersVisualStyles = false;
+            dgvNguoiDiCung.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colSTT.HeaderText = "STT";
+            colSTT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTenNguoiThamDu.HeaderText = "Họ và tên người sử dụng vé";
             foreach (DataGridViewColumn col in dgvNguoiDiCung.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
-            foreach (DataGridViewColumn col in dgvIssuedTickets.Columns)
-            {
-                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            }
-
+            // Bảng danh sách vé điện tử: Căn giữa toàn bộ tiêu đề cột, chỉ viết hoa chữ cái đầu
+            dgvIssuedTickets.EnableHeadersVisualStyles = false;
+            dgvIssuedTickets.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvIssuedTickets.AutoGenerateColumns = false;
             dgvIssuedTickets.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            colMaVe.FillWeight = 12;
+
+            colMaVe.HeaderText = "Mã vé";
+            colMaVe.FillWeight = 14;
+            colMaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            colAttendeeName.HeaderText = "Người tham gia";
             colAttendeeName.FillWeight = 24;
-            colMaQR.FillWeight = 32;
+            colAttendeeName.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+            colMaQR.HeaderText = "Mã QR (token)";
+            colMaQR.FillWeight = 30;
+            colMaQR.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            colHangVeName.HeaderText = "Hạng vé";
             colHangVeName.FillWeight = 16;
+            colHangVeName.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            colGiaVe.HeaderText = "Đơn giá (VNĐ)";
             colGiaVe.FillWeight = 16;
             colGiaVe.DefaultCellStyle.Format = "N0";
             colGiaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+
+            foreach (DataGridViewColumn col in dgvIssuedTickets.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
 
             // Anchor controls inside grpOrderInfo for full-screen layout
             cboSuKien.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -109,7 +134,7 @@ namespace EventManagement.GUI.Forms
             if (cboSuKien.Items.Count > 0)
             {
                 cboSuKien.SelectedIndex = 0;
-                string maSuKien = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+                string maSuKien = GetSelectedEventCode();
                 if (!string.IsNullOrEmpty(maSuKien))
                 {
                     LoadTicketTiers(maSuKien);
@@ -120,15 +145,29 @@ namespace EventManagement.GUI.Forms
             RecalculateTotal();
         }
 
+        private string GetSelectedEventCode()
+        {
+            if (cboSuKien.SelectedItem is EventLookupItem item)
+            {
+                return item.MaSuKien;
+            }
+            if (cboSuKien.SelectedValue is string code && !string.IsNullOrEmpty(code))
+            {
+                return code;
+            }
+            return string.Empty;
+        }
+
         private void LoadEvents()
         {
             try
             {
-                _events = _ticketOrderService.GetAvailableEvents();
+                var eventTuples = _ticketOrderService.GetAvailableEvents();
+                var items = eventTuples.Select(e => new EventLookupItem(e.MaSuKien, e.TenSuKien)).ToList();
                 cboSuKien.DataSource = null;
-                cboSuKien.DisplayMember = "TenSuKien";
-                cboSuKien.ValueMember = "MaSuKien";
-                cboSuKien.DataSource = _events;
+                cboSuKien.DisplayMember = nameof(EventLookupItem.TenSuKien);
+                cboSuKien.ValueMember = nameof(EventLookupItem.MaSuKien);
+                cboSuKien.DataSource = items;
             }
             catch (Exception ex)
             {
@@ -138,10 +177,13 @@ namespace EventManagement.GUI.Forms
 
         private void cboSuKien_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_isLoading || cboSuKien.SelectedValue == null) return;
+            if (_isLoading) return;
 
-            string maSuKien = cboSuKien.SelectedValue.ToString() ?? string.Empty;
-            LoadTicketTiers(maSuKien);
+            string maSuKien = GetSelectedEventCode();
+            if (!string.IsNullOrEmpty(maSuKien))
+            {
+                LoadTicketTiers(maSuKien);
+            }
         }
 
         private void LoadTicketTiers(string maSuKien)
@@ -279,7 +321,7 @@ namespace EventManagement.GUI.Forms
             errorProvider.Clear();
             bool isValid = true;
 
-            if (cboSuKien.SelectedValue == null)
+            if (string.IsNullOrEmpty(GetSelectedEventCode()))
             {
                 errorProvider.SetError(cboSuKien, "Vui lòng chọn sự kiện.");
                 isValid = false;
@@ -329,9 +371,10 @@ namespace EventManagement.GUI.Forms
             }
 
             var tier = GetSelectedTier();
-            if (tier == null || cboSuKien.SelectedValue == null) return;
+            string maSuKien = GetSelectedEventCode();
+            if (tier == null || string.IsNullOrEmpty(maSuKien)) return;
 
-            string maSuKien = cboSuKien.SelectedValue.ToString() ?? string.Empty;
+            // maSuKien already obtained
             string maHangVe = tier.MaHangVe;
             int qty = (int)nudSoLuong.Value;
 
@@ -438,7 +481,7 @@ namespace EventManagement.GUI.Forms
 
             if (cboSuKien.SelectedValue != null)
             {
-                LoadTicketTiers(cboSuKien.SelectedValue.ToString() ?? string.Empty);
+                LoadTicketTiers(GetSelectedEventCode());
             }
 
             SyncAttendeeGridRows(1);
@@ -503,5 +546,24 @@ namespace EventManagement.GUI.Forms
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+    }
+
+    /// <summary>
+    /// Lớp bọc DTO dữ liệu nguồn cho ComboBox Sự kiện (WinForms ComboBox data binding yêu cầu property).
+    /// </summary>
+    public class EventLookupItem
+    {
+        public string MaSuKien { get; set; } = string.Empty;
+        public string TenSuKien { get; set; } = string.Empty;
+
+        public EventLookupItem() { }
+
+        public EventLookupItem(string maSuKien, string tenSuKien)
+        {
+            MaSuKien = maSuKien;
+            TenSuKien = tenSuKien;
+        }
+
+        public override string ToString() => TenSuKien;
     }
 }
