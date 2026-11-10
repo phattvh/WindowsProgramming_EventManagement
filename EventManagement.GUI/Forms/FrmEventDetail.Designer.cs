@@ -457,7 +457,7 @@ namespace EventManagement.GUI.Forms
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new Font("Segoe UI", 13.5F, FontStyle.Bold);
             this.lblTitle.ForeColor = Color.White;
-            this.lblTitle.Location = new Point(16, 10);
+            this.lblTitle.Location = new Point(16, 19);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new Size(420, 25);
             this.lblTitle.TabIndex = 0;
@@ -681,12 +681,12 @@ namespace EventManagement.GUI.Forms
             this.tabMain.Controls.Add(this.tabDanhGia);
             this.tabMain.Dock = DockStyle.Fill;
             this.tabMain.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-            this.tabMain.ItemSize = new Size(132, 34);
+            this.tabMain.Padding = new Point(14, 8);
             this.tabMain.Location = new Point(0, 134);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
             this.tabMain.Size = new Size(1244, 654);
-            this.tabMain.SizeMode = TabSizeMode.Fixed;
+            this.tabMain.SizeMode = TabSizeMode.Normal;
             this.tabMain.TabIndex = 2;
 
             // ------------------------------------------
@@ -1027,6 +1027,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab2Header.Size = new Size(420, 19);
             this.lblTab2Header.TabIndex = 0;
             this.lblTab2Header.Text = "DANH SÁCH CÁC TIẾT MỤC / NỘI DUNG CHƯƠNG TRÌNH SỰ KIỆN";
+            this.lblTab2Header.UseMnemonic = false;
 
             this.btnMoF08.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
             this.btnMoF08.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
@@ -1047,6 +1048,11 @@ namespace EventManagement.GUI.Forms
                 this.colLT_Phong,
                 this.colLT_GhiChu
             });
+            this.dgvLichTrinh.AutoGenerateColumns = false;
+            this.dgvLichTrinh.ColumnHeadersHeight = 36;
+            this.dgvLichTrinh.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvLichTrinh.EnableHeadersVisualStyles = false;
+            this.dgvLichTrinh.RowHeadersVisible = false;
             this.dgvLichTrinh.Dock = DockStyle.Fill;
             this.dgvLichTrinh.Location = new Point(12, 57);
             this.dgvLichTrinh.Name = "dgvLichTrinh";
@@ -1116,6 +1122,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab3Header.Size = new Size(390, 19);
             this.lblTab3Header.TabIndex = 0;
             this.lblTab3Header.Text = "DANH SÁCH DIỄN GIẢ & KHÁCH MỜI THAM GIA CHIA SẺ";
+            this.lblTab3Header.UseMnemonic = false;
 
             this.dgvDienGia.Columns.AddRange(new DataGridViewColumn[] {
                 this.colDG_Ma,
@@ -1127,6 +1134,11 @@ namespace EventManagement.GUI.Forms
                 this.colDG_TietMuc,
                 this.colDG_TrangThai
             });
+            this.dgvDienGia.AutoGenerateColumns = false;
+            this.dgvDienGia.ColumnHeadersHeight = 36;
+            this.dgvDienGia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvDienGia.EnableHeadersVisualStyles = false;
+            this.dgvDienGia.RowHeadersVisible = false;
             this.dgvDienGia.Dock = DockStyle.Fill;
             this.dgvDienGia.Location = new Point(12, 57);
             this.dgvDienGia.Name = "dgvDienGia";
@@ -1203,6 +1215,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab4Header.Size = new Size(400, 19);
             this.lblTab4Header.TabIndex = 0;
             this.lblTab4Header.Text = "DANH SÁCH ĐĂNG KÝ VÉ & TÌNH TRẠNG NGƯỜI THAM GIA";
+            this.lblTab4Header.UseMnemonic = false;
 
             this.lblTimNguoiThamGia.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
             this.lblTimNguoiThamGia.AutoSize = true;
@@ -1231,6 +1244,11 @@ namespace EventManagement.GUI.Forms
                 this.colNTG_NgayDangKy,
                 this.colNTG_TrangThai
             });
+            this.dgvNguoiThamGia.AutoGenerateColumns = false;
+            this.dgvNguoiThamGia.ColumnHeadersHeight = 36;
+            this.dgvNguoiThamGia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvNguoiThamGia.EnableHeadersVisualStyles = false;
+            this.dgvNguoiThamGia.RowHeadersVisible = false;
             this.dgvNguoiThamGia.Dock = DockStyle.Fill;
             this.dgvNguoiThamGia.Location = new Point(12, 57);
             this.dgvNguoiThamGia.Name = "dgvNguoiThamGia";
@@ -1300,6 +1318,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab5Header.Size = new Size(490, 19);
             this.lblTab5Header.TabIndex = 0;
             this.lblTab5Header.Text = "QUẢN LÝ CƠ CẤU HẠNG VÉ, GIÁ PHÁT HÀNH & TỒN KHO KHẢ DỤNG (BR-08, BR-09)";
+            this.lblTab5Header.UseMnemonic = false;
 
             this.dgvHangVe.Columns.AddRange(new DataGridViewColumn[] {
                 this.colHV_Ma,
@@ -1311,6 +1330,11 @@ namespace EventManagement.GUI.Forms
                 this.colHV_TyLe,
                 this.colHV_DoanhThu
             });
+            this.dgvHangVe.AutoGenerateColumns = false;
+            this.dgvHangVe.ColumnHeadersHeight = 36;
+            this.dgvHangVe.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvHangVe.EnableHeadersVisualStyles = false;
+            this.dgvHangVe.RowHeadersVisible = false;
             this.dgvHangVe.Dock = DockStyle.Fill;
             this.dgvHangVe.Location = new Point(12, 57);
             this.dgvHangVe.Name = "dgvHangVe";
@@ -1386,6 +1410,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab6Header.Size = new Size(470, 19);
             this.lblTab6Header.TabIndex = 0;
             this.lblTab6Header.Text = "DANH SÁCH NHÂN SỰ BAN TỔ CHỨC & CA TRỰC PHÂN CÔNG (BR-13)";
+            this.lblTab6Header.UseMnemonic = false;
 
             this.btnMoF15.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
             this.btnMoF15.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
@@ -1407,6 +1432,11 @@ namespace EventManagement.GUI.Forms
                 this.colNS_KetThuc,
                 this.colNS_TrangThai
             });
+            this.dgvNhanSu.AutoGenerateColumns = false;
+            this.dgvNhanSu.ColumnHeadersHeight = 36;
+            this.dgvNhanSu.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvNhanSu.EnableHeadersVisualStyles = false;
+            this.dgvNhanSu.RowHeadersVisible = false;
             this.dgvNhanSu.Dock = DockStyle.Fill;
             this.dgvNhanSu.Location = new Point(12, 57);
             this.dgvNhanSu.Name = "dgvNhanSu";
@@ -1482,6 +1512,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab7Header.Size = new Size(420, 19);
             this.lblTab7Header.TabIndex = 0;
             this.lblTab7Header.Text = "DANH SÁCH CÁC ĐƠN VỊ ĐỒNG HÀNH & GÓI TÀI TRỢ SỰ KIỆN";
+            this.lblTab7Header.UseMnemonic = false;
 
             this.btnMoF16.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
             this.btnMoF16.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
@@ -1503,6 +1534,11 @@ namespace EventManagement.GUI.Forms
                 this.colTT_SDT,
                 this.colTT_TrangThai
             });
+            this.dgvTaiTro.AutoGenerateColumns = false;
+            this.dgvTaiTro.ColumnHeadersHeight = 36;
+            this.dgvTaiTro.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvTaiTro.EnableHeadersVisualStyles = false;
+            this.dgvTaiTro.RowHeadersVisible = false;
             this.dgvTaiTro.Dock = DockStyle.Fill;
             this.dgvTaiTro.Location = new Point(12, 57);
             this.dgvTaiTro.Name = "dgvTaiTro";
@@ -1583,6 +1619,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab8Header.Size = new Size(330, 19);
             this.lblTab8Header.TabIndex = 0;
             this.lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH";
+            this.lblTab8Header.UseMnemonic = false;
 
             this.lblThanhDoNganSach.AutoSize = true;
             this.lblThanhDoNganSach.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
@@ -1626,6 +1663,11 @@ namespace EventManagement.GUI.Forms
                 this.colCP_TrangThai,
                 this.colCP_DienGiai
             });
+            this.dgvChiPhi.AutoGenerateColumns = false;
+            this.dgvChiPhi.ColumnHeadersHeight = 36;
+            this.dgvChiPhi.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvChiPhi.EnableHeadersVisualStyles = false;
+            this.dgvChiPhi.RowHeadersVisible = false;
             this.dgvChiPhi.Dock = DockStyle.Fill;
             this.dgvChiPhi.Location = new Point(12, 72);
             this.dgvChiPhi.Name = "dgvChiPhi";
@@ -1700,6 +1742,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab9Header.Size = new Size(420, 19);
             this.lblTab9Header.TabIndex = 0;
             this.lblTab9Header.Text = "Ý KIẾN ĐÓNG GÓP";
+            this.lblTab9Header.UseMnemonic = false;
 
             this.lblDiemTrungBinh.AutoSize = true;
             this.lblDiemTrungBinh.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
@@ -1736,6 +1779,11 @@ namespace EventManagement.GUI.Forms
                 this.colDG_NgayGui,
                 this.colDG_NoiDung
             });
+            this.dgvDanhGia.AutoGenerateColumns = false;
+            this.dgvDanhGia.ColumnHeadersHeight = 36;
+            this.dgvDanhGia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvDanhGia.EnableHeadersVisualStyles = false;
+            this.dgvDanhGia.RowHeadersVisible = false;
             this.dgvDanhGia.Dock = DockStyle.Fill;
             this.dgvDanhGia.Location = new Point(12, 67);
             this.dgvDanhGia.Name = "dgvDanhGia";
