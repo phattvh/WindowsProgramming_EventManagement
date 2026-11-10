@@ -137,8 +137,9 @@ INSERT INTO dbo.SuKien (MaSuKien, TenSuKien, MaLoaiSK, MaDiaDiem, NgayBatDau, Ng
 GO
 
 INSERT INTO dbo.HangVe (MaHangVe, MaSuKien, TenHangVe, GiaVe, SoLuongPhatHanh, SoLuongDaBan, ThoiGianMoBan, ThoiGianDongBan) VALUES
-('HV001', 'EVT202601', N'Vé Tiêu chuẩn (Standard)', 200000, 800, 0, '2026-11-01 00:00:00', '2026-12-14 23:59:59'),
-('HV002', 'EVT202601', N'Vé VIP (Full-access)',     800000, 200, 0, '2026-11-01 00:00:00', '2026-12-14 23:59:59');
+('HV001', 'EVT202601', N'Standard',   200000, 800, 159, '2026-11-01 00:00:00', '2026-12-14 23:59:59'),
+('HV002', 'EVT202601', N'VIP',        800000, 200, 50,  '2026-11-01 00:00:00', '2026-12-14 23:59:59'),
+('HV005', 'EVT202601', N'Early Bird', 150000, 150, 150, '2026-10-15 00:00:00', '2026-10-31 23:59:59');
 GO
 
 INSERT INTO dbo.LichTrinh (MaLichTrinh, MaSuKien, TenTietMuc, ThoiGianBatDau, ThoiGianKetThuc, MaDienGia, DiaDiemChiTiet, GhiChu) VALUES

@@ -58,6 +58,8 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvNguoiDiCung);
             StyleDataGridView(dgvIssuedTickets);
+            dgvNguoiDiCung.AllowUserToAddRows = false;
+            dgvNguoiDiCung.AllowUserToDeleteRows = false;
 
             // Bảng danh sách người sử dụng vé: Căn giữa tiêu đề và cột STT
             dgvNguoiDiCung.EnableHeadersVisualStyles = false;
@@ -381,22 +383,20 @@ namespace EventManagement.GUI.Forms
             string maHangVe = tier.MaHangVe;
             int qty = (int)nudSoLuong.Value;
 
-            // Thu thập danh sách người tham dự
+            // Thu thập danh sách người tham dự (đúng chuẩn 1-đối-1 theo từng vị trí vé)
             var attendees = new List<string>();
-            foreach (DataGridViewRow row in dgvNguoiDiCung.Rows)
+            for (int i = 0; i < qty; i++)
             {
-                if (row.IsNewRow) continue;
-                string name = row.Cells[1].Value?.ToString() ?? string.Empty;
+                string name = string.Empty;
+                if (i < dgvNguoiDiCung.Rows.Count)
+                {
+                    name = dgvNguoiDiCung.Rows[i].Cells[1].Value?.ToString() ?? string.Empty;
+                }
                 if (string.IsNullOrWhiteSpace(name))
                 {
-                    name = txtHoTen.Text.Trim();
+                    name = (i == 0) ? txtHoTen.Text.Trim() : $"Người tham dự #{i + 1}";
                 }
                 attendees.Add(name.Trim());
-            }
-
-            if (attendees.Count == 0)
-            {
-                attendees.Add(txtHoTen.Text.Trim());
             }
 
             var request = new RegisterTicketRequestDto

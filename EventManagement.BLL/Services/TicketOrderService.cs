@@ -32,37 +32,82 @@ namespace EventManagement.BLL.Services
             {
                 MaHangVe = "HV001",
                 MaSuKien = "EVT202601",
-                TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                TenHangVe = "Standard",
                 GiaVe = 200000m,
                 SoLuongPhatHanh = 800,
-                SoLuongDaBan = 150
+                SoLuongDaBan = 159
             },
             new TicketTierSummaryDto
             {
                 MaHangVe = "HV002",
                 MaSuKien = "EVT202601",
-                TenHangVe = "Vé VIP (Full-access)",
+                TenHangVe = "VIP",
                 GiaVe = 800000m,
                 SoLuongPhatHanh = 200,
                 SoLuongDaBan = 50
             },
             new TicketTierSummaryDto
             {
+                MaHangVe = "HV005",
+                MaSuKien = "EVT202601",
+                TenHangVe = "Early Bird",
+                GiaVe = 150000m,
+                SoLuongPhatHanh = 150,
+                SoLuongDaBan = 150
+            },
+            new TicketTierSummaryDto
+            {
                 MaHangVe = "HV003",
                 MaSuKien = "EVT202602",
-                TenHangVe = "Vé Workshop Tiêu chuẩn",
-                GiaVe = 500000m,
+                TenHangVe = "Standard",
+                GiaVe = 300000m,
                 SoLuongPhatHanh = 100,
                 SoLuongDaBan = 98 // Chỉ còn đúng 2 vé khả dụng để test BR-09
             },
             new TicketTierSummaryDto
             {
                 MaHangVe = "HV004",
+                MaSuKien = "EVT202602",
+                TenHangVe = "VIP",
+                GiaVe = 600000m,
+                SoLuongPhatHanh = 50,
+                SoLuongDaBan = 10
+            },
+            new TicketTierSummaryDto
+            {
+                MaHangVe = "HV006",
+                MaSuKien = "EVT202602",
+                TenHangVe = "Early Bird",
+                GiaVe = 250000m,
+                SoLuongPhatHanh = 50,
+                SoLuongDaBan = 50
+            },
+            new TicketTierSummaryDto
+            {
+                MaHangVe = "HV007",
                 MaSuKien = "EVT202603",
-                TenHangVe = "Vé Đại biểu Khoa học",
-                GiaVe = 150000m,
-                SoLuongPhatHanh = 300,
-                SoLuongDaBan = 20
+                TenHangVe = "Standard",
+                GiaVe = 350000m,
+                SoLuongPhatHanh = 200,
+                SoLuongDaBan = 45
+            },
+            new TicketTierSummaryDto
+            {
+                MaHangVe = "HV008",
+                MaSuKien = "EVT202603",
+                TenHangVe = "VIP",
+                GiaVe = 900000m,
+                SoLuongPhatHanh = 50,
+                SoLuongDaBan = 12
+            },
+            new TicketTierSummaryDto
+            {
+                MaHangVe = "HV009",
+                MaSuKien = "EVT202603",
+                TenHangVe = "Early Bird",
+                GiaVe = 280000m,
+                SoLuongPhatHanh = 50,
+                SoLuongDaBan = 50
             }
         };
 
@@ -76,7 +121,7 @@ namespace EventManagement.BLL.Services
                 MaDangKy = "REG001",
                 MaSuKien = "EVT202601",
                 TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenHangVe = "Vé VIP (Full-access)",
+                TenHangVe = "VIP",
                 GiaVe = 800000m,
                 TenNguoiThamGia = "Vũ Thị Mai",
                 Email = "mai.vu@techcorp.vn",
@@ -90,7 +135,7 @@ namespace EventManagement.BLL.Services
                 MaDangKy = "REG002",
                 MaSuKien = "EVT202601",
                 TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                TenHangVe = "Standard",
                 GiaVe = 200000m,
                 TenNguoiThamGia = "Phạm Nhật Long",
                 Email = "long.pham@viettech.vn",
@@ -104,7 +149,7 @@ namespace EventManagement.BLL.Services
                 MaDangKy = "REG003",
                 MaSuKien = "EVT202601",
                 TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                TenHangVe = "Standard",
                 GiaVe = 200000m,
                 TenNguoiThamGia = "Nguyễn Ngọc Bích",
                 Email = "bich.nguyen@fintech.vn",
@@ -118,6 +163,21 @@ namespace EventManagement.BLL.Services
         private static int _ticketCounter = 1000;
         private static readonly object _syncLock = new();
 
+        private static string NormalizeCode(string? code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return string.Empty;
+            var trimmed = code.Trim();
+            if (trimmed.StartsWith("(") && trimmed.Contains(','))
+            {
+                var parts = trimmed.Trim('(', ')').Split(',');
+                if (parts.Length > 0 && !string.IsNullOrWhiteSpace(parts[0]))
+                {
+                    return parts[0].Trim();
+                }
+            }
+            return trimmed;
+        }
+
         #region Public Methods
 
         public List<(string MaSuKien, string TenSuKien)> GetAvailableEvents()
@@ -127,11 +187,12 @@ namespace EventManagement.BLL.Services
 
         public List<TicketTierSummaryDto> GetTicketTiersByEvent(string maSuKien)
         {
-            if (string.IsNullOrWhiteSpace(maSuKien))
+            var eventCode = NormalizeCode(maSuKien);
+            if (string.IsNullOrWhiteSpace(eventCode))
                 return _ticketTiers.ToList();
 
             var list = _ticketTiers
-                .Where(t => string.Equals(t.MaSuKien, maSuKien.Trim(), StringComparison.OrdinalIgnoreCase))
+                .Where(t => string.Equals(t.MaSuKien, eventCode, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (list.Count == 0)
@@ -140,7 +201,7 @@ namespace EventManagement.BLL.Services
                 {
                     MaHangVe = "HV-" + maSuKien.Trim(),
                     MaSuKien = maSuKien.Trim(),
-                    TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                    TenHangVe = "Standard",
                     GiaVe = 250000m,
                     SoLuongPhatHanh = 500,
                     SoLuongDaBan = 0
@@ -259,17 +320,24 @@ namespace EventManagement.BLL.Services
                     string qrCode = $"EVT-QR-{Guid.NewGuid().ToString("N")[..12].ToUpper()}";
 
                     string attendeeName = request.HoTenNguoiMua;
-                    if (request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count == request.SoLuongMua && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i]))
+                    if (request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count >= request.SoLuongMua && i < request.DanhSachNguoiDiCung.Count && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i]))
                     {
-                        // Trường hợp danh sách người đi cùng bao gồm cả người mua (đầy đủ N người từ bảng nhập liệu)
+                        // Trường hợp danh sách người tham gia bao gồm cả người mua (đầy đủ N người từ bảng nhập liệu)
                         attendeeName = request.DanhSachNguoiDiCung[i].Trim();
                     }
-                    else if (i > 0 && request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count >= i && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i - 1]))
+                    else if (request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count == request.SoLuongMua - 1)
                     {
                         // Trường hợp danh sách người đi cùng chỉ chứa các người đi kèm (N - 1 người)
-                        attendeeName = request.DanhSachNguoiDiCung[i - 1].Trim();
+                        if (i == 0)
+                        {
+                            attendeeName = request.HoTenNguoiMua;
+                        }
+                        else if (i - 1 < request.DanhSachNguoiDiCung.Count && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i - 1]))
+                        {
+                            attendeeName = request.DanhSachNguoiDiCung[i - 1].Trim();
+                        }
                     }
-                    else if (i > 0 && request.DanhSachNguoiDiCung != null && request.DanhSachNguoiDiCung.Count > i && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung[i]))
+                    else if (i < (request.DanhSachNguoiDiCung?.Count ?? 0) && !string.IsNullOrWhiteSpace(request.DanhSachNguoiDiCung![i]))
                     {
                         attendeeName = request.DanhSachNguoiDiCung[i].Trim();
                     }

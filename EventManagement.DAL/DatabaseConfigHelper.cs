@@ -18,12 +18,26 @@ namespace EventManagement.DAL
         /// </summary>
         public static readonly string[] DefaultCandidateServers = new[]
         {
+            @".\SQLEXPRESS",
             ".",
             @"(localdb)\mssqllocaldb",
-            @".\SQLEXPRESS",
             "localhost",
             "127.0.0.1"
         };
+
+        private static string? _cachedEffectiveConnectionString;
+        private static readonly object _connLock = new();
+
+        /// <summary>
+        /// Xóa cache chuỗi kết nối khi có sự thay đổi cấu hình máy chủ.
+        /// </summary>
+        public static void InvalidateCache()
+        {
+            lock (_connLock)
+            {
+                _cachedEffectiveConnectionString = null;
+            }
+        }
 
         /// <summary>
         /// Lấy chuỗi kết nối từ App.config hoặc chuỗi dự phòng mặc định nếu cấu hình chưa có.
@@ -51,6 +65,7 @@ namespace EventManagement.DAL
         /// </summary>
         public static bool SaveConnectionString(string connectionString, string connectionName = DefaultConnectionName)
         {
+            InvalidateCache();
             if (string.IsNullOrWhiteSpace(connectionString))
                 throw new ArgumentException("Chuỗi kết nối không được để trống.", nameof(connectionString));
 
@@ -181,8 +196,25 @@ namespace EventManagement.DAL
         /// </summary>
         public static string GetEffectiveConnectionString()
         {
-            var result = FindWorkingConnectionString(1);
-            return !string.IsNullOrWhiteSpace(result.ConnectionString) ? result.ConnectionString : FallbackConnectionString;
+            if (!string.IsNullOrWhiteSpace(_cachedEffectiveConnectionString))
+            {
+                return _cachedEffectiveConnectionString;
+            }
+
+            lock (_connLock)
+            {
+                if (!string.IsNullOrWhiteSpace(_cachedEffectiveConnectionString))
+                {
+                    return _cachedEffectiveConnectionString;
+                }
+
+                var result = FindWorkingConnectionString(1);
+                _cachedEffectiveConnectionString = !string.IsNullOrWhiteSpace(result.ConnectionString)
+                    ? result.ConnectionString
+                    : FallbackConnectionString;
+
+                return _cachedEffectiveConnectionString;
+            }
         }
 
         /// <summary>

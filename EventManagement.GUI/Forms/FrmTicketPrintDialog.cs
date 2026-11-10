@@ -396,8 +396,9 @@ namespace EventManagement.GUI.Forms
                 if (qrBytes != null && qrBytes.Length > 0)
                 {
                     using var ms = new MemoryStream(qrBytes);
+                    using var temp = new Bitmap(ms);
                     var oldImage = _picQrCode.Image;
-                    _picQrCode.Image = new Bitmap(ms);
+                    _picQrCode.Image = new Bitmap(temp); // Tạo bản sao Bitmap độc lập, không gắn với MemoryStream đã đóng
                     oldImage?.Dispose();
                 }
                 else
@@ -440,7 +441,26 @@ namespace EventManagement.GUI.Forms
             {
                 try
                 {
-                    _picQrCode.Image.Save(sfd.FileName, ImageFormat.Png);
+                    if (sfd.FileName.EndsWith(".bmp", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using var clone = new Bitmap(_picQrCode.Image);
+                        clone.Save(sfd.FileName, ImageFormat.Bmp);
+                    }
+                    else
+                    {
+                        // Lưu định dạng PNG độ phân giải cao trực tiếp từ byte stream (tránh lỗi GDI+ stream)
+                        byte[] fileBytes = _reportService.GenerateQrCodeImageBytes(ticket.MaQR, 400, 400);
+                        if (fileBytes != null && fileBytes.Length > 0)
+                        {
+                            File.WriteAllBytes(sfd.FileName, fileBytes);
+                        }
+                        else
+                        {
+                            using var clone = new Bitmap(_picQrCode.Image);
+                            clone.Save(sfd.FileName, ImageFormat.Png);
+                        }
+                    }
+
                     MessageBox.Show($"Đã lưu ảnh mã QR vé {ticket.MaVe} thành công:\n{sfd.FileName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)

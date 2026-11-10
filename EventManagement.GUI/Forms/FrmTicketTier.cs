@@ -60,15 +60,15 @@ namespace EventManagement.GUI.Forms
             _ticketTiers = GetInitialSeedData();
 
             InitializeComponent();
-            ApplyMode(FormMode.View);
             LoadDataToGrid(_ticketTiers);
+            ApplyMode(FormMode.View);
         }
 
         private void InitializeComponent()
         {
             this.Text = "Hệ Thống Quản Lý Sự Kiện";
-            this.Size = new Size(1050, 700);
-            this.MinimumSize = new Size(950, 620);
+            this.Size = new Size(1140, 720);
+            this.MinimumSize = new Size(1020, 640);
 
             _errorProvider = new ErrorProvider { BlinkStyle = ErrorBlinkStyle.NeverBlink };
 
@@ -90,7 +90,7 @@ namespace EventManagement.GUI.Forms
             };
             _pnlHeader.Controls.Add(_lblTitle);
 
-            // 2. Search & Filter
+            // 2. Search & Filter (Khoảng cách thông thoáng, không bị che mất viền ô nhập)
             _pnlSearch = new Panel
             {
                 Dock = DockStyle.Top,
@@ -100,21 +100,21 @@ namespace EventManagement.GUI.Forms
             };
 
             var lblEvent = new Label { Text = "Sự kiện:", AutoSize = true, Location = new Point(15, 15) };
-            _cboEventFilter = new ComboBox { Location = new Point(70, 12), Width = 220, DropDownStyle = ComboBoxStyle.DropDownList };
+            _cboEventFilter = new ComboBox { Location = new Point(78, 12), Width = 230, DropDownStyle = ComboBoxStyle.DropDownList };
             _cboEventFilter.Items.AddRange(new object[] { "Tất cả sự kiện", "EVT202601 (Vietnam Tech Summit)", "EVT202602 (Workshop GenAI)" });
             _cboEventFilter.SelectedIndex = 0;
             _cboEventFilter.SelectedIndexChanged += (s, e) => DoFilter();
 
-            var lblSearch = new Label { Text = "Tên vé:", AutoSize = true, Location = new Point(310, 15) };
-            _txtSearch = new TextBox { Location = new Point(365, 12), Width = 180, PlaceholderText = "Tìm tên hạng vé..." };
+            var lblSearch = new Label { Text = "Tên vé:", AutoSize = true, Location = new Point(328, 15) };
+            _txtSearch = new TextBox { Location = new Point(388, 12), Width = 180, PlaceholderText = "Tìm tên hạng vé..." };
             _txtSearch.KeyDown += (s, e) => { if (e.KeyCode == Keys.Enter) DoFilter(); };
 
             _btnSearch = CreateStyledButton("Lọc vé", ColorPrimaryLight, Color.White, 80, 28);
-            _btnSearch.Location = new Point(560, 11);
+            _btnSearch.Location = new Point(582, 11);
             _btnSearch.Click += (s, e) => DoFilter();
 
-            _btnResetSearch = CreateStyledButton("Làm mới", Color.FromArgb(241, 245, 249), ColorText, 80, 28);
-            _btnResetSearch.Location = new Point(650, 11);
+            _btnResetSearch = CreateStyledButton("Làm mới", Color.FromArgb(241, 245, 249), ColorText, 85, 28);
+            _btnResetSearch.Location = new Point(672, 11);
             _btnResetSearch.Click += (s, e) =>
             {
                 _cboEventFilter.SelectedIndex = 0;
@@ -129,6 +129,7 @@ namespace EventManagement.GUI.Forms
             StyleDataGridView(_dgvTiers);
             SetupColumns();
             _dgvTiers.SelectionChanged += DgvTiers_SelectionChanged;
+            _dgvTiers.CellFormatting += DgvTiers_CellFormatting;
 
             // 4. Details GroupBox
             _grpDetails = new GroupBox
@@ -150,7 +151,7 @@ namespace EventManagement.GUI.Forms
             _txtTen = new TextBox { Location = new Point(590, 25), Width = 210 };
 
             var lblGia = new Label { Text = "Giá vé (VNĐ):", Location = new Point(820, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _nudGiaVe = new NumericUpDown { Location = new Point(910, 25), Width = 100, Maximum = 100000000, Increment = 50000 };
+            _nudGiaVe = new NumericUpDown { Location = new Point(910, 25), Width = 110, Maximum = 100000000, Increment = 50000 };
 
             var lblPhatHanh = new Label { Text = "Số phát hành (*):", Location = new Point(20, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
             _nudPhatHanh = new NumericUpDown { Location = new Point(125, 65), Width = 100, Maximum = 100000, Minimum = 1, Value = 100 };
@@ -173,7 +174,7 @@ namespace EventManagement.GUI.Forms
                 lblMoBan, _dtpMoBan, lblDongBan, _dtpDongBan
             });
 
-            // 5. Buttons Panel
+            // 5. Buttons Panel (Chuẩn hóa Layout Mẫu 2: Nút CRUD bên trái, Lưu & Hủy bên phải)
             _pnlButtons = new Panel
             {
                 Dock = DockStyle.Bottom,
@@ -182,25 +183,33 @@ namespace EventManagement.GUI.Forms
                 Padding = new Padding(20, 10, 20, 10)
             };
 
-            _btnAdd = CreateStyledButton("Thêm mới", ColorSuccess, Color.White);
-            _btnAdd.Location = new Point(20, 10);
+            _btnAdd = CreateStyledButton("Thêm mới", ColorSuccess, Color.White, 95, 32);
+            _btnAdd.Location = new Point(20, 11);
             _btnAdd.Click += BtnAdd_Click;
 
-            _btnEdit = CreateStyledButton("Chỉnh sửa", ColorPrimaryLight, Color.White);
-            _btnEdit.Location = new Point(120, 10);
+            _btnEdit = CreateStyledButton("Chỉnh sửa", ColorPrimaryLight, Color.White, 95, 32);
+            _btnEdit.Location = new Point(125, 11);
             _btnEdit.Click += BtnEdit_Click;
 
-            _btnDelete = CreateStyledButton("Xóa hạng vé", ColorDanger, Color.White);
-            _btnDelete.Location = new Point(220, 10);
+            _btnDelete = CreateStyledButton("Xóa hạng vé", ColorDanger, Color.White, 105, 32);
+            _btnDelete.Location = new Point(230, 11);
             _btnDelete.Click += BtnDelete_Click;
 
-            _btnSave = CreateStyledButton("Lưu dữ liệu", ColorPrimary, Color.White);
-            _btnSave.Location = new Point(800, 10);
+            _btnSave = CreateStyledButton("Lưu dữ liệu", ColorPrimary, Color.White, 115, 32);
+            _btnSave.Location = new Point(780, 11);
             _btnSave.Click += BtnSave_Click;
 
-            _btnCancel = CreateStyledButton("Hủy bỏ", Color.FromArgb(203, 213, 225), ColorText);
-            _btnCancel.Location = new Point(900, 10);
+            _btnCancel = CreateStyledButton("Hủy bỏ", Color.FromArgb(203, 213, 225), ColorText, 95, 32);
+            _btnCancel.Location = new Point(905, 11);
             _btnCancel.Click += BtnCancel_Click;
+
+            // Định vị lại nút Lưu và Hủy luôn bám sát lề phải panel bất kể kích thước màn hình
+            _pnlButtons.Resize += (s, e) =>
+            {
+                int rightEdge = _pnlButtons.ClientSize.Width - 20;
+                _btnCancel.Location = new Point(rightEdge - _btnCancel.Width, 11);
+                _btnSave.Location = new Point(_btnCancel.Left - _btnSave.Width - 10, 11);
+            };
 
             _pnlButtons.Controls.AddRange(new Control[] { _btnAdd, _btnEdit, _btnDelete, _btnSave, _btnCancel });
 
@@ -218,25 +227,153 @@ namespace EventManagement.GUI.Forms
         private void SetupColumns()
         {
             _dgvTiers.Columns.Clear();
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaHangVe", HeaderText = "Mã vé", Width = 80 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaSuKien", HeaderText = "Mã sự kiện", Width = 90 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TenHangVe", HeaderText = "Tên hạng vé", Width = 280 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "GiaVe", HeaderText = "Đơn giá (VNĐ)", Width = 110, DefaultCellStyle = { Format = "#,##0" } });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongPhatHanh", HeaderText = "Phát hành", Width = 85 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongDaBan", HeaderText = "Đã bán", Width = 85 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "SoLuongConLai", HeaderText = "Còn vé", Width = 85 });
-            _dgvTiers.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TrangThai", HeaderText = "Trạng thái kho", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
+            _dgvTiers.EnableHeadersVisualStyles = false;
+            _dgvTiers.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            var colMa = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "MaHangVe",
+                HeaderText = "Mã vé",
+                Width = 75,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colMaSK = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "MaSuKien",
+                HeaderText = "Mã sự kiện",
+                Width = 90,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colTen = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "TenHangVe",
+                HeaderText = "Tên hạng vé",
+                Width = 200,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleLeft }
+            };
+
+            var colGia = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "GiaVe",
+                HeaderText = "Đơn giá (VNĐ)",
+                Width = 115,
+                DefaultCellStyle = { Format = "#,##0", Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colPhatHanh = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "SoLuongPhatHanh",
+                HeaderText = "Số vé phát hành",
+                Width = 120,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colDaBan = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "SoLuongDaBan",
+                HeaderText = "Số vé đã bán",
+                Width = 110,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colConLai = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "SoLuongConLai",
+                HeaderText = "Số vé còn lại",
+                Width = 110,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colMoBan = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ThoiGianMoBan",
+                HeaderText = "Mở bán",
+                Width = 95,
+                DefaultCellStyle = { Format = "dd/MM/yyyy", Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colDongBan = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "ThoiGianDongBan",
+                HeaderText = "Đóng bán",
+                Width = 95,
+                DefaultCellStyle = { Format = "dd/MM/yyyy", Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            var colTrangThai = new DataGridViewTextBoxColumn
+            {
+                DataPropertyName = "TrangThaiKho",
+                HeaderText = "Trạng thái kho",
+                AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            };
+
+            _dgvTiers.Columns.AddRange(colMa, colMaSK, colTen, colGia, colPhatHanh, colDaBan, colConLai, colMoBan, colDongBan, colTrangThai);
 
             foreach (DataGridViewColumn col in _dgvTiers.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
         }
 
+        private void DgvTiers_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.RowIndex >= _dgvTiers.Rows.Count) return;
+
+            string colName = _dgvTiers.Columns[e.ColumnIndex].DataPropertyName;
+            if (colName == "TrangThaiKho" || colName == "TrangThai")
+            {
+                string status = e.Value?.ToString() ?? string.Empty;
+                switch (status)
+                {
+                    case "Đang mở bán":
+                        e.CellStyle!.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                        e.CellStyle.Font = new Font(_dgvTiers.Font, FontStyle.Bold);
+                        break;
+                    case "Sắp hết vé":
+                        e.CellStyle!.ForeColor = Color.FromArgb(234, 88, 12); // Cam
+                        e.CellStyle.Font = new Font(_dgvTiers.Font, FontStyle.Bold);
+                        break;
+                    case "Hết vé":
+                        e.CellStyle!.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
+                        e.CellStyle.Font = new Font(_dgvTiers.Font, FontStyle.Bold);
+                        break;
+                    case "Đã đóng bán":
+                        e.CellStyle!.ForeColor = Color.FromArgb(100, 116, 139); // Xám
+                        break;
+                    case "Chưa mở bán":
+                        e.CellStyle!.ForeColor = Color.FromArgb(37, 99, 235); // Xanh dương
+                        break;
+                }
+            }
+        }
+
+        private static int GetTierStatusPriority(HangVe t)
+        {
+            return t.TrangThaiKho switch
+            {
+                "Đang mở bán" => 1,
+                "Sắp hết vé" => 1,
+                "Chưa mở bán" => 2,
+                "Hết vé" => 3,
+                "Đã đóng bán" => 4,
+                _ => 5
+            };
+        }
+
         private void LoadDataToGrid(IEnumerable<HangVe> data)
         {
+            var sorted = data
+                .OrderBy(GetTierStatusPriority)
+                .ThenBy(t => t.MaSuKien)
+                .ThenBy(t => t.MaHangVe)
+                .ToList();
+
             _dgvTiers.DataSource = null;
-            _dgvTiers.DataSource = data.ToList();
+            _dgvTiers.DataSource = sorted;
             if (_dgvTiers.Rows.Count > 0)
             {
                 _dgvTiers.Rows[0].Selected = true;
@@ -246,13 +383,26 @@ namespace EventManagement.GUI.Forms
             {
                 ClearDetails();
             }
+
+            ApplyMode(_currentMode);
         }
 
         private void DgvTiers_SelectionChanged(object? sender, EventArgs e)
         {
-            if (_currentMode == FormMode.View && _dgvTiers.CurrentRow?.DataBoundItem is HangVe item)
+            if (_currentMode == FormMode.View)
             {
-                BindRowToDetails(item);
+                if (_dgvTiers.CurrentRow?.DataBoundItem is HangVe item)
+                {
+                    BindRowToDetails(item);
+                    _btnEdit.Enabled = true;
+                    _btnDelete.Enabled = true;
+                }
+                else
+                {
+                    ClearDetails();
+                    _btnEdit.Enabled = false;
+                    _btnDelete.Enabled = false;
+                }
             }
         }
 
@@ -287,6 +437,7 @@ namespace EventManagement.GUI.Forms
         {
             _currentMode = mode;
             bool isEditing = (mode == FormMode.Add || mode == FormMode.Edit);
+            bool hasSelection = _dgvTiers.CurrentRow != null && _dgvTiers.CurrentRow.DataBoundItem is HangVe;
 
             _txtMaSuKien.ReadOnly = !isEditing;
             _txtTen.ReadOnly = !isEditing;
@@ -296,31 +447,12 @@ namespace EventManagement.GUI.Forms
             _dtpDongBan.Enabled = isEditing;
             _dgvTiers.Enabled = !isEditing;
 
-            _btnAdd.Visible = !isEditing;
-            _btnEdit.Visible = !isEditing;
-            _btnDelete.Visible = !isEditing;
-
-            _btnSave.Visible = isEditing;
-            _btnCancel.Visible = isEditing;
-
             _btnAdd.Enabled = !isEditing;
-            _btnEdit.Enabled = !isEditing && _dgvTiers.CurrentRow != null;
-            _btnDelete.Enabled = !isEditing && _dgvTiers.CurrentRow != null;
+            _btnEdit.Enabled = !isEditing && hasSelection;
+            _btnDelete.Enabled = !isEditing && hasSelection;
 
             _btnSave.Enabled = isEditing;
             _btnCancel.Enabled = isEditing;
-
-            if (isEditing)
-            {
-                _btnSave.Location = new Point(20, 10);
-                _btnCancel.Location = new Point(140, 10);
-            }
-            else
-            {
-                _btnAdd.Location = new Point(20, 10);
-                _btnEdit.Location = new Point(120, 10);
-                _btnDelete.Location = new Point(220, 10);
-            }
         }
 
         private void BtnAdd_Click(object? sender, EventArgs e)
@@ -452,10 +584,12 @@ namespace EventManagement.GUI.Forms
         {
             return new List<HangVe>
             {
-                new HangVe { MaHangVe = "HV001", MaSuKien = "EVT202601", TenHangVe = "Vé Tiêu chuẩn (Standard)", GiaVe = 200000, SoLuongPhatHanh = 800, SoLuongDaBan = 0, ThoiGianMoBan = new DateTime(2026, 11, 1), ThoiGianDongBan = new DateTime(2026, 12, 14) },
-                new HangVe { MaHangVe = "HV002", MaSuKien = "EVT202601", TenHangVe = "Vé VIP (Full-access)", GiaVe = 800000, SoLuongPhatHanh = 200, SoLuongDaBan = 0, ThoiGianMoBan = new DateTime(2026, 11, 1), ThoiGianDongBan = new DateTime(2026, 12, 14) },
-                new HangVe { MaHangVe = "HV003", MaSuKien = "EVT202602", TenHangVe = "Vé Thực hành Lab (Standard)", GiaVe = 300000, SoLuongPhatHanh = 100, SoLuongDaBan = 20, ThoiGianMoBan = new DateTime(2026, 10, 1), ThoiGianDongBan = new DateTime(2026, 11, 2) },
-                new HangVe { MaHangVe = "HV004", MaSuKien = "EVT202602", TenHangVe = "Vé VIP Mentoring 1-1", GiaVe = 600000, SoLuongPhatHanh = 50, SoLuongDaBan = 10, ThoiGianMoBan = new DateTime(2026, 10, 1), ThoiGianDongBan = new DateTime(2026, 11, 2) }
+                new HangVe { MaHangVe = "HV001", MaSuKien = "EVT202601", TenHangVe = "Standard", GiaVe = 200000, SoLuongPhatHanh = 800, SoLuongDaBan = 159, ThoiGianMoBan = new DateTime(2026, 11, 1), ThoiGianDongBan = new DateTime(2026, 12, 14) },
+                new HangVe { MaHangVe = "HV002", MaSuKien = "EVT202601", TenHangVe = "VIP", GiaVe = 800000, SoLuongPhatHanh = 200, SoLuongDaBan = 50, ThoiGianMoBan = new DateTime(2026, 11, 1), ThoiGianDongBan = new DateTime(2026, 12, 14) },
+                new HangVe { MaHangVe = "HV005", MaSuKien = "EVT202601", TenHangVe = "Early Bird", GiaVe = 150000, SoLuongPhatHanh = 150, SoLuongDaBan = 150, ThoiGianMoBan = new DateTime(2026, 10, 15), ThoiGianDongBan = new DateTime(2026, 10, 31) },
+                new HangVe { MaHangVe = "HV003", MaSuKien = "EVT202602", TenHangVe = "Standard", GiaVe = 300000, SoLuongPhatHanh = 100, SoLuongDaBan = 98, ThoiGianMoBan = new DateTime(2026, 10, 1), ThoiGianDongBan = new DateTime(2026, 11, 2) },
+                new HangVe { MaHangVe = "HV004", MaSuKien = "EVT202602", TenHangVe = "VIP", GiaVe = 600000, SoLuongPhatHanh = 50, SoLuongDaBan = 10, ThoiGianMoBan = new DateTime(2026, 10, 1), ThoiGianDongBan = new DateTime(2026, 11, 2) },
+                new HangVe { MaHangVe = "HV006", MaSuKien = "EVT202602", TenHangVe = "Early Bird", GiaVe = 250000, SoLuongPhatHanh = 50, SoLuongDaBan = 50, ThoiGianMoBan = new DateTime(2026, 9, 15), ThoiGianDongBan = new DateTime(2026, 9, 30) }
             };
         }
     }
