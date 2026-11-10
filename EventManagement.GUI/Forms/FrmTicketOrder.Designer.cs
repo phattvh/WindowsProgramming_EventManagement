@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmTicketOrder
     {
@@ -462,7 +462,7 @@ namespace EventManagement.GUI.Forms
             // 
             // colSTT
             // 
-            this.colSTT.HeaderText = "Vé Số";
+            this.colSTT.HeaderText = "STT";
             this.colSTT.Name = "colSTT";
             this.colSTT.ReadOnly = true;
             this.colSTT.Width = 60;
@@ -505,28 +505,28 @@ namespace EventManagement.GUI.Forms
             // colMaVe
             // 
             this.colMaVe.DataPropertyName = "MaVe";
-            this.colMaVe.HeaderText = "Mã Vé";
+            this.colMaVe.HeaderText = "Mã vé";
             this.colMaVe.Name = "colMaVe";
             this.colMaVe.Width = 100;
             // 
             // colAttendeeName
             // 
             this.colAttendeeName.DataPropertyName = "TenNguoiThamGia";
-            this.colAttendeeName.HeaderText = "Người Tham Gia";
+            this.colAttendeeName.HeaderText = "Người tham gia";
             this.colAttendeeName.Name = "colAttendeeName";
             this.colAttendeeName.Width = 160;
             // 
             // colMaQR
             // 
             this.colMaQR.DataPropertyName = "MaQR";
-            this.colMaQR.HeaderText = "Mã QR (Token)";
+            this.colMaQR.HeaderText = "Mã QR (token)";
             this.colMaQR.Name = "colMaQR";
             this.colMaQR.Width = 170;
             // 
             // colHangVeName
             // 
             this.colHangVeName.DataPropertyName = "TenHangVe";
-            this.colHangVeName.HeaderText = "Hạng Vé";
+            this.colHangVeName.HeaderText = "Hạng vé";
             this.colHangVeName.Name = "colHangVeName";
             this.colHangVeName.Width = 120;
             // 
@@ -536,7 +536,7 @@ namespace EventManagement.GUI.Forms
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
             dataGridViewCellStyle1.Format = "N0";
             this.colGiaVe.DefaultCellStyle = dataGridViewCellStyle1;
-            this.colGiaVe.HeaderText = "Đơn Giá (VNĐ)";
+            this.colGiaVe.HeaderText = "Đơn giá (VNĐ)";
             this.colGiaVe.Name = "colGiaVe";
             this.colGiaVe.Width = 110;
             // 
