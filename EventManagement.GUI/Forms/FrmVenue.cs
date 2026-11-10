@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -53,6 +53,31 @@ namespace EventManagement.GUI.Forms
             colSucChuaToiDa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colSoSuKienToChuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            // Bố trí thanh lọc và bảng không bị đè bởi Header
+            pnlFilter.Top = pnlHeader.Bottom + 10;
+            dgvDiaDiem.Top = pnlFilter.Bottom + 10;
+            if (pnlButtons != null)
+            {
+                dgvDiaDiem.Height = Math.Max(120, pnlButtons.Top - 10 - dgvDiaDiem.Top);
+            }
+
+            // Tối ưu độ rộng cột để không bị cắt cụt tên địa điểm và địa chỉ
+            colMaDiaDiem.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colMaDiaDiem.Width = 90;
+            colTenDiaDiem.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colTenDiaDiem.Width = 250;
+            colSucChuaToiDa.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colSucChuaToiDa.Width = 100;
+            colNguoiQuanLy.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colNguoiQuanLy.Width = 140;
+            colSoDienThoai.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colSoDienThoai.Width = 110;
+            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colTrangThai.Width = 110;
+            colSoSuKienToChuc.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colSoSuKienToChuc.Width = 90;
+            colDiaChi.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colSoDienThoai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
         }

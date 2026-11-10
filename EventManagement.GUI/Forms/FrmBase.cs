@@ -452,6 +452,48 @@ namespace EventManagement.GUI.Forms
                     tab.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
                 }
             }
+
+            // Tự động căn chỉnh vị trí thanh lọc (pnlFilter) và lưới (dgv) để không bị pnlHeader (Dock=Top) đè lên
+            Panel? pnlHeader = null;
+            Panel? pnlFilter = null;
+            DataGridView? mainGrid = null;
+
+            foreach (Control c in container.Controls)
+            {
+                if (c is Panel pnl)
+                {
+                    string name = pnl.Name.ToLowerInvariant();
+                    if (pnl.Dock == DockStyle.Top && (name.Contains("header") || name.Contains("top") || name.Contains("banner")))
+                    {
+                        pnlHeader = pnl;
+                    }
+                    else if (pnl.Dock == DockStyle.None && (name.Contains("filter") || name.Contains("search")))
+                    {
+                        pnlFilter = pnl;
+                    }
+                }
+                else if (c is DataGridView dgv && dgv.Dock == DockStyle.None)
+                {
+                    mainGrid = dgv;
+                }
+            }
+
+            if (pnlHeader != null && pnlFilter != null)
+            {
+                int targetFilterTop = pnlHeader.Bottom + 10;
+                if (pnlFilter.Top < targetFilterTop)
+                {
+                    pnlFilter.Top = targetFilterTop;
+
+                    if (mainGrid != null && mainGrid.Top < pnlFilter.Bottom + 10)
+                    {
+                        int targetGridTop = pnlFilter.Bottom + 10;
+                        int gridShift = targetGridTop - mainGrid.Top;
+                        mainGrid.Top = targetGridTop;
+                        mainGrid.Height = Math.Max(100, mainGrid.Height - gridShift);
+                    }
+                }
+            }
         }
 
         protected virtual void ApplyStandardTheme()
@@ -465,7 +507,7 @@ namespace EventManagement.GUI.Forms
         protected void StyleDataGridView(DataGridView dgv)
         {
             dgv.BackgroundColor = ColorSurface;
-            dgv.BorderStyle = BorderStyle.None;
+            dgv.BorderStyle = BorderStyle.FixedSingle;
             dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             dgv.GridColor = ColorBorder;
             dgv.RowHeadersVisible = false;
@@ -482,6 +524,8 @@ namespace EventManagement.GUI.Forms
             dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(241, 245, 249);
             dgv.ColumnHeadersDefaultCellStyle.ForeColor = ColorText;
+            dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
+            dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = ColorText;
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             dgv.ColumnHeadersHeight = 36;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;

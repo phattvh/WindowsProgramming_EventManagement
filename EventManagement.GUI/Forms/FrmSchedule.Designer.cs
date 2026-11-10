@@ -1,4 +1,4 @@
-namespace EventManagement.GUI.Forms
+﻿namespace EventManagement.GUI.Forms
 {
     partial class FrmSchedule
     {
@@ -152,7 +152,7 @@ namespace EventManagement.GUI.Forms
             this.lblTitle.AutoSize = true;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(18, 16);
+            this.lblTitle.Location = new System.Drawing.Point(18, 14);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(465, 25);
             this.lblTitle.TabIndex = 0;
@@ -183,7 +183,7 @@ namespace EventManagement.GUI.Forms
             this.pnlFilter.Controls.Add(this.cboLocSuKien);
             this.pnlFilter.Controls.Add(this.lblLocSuKien);
             this.pnlFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlFilter.Location = new System.Drawing.Point(20, 66);
+            this.pnlFilter.Location = new System.Drawing.Point(20, 94);
             this.pnlFilter.Name = "pnlFilter";
             this.pnlFilter.Size = new System.Drawing.Size(1060, 46);
             this.pnlFilter.TabIndex = 1;
@@ -315,7 +315,7 @@ namespace EventManagement.GUI.Forms
             this.dgvLichTrinh.EnableHeadersVisualStyles = false;
             this.dgvLichTrinh.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.dgvLichTrinh.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvLichTrinh.Location = new System.Drawing.Point(20, 120);
+            this.dgvLichTrinh.Location = new System.Drawing.Point(20, 150);
             this.dgvLichTrinh.MultiSelect = false;
             this.dgvLichTrinh.Name = "dgvLichTrinh";
             this.dgvLichTrinh.ReadOnly = true;
@@ -325,7 +325,7 @@ namespace EventManagement.GUI.Forms
             this.dgvLichTrinh.RowsDefaultCellStyle = dgvAltRowStyle;
             this.dgvLichTrinh.RowTemplate.Height = 32;
             this.dgvLichTrinh.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvLichTrinh.Size = new System.Drawing.Size(1060, 260);
+            this.dgvLichTrinh.Size = new System.Drawing.Size(1060, 230);
             this.dgvLichTrinh.TabIndex = 2;
             this.dgvLichTrinh.SelectionChanged += new System.EventHandler(this.dgvLichTrinh_SelectionChanged);
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -118,6 +118,26 @@ namespace EventManagement.GUI.Forms
             colTenSuKien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             colTenTietMuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
             colDiaDiemChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+            // Bố trí thanh lọc và bảng không bị đè bởi Header
+            pnlFilter.Top = pnlHeader.Bottom + 10;
+            dgvLichTrinh.Top = pnlFilter.Bottom + 10;
+            if (grbThongTin != null)
+            {
+                dgvLichTrinh.Height = Math.Max(120, grbThongTin.Top - 10 - dgvLichTrinh.Top);
+            }
+
+            // Tối ưu bề rộng cột không bị cắt chữ (...)
+            dgvLichTrinh.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            colMaLichTrinh.Width = 95;
+            colTenSuKien.Width = 260;
+            colTenTietMuc.Width = 320;
+            colNgayDienRa.Width = 105;
+            colKhungGio.Width = 115;
+            colDiaDiemChiTiet.Width = 220;
+            colTenDienGia.Width = 180;
+            colGhiChu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colGhiChu.MinimumWidth = 200;
             colTenDienGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             LoadAuxiliaryData();
