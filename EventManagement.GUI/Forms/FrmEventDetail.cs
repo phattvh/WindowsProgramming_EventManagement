@@ -142,7 +142,7 @@ namespace EventManagement.GUI.Forms
             };
             pnl.Controls.Add(lblFooter);
             tab.Controls.Add(pnl);
-            pnl.BringToFront();
+            pnl.SendToBack();
             return pnl;
         }
 
@@ -321,15 +321,25 @@ namespace EventManagement.GUI.Forms
             if (lblTab8Footer == null) CreateTabFooter(tabChiPhi, out lblTab8Footer);
             if (lblTab9Footer == null) CreateTabFooter(tabDanhGia, out lblTab9Footer);
 
-            // Send DataGridViews to back so Dock.Bottom footers take effect cleanly
-            dgvLichTrinh.SendToBack();
-            dgvDienGia.SendToBack();
-            dgvNguoiThamGia.SendToBack();
-            dgvHangVe.SendToBack();
-            dgvNhanSu.SendToBack();
-            dgvTaiTro.SendToBack();
-            dgvChiPhi.SendToBack();
-            dgvDanhGia.SendToBack();
+            // Send toolbars and footers to back so they dock to Top/Bottom edges first
+            pnlTab2Toolbar.SendToBack();
+            pnlTab3Toolbar.SendToBack();
+            pnlTab4Toolbar.SendToBack();
+            pnlTab5Toolbar.SendToBack();
+            pnlTab6Toolbar.SendToBack();
+            pnlTab7Toolbar.SendToBack();
+            pnlTab8Toolbar.SendToBack();
+            pnlTab9Toolbar.SendToBack();
+
+            // Bring DataGridViews to front so Dock.Fill occupies only the space between Top toolbar and Bottom footer
+            dgvLichTrinh.BringToFront();
+            dgvDienGia.BringToFront();
+            dgvNguoiThamGia.BringToFront();
+            dgvHangVe.BringToFront();
+            dgvNhanSu.BringToFront();
+            dgvTaiTro.BringToFront();
+            dgvChiPhi.BringToFront();
+            dgvDanhGia.BringToFront();
 
             // Style all 8 DataGridViews
             DataGridView[] allGrids = { dgvLichTrinh, dgvDienGia, dgvNguoiThamGia, dgvHangVe, dgvNhanSu, dgvTaiTro, dgvChiPhi, dgvDanhGia };
@@ -338,22 +348,13 @@ namespace EventManagement.GUI.Forms
                 dgv.AutoGenerateColumns = false;
                 StyleDataGridView(dgv);
                 dgv.EnableHeadersVisualStyles = false;
-                dgv.ColumnHeadersVisible = true;
-                dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-                dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
                 dgv.ColumnHeadersHeight = 36;
                 dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-                dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(30, 58, 138);
-                dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-                dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
                 dgv.RowHeadersVisible = false;
                 dgv.EnableHeadersVisualStyles = false;
                 dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 foreach (DataGridViewColumn col in dgv.Columns)
                 {
-                    col.HeaderCell.Style.BackColor = Color.FromArgb(30, 58, 138);
-                    col.HeaderCell.Style.ForeColor = Color.White;
-                    col.HeaderCell.Style.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
                     col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 }
             }
