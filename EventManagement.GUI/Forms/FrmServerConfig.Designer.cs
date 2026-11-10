@@ -169,9 +169,9 @@
             // 
             // btnTest
             // 
-            this.btnTest.Location = new System.Drawing.Point(115, 360);
+            this.btnTest.Location = new System.Drawing.Point(50, 370);
             this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(120, 32);
+            this.btnTest.Size = new System.Drawing.Size(125, 36);
             this.btnTest.TabIndex = 10;
             this.btnTest.Text = "Thử kết nối";
             this.btnTest.UseVisualStyleBackColor = true;
@@ -181,9 +181,10 @@
             // 
             this.btnSave.BackColor = System.Drawing.Color.FromArgb(46, 204, 113);
             this.btnSave.ForeColor = System.Drawing.Color.White;
-            this.btnSave.Location = new System.Drawing.Point(245, 360);
+            this.btnSave.Location = new System.Drawing.Point(185, 370);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(125, 32);
+            this.btnSave.Size = new System.Drawing.Size(175, 36);
+            this.btnSave.UseMnemonic = false;
             this.btnSave.TabIndex = 11;
             this.btnSave.Text = "Lưu & Khởi động";
             this.btnSave.UseVisualStyleBackColor = false;
@@ -191,9 +192,9 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(380, 360);
+            this.btnCancel.Location = new System.Drawing.Point(370, 370);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(100, 32);
+            this.btnCancel.Size = new System.Drawing.Size(100, 36);
             this.btnCancel.TabIndex = 12;
             this.btnCancel.Text = "Đóng";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -203,7 +204,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(505, 410);
+            this.ClientSize = new System.Drawing.Size(520, 445);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnTest);

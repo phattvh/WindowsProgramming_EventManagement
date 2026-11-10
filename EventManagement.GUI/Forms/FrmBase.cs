@@ -72,18 +72,15 @@ namespace EventManagement.GUI.Forms
 
                 if (this is FrmLogin)
                 {
-                    this.MinimumSize = new Size(420, 345);
-                    this.MaximumSize = new Size(436, 384);
+                    this.ClientSize = new Size(420, 345);
                 }
                 else if (this is FrmChangePassword)
                 {
-                    this.MinimumSize = new Size(445, 380);
-                    this.MaximumSize = new Size(460, 400);
+                    this.ClientSize = new Size(460, 420);
                 }
                 else if (this is FrmServerConfig)
                 {
-                    this.MinimumSize = new Size(505, 410);
-                    this.MaximumSize = new Size(520, 430);
+                    this.ClientSize = new Size(520, 445);
                 }
             }
 
@@ -112,11 +109,11 @@ namespace EventManagement.GUI.Forms
                 }
                 else if (this is FrmChangePassword)
                 {
-                    this.ClientSize = new Size(445, 380);
+                    this.ClientSize = new Size(460, 420);
                 }
                 else if (this is FrmServerConfig)
                 {
-                    this.ClientSize = new Size(505, 410);
+                    this.ClientSize = new Size(520, 445);
                 }
 
                 if (this.Owner != null)
