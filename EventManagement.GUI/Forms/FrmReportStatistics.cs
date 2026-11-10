@@ -71,6 +71,7 @@ namespace EventManagement.GUI.Forms
             dgvReportData.RowTemplate.Height = 30;
             dgvReportData.ColumnHeadersHeight = 36;
             dgvReportData.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvReportData.EnableHeadersVisualStyles = false;
             dgvReportData.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
             dgvReportData.ColumnHeadersDefaultCellStyle.SelectionForeColor = ColorText;
             dgvReportData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -236,18 +237,19 @@ namespace EventManagement.GUI.Forms
         {
             dgvReportData.Columns.Clear();
             var colStt = new DataGridViewTextBoxColumn { HeaderText = "STT", Width = 45, MinimumWidth = 40, AutoSizeMode = DataGridViewAutoSizeColumnMode.None, Resizable = DataGridViewTriState.False };
-            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã chi phí", Width = 85, MinimumWidth = 75, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
+            var colMa = new DataGridViewTextBoxColumn { HeaderText = "Mã chi phí", Width = 105, MinimumWidth = 95, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
             var colKhoanMuc = new DataGridViewTextBoxColumn { HeaderText = "Khoản mục chi", Width = 320, MinimumWidth = 240, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 125 };
             var colNoiDung = new DataGridViewTextBoxColumn { HeaderText = "Nội dung", Width = 260, MinimumWidth = 200, AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, FillWeight = 95 };
             var colNgay = new DataGridViewTextBoxColumn { HeaderText = "Ngày chi", Width = 95, MinimumWidth = 85, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
-            var colNguoi = new DataGridViewTextBoxColumn { HeaderText = "Người chi", Width = 190, MinimumWidth = 160, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
-            var colTien = new DataGridViewTextBoxColumn { HeaderText = "Số tiền", Width = 125, MinimumWidth = 110, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
-            var colTrangThai = new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", Width = 90, MinimumWidth = 80, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
+            var colNguoi = new DataGridViewTextBoxColumn { HeaderText = "Người chi", Width = 200, MinimumWidth = 160, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
+            var colTien = new DataGridViewTextBoxColumn { HeaderText = "Số tiền", Width = 130, MinimumWidth = 110, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
+            var colTrangThai = new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", Width = 95, MinimumWidth = 85, AutoSizeMode = DataGridViewAutoSizeColumnMode.None };
 
             dgvReportData.Columns.AddRange(colStt, colMa, colKhoanMuc, colNoiDung, colNgay, colNguoi, colTien, colTrangThai);
 
             foreach (DataGridViewColumn col in dgvReportData.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
@@ -260,6 +262,7 @@ namespace EventManagement.GUI.Forms
             colTien.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNgay.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colNguoi.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTrangThai.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
         #endregion
 
@@ -319,6 +322,7 @@ namespace EventManagement.GUI.Forms
 
             foreach (DataGridViewColumn col in dgvReportData.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
@@ -408,6 +412,7 @@ namespace EventManagement.GUI.Forms
 
             foreach (DataGridViewColumn col in dgvReportData.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
 
