@@ -80,14 +80,18 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnDong, ButtonRole.Secondary);
 
             StyleDataGridView(dgvRecentCheckIns);
+            dgvRecentCheckIns.EnableHeadersVisualStyles = false;
+            dgvRecentCheckIns.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvRecentCheckIns.AutoGenerateColumns = false;
 
             foreach (DataGridViewColumn col in dgvRecentCheckIns.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.Automatic;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
             colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colHangVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colPhuongThuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colKetQua.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -143,13 +147,14 @@ namespace EventManagement.GUI.Forms
         {
             try
             {
-                _events = _checkInService.GetActiveEvents();
+                var rawEvents = _checkInService.GetActiveEvents();
+                var eventItems = rawEvents.Select(e => new EventLookupItem(e.MaSuKien, e.TenSuKien)).ToList();
                 cboSuKien.DataSource = null;
-                cboSuKien.DisplayMember = "TenSuKien";
-                cboSuKien.ValueMember = "MaSuKien";
-                cboSuKien.DataSource = _events;
+                cboSuKien.DisplayMember = nameof(EventLookupItem.TenSuKien);
+                cboSuKien.ValueMember = nameof(EventLookupItem.MaSuKien);
+                cboSuKien.DataSource = eventItems;
 
-                if (_events.Count > 0)
+                if (eventItems.Count > 0)
                 {
                     cboSuKien.SelectedIndex = 0;
                 }
@@ -158,6 +163,30 @@ namespace EventManagement.GUI.Forms
             {
                 MessageBox.Show("Lỗi tải danh sách sự kiện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string GetSelectedEventCode()
+        {
+            if (cboSuKien.SelectedItem is EventLookupItem item)
+            {
+                return item.MaSuKien;
+            }
+            if (cboSuKien.SelectedValue is string code && !string.IsNullOrEmpty(code))
+            {
+                return code;
+            }
+            if (cboSuKien.SelectedValue != null)
+            {
+                string val = cboSuKien.SelectedValue.ToString() ?? string.Empty;
+                if (val.StartsWith("(") && val.Contains(','))
+                {
+                    var parts = val.Trim('(', ')').Split(',');
+                    if (parts.Length > 0 && !string.IsNullOrWhiteSpace(parts[0]))
+                        return parts[0].Trim();
+                }
+                return val;
+            }
+            return string.Empty;
         }
 
         private void LoadCameraDevices()
@@ -183,7 +212,7 @@ namespace EventManagement.GUI.Forms
                     cboCamera.SelectedIndex = 0;
                     btnBatCamera.Enabled = false;
                     btnTatCamera.Enabled = false;
-                    lblFooterStatus.Text = "Trạng thái camera: Không tìm thấy camera phần cứng. Vui lòng dùng ô nhập mã dự phòng.";
+                    lblFooterStatus.Text = "Trạng thái camera: Không tìm thấy camera phần cứng. Vui lòng dùng ô nhập mã thủ công.";
                 }
             }
             catch (Exception ex)
@@ -343,7 +372,7 @@ namespace EventManagement.GUI.Forms
 
         private void ExecuteCheckIn(string rawCode, string method)
         {
-            string selectedEventId = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+            string selectedEventId = GetSelectedEventCode();
 
             var request = new CheckInRequestDto
             {
@@ -397,7 +426,7 @@ namespace EventManagement.GUI.Forms
             lblStatusTitle.ForeColor = Color.FromArgb(185, 28, 28);    // Red dark #B91C1C
             lblStatusDetail.ForeColor = Color.FromArgb(153, 27, 27);
 
-            lblStatusTitle.Text = $"⚠ CẢNH BÁO QUÉT TRÙNG LẶP (BR-12): VÉ ĐÃ ĐƯỢC CHECK-IN TRƯỚC ĐÓ!";
+            lblStatusTitle.Text = "⚠ CẢNH BÁO QUÉT TRÙNG LẶP: VÉ ĐÃ ĐƯỢC CHECK-IN TRƯỚC ĐÓ!";
             string timeStr = checkIn.ThoiGianCheckInTruocDo.HasValue 
                 ? checkIn.ThoiGianCheckInTruocDo.Value.ToString("HH:mm:ss dd/MM/yyyy") 
                 : "Không rõ thời gian";
@@ -410,7 +439,7 @@ namespace EventManagement.GUI.Forms
             lblStatusTitle.ForeColor = Color.FromArgb(185, 28, 28);
             lblStatusDetail.ForeColor = Color.FromArgb(127, 29, 29);
 
-            lblStatusTitle.Text = "✗ TỪ CHỐI CHECK-IN: VÉ KHÔNG HỢP LỆ (BR-11)";
+            lblStatusTitle.Text = "✗ TỪ CHỐI CHECK-IN: VÉ KHÔNG HỢP LỆ";
             lblStatusDetail.Text = errorMessage;
         }
 
@@ -426,7 +455,7 @@ namespace EventManagement.GUI.Forms
 
         private void RefreshStatistics()
         {
-            string selectedEventId = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+            string selectedEventId = GetSelectedEventCode();
             var stats = _checkInService.GetCheckInStatistics(selectedEventId);
 
             lblKpiTongVe.Text = stats.TongVePhatHanh.ToString();
@@ -437,7 +466,7 @@ namespace EventManagement.GUI.Forms
 
         private void RefreshRecentLogs()
         {
-            string selectedEventId = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+            string selectedEventId = GetSelectedEventCode();
             var logs = _checkInService.GetRecentCheckIns(selectedEventId, 25);
 
             dgvRecentCheckIns.Rows.Clear();
@@ -471,7 +500,7 @@ namespace EventManagement.GUI.Forms
             ResetStatusBanner();
 
             MessageBox.Show(
-                "Đã đặt lại trạng thái 3 vé mẫu (VE00001, VE00002, VE00003) về 'Hợp lệ' chưa check-in để thử nghiệm lại BR-11 và BR-12.",
+                "Đã đặt lại trạng thái các vé mẫu về 'Hợp lệ' chưa check-in để thử nghiệm lại quy trình soát vé.",
                 "Đặt lại thành công",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

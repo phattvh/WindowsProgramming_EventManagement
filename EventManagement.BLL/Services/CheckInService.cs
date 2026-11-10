@@ -38,6 +38,21 @@ namespace EventManagement.BLL.Services
 
         private static readonly object _syncLock = new();
 
+        private static string NormalizeCode(string? code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return string.Empty;
+            var trimmed = code.Trim();
+            if (trimmed.StartsWith("(") && trimmed.Contains(','))
+            {
+                var parts = trimmed.Trim('(', ')').Split(',');
+                if (parts.Length > 0 && !string.IsNullOrWhiteSpace(parts[0]))
+                {
+                    return parts[0].Trim();
+                }
+            }
+            return trimmed;
+        }
+
         public List<(string MaSuKien, string TenSuKien)> GetActiveEvents()
         {
             return _events.ToList();
@@ -52,7 +67,7 @@ namespace EventManagement.BLL.Services
                 return ServiceResult<CheckInResultDto>.Failed("Mã QR hoặc mã vé không được để trống.");
 
             string token = request.MaQRLuocDoc.Trim();
-            string selectedEventId = request.MaSuKien?.Trim() ?? string.Empty;
+            string selectedEventId = NormalizeCode(request.MaSuKien);
 
             lock (_syncLock)
             {
@@ -97,7 +112,7 @@ namespace EventManagement.BLL.Services
                     string warnMsg = $"CẢNH BÁO: Vé '{ticket.MaVe}' ({ticket.TenNguoiThamGia}) đã được check-in trước đó vào lúc {previousScanTime:HH:mm:ss dd/MM/yyyy}!";
 
                     LogHistory(ticket.MaVe, ticket.TenNguoiThamGia, ticket.TenHangVe, request.PhuongThuc, false,
-                        $"Quét trùng lặp lúc {previousScanTime:HH:mm:ss} (BR-12)");
+                        $"Quét trùng lặp lúc {previousScanTime:HH:mm:ss}");
 
                     var duplicateResult = new CheckInResultDto
                     {
@@ -142,20 +157,24 @@ namespace EventManagement.BLL.Services
         {
             lock (_syncLock)
             {
+                var eventCode = NormalizeCode(maSuKien);
                 var tickets = TicketOrderService.GetIssuedTicketsList();
-                var currentEvent = _events.FirstOrDefault(e => e.MaSuKien == maSuKien);
+                var currentEvent = _events.FirstOrDefault(e => string.Equals(e.MaSuKien, eventCode, StringComparison.OrdinalIgnoreCase));
                 string eventName = currentEvent.TenSuKien ?? string.Empty;
 
-                var eventTickets = string.IsNullOrWhiteSpace(eventName)
+                var eventTickets = string.IsNullOrWhiteSpace(eventCode) && string.IsNullOrWhiteSpace(eventName)
                     ? tickets
-                    : tickets.Where(t => string.Equals(t.TenSuKien, eventName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    : tickets.Where(t => 
+                        (!string.IsNullOrWhiteSpace(eventCode) && string.Equals(t.MaSuKien, eventCode, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrWhiteSpace(eventName) && string.Equals(t.TenSuKien, eventName, StringComparison.OrdinalIgnoreCase))
+                    ).ToList();
 
                 int total = eventTickets.Count;
                 int checkedIn = eventTickets.Count(t => t.ThoiGianCheckIn != null || string.Equals(t.TrangThaiVe, "Đã check-in", StringComparison.OrdinalIgnoreCase));
 
                 return new CheckInStatsDto
                 {
-                    MaSuKien = maSuKien,
+                    MaSuKien = eventCode,
                     TongVePhatHanh = total,
                     DaCheckIn = checkedIn
                 };

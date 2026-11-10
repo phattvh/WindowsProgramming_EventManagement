@@ -156,6 +156,76 @@ namespace EventManagement.BLL.Services
                 MaQR = "EVT2-QR-BICH-004",
                 TrangThaiVe = "Hợp lệ",
                 NgayDangKy = new DateTime(2026, 11, 4)
+            },
+            new TicketDetailDto
+            {
+                MaVe = "VE00004",
+                MaDangKy = "REG004",
+                MaSuKien = "EVT202602",
+                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
+                TenHangVe = "Standard",
+                GiaVe = 300000m,
+                TenNguoiThamGia = "Đặng Hoàng Nam",
+                Email = "nam.dang@aihub.vn",
+                MaQR = "EVT2-QR-NAM-005",
+                TrangThaiVe = "Hợp lệ",
+                NgayDangKy = new DateTime(2026, 11, 5)
+            },
+            new TicketDetailDto
+            {
+                MaVe = "VE00005",
+                MaDangKy = "REG005",
+                MaSuKien = "EVT202602",
+                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
+                TenHangVe = "VIP",
+                GiaVe = 600000m,
+                TenNguoiThamGia = "Trần Thị Lan",
+                Email = "lan.tran@techgroup.vn",
+                MaQR = "EVT2-QR-LAN-006",
+                TrangThaiVe = "Hợp lệ",
+                NgayDangKy = new DateTime(2026, 11, 5)
+            },
+            new TicketDetailDto
+            {
+                MaVe = "VE00006",
+                MaDangKy = "REG006",
+                MaSuKien = "EVT202602",
+                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
+                TenHangVe = "Early Bird",
+                GiaVe = 250000m,
+                TenNguoiThamGia = "Lê Hoàng Phúc",
+                Email = "phuc.le@corp.vn",
+                MaQR = "EVT2-QR-PHUC-007",
+                TrangThaiVe = "Hợp lệ",
+                NgayDangKy = new DateTime(2026, 11, 6)
+            },
+            new TicketDetailDto
+            {
+                MaVe = "VE00007",
+                MaDangKy = "REG007",
+                MaSuKien = "EVT202603",
+                TenSuKien = "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT",
+                TenHangVe = "VIP",
+                GiaVe = 900000m,
+                TenNguoiThamGia = "PGS.TS. Trần Văn Hưng",
+                Email = "hung.tran@univ.edu.vn",
+                MaQR = "EVT3-QR-HUNG-008",
+                TrangThaiVe = "Hợp lệ",
+                NgayDangKy = new DateTime(2026, 11, 7)
+            },
+            new TicketDetailDto
+            {
+                MaVe = "VE00008",
+                MaDangKy = "REG008",
+                MaSuKien = "EVT202603",
+                TenSuKien = "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT",
+                TenHangVe = "Standard",
+                GiaVe = 350000m,
+                TenNguoiThamGia = "ThS. Đỗ Thị Thu",
+                Email = "thu.do@research.org",
+                MaQR = "EVT3-QR-THU-009",
+                TrangThaiVe = "Hợp lệ",
+                NgayDangKy = new DateTime(2026, 11, 7)
             }
         };
 

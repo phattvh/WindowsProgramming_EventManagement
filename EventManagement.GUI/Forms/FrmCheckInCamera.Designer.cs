@@ -52,6 +52,8 @@ namespace EventManagement.GUI.Forms
             this.pnlKpi4 = new System.Windows.Forms.Panel();
             this.lblKpiTyLe = new System.Windows.Forms.Label();
             this.lblKpiTitle4 = new System.Windows.Forms.Label();
+            this.pnlSpacerKpi = new System.Windows.Forms.Panel();
+            this.pnlSpacer = new System.Windows.Forms.Panel();
             this.pnlStatusBanner = new System.Windows.Forms.Panel();
             this.lblStatusDetail = new System.Windows.Forms.Label();
             this.lblStatusTitle = new System.Windows.Forms.Label();
@@ -108,7 +110,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Name = "lblSubTitle";
             this.lblSubTitle.Size = new System.Drawing.Size(595, 15);
             this.lblSubTitle.TabIndex = 1;
-            this.lblSubTitle.Text = "Thẩm định QR Token theo thời gian thực (BR-11) • Kiểm soát vào cổng một chiều chống quét trùng lặp (BR-12)";
+            this.lblSubTitle.Text = "Thẩm định QR Token theo thời gian thực • Kiểm soát vào cổng một chiều chống quét trùng lặp";
             this.lblSubTitle.Visible = false;
             // 
             // lblTitle
@@ -147,9 +149,9 @@ namespace EventManagement.GUI.Forms
             this.btnTatCamera.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTatCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnTatCamera.ForeColor = System.Drawing.Color.White;
-            this.btnTatCamera.Location = new System.Drawing.Point(1050, 11);
+            this.btnTatCamera.Location = new System.Drawing.Point(1045, 11);
             this.btnTatCamera.Name = "btnTatCamera";
-            this.btnTatCamera.Size = new System.Drawing.Size(120, 32);
+            this.btnTatCamera.Size = new System.Drawing.Size(125, 32);
             this.btnTatCamera.TabIndex = 5;
             this.btnTatCamera.Text = "■ Tắt Camera";
             this.btnTatCamera.UseVisualStyleBackColor = false;
@@ -161,9 +163,9 @@ namespace EventManagement.GUI.Forms
             this.btnBatCamera.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBatCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnBatCamera.ForeColor = System.Drawing.Color.White;
-            this.btnBatCamera.Location = new System.Drawing.Point(920, 11);
+            this.btnBatCamera.Location = new System.Drawing.Point(905, 11);
             this.btnBatCamera.Name = "btnBatCamera";
-            this.btnBatCamera.Size = new System.Drawing.Size(120, 32);
+            this.btnBatCamera.Size = new System.Drawing.Size(125, 32);
             this.btnBatCamera.TabIndex = 4;
             this.btnBatCamera.Text = "▶ Bật Camera";
             this.btnBatCamera.UseVisualStyleBackColor = false;
@@ -173,18 +175,18 @@ namespace EventManagement.GUI.Forms
             this.cboCamera.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCamera.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.cboCamera.FormattingEnabled = true;
-            this.cboCamera.Location = new System.Drawing.Point(630, 16);
+            this.cboCamera.Location = new System.Drawing.Point(625, 16);
             this.cboCamera.Name = "cboCamera";
-            this.cboCamera.Size = new System.Drawing.Size(270, 23);
+            this.cboCamera.Size = new System.Drawing.Size(250, 23);
             this.cboCamera.TabIndex = 3;
             // 
             // lblCamera
             // 
             this.lblCamera.AutoSize = true;
             this.lblCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblCamera.Location = new System.Drawing.Point(540, 20);
+            this.lblCamera.Location = new System.Drawing.Point(505, 20);
             this.lblCamera.Name = "lblCamera";
-            this.lblCamera.Size = new System.Drawing.Size(83, 15);
+            this.lblCamera.Size = new System.Drawing.Size(95, 15);
             this.lblCamera.TabIndex = 2;
             this.lblCamera.Text = "Thiết bị Video:";
             // 
@@ -193,18 +195,18 @@ namespace EventManagement.GUI.Forms
             this.cboSuKien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSuKien.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.cboSuKien.FormattingEnabled = true;
-            this.cboSuKien.Location = new System.Drawing.Point(120, 16);
+            this.cboSuKien.Location = new System.Drawing.Point(155, 16);
             this.cboSuKien.Name = "cboSuKien";
-            this.cboSuKien.Size = new System.Drawing.Size(390, 23);
+            this.cboSuKien.Size = new System.Drawing.Size(320, 23);
             this.cboSuKien.TabIndex = 1;
             // 
             // lblSuKien
             // 
             this.lblSuKien.AutoSize = true;
             this.lblSuKien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblSuKien.Location = new System.Drawing.Point(18, 20);
+            this.lblSuKien.Location = new System.Drawing.Point(16, 20);
             this.lblSuKien.Name = "lblSuKien";
-            this.lblSuKien.Size = new System.Drawing.Size(95, 15);
+            this.lblSuKien.Size = new System.Drawing.Size(115, 15);
             this.lblSuKien.TabIndex = 0;
             this.lblSuKien.Text = "Sự kiện kiểm tra:";
             // 
@@ -224,7 +226,9 @@ namespace EventManagement.GUI.Forms
             // scMain.Panel2
             // 
             this.scMain.Panel2.Controls.Add(this.grpRecent);
+            this.scMain.Panel2.Controls.Add(this.pnlSpacer);
             this.scMain.Panel2.Controls.Add(this.pnlStatusBanner);
+            this.scMain.Panel2.Controls.Add(this.pnlSpacerKpi);
             this.scMain.Panel2.Controls.Add(this.pnlKpis);
             this.scMain.Panel2.Padding = new System.Windows.Forms.Padding(12);
             this.scMain.Size = new System.Drawing.Size(1200, 572);
@@ -242,7 +246,7 @@ namespace EventManagement.GUI.Forms
             this.grpCamera.Size = new System.Drawing.Size(436, 428);
             this.grpCamera.TabIndex = 0;
             this.grpCamera.TabStop = false;
-            this.grpCamera.Text = "Khung quét Camera QR (Webcam Live Feed)";
+            this.grpCamera.Text = "Khung quét Camera QR";
             // 
             // picCameraFeed
             // 
@@ -270,7 +274,7 @@ namespace EventManagement.GUI.Forms
             this.grpManual.Size = new System.Drawing.Size(436, 120);
             this.grpManual.TabIndex = 1;
             this.grpManual.TabStop = false;
-            this.grpManual.Text = "Nhập mã vé / Token thủ công (Dự phòng)";
+            this.grpManual.Text = "Nhập mã vé / Token thủ công";
             // 
             // lblManualHint
             // 
@@ -473,6 +477,22 @@ namespace EventManagement.GUI.Forms
             this.lblKpiTitle4.Size = new System.Drawing.Size(95, 13);
             this.lblKpiTitle4.TabIndex = 0;
             this.lblKpiTitle4.Text = "TỶ LỆ VÀO CỔNG";
+            // 
+            // pnlSpacerKpi
+            // 
+            this.pnlSpacerKpi.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSpacerKpi.Location = new System.Drawing.Point(12, 76);
+            this.pnlSpacerKpi.Name = "pnlSpacerKpi";
+            this.pnlSpacerKpi.Size = new System.Drawing.Size(712, 12);
+            this.pnlSpacerKpi.TabIndex = 4;
+            // 
+            // pnlSpacer
+            // 
+            this.pnlSpacer.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlSpacer.Location = new System.Drawing.Point(12, 167);
+            this.pnlSpacer.Name = "pnlSpacer";
+            this.pnlSpacer.Size = new System.Drawing.Size(712, 12);
+            this.pnlSpacer.TabIndex = 3;
             // 
             // pnlStatusBanner
             // 
@@ -734,6 +754,8 @@ namespace EventManagement.GUI.Forms
         private System.Windows.Forms.Panel pnlKpi4;
         private System.Windows.Forms.Label lblKpiTyLe;
         private System.Windows.Forms.Label lblKpiTitle4;
+        private System.Windows.Forms.Panel pnlSpacerKpi;
+        private System.Windows.Forms.Panel pnlSpacer;
         private System.Windows.Forms.Panel pnlStatusBanner;
         private System.Windows.Forms.Label lblStatusDetail;
         private System.Windows.Forms.Label lblStatusTitle;
