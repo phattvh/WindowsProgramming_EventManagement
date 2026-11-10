@@ -47,7 +47,7 @@ namespace EventManagement.Tests
             }
 
             var colTen = form.DgvTiers.Columns["TenHangVe"] ?? form.DgvTiers.Columns[2];
-            colTen.Width.Should().Be(280);
+            colTen.Width.Should().Be(200);
         }
 
         [TestMethod]
@@ -58,8 +58,8 @@ namespace EventManagement.Tests
             form.Show();
 
             form.BtnAdd.Visible.Should().BeTrue();
-            form.BtnSave.Visible.Should().BeFalse();
-            form.BtnCancel.Visible.Should().BeFalse();
+            form.BtnSave.Enabled.Should().BeFalse();
+            form.BtnCancel.Enabled.Should().BeFalse();
             form.Hide();
         }
     }
