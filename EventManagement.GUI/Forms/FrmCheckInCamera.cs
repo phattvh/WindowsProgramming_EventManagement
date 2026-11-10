@@ -86,7 +86,7 @@ namespace EventManagement.GUI.Forms
 
             foreach (DataGridViewColumn col in dgvRecentCheckIns.Columns)
             {
-                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+                col.SortMode = DataGridViewColumnSortMode.Automatic;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
             colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -147,13 +147,14 @@ namespace EventManagement.GUI.Forms
         {
             try
             {
-                _events = _checkInService.GetActiveEvents();
+                var rawEvents = _checkInService.GetActiveEvents();
+                var eventItems = rawEvents.Select(e => new EventLookupItem(e.MaSuKien, e.TenSuKien)).ToList();
                 cboSuKien.DataSource = null;
-                cboSuKien.DisplayMember = "TenSuKien";
-                cboSuKien.ValueMember = "MaSuKien";
-                cboSuKien.DataSource = _events;
+                cboSuKien.DisplayMember = nameof(EventLookupItem.TenSuKien);
+                cboSuKien.ValueMember = nameof(EventLookupItem.MaSuKien);
+                cboSuKien.DataSource = eventItems;
 
-                if (_events.Count > 0)
+                if (eventItems.Count > 0)
                 {
                     cboSuKien.SelectedIndex = 0;
                 }
@@ -162,6 +163,30 @@ namespace EventManagement.GUI.Forms
             {
                 MessageBox.Show("Lỗi tải danh sách sự kiện: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string GetSelectedEventCode()
+        {
+            if (cboSuKien.SelectedItem is EventLookupItem item)
+            {
+                return item.MaSuKien;
+            }
+            if (cboSuKien.SelectedValue is string code && !string.IsNullOrEmpty(code))
+            {
+                return code;
+            }
+            if (cboSuKien.SelectedValue != null)
+            {
+                string val = cboSuKien.SelectedValue.ToString() ?? string.Empty;
+                if (val.StartsWith("(") && val.Contains(','))
+                {
+                    var parts = val.Trim('(', ')').Split(',');
+                    if (parts.Length > 0 && !string.IsNullOrWhiteSpace(parts[0]))
+                        return parts[0].Trim();
+                }
+                return val;
+            }
+            return string.Empty;
         }
 
         private void LoadCameraDevices()
@@ -347,7 +372,7 @@ namespace EventManagement.GUI.Forms
 
         private void ExecuteCheckIn(string rawCode, string method)
         {
-            string selectedEventId = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+            string selectedEventId = GetSelectedEventCode();
 
             var request = new CheckInRequestDto
             {
@@ -430,7 +455,7 @@ namespace EventManagement.GUI.Forms
 
         private void RefreshStatistics()
         {
-            string selectedEventId = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+            string selectedEventId = GetSelectedEventCode();
             var stats = _checkInService.GetCheckInStatistics(selectedEventId);
 
             lblKpiTongVe.Text = stats.TongVePhatHanh.ToString();
@@ -441,7 +466,7 @@ namespace EventManagement.GUI.Forms
 
         private void RefreshRecentLogs()
         {
-            string selectedEventId = cboSuKien.SelectedValue?.ToString() ?? string.Empty;
+            string selectedEventId = GetSelectedEventCode();
             var logs = _checkInService.GetRecentCheckIns(selectedEventId, 25);
 
             dgvRecentCheckIns.Rows.Clear();

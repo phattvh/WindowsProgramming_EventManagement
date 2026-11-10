@@ -147,7 +147,7 @@ namespace EventManagement.GUI.Forms
             this.btnTatCamera.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTatCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnTatCamera.ForeColor = System.Drawing.Color.White;
-            this.btnTatCamera.Location = new System.Drawing.Point(1040, 11);
+            this.btnTatCamera.Location = new System.Drawing.Point(1045, 11);
             this.btnTatCamera.Name = "btnTatCamera";
             this.btnTatCamera.Size = new System.Drawing.Size(125, 32);
             this.btnTatCamera.TabIndex = 5;
@@ -173,16 +173,16 @@ namespace EventManagement.GUI.Forms
             this.cboCamera.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCamera.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.cboCamera.FormattingEnabled = true;
-            this.cboCamera.Location = new System.Drawing.Point(630, 16);
+            this.cboCamera.Location = new System.Drawing.Point(625, 16);
             this.cboCamera.Name = "cboCamera";
-            this.cboCamera.Size = new System.Drawing.Size(260, 23);
+            this.cboCamera.Size = new System.Drawing.Size(250, 23);
             this.cboCamera.TabIndex = 3;
             // 
             // lblCamera
             // 
             this.lblCamera.AutoSize = true;
             this.lblCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblCamera.Location = new System.Drawing.Point(525, 20);
+            this.lblCamera.Location = new System.Drawing.Point(505, 20);
             this.lblCamera.Name = "lblCamera";
             this.lblCamera.Size = new System.Drawing.Size(95, 15);
             this.lblCamera.TabIndex = 2;
@@ -193,16 +193,16 @@ namespace EventManagement.GUI.Forms
             this.cboSuKien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSuKien.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.cboSuKien.FormattingEnabled = true;
-            this.cboSuKien.Location = new System.Drawing.Point(140, 16);
+            this.cboSuKien.Location = new System.Drawing.Point(155, 16);
             this.cboSuKien.Name = "cboSuKien";
-            this.cboSuKien.Size = new System.Drawing.Size(365, 23);
+            this.cboSuKien.Size = new System.Drawing.Size(320, 23);
             this.cboSuKien.TabIndex = 1;
             // 
             // lblSuKien
             // 
             this.lblSuKien.AutoSize = true;
             this.lblSuKien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblSuKien.Location = new System.Drawing.Point(18, 20);
+            this.lblSuKien.Location = new System.Drawing.Point(16, 20);
             this.lblSuKien.Name = "lblSuKien";
             this.lblSuKien.Size = new System.Drawing.Size(115, 15);
             this.lblSuKien.TabIndex = 0;

@@ -38,6 +38,21 @@ namespace EventManagement.BLL.Services
 
         private static readonly object _syncLock = new();
 
+        private static string NormalizeCode(string? code)
+        {
+            if (string.IsNullOrWhiteSpace(code)) return string.Empty;
+            var trimmed = code.Trim();
+            if (trimmed.StartsWith("(") && trimmed.Contains(','))
+            {
+                var parts = trimmed.Trim('(', ')').Split(',');
+                if (parts.Length > 0 && !string.IsNullOrWhiteSpace(parts[0]))
+                {
+                    return parts[0].Trim();
+                }
+            }
+            return trimmed;
+        }
+
         public List<(string MaSuKien, string TenSuKien)> GetActiveEvents()
         {
             return _events.ToList();
@@ -52,7 +67,7 @@ namespace EventManagement.BLL.Services
                 return ServiceResult<CheckInResultDto>.Failed("Mã QR hoặc mã vé không được để trống.");
 
             string token = request.MaQRLuocDoc.Trim();
-            string selectedEventId = request.MaSuKien?.Trim() ?? string.Empty;
+            string selectedEventId = NormalizeCode(request.MaSuKien);
 
             lock (_syncLock)
             {
@@ -142,14 +157,15 @@ namespace EventManagement.BLL.Services
         {
             lock (_syncLock)
             {
+                var eventCode = NormalizeCode(maSuKien);
                 var tickets = TicketOrderService.GetIssuedTicketsList();
-                var currentEvent = _events.FirstOrDefault(e => e.MaSuKien == maSuKien);
+                var currentEvent = _events.FirstOrDefault(e => string.Equals(e.MaSuKien, eventCode, StringComparison.OrdinalIgnoreCase));
                 string eventName = currentEvent.TenSuKien ?? string.Empty;
 
-                var eventTickets = string.IsNullOrWhiteSpace(maSuKien) && string.IsNullOrWhiteSpace(eventName)
+                var eventTickets = string.IsNullOrWhiteSpace(eventCode) && string.IsNullOrWhiteSpace(eventName)
                     ? tickets
                     : tickets.Where(t => 
-                        (!string.IsNullOrWhiteSpace(maSuKien) && string.Equals(t.MaSuKien, maSuKien, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrWhiteSpace(eventCode) && string.Equals(t.MaSuKien, eventCode, StringComparison.OrdinalIgnoreCase)) ||
                         (!string.IsNullOrWhiteSpace(eventName) && string.Equals(t.TenSuKien, eventName, StringComparison.OrdinalIgnoreCase))
                     ).ToList();
 
@@ -158,7 +174,7 @@ namespace EventManagement.BLL.Services
 
                 return new CheckInStatsDto
                 {
-                    MaSuKien = maSuKien,
+                    MaSuKien = eventCode,
                     TongVePhatHanh = total,
                     DaCheckIn = checkedIn
                 };
