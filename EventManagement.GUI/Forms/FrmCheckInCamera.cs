@@ -80,14 +80,18 @@ namespace EventManagement.GUI.Forms
             StyleButton(btnDong, ButtonRole.Secondary);
 
             StyleDataGridView(dgvRecentCheckIns);
+            dgvRecentCheckIns.EnableHeadersVisualStyles = false;
+            dgvRecentCheckIns.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvRecentCheckIns.AutoGenerateColumns = false;
 
             foreach (DataGridViewColumn col in dgvRecentCheckIns.Columns)
             {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
             colThoiGian.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colMaVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colHangVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colPhuongThuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colKetQua.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -397,7 +401,7 @@ namespace EventManagement.GUI.Forms
             lblStatusTitle.ForeColor = Color.FromArgb(185, 28, 28);    // Red dark #B91C1C
             lblStatusDetail.ForeColor = Color.FromArgb(153, 27, 27);
 
-            lblStatusTitle.Text = $"⚠ CẢNH BÁO QUÉT TRÙNG LẶP (BR-12): VÉ ĐÃ ĐƯỢC CHECK-IN TRƯỚC ĐÓ!";
+            lblStatusTitle.Text = "⚠ CẢNH BÁO QUÉT TRÙNG LẶP: VÉ ĐÃ ĐƯỢC CHECK-IN TRƯỚC ĐÓ!";
             string timeStr = checkIn.ThoiGianCheckInTruocDo.HasValue 
                 ? checkIn.ThoiGianCheckInTruocDo.Value.ToString("HH:mm:ss dd/MM/yyyy") 
                 : "Không rõ thời gian";
@@ -410,7 +414,7 @@ namespace EventManagement.GUI.Forms
             lblStatusTitle.ForeColor = Color.FromArgb(185, 28, 28);
             lblStatusDetail.ForeColor = Color.FromArgb(127, 29, 29);
 
-            lblStatusTitle.Text = "✗ TỪ CHỐI CHECK-IN: VÉ KHÔNG HỢP LỆ (BR-11)";
+            lblStatusTitle.Text = "✗ TỪ CHỐI CHECK-IN: VÉ KHÔNG HỢP LỆ";
             lblStatusDetail.Text = errorMessage;
         }
 
@@ -471,7 +475,7 @@ namespace EventManagement.GUI.Forms
             ResetStatusBanner();
 
             MessageBox.Show(
-                "Đã đặt lại trạng thái 3 vé mẫu (VE00001, VE00002, VE00003) về 'Hợp lệ' chưa check-in để thử nghiệm lại BR-11 và BR-12.",
+                "Đã đặt lại trạng thái các vé mẫu về 'Hợp lệ' chưa check-in để thử nghiệm lại quy trình soát vé.",
                 "Đặt lại thành công",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

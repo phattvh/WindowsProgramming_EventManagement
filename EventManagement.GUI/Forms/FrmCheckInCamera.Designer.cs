@@ -108,7 +108,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Name = "lblSubTitle";
             this.lblSubTitle.Size = new System.Drawing.Size(595, 15);
             this.lblSubTitle.TabIndex = 1;
-            this.lblSubTitle.Text = "Thẩm định QR Token theo thời gian thực (BR-11) • Kiểm soát vào cổng một chiều chống quét trùng lặp (BR-12)";
+            this.lblSubTitle.Text = "Thẩm định QR Token theo thời gian thực • Kiểm soát vào cổng một chiều chống quét trùng lặp";
             this.lblSubTitle.Visible = false;
             // 
             // lblTitle
@@ -147,9 +147,9 @@ namespace EventManagement.GUI.Forms
             this.btnTatCamera.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTatCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnTatCamera.ForeColor = System.Drawing.Color.White;
-            this.btnTatCamera.Location = new System.Drawing.Point(1050, 11);
+            this.btnTatCamera.Location = new System.Drawing.Point(1040, 11);
             this.btnTatCamera.Name = "btnTatCamera";
-            this.btnTatCamera.Size = new System.Drawing.Size(120, 32);
+            this.btnTatCamera.Size = new System.Drawing.Size(125, 32);
             this.btnTatCamera.TabIndex = 5;
             this.btnTatCamera.Text = "■ Tắt Camera";
             this.btnTatCamera.UseVisualStyleBackColor = false;
@@ -161,9 +161,9 @@ namespace EventManagement.GUI.Forms
             this.btnBatCamera.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnBatCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnBatCamera.ForeColor = System.Drawing.Color.White;
-            this.btnBatCamera.Location = new System.Drawing.Point(920, 11);
+            this.btnBatCamera.Location = new System.Drawing.Point(905, 11);
             this.btnBatCamera.Name = "btnBatCamera";
-            this.btnBatCamera.Size = new System.Drawing.Size(120, 32);
+            this.btnBatCamera.Size = new System.Drawing.Size(125, 32);
             this.btnBatCamera.TabIndex = 4;
             this.btnBatCamera.Text = "▶ Bật Camera";
             this.btnBatCamera.UseVisualStyleBackColor = false;
@@ -175,16 +175,16 @@ namespace EventManagement.GUI.Forms
             this.cboCamera.FormattingEnabled = true;
             this.cboCamera.Location = new System.Drawing.Point(630, 16);
             this.cboCamera.Name = "cboCamera";
-            this.cboCamera.Size = new System.Drawing.Size(270, 23);
+            this.cboCamera.Size = new System.Drawing.Size(260, 23);
             this.cboCamera.TabIndex = 3;
             // 
             // lblCamera
             // 
             this.lblCamera.AutoSize = true;
             this.lblCamera.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblCamera.Location = new System.Drawing.Point(540, 20);
+            this.lblCamera.Location = new System.Drawing.Point(525, 20);
             this.lblCamera.Name = "lblCamera";
-            this.lblCamera.Size = new System.Drawing.Size(83, 15);
+            this.lblCamera.Size = new System.Drawing.Size(95, 15);
             this.lblCamera.TabIndex = 2;
             this.lblCamera.Text = "Thiết bị Video:";
             // 
@@ -193,9 +193,9 @@ namespace EventManagement.GUI.Forms
             this.cboSuKien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSuKien.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.cboSuKien.FormattingEnabled = true;
-            this.cboSuKien.Location = new System.Drawing.Point(120, 16);
+            this.cboSuKien.Location = new System.Drawing.Point(140, 16);
             this.cboSuKien.Name = "cboSuKien";
-            this.cboSuKien.Size = new System.Drawing.Size(390, 23);
+            this.cboSuKien.Size = new System.Drawing.Size(365, 23);
             this.cboSuKien.TabIndex = 1;
             // 
             // lblSuKien
@@ -204,7 +204,7 @@ namespace EventManagement.GUI.Forms
             this.lblSuKien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblSuKien.Location = new System.Drawing.Point(18, 20);
             this.lblSuKien.Name = "lblSuKien";
-            this.lblSuKien.Size = new System.Drawing.Size(95, 15);
+            this.lblSuKien.Size = new System.Drawing.Size(115, 15);
             this.lblSuKien.TabIndex = 0;
             this.lblSuKien.Text = "Sự kiện kiểm tra:";
             // 
@@ -242,7 +242,7 @@ namespace EventManagement.GUI.Forms
             this.grpCamera.Size = new System.Drawing.Size(436, 428);
             this.grpCamera.TabIndex = 0;
             this.grpCamera.TabStop = false;
-            this.grpCamera.Text = "Khung quét Camera QR (Webcam Live Feed)";
+            this.grpCamera.Text = "Khung quét Camera QR";
             // 
             // picCameraFeed
             // 

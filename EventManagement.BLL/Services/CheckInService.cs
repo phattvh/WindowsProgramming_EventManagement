@@ -97,7 +97,7 @@ namespace EventManagement.BLL.Services
                     string warnMsg = $"CẢNH BÁO: Vé '{ticket.MaVe}' ({ticket.TenNguoiThamGia}) đã được check-in trước đó vào lúc {previousScanTime:HH:mm:ss dd/MM/yyyy}!";
 
                     LogHistory(ticket.MaVe, ticket.TenNguoiThamGia, ticket.TenHangVe, request.PhuongThuc, false,
-                        $"Quét trùng lặp lúc {previousScanTime:HH:mm:ss} (BR-12)");
+                        $"Quét trùng lặp lúc {previousScanTime:HH:mm:ss}");
 
                     var duplicateResult = new CheckInResultDto
                     {
@@ -146,9 +146,12 @@ namespace EventManagement.BLL.Services
                 var currentEvent = _events.FirstOrDefault(e => e.MaSuKien == maSuKien);
                 string eventName = currentEvent.TenSuKien ?? string.Empty;
 
-                var eventTickets = string.IsNullOrWhiteSpace(eventName)
+                var eventTickets = string.IsNullOrWhiteSpace(maSuKien) && string.IsNullOrWhiteSpace(eventName)
                     ? tickets
-                    : tickets.Where(t => string.Equals(t.TenSuKien, eventName, StringComparison.OrdinalIgnoreCase)).ToList();
+                    : tickets.Where(t => 
+                        (!string.IsNullOrWhiteSpace(maSuKien) && string.Equals(t.MaSuKien, maSuKien, StringComparison.OrdinalIgnoreCase)) ||
+                        (!string.IsNullOrWhiteSpace(eventName) && string.Equals(t.TenSuKien, eventName, StringComparison.OrdinalIgnoreCase))
+                    ).ToList();
 
                 int total = eventTickets.Count;
                 int checkedIn = eventTickets.Count(t => t.ThoiGianCheckIn != null || string.Equals(t.TrangThaiVe, "Đã check-in", StringComparison.OrdinalIgnoreCase));
