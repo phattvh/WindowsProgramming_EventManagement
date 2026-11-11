@@ -227,7 +227,7 @@ namespace EventManagement.GUI.Forms
                     lblTrangThai.Text = $"Kết luận: {_currentSettlement.DanhGiaQuyetToan} ({_currentSettlement.ChenhLechThuChi:#,##0} VNĐ)";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải dữ liệu báo cáo quyết toán. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -299,7 +299,7 @@ namespace EventManagement.GUI.Forms
                 lblTrangThai.ForeColor = ColorPrimaryLight;
                 lblTrangThai.Text = "Trạng thái: Vé điện tử hợp lệ tích hợp QR";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải dữ liệu báo cáo vé điện tử. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -387,7 +387,7 @@ namespace EventManagement.GUI.Forms
                 lblTrangThai.ForeColor = ColorSuccess;
                 lblTrangThai.Text = "Chỉ số KPI đạt tiến độ chuẩn";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải dữ liệu thống kê KPI. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -462,7 +462,7 @@ namespace EventManagement.GUI.Forms
                 {
                     _printDoc.Print();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show("Không thể thực hiện in ấn. Vui lòng kiểm tra lại thiết bị máy in.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -682,7 +682,7 @@ namespace EventManagement.GUI.Forms
 
                     MessageBox.Show($"Xuất dữ liệu báo cáo thành công ra file:\n{sfd.FileName}", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show("Có lỗi xảy ra trong quá trình xuất dữ liệu. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }

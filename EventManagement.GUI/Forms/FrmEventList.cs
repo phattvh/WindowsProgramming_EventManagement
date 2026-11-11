@@ -59,7 +59,7 @@ namespace EventManagement.GUI.Forms
             {
                 if (e.RowIndex >= 0)
                 {
-                    btnChiTiet_Click(s, e);
+                    btnChiTiet_Click(s ?? this, e);
                 }
             };
 

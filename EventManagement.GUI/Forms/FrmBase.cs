@@ -379,12 +379,13 @@ namespace EventManagement.GUI.Forms
                 "HỆ THỐNG QUẢN LÝ SỰ KIỆN (EVENT MANAGEMENT SYSTEM)\n" +
                 "Đồ án môn Lập trình Windows Cuối kỳ\n\n" +
                 "• Phiên bản: 1.0.0 (Windows Forms .NET 8.0)\n" +
+                "• Đơn vị phát triển: Nhóm WINDOWN\n" +
                 "• Chuẩn thiết kế: Corporate Blue Theme & UI/UX Standards\n" +
                 "• Tính năng: MenuStrip điều hướng toàn cục + Lối tắt phím nhanh (Hotkeys)\n" +
                 "• Bảo mật: Kiểm soát phân quyền 2 lớp (AD-4 / Role-Based Access Control)\n" +
-                "• Bản quyền: © 2026 Nhóm sinh viên thực hiện.";
+                "• Bản quyền: © 2026 Nhóm WINDOWN - Tất cả các quyền được bảo lưu.";
 
-            MessageBox.Show(this, msg, "Giới Thiệu Phần Mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, msg, "Giới Thiệu Phần Mềm - Nhóm WINDOWN", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// <summary>
