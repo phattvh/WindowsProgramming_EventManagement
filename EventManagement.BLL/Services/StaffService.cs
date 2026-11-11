@@ -191,9 +191,9 @@ namespace EventManagement.BLL.Services
             }
 
             string phone = dto.SoDienThoai.Trim();
-            if (!Regex.IsMatch(phone, @"^[0-9]{8,15}$"))
+            if (!Regex.IsMatch(phone, @"^(0|\+84)[0-9]{9,10}$"))
             {
-                return ServiceResult.Failed("Số điện thoại nhân sự phải từ 8 đến 15 chữ số!");
+                return ServiceResult.Failed("Số điện thoại nhân sự không hợp lệ (cần 10–11 chữ số, bắt đầu bằng 0 hoặc +84)!");
             }
 
             if (!string.IsNullOrWhiteSpace(dto.Email))
@@ -245,9 +245,9 @@ namespace EventManagement.BLL.Services
             }
 
             string phone = dto.SoDienThoai.Trim();
-            if (!Regex.IsMatch(phone, @"^[0-9]{8,15}$"))
+            if (!Regex.IsMatch(phone, @"^(0|\+84)[0-9]{9,10}$"))
             {
-                return ServiceResult.Failed("Số điện thoại nhân sự phải từ 8 đến 15 chữ số!");
+                return ServiceResult.Failed("Số điện thoại nhân sự không hợp lệ (cần 10–11 chữ số, bắt đầu bằng 0 hoặc +84)!");
             }
 
             if (!string.IsNullOrWhiteSpace(dto.Email))
@@ -281,7 +281,7 @@ namespace EventManagement.BLL.Services
             if (item.SoCaTrucThamGia > 0)
             {
                 return ServiceResult.Failed(
-                    $"Nhân sự '{item.HoTen}' đã được phân công tham gia {item.SoCaTrucThamGia} ca trực sự kiện. Theo quy tắc toàn vẹn dữ liệu BR-20, bạn không thể xóa cứng hồ sơ này!",
+                    $"Nhân sự '{item.HoTen}' đã được phân công tham gia {item.SoCaTrucThamGia} ca trực sự kiện nên không thể xóa cứng hồ sơ này!",
                     "BR-20");
             }
 
@@ -298,7 +298,7 @@ namespace EventManagement.BLL.Services
             }
 
             item.TrangThai = "Nghỉ việc";
-            return ServiceResult.Success($"Đã chuyển trạng thái nhân sự '{item.HoTen}' sang 'Nghỉ việc' thành công theo quy tắc BR-20.");
+            return ServiceResult.Success($"Đã chuyển trạng thái nhân sự '{item.HoTen}' sang 'Nghỉ việc' thành công.");
         }
     }
 }

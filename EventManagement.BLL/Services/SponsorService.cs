@@ -193,7 +193,7 @@ namespace EventManagement.BLL.Services
             if (existing.SoSuKienTaiTro > 0)
             {
                 existing.TrangThai = "Ngừng hợp tác";
-                return ServiceResult.Success($"Nhà tài trợ '{existing.TenToChuc}' đã có lịch sử tham gia {existing.SoSuKienTaiTro} sự kiện nên đã được chuyển sang trạng thái 'Ngừng hợp tác' (BR-20 Soft Delete).");
+                return ServiceResult.Success($"Nhà tài trợ '{existing.TenToChuc}' đã có lịch sử tham gia {existing.SoSuKienTaiTro} sự kiện nên đã được chuyển sang trạng thái 'Ngừng hợp tác'.");
             }
 
             _sponsors.Remove(existing);

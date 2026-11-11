@@ -143,7 +143,6 @@ namespace EventManagement.Tests
 
             Assert.IsTrue(deleteResult.IsSuccess);
             StringAssert.Contains(deleteResult.Message, "Ngừng hợp tác");
-            StringAssert.Contains(deleteResult.Message, "BR-20");
 
             // Kiểm tra trạng thái đã chuyển thành Ngừng hợp tác
             var check = _sponsorService.GetById("NTT001").Data;

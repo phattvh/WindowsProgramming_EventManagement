@@ -325,5 +325,38 @@ namespace EventManagement.Tests
             Assert.IsTrue(int.TryParse(code.Substring(2), out int num));
             Assert.IsTrue(num >= 8, $"Mã sinh ra phải từ PC008 trở lên, thực tế: {code}");
         }
+
+        [TestMethod]
+        public void StaffService_AddAndUpdate_WithPhoneLessThan10Digits_ReturnsFailed()
+        {
+            var addRes = _staffService.Add(new StaffDto
+            {
+                MaNhanSu = "NS_SHORT_PHONE",
+                HoTen = "Test Nhan Su",
+                SoDienThoai = "090123456" // 9 chữ số
+            });
+            Assert.IsFalse(addRes.IsSuccess);
+
+            var existing = _staffService.GetById("NS001").Data!;
+            var originalPhone = existing.SoDienThoai;
+            try
+            {
+                var updateRes = _staffService.Update(new StaffDto
+                {
+                    MaNhanSu = existing.MaNhanSu,
+                    HoTen = existing.HoTen,
+                    SoDienThoai = "09012345", // 8 chữ số
+                    Email = existing.Email,
+                    ChucDanh = existing.ChucDanh,
+                    PhongBan = existing.PhongBan,
+                    TrangThai = existing.TrangThai
+                });
+                Assert.IsFalse(updateRes.IsSuccess);
+            }
+            finally
+            {
+                existing.SoDienThoai = originalPhone;
+            }
+        }
     }
 }
