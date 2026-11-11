@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using EventManagement.Core.Security;
@@ -67,7 +67,7 @@ namespace EventManagement.Tests
         public void CurrentSession_ManagerRole_HasEventsAndReports_NotUsersOrRoles()
         {
             // Arrange: MANAGER theo seed data có hầu hết các quyền trừ UC03 và UC20
-            var managerPerms = new[] { "UC01", "UC02", "UC04", "UC05", "UC06", "UC07", "UC08", "UC09", "UC10", "UC11", "UC12", "UC14", "UC15", "UC16", "UC17", "UC18", "UC19", "UC21" };
+            var managerPerms = new[] { "UC01", "UC02", "UC04", "UC05", "UC06", "UC07", "UC08", "UC09", "UC10", "UC11", "UC12", "UC14", "UC15", "UC16", "UC17", "UC19", "UC21" };
             CurrentSession.DangNhap("USR_MGR", "manager01", "Trần Quản Lý", "mgr@event.vn", "MANAGER", managerPerms);
 
             // Act & Assert
@@ -81,11 +81,11 @@ namespace EventManagement.Tests
         // Mô tả: Test này đảm bảo ranh giới phân quyền giữa Quản lý và Quản trị viên: Quản lý chỉ được điều phối sự kiện và tài chính, tuyệt đối không được cấp quyền quản lý tài khoản người dùng hoặc chỉnh sửa ma trận quyền.
 
         [TestMethod]
-        [Description("Kiểm tra phân quyền nhóm Nhân viên (STAFF) chỉ được tác nghiệp bán vé, soát vé và khảo sát.")]
+        [Description("Kiểm tra phân quyền nhóm Nhân viên (STAFF) chỉ được tác nghiệp bán vé và soát vé.")]
         public void CurrentSession_StaffRole_HasTicketsAndCheckIn_NotBudgetOrAdmin()
         {
-            // Arrange: STAFF theo seed data chỉ có UC01, UC02, UC10, UC11, UC13, UC18, UC21
-            var staffPerms = new[] { "UC01", "UC02", "UC10", "UC11", "UC13", "UC18", "UC21" };
+            // Arrange: STAFF theo seed data chỉ có UC01, UC02, UC10, UC11, UC13, UC21
+            var staffPerms = new[] { "UC01", "UC02", "UC10", "UC11", "UC13", "UC21" };
             CurrentSession.DangNhap("USR_STF", "staff01", "Lê Nhân Viên", "staff@event.vn", "STAFF", staffPerms);
 
             // Act & Assert
@@ -283,7 +283,7 @@ namespace EventManagement.Tests
         public void FrmDashboard_ApplyPermissions_HidesAdminAndBudgetButtonsForStaff()
         {
             // Arrange: STAFF chỉ có Bán vé (UC11) và Soát vé (UC13)
-            var staffPerms = new[] { "UC01", "UC02", "UC10", "UC11", "UC13", "UC18", "UC21" };
+            var staffPerms = new[] { "UC01", "UC02", "UC10", "UC11", "UC13", "UC21" };
             CurrentSession.DangNhap("USR_STF", "staff01", "Lê Nhân Viên", "staff@e.vn", "STAFF", staffPerms);
 
             using var form = new FrmDashboard();

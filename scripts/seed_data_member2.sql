@@ -86,7 +86,7 @@ BEGIN
     -- Sự kiện 3: Dự kiến (để test Sửa/Xóa sự kiện F04)
     ('EVT202603', N'Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT', 'LSK04', 'DD004', '2026-12-25 08:00:00', '2026-12-26 18:00:00', N'Dự kiến', N'Diễn đàn học thuật công bố các bài báo khoa học quốc tế về kỹ thuật phần mềm.', 'banner_iot2026.png', @NguoiTao),
     
-    -- Sự kiện 4: Đã kết thúc (để test Khảo sát phản hồi F18 & Báo cáo F19)
+    -- Sự kiện 4: Đã kết thúc (để test Đánh giá phản hồi Tab 9 & Báo cáo F19)
     ('EVT202604', N'Đêm Nhạc Gây Quỹ Sinh Viên - Vòng Tay Bè Bạn 2026', 'LSK02', 'DD005', '2026-10-15 18:00:00', '2026-10-15 22:30:00', N'Đã kết thúc', N'Đại nhạc hội nghệ thuật kết nối sinh viên nhằm gây quỹ học bổng vượt khó.', 'banner_music2026.png', @NguoiTao),
     
     -- Sự kiện 5: Hủy (để test ràng buộc BR-02 chặn bán vé khi đã hủy)
@@ -140,7 +140,7 @@ BEGIN
 END
 GO
 
--- 10. DỮ LIỆU MẪU: ĐÁNH GIÁ PHẢN HỒI (PhanHoi - Form F18) - THỎA MÃN BR-16
+-- 10. DỮ LIỆU MẪU: ĐÁNH GIÁ PHẢN HỒI (PhanHoi - Tab 9 Form F05) - THỎA MÃN BR-16
 -- Nạp phản hồi cho sự kiện ĐÃ HOÀN THÀNH (EVT202604)
 IF NOT EXISTS (SELECT 1 FROM dbo.NguoiThamGia WHERE MaNguoiThamGia = 'NTG001')
 BEGIN

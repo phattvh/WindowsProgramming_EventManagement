@@ -50,7 +50,6 @@ namespace EventManagement.DAL
                         ("UC15", "Phân công ca trực nhân sự", "F15"),
                         ("UC16", "Quản lý nhà tài trợ & gói tài trợ", "F16"),
                         ("UC17", "Quản lý ngân sách & chi phí phát sinh", "F17"),
-                        ("UC18", "Quản lý khảo sát & đánh giá phản hồi", "F18"),
                         ("UC19", "Báo cáo thống kê & Xuất Excel / PDF", "F19"),
                         ("UC20", "Cấu hình hệ thống & Ma trận phân quyền", "F20"),
                         ("UC21", "Đổi mật khẩu cá nhân", "UC21")
@@ -78,7 +77,7 @@ namespace EventManagement.DAL
                         context.PhanQuyens.Add(new PhanQuyen { MaNhomQuyen = "MANAGER", MaChucNang = f, CoQuyen = true });
                     }
                     // STAFF
-                    var staffFuncs = new[] { "UC01", "UC02", "UC08", "UC10", "UC11", "UC13", "UC18", "UC21" };
+                    var staffFuncs = new[] { "UC01", "UC02", "UC08", "UC10", "UC11", "UC13", "UC21" };
                     foreach (var f in staffFuncs)
                     {
                         context.PhanQuyens.Add(new PhanQuyen { MaNhomQuyen = "STAFF", MaChucNang = f, CoQuyen = true });

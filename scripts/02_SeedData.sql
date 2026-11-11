@@ -1,4 +1,4 @@
-﻿USE EventManagementDB;
+USE EventManagementDB;
 GO
 
 -- seed: NhomQuyen --
@@ -35,7 +35,6 @@ INSERT INTO dbo.ChucNang (MaChucNang, TenChucNang, MaForm) VALUES
 ('UC15', N'Phân công ca trực nhân sự',              'F15'),
 ('UC16', N'Quản lý nhà tài trợ & gói tài trợ',      'F16'),
 ('UC17', N'Quản lý ngân sách & chi phí phát sinh',  'F17'),
-('UC18', N'Quản lý khảo sát & đánh giá phản hồi',   'F18'),
 ('UC19', N'Báo cáo thống kê & Xuất Excel / PDF',    'F19'),
 ('UC20', N'Cấu hình hệ thống & Ma trận phân quyền', 'F20'),
 ('UC21', N'Đổi mật khẩu cá nhân',                   'UC21');
@@ -54,7 +53,7 @@ GO
 
 INSERT INTO dbo.PhanQuyen (MaNhomQuyen, MaChucNang, CoQuyen)
 SELECT 'STAFF', MaChucNang, 
-       CASE WHEN MaChucNang IN ('UC01', 'UC02', 'UC10', 'UC11', 'UC13', 'UC18', 'UC21') THEN 1 ELSE 0 END
+       CASE WHEN MaChucNang IN ('UC01', 'UC02', 'UC10', 'UC11', 'UC13', 'UC21') THEN 1 ELSE 0 END
 FROM dbo.ChucNang;
 GO
 

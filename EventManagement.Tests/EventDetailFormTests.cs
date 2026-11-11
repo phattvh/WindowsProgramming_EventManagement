@@ -55,7 +55,7 @@ namespace EventManagement.Tests
         [TestMethod]
         public void F05_ToolbarButtons_StandardizedNamesAndRoles()
         {
-            // Mô tả: Kiểm tra các nút điều hướng nghiệp vụ trên các tab bỏ ký tự mũi tên và mã form (F08, F15, F16, F17, F18)
+            // Mô tả: Kiểm tra các nút điều hướng nghiệp vụ trên các tab bỏ ký tự mũi tên và mã form (F08, F15, F16, F17)
             using var form = new FrmEventDetail();
 
             var btnMoF08 = form.GetType().GetField("btnMoF08", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(form) as Button;
@@ -68,7 +68,7 @@ namespace EventManagement.Tests
             btnMoF15!.Text.Should().Be("Quản lý phân công");
             btnMoF16!.Text.Should().Be("Quản lý tài trợ");
             btnMoF17!.Text.Should().Be("Quản lý chi phí");
-            btnMoF18!.Text.Should().Be("Quản lý phản hồi");
+            btnMoF18!.Visible.Should().BeFalse(); // Form 18 đã được lược bỏ khỏi giao diện F05
         }
 
         [TestMethod]

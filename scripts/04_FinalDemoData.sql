@@ -49,7 +49,6 @@ USING (VALUES
     ('UC15', N'Phân công ca trực nhân sự',               'F15'),
     ('UC16', N'Quản lý nhà tài trợ & gói tài trợ',       'F16'),
     ('UC17', N'Quản lý ngân sách & chi phí phát sinh',   'F17'),
-    ('UC18', N'Quản lý khảo sát & đánh giá phản hồi',    'F18'),
     ('UC19', N'Báo cáo thống kê & Xuất Excel / PDF',     'F19'),
     ('UC20', N'Cấu hình hệ thống & Ma trận phân quyền',  'F20'),
     ('UC21', N'Đổi mật khẩu cá nhân',                    'UC21')
@@ -76,7 +75,7 @@ WHERE NOT EXISTS (
 INSERT INTO dbo.PhanQuyen (MaNhomQuyen, MaChucNang, CoQuyen)
 SELECT 'MANAGER', c.MaChucNang, 1
 FROM dbo.ChucNang c
-WHERE c.MaChucNang IN ('UC01','UC02','UC04','UC05','UC06','UC07','UC08','UC09','UC10','UC11','UC12','UC13','UC14','UC15','UC16','UC17','UC18','UC19','UC21')
+WHERE c.MaChucNang IN ('UC01','UC02','UC04','UC05','UC06','UC07','UC08','UC09','UC10','UC11','UC12','UC13','UC14','UC15','UC16','UC17','UC19','UC21')
   AND NOT EXISTS (
     SELECT 1 FROM dbo.PhanQuyen p 
     WHERE p.MaNhomQuyen = 'MANAGER' AND p.MaChucNang = c.MaChucNang
@@ -85,7 +84,7 @@ WHERE c.MaChucNang IN ('UC01','UC02','UC04','UC05','UC06','UC07','UC08','UC09','
 INSERT INTO dbo.PhanQuyen (MaNhomQuyen, MaChucNang, CoQuyen)
 SELECT 'STAFF', c.MaChucNang, 1
 FROM dbo.ChucNang c
-WHERE c.MaChucNang IN ('UC01','UC02','UC08','UC10','UC11','UC13','UC18','UC21')
+WHERE c.MaChucNang IN ('UC01','UC02','UC08','UC10','UC11','UC13','UC21')
   AND NOT EXISTS (
     SELECT 1 FROM dbo.PhanQuyen p 
     WHERE p.MaNhomQuyen = 'STAFF' AND p.MaChucNang = c.MaChucNang
@@ -194,7 +193,7 @@ IF NOT EXISTS (SELECT 1 FROM dbo.ChiPhiSuKien WHERE MaChiPhi = 'CP005') INSERT I
 PRINT N'-> Đã nạp 5 khoản chi phí thực tế (kèm kịch bản kích hoạt BR-14 vượt 80% ngân sách).';
 GO
 
--- 15. ĐÁNH GIÁ KHẢO SÁT HÀI LÒNG (PhanHoi) - F18
+-- 15. ĐÁNH GIÁ KHẢO SÁT HÀI LÒNG (PhanHoi - Phục vụ Tab 9 Form F05)
 IF NOT EXISTS (SELECT 1 FROM dbo.PhanHoi WHERE MaPhanHoi = 'PH001') INSERT INTO dbo.PhanHoi (MaPhanHoi, MaSuKien, MaNguoiThamGia, DiemDanhGia, NoiDungPhanHoi, NgayDanhGia) VALUES ('PH001', 'EVT202601', 'NTG001', 5, N'Chương trình rất sôi động và ý nghĩa, các tiết mục chuẩn bị chuyên nghiệp. Rất mong duy trì hàng năm!', '2026-10-16 09:00:00');
 IF NOT EXISTS (SELECT 1 FROM dbo.PhanHoi WHERE MaPhanHoi = 'PH002') INSERT INTO dbo.PhanHoi (MaPhanHoi, MaSuKien, MaNguoiThamGia, DiemDanhGia, NoiDungPhanHoi, NgayDanhGia) VALUES ('PH002', 'EVT202601', 'NTG002', 4, N'Khâu soát vé check-in QR qua webcam rất nhanh, không phải chờ đợi lâu. Âm thanh ánh sáng tuyệt vời!', '2026-10-16 09:30:00');
 IF NOT EXISTS (SELECT 1 FROM dbo.PhanHoi WHERE MaPhanHoi = 'PH003') INSERT INTO dbo.PhanHoi (MaPhanHoi, MaSuKien, MaNguoiThamGia, DiemDanhGia, NoiDungPhanHoi, NgayDanhGia) VALUES ('PH003', 'EVT202601', 'NTG003', 5, N'Hội thảo có nội dung thực chiến cao, các diễn giả chia sẻ rất sâu về kiến trúc phần mềm và AI.', '2026-12-15 17:00:00');

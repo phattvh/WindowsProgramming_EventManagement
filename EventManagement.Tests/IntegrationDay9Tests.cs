@@ -250,18 +250,18 @@ namespace EventManagement.Tests
             Assert.IsTrue(methodNames.Contains("OpenStaffAssignmentForm"), "F05 phải cung cấp phương thức mở F15 (Ca trực nhân sự).");
             Assert.IsTrue(methodNames.Contains("OpenSponsorForm"), "F05 phải cung cấp phương thức mở F16 (Tài trợ).");
             Assert.IsTrue(methodNames.Contains("OpenBudgetExpenseForm"), "F05 phải cung cấp phương thức mở F17 (Chi phí & Ngân sách).");
-            Assert.IsTrue(methodNames.Contains("OpenFeedbackForm"), "F05 phải cung cấp phương thức mở F18 (Khảo sát).");
+            Assert.IsTrue(methodNames.Contains("OpenFeedbackForm"), "F05 cung cấp phương thức thông báo về việc Form 18 đã được lược bỏ.");
             Assert.IsTrue(methodNames.Contains("OpenReportStatisticsForm"), "F05 phải cung cấp phương thức mở F19 (Báo cáo & Thống kê).");
         }
 
         // =========================================================================
-        // PHẦN 5: KIỂM THỬ TASK T1-18 (Tích Hợp Hệ Thống 20 Form Kế Thừa FrmBase)
+        // PHẦN 5: KIỂM THỬ TASK T1-18 (Tích Hợp Hệ Thống Các Form Kế Thừa FrmBase)
         // =========================================================================
 
         [TestMethod]
         public void SystemIntegration_AllFormsInheritFrmBase_AndCanBeConstructed()
         {
-            // Mô tả: Kiểm tra toàn bộ 20 Form của hệ thống kế thừa lớp cơ sở FrmBase và khởi tạo thành công không bị thiếu tham số DI.
+            // Mô tả: Kiểm tra toàn bộ 18 Form của hệ thống kế thừa lớp cơ sở FrmBase và khởi tạo thành công không bị thiếu tham số DI (F18 và F20 đã được lược bỏ).
             var forms = new System.Collections.Generic.List<System.Windows.Forms.Form>
             {
                 new FrmLogin(),

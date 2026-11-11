@@ -241,7 +241,7 @@ INSERT INTO dbo.ChiPhiSuKien (MaChiPhi, MaSuKien, KhoanMucChi, SoTien, NgayChi, 
 GO
 
 -- -----------------------------------------------------------------------------------
--- 17. KHẢO SÁT & ĐÁNH GIÁ PHẢN HỒI (F18 - PhanHoi)
+-- 17. KHẢO SÁT & ĐÁNH GIÁ PHẢN HỒI (PhanHoi - Phục vụ Tab 9 Form F05)
 -- Ghi chú kiểm thử:
 --   - NTG003 (Trần Quốc Tuấn) ĐÃ CHECK-IN -> Đã gửi đánh giá 5 sao.
 --   - Dùng để test: NTG003 gửi thêm phản hồi lần 2 sẽ bị chặn (BR-16).
