@@ -121,6 +121,13 @@ namespace EventManagement.GUI.Forms
             base.OnResize(e);
             DistributeKpiCards();
             DistributeTab1();
+            AlignHeaderSelector();
+        }
+
+        private void AlignHeaderSelector()
+        {
+            if (lblChonSuKien == null || cboChonSuKien == null) return;
+            lblChonSuKien.Left = cboChonSuKien.Left - lblChonSuKien.Width - 10;
         }
 
         private Panel CreateTabFooter(TabPage tab, out Label lblFooter)
@@ -242,6 +249,7 @@ namespace EventManagement.GUI.Forms
             lblTitle.Text = "CHI TIẾT SỰ KIỆN";
             lblSubtitle.Visible = false;
             lblTitle.Location = new Point(16, 19);
+            AlignHeaderSelector();
 
             tabMain.SizeMode = TabSizeMode.Normal;
             tabMain.Padding = new Point(14, 8);
@@ -658,9 +666,6 @@ namespace EventManagement.GUI.Forms
 
             // Tab 8: Budget & Expenses
             LoadTab8_ChiPhi(_maSuKien);
-
-            // Tab 9: Feedback & Ratings
-            LoadTab9_DanhGia(_maSuKien);
 
             // Calculate and display top KPI Cards
             UpdateKPICards();

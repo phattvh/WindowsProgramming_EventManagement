@@ -478,7 +478,7 @@ namespace EventManagement.GUI.Forms
             this.lblChonSuKien.AutoSize = true;
             this.lblChonSuKien.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             this.lblChonSuKien.ForeColor = Color.White;
-            this.lblChonSuKien.Location = new Point(720, 22);
+            this.lblChonSuKien.Location = new Point(695, 22);
             this.lblChonSuKien.Name = "lblChonSuKien";
             this.lblChonSuKien.Size = new Size(82, 15);
             this.lblChonSuKien.TabIndex = 2;
@@ -678,7 +678,6 @@ namespace EventManagement.GUI.Forms
             this.tabMain.Controls.Add(this.tabNhanSu);
             this.tabMain.Controls.Add(this.tabTaiTro);
             this.tabMain.Controls.Add(this.tabChiPhi);
-            this.tabMain.Controls.Add(this.tabDanhGia);
             this.tabMain.Dock = DockStyle.Fill;
             this.tabMain.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
             this.tabMain.Padding = new Point(14, 8);
@@ -1770,6 +1769,7 @@ namespace EventManagement.GUI.Forms
             this.btnMoF18.TabIndex = 3;
             this.btnMoF18.Text = "Quản lý phản hồi";
             this.btnMoF18.UseVisualStyleBackColor = true;
+            this.btnMoF18.Visible = false;
             this.btnMoF18.Click += new EventHandler(this.btnMoF18_Click);
 
             this.dgvDanhGia.Columns.AddRange(new DataGridViewColumn[] {
