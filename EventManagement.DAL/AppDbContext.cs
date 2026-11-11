@@ -108,6 +108,9 @@ namespace EventManagement.DAL
                 entity.HasKey(e => e.MaLoaiSK);
                 entity.Property(e => e.MaLoaiSK).HasMaxLength(20);
                 entity.Property(e => e.TenLoaiSK).HasMaxLength(100).IsRequired();
+                entity.HasMany(e => e.SuKiens)
+                      .WithOne()
+                      .HasForeignKey(s => s.MaLoaiSK);
             });
 
             // Bảng 6: DiaDiem
@@ -117,6 +120,9 @@ namespace EventManagement.DAL
                 entity.HasKey(e => e.MaDiaDiem);
                 entity.Property(e => e.MaDiaDiem).HasMaxLength(20);
                 entity.Property(e => e.TenDiaDiem).HasMaxLength(200).IsRequired();
+                entity.HasMany(e => e.SuKiens)
+                      .WithOne()
+                      .HasForeignKey(s => s.MaDiaDiem);
             });
 
             // Bảng 7: DienGia
@@ -133,6 +139,11 @@ namespace EventManagement.DAL
                 entity.HasKey(e => e.MaNhanSu);
                 entity.Property(e => e.MaNhanSu).HasMaxLength(20);
                 entity.Property(e => e.HoTen).HasMaxLength(100).IsRequired();
+                entity.Ignore(e => e.PhongBan);
+                entity.Ignore(e => e.TrangThai);
+                entity.HasMany(e => e.PhanCongNhanSus)
+                      .WithOne(p => p.NhanSu)
+                      .HasForeignKey(p => p.MaNhanSu);
             });
 
             // Bảng 9: NhaTaiTro
@@ -140,6 +151,10 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("NhaTaiTro");
                 entity.HasKey(e => e.MaNhaTaiTro);
+                entity.Ignore(e => e.GhiChu);
+                entity.HasMany(e => e.ChiTietTaiTros)
+                      .WithOne(t => t.NhaTaiTro)
+                      .HasForeignKey(t => t.MaNhaTaiTro);
             });
 
             // Bảng 10: SuKien
@@ -152,7 +167,25 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaLoaiSK).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.MaDiaDiem).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.TrangThai).HasMaxLength(30).HasDefaultValue("Dự kiến");
-                entity.Property(e => e.NguoiPhuTrach).HasMaxLength(20);
+                entity.Ignore(e => e.SucChua);
+                entity.Ignore(e => e.NganSachDuKien);
+                entity.Ignore(e => e.NguoiPhuTrach);
+
+                entity.HasMany(e => e.HangVes)
+                      .WithOne(h => h.SuKien)
+                      .HasForeignKey(h => h.MaSuKien);
+                entity.HasMany(e => e.DangKys)
+                      .WithOne(d => d.SuKien)
+                      .HasForeignKey(d => d.MaSuKien);
+                entity.HasMany(e => e.ChiPhiSuKiens)
+                      .WithOne(c => c.SuKien)
+                      .HasForeignKey(c => c.MaSuKien);
+                entity.HasMany(e => e.ChiTietTaiTros)
+                      .WithOne(t => t.SuKien)
+                      .HasForeignKey(t => t.MaSuKien);
+                entity.HasMany(e => e.PhanHois)
+                      .WithOne(p => p.SuKien)
+                      .HasForeignKey(p => p.MaSuKien);
             });
 
             // Bảng 11: LichTrinh
@@ -162,6 +195,12 @@ namespace EventManagement.DAL
                 entity.HasKey(e => e.MaLichTrinh);
                 entity.Property(e => e.MaLichTrinh).HasMaxLength(20);
                 entity.Property(e => e.TenTietMuc).HasMaxLength(200).IsRequired();
+                entity.HasOne(e => e.SuKien)
+                      .WithMany()
+                      .HasForeignKey(e => e.MaSuKien);
+                entity.HasOne(e => e.DienGia)
+                      .WithMany()
+                      .HasForeignKey(e => e.MaDienGia);
             });
 
             // Bảng 12: ChiTietTaiTro
@@ -169,6 +208,9 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("ChiTietTaiTro");
                 entity.HasKey(e => e.MaTaiTro);
+                entity.Property(e => e.HangTaiTro).HasColumnName("GoiTaiTro");
+                entity.Property(e => e.GiaTri).HasColumnName("GiaTriTaiTro").HasPrecision(18, 2);
+                entity.Ignore(e => e.QuyenLoiTruyenThong);
             });
 
             // Bảng 13: HangVe
@@ -180,6 +222,11 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaSuKien).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.TenHangVe).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.GiaVe).HasPrecision(18, 2);
+                entity.Ignore(e => e.DonGia);
+
+                entity.HasMany(e => e.DangKys)
+                      .WithOne(d => d.HangVe)
+                      .HasForeignKey(d => d.MaHangVe);
             });
 
             // Bảng 14: NguoiThamGia
@@ -187,6 +234,18 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("NguoiThamGia");
                 entity.HasKey(e => e.MaNguoiThamGia);
+                entity.Ignore(e => e.NgaySinh);
+                entity.Ignore(e => e.DonVi);
+                entity.Ignore(e => e.DiaChi);
+                entity.Ignore(e => e.TrangThai);
+                entity.Property(e => e.DonViCongTac).HasColumnName("DonViCongTac");
+
+                entity.HasMany(e => e.DangKys)
+                      .WithOne(d => d.NguoiThamGia)
+                      .HasForeignKey(d => d.MaNguoiThamGia);
+                entity.HasMany(e => e.PhanHois)
+                      .WithOne(p => p.NguoiThamGia)
+                      .HasForeignKey(p => p.MaNguoiThamGia);
             });
 
             // Bảng 15: DangKy
@@ -194,6 +253,10 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("DangKy");
                 entity.HasKey(e => e.MaDangKy);
+                entity.Property(e => e.TongTien).HasPrecision(18, 2);
+                entity.HasMany(e => e.ChiTietVes)
+                      .WithOne(v => v.DangKy)
+                      .HasForeignKey(v => v.MaDangKy);
             });
 
             // Bảng 16: ChiTietVe
@@ -216,10 +279,15 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaVe).HasMaxLength(30).IsRequired();
                 entity.HasIndex(e => e.MaVe).IsUnique();
                 entity.Property(e => e.NguoiThucHien).HasMaxLength(20).IsRequired();
+                entity.Ignore(e => e.NguoiCheckIn);
+                entity.Ignore(e => e.PhuongThuc);
 
                 entity.HasOne(e => e.ChiTietVe)
                       .WithOne(v => v.CheckIn)
                       .HasForeignKey<CheckIn>(e => e.MaVe);
+                entity.HasOne(e => e.NguoiDung)
+                      .WithMany(n => n.CheckIns)
+                      .HasForeignKey(e => e.NguoiThucHien);
             });
 
             // Bảng 18: PhanCongNhanSu
@@ -228,6 +296,9 @@ namespace EventManagement.DAL
                 entity.ToTable("PhanCongNhanSu");
                 entity.HasKey(e => e.MaPhanCong);
                 entity.Property(e => e.MaPhanCong).HasMaxLength(20);
+                entity.HasOne(e => e.SuKien)
+                      .WithMany()
+                      .HasForeignKey(e => e.MaSuKien);
             });
 
             // Bảng 19: ChiPhiSuKien
@@ -235,6 +306,10 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("ChiPhiSuKien");
                 entity.HasKey(e => e.MaChiPhi);
+                entity.Property(e => e.SoTien).HasPrecision(18, 2);
+                entity.HasOne(e => e.NguoiDung)
+                      .WithMany(n => n.ChiPhiSuKiens)
+                      .HasForeignKey(e => e.NguoiDuyet);
             });
 
             // Bảng 20: PhanHoi
