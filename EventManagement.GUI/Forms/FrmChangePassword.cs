@@ -15,7 +15,7 @@ namespace EventManagement.GUI.Forms
         private readonly IAuthService? _authService;
         private readonly string _username;
 
-        public FrmChangePassword() : this(null, string.Empty)
+        public FrmChangePassword() : this(new AuthService(), string.Empty)
         {
         }
 
