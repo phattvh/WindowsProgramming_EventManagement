@@ -50,7 +50,7 @@ namespace EventManagement.GUI.Forms
                 col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             }
             colMaDiaDiem.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            colSucChuaToiDa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colSucChuaToiDa.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colSoSuKienToChuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -66,7 +66,7 @@ namespace EventManagement.GUI.Forms
             colMaDiaDiem.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colMaDiaDiem.Width = 90;
             colTenDiaDiem.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colTenDiaDiem.Width = 250;
+            colTenDiaDiem.Width = 340;
             colSucChuaToiDa.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colSucChuaToiDa.Width = 100;
             colNguoiQuanLy.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -328,8 +328,8 @@ namespace EventManagement.GUI.Forms
                 if (result.ErrorCode == "BR-20")
                 {
                     var opt = MessageBox.Show(
-                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái địa điểm này sang 'Ngừng sử dụng' theo quy tắc BR-20 thay vì xóa?",
-                        "Cảnh báo nghiệp vụ BR-20",
+                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái địa điểm này sang 'Ngừng sử dụng' thay vì xóa?",
+                        "Cảnh báo nghiệp vụ",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning);
 

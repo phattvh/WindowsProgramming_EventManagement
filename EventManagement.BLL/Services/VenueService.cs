@@ -222,7 +222,7 @@ namespace EventManagement.BLL.Services
             if (existing.SoSuKienToChuc > 0)
             {
                 return ServiceResult.Failed(
-                    $"Quy tắc nghiệp vụ BR-20: Địa điểm '{existing.TenDiaDiem}' đã từng tổ chức {existing.SoSuKienToChuc} sự kiện. Không thể xóa cứng khỏi hệ thống!",
+                    $"Địa điểm '{existing.TenDiaDiem}' đã từng tổ chức {existing.SoSuKienToChuc} sự kiện. Không thể xóa cứng khỏi hệ thống!",
                     "BR-20");
             }
 
@@ -239,7 +239,7 @@ namespace EventManagement.BLL.Services
             }
 
             existing.TrangThai = "Ngừng sử dụng";
-            return ServiceResult.Success($"Đã chuyển trạng thái địa điểm '{existing.TenDiaDiem}' sang 'Ngừng sử dụng' (BR-20)!");
+            return ServiceResult.Success($"Đã chuyển trạng thái địa điểm '{existing.TenDiaDiem}' sang 'Ngừng sử dụng'!");
         }
 
         public ServiceResult<bool> CheckVenueAvailability(string maDiaDiem, DateTime startTime, DateTime endTime, string? excludeEventId = null)

@@ -60,11 +60,11 @@ namespace EventManagement.GUI.Forms
                 dgvLoaiSuKien.Height = Math.Max(120, pnlButtons.Top - 10 - dgvLoaiSuKien.Top);
             }
 
-            // Tối ưu độ rộng cột để không bị cắt cụt mô tả
+            // Tối ưu độ rộng cột để không bị cắt cụt tên loại sự kiện và mô tả
             colMaLoaiSK.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colMaLoaiSK.Width = 100;
             colTenLoaiSK.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            colTenLoaiSK.Width = 220;
+            colTenLoaiSK.Width = 320;
             colSoSuKien.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             colSoSuKien.Width = 100;
             colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
@@ -300,8 +300,8 @@ namespace EventManagement.GUI.Forms
                 if (result.ErrorCode == "BR-07")
                 {
                     var opt = MessageBox.Show(
-                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái loại sự kiện sang 'Ngừng áp dụng' theo quy tắc BR-20 thay vì xóa?",
-                        "Cảnh báo nghiệp vụ BR-07",
+                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái loại sự kiện sang 'Ngừng áp dụng' thay vì xóa?",
+                        "Cảnh báo nghiệp vụ",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning);
 

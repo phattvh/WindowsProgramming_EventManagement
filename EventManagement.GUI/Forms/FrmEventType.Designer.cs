@@ -267,7 +267,7 @@
             this.colTenLoaiSK.HeaderText = "Tên loại sự kiện";
             this.colTenLoaiSK.Name = "colTenLoaiSK";
             this.colTenLoaiSK.ReadOnly = true;
-            this.colTenLoaiSK.Width = 240;
+            this.colTenLoaiSK.Width = 320;
 
             // 
             // colMoTa
@@ -462,7 +462,7 @@
             // btnLuu
             // 
             this.btnLuu.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnLuu.Location = new System.Drawing.Point(358, 10);
+            this.btnLuu.Location = new System.Drawing.Point(440, 10);
             this.btnLuu.Visible = false;
             this.btnLuu.Name = "btnLuu";
             this.btnLuu.Size = new System.Drawing.Size(130, 36);
@@ -475,7 +475,7 @@
             // btnHuy
             // 
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI Semibold", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnHuy.Location = new System.Drawing.Point(468, 10);
+            this.btnHuy.Location = new System.Drawing.Point(585, 10);
             this.btnHuy.Visible = false;
             this.btnHuy.Name = "btnHuy";
             this.btnHuy.Size = new System.Drawing.Size(130, 36);

@@ -127,7 +127,7 @@ namespace EventManagement.BLL.Services
             if (existing.SoSuKien > 0)
             {
                 return ServiceResult.Failed(
-                    $"Quy tắc nghiệp vụ BR-07: Loại sự kiện '{existing.TenLoaiSK}' đang được áp dụng cho {existing.SoSuKien} sự kiện. Không thể xóa dữ liệu!",
+                    $"Loại sự kiện '{existing.TenLoaiSK}' đang được áp dụng cho {existing.SoSuKien} sự kiện. Không thể xóa dữ liệu!",
                     "BR-07");
             }
 
@@ -145,7 +145,7 @@ namespace EventManagement.BLL.Services
             }
 
             existing.TrangThai = "Ngừng áp dụng";
-            return ServiceResult.Success($"Đã chuyển trạng thái loại sự kiện '{existing.TenLoaiSK}' sang 'Ngừng áp dụng' (BR-20)!");
+            return ServiceResult.Success($"Đã chuyển trạng thái loại sự kiện '{existing.TenLoaiSK}' sang 'Ngừng áp dụng'!");
         }
     }
 }
