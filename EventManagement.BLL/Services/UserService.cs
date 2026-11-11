@@ -150,13 +150,7 @@ namespace EventManagement.BLL.Services
             string newId = dto.MaNguoiDung?.Trim() ?? string.Empty;
             if (string.IsNullOrEmpty(newId))
             {
-                int nextIndex = await _context.NguoiDungs.CountAsync() + 1;
-                newId = $"U{nextIndex:D2}";
-                while (await _context.NguoiDungs.AnyAsync(u => u.MaNguoiDung == newId))
-                {
-                    nextIndex++;
-                    newId = $"U{nextIndex:D2}";
-                }
+                newId = await GenerateNextUserIdAsync();
             }
             else if (await _context.NguoiDungs.AnyAsync(u => u.MaNguoiDung == newId))
             {
@@ -228,19 +222,20 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed("Số điện thoại không hợp lệ (cần 10 số, bắt đầu bằng 0 hoặc +84)!");
             }
 
-            // Ràng buộc an toàn: Không được khóa hoặc hạ quyền Admin duy nhất
+            // Ràng buộc an toàn: Không tự khóa/hạ quyền chính mình hoặc khóa/hạ quyền Admin duy nhất
+            bool isSelfLockOrDemote = IsCurrentSessionUser(userId)
+                && (dto.TrangThai != "Hoạt động" || (user.MaNhomQuyen == "ADMIN" && dto.MaNhomQuyen != "ADMIN"));
+            if (isSelfLockOrDemote)
+            {
+                return ServiceResult.Failed("Không thể khóa hoặc hạ quyền tài khoản bạn đang sử dụng trong phiên làm việc hiện tại!");
+            }
+
             if (user.MaNhomQuyen == "ADMIN")
             {
                 bool isDemotingOrLocking = dto.MaNhomQuyen != "ADMIN" || dto.TrangThai != "Hoạt động";
-                if (isDemotingOrLocking)
+                if (isDemotingOrLocking && !await HasOtherActiveAdminAsync(userId))
                 {
-                    int otherActiveAdmins = await _context.NguoiDungs
-                        .CountAsync(u => u.MaNhomQuyen == "ADMIN" && u.TrangThai == "Hoạt động" && u.MaNguoiDung != userId);
-
-                    if (otherActiveAdmins == 0)
-                    {
-                        return ServiceResult.Failed("Không thể khóa hoặc hạ quyền Quản trị viên (ADMIN) cuối cùng đang hoạt động!");
-                    }
+                    return ServiceResult.Failed("Không thể khóa hoặc hạ quyền Quản trị viên (ADMIN) cuối cùng đang hoạt động!");
                 }
             }
 
@@ -274,16 +269,16 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed("Không tìm thấy tài khoản cần xóa!");
             }
 
-            // Ràng buộc an toàn: Không được xóa Admin cuối cùng
-            if (user.MaNhomQuyen == "ADMIN")
+            // Ràng buộc an ninh: Không cho phép tự xóa chính tài khoản đang đăng nhập
+            if (IsCurrentSessionUser(user.MaNguoiDung))
             {
-                int otherActiveAdmins = await _context.NguoiDungs
-                    .CountAsync(u => u.MaNhomQuyen == "ADMIN" && u.MaNguoiDung != userId);
+                return ServiceResult.Failed("Không thể xóa tài khoản bạn đang sử dụng trong phiên làm việc hiện tại!");
+            }
 
-                if (otherActiveAdmins == 0)
-                {
-                    return ServiceResult.Failed("Không thể xóa Quản trị viên (ADMIN) cuối cùng trong hệ thống!");
-                }
+            // Ràng buộc an toàn: Không được xóa Admin cuối cùng đang hoạt động
+            if (user.MaNhomQuyen == "ADMIN" && !await HasOtherActiveAdminAsync(userId))
+            {
+                return ServiceResult.Failed("Không được phép xóa tài khoản Quản trị viên (Admin) cuối cùng đang hoạt động trong hệ thống!");
             }
 
             try
@@ -330,15 +325,15 @@ namespace EventManagement.BLL.Services
 
             if (user.TrangThai == "Hoạt động")
             {
-                // Khóa tài khoản -> kiểm tra admin cuối cùng
-                if (user.MaNhomQuyen == "ADMIN")
+                if (IsCurrentSessionUser(userId))
                 {
-                    int otherActiveAdmins = await _context.NguoiDungs
-                        .CountAsync(u => u.MaNhomQuyen == "ADMIN" && u.TrangThai == "Hoạt động" && u.MaNguoiDung != userId);
-                    if (otherActiveAdmins == 0)
-                    {
-                        return ServiceResult.Failed("Không thể khóa Quản trị viên (ADMIN) cuối cùng đang hoạt động!");
-                    }
+                    return ServiceResult.Failed("Không thể khóa tài khoản bạn đang sử dụng trong phiên làm việc hiện tại!");
+                }
+
+                // Khóa tài khoản -> kiểm tra admin cuối cùng đang hoạt động
+                if (user.MaNhomQuyen == "ADMIN" && !await HasOtherActiveAdminAsync(userId))
+                {
+                    return ServiceResult.Failed("Không thể khóa Quản trị viên (ADMIN) cuối cùng đang hoạt động!");
                 }
 
                 user.TrangThai = "Khóa vĩnh viễn";
@@ -353,6 +348,43 @@ namespace EventManagement.BLL.Services
 
             await _context.SaveChangesAsync();
             return ServiceResult.Success($"Cập nhật trạng thái tài khoản '{user.TenDangNhap}' thành '{user.TrangThai}' thành công!");
+        }
+
+        private static bool IsCurrentSessionUser(string userId)
+            => CurrentSession.IsLoggedIn
+               && string.Equals(userId, CurrentSession.MaNguoiDung, StringComparison.OrdinalIgnoreCase);
+
+        private async Task<bool> HasOtherActiveAdminAsync(string excludedUserId)
+            => await _context.NguoiDungs
+                .AnyAsync(u => u.MaNhomQuyen == "ADMIN"
+                            && u.TrangThai == "Hoạt động"
+                            && u.MaNguoiDung != excludedUserId);
+
+        private async Task<string> GenerateNextUserIdAsync()
+        {
+            var existingIds = await _context.NguoiDungs
+                .Select(u => u.MaNguoiDung)
+                .ToListAsync();
+
+            int maxIndex = 0;
+            foreach (var id in existingIds)
+            {
+                if (id.StartsWith("USR", StringComparison.OrdinalIgnoreCase)
+                    && int.TryParse(id.Substring(3), out int num)
+                    && num > maxIndex)
+                {
+                    maxIndex = num;
+                }
+            }
+
+            int nextIndex = maxIndex + 1;
+            string candidate = $"USR{nextIndex:D3}";
+            while (existingIds.Contains(candidate, StringComparer.OrdinalIgnoreCase))
+            {
+                nextIndex++;
+                candidate = $"USR{nextIndex:D3}";
+            }
+            return candidate;
         }
     }
 }
