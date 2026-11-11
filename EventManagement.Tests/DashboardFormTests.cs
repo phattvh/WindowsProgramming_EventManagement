@@ -70,6 +70,16 @@ namespace EventManagement.Tests
                 return ServiceResult<List<UpcomingEventDto>>.Success(UpcomingToReturn);
             }
 
+            public Task<ServiceResult<List<UpcomingEventDto>>> GetAllEventsAsync()
+            {
+                return Task.FromResult(ServiceResult<List<UpcomingEventDto>>.Success(UpcomingToReturn));
+            }
+
+            public ServiceResult<List<UpcomingEventDto>> GetAllEvents()
+            {
+                return ServiceResult<List<UpcomingEventDto>>.Success(UpcomingToReturn);
+            }
+
             public Task<ServiceResult<List<EventRevenueChartDto>>> GetEventRevenueComparisonAsync(int limit = 5)
             {
                 return Task.FromResult(ServiceResult<List<EventRevenueChartDto>>.Success(new List<EventRevenueChartDto>()));
@@ -229,6 +239,28 @@ namespace EventManagement.Tests
             var flpQuickButtons = form.Controls.Find("flpQuickButtons", true)[0] as FlowLayoutPanel;
             flpQuickButtons.Should().NotBeNull();
             flpQuickButtons!.Dock.Should().Be(DockStyle.Fill, "Thanh nút tác nghiệp phải Dock Fill để dàn đều");
+        }
+
+        [TestMethod]
+        public async Task FrmDashboard_SortUpcomingGridByColumn_SortsAscendingAndDescending()
+        {
+            var fakeService = new FakeDashboardService
+            {
+                UpcomingToReturn = new List<UpcomingEventDto>
+                {
+                    new UpcomingEventDto { MaSuKien = "EVT002", TenSuKien = "Beta", NgayBatDau = DateTime.Today.AddDays(5), SoVeDaBan = 10, TrangThai = "Dự kiến" },
+                    new UpcomingEventDto { MaSuKien = "EVT001", TenSuKien = "Alpha", NgayBatDau = DateTime.Today.AddDays(1), SoVeDaBan = 50, TrangThai = "Mở đăng ký" }
+                }
+            };
+
+            using var form = new FrmDashboard(fakeService);
+            await form.RefreshDashboardAsync();
+
+            form.SortUpcomingGridByColumn(nameof(UpcomingEventDto.TenSuKien), ascending: true);
+            form.CurrentUpcomingEvents![0].TenSuKien.Should().Be("Alpha");
+
+            form.SortUpcomingGridByColumn(nameof(UpcomingEventDto.SoVeDaBan), ascending: false);
+            form.CurrentUpcomingEvents![0].MaSuKien.Should().Be("EVT001");
         }
     }
 }

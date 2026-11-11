@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
+using EventManagement.Core.Entities;
 using EventManagement.DAL;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,14 +32,14 @@ namespace EventManagement.BLL.Services
             {
                 var stats = new DashboardStatsDto();
 
-                // 1. Thống kê Sự kiện
+                // 1. Thống kê Sự kiện (hỗ trợ cả bộ trạng thái chuẩn CSDL lẫn bộ trạng thái mở rộng)
                 var events = await _context.SuKiens.AsNoTracking().ToListAsync();
                 stats.TongSoSuKien = events.Count;
-                stats.SuKienChuanBi = events.Count(e => e.TrangThai == "Chuẩn bị");
-                stats.SuKienSapDienRa = events.Count(e => e.TrangThai == "Sắp diễn ra");
+                stats.SuKienChuanBi = events.Count(e => e.TrangThai == "Chuẩn bị" || e.TrangThai == "Dự kiến");
+                stats.SuKienSapDienRa = events.Count(e => e.TrangThai == "Sắp diễn ra" || e.TrangThai == "Mở đăng ký");
                 stats.SuKienDangDienRa = events.Count(e => e.TrangThai == "Đang diễn ra");
-                stats.SuKienDaHoanThanh = events.Count(e => e.TrangThai == "Đã hoàn thành");
-                stats.SuKienDaHuy = events.Count(e => e.TrangThai == "Đã hủy");
+                stats.SuKienDaHoanThanh = events.Count(e => e.TrangThai == "Đã hoàn thành" || e.TrangThai == "Đã kết thúc");
+                stats.SuKienDaHuy = events.Count(e => e.TrangThai == "Đã hủy" || e.TrangThai == "Hủy");
 
                 // 2. Thống kê Bán vé & Người tham gia
                 var ticketTiers = await _context.HangVes.AsNoTracking().ToListAsync();
@@ -95,45 +96,11 @@ namespace EventManagement.BLL.Services
 
                 // Lấy các sự kiện bắt đầu từ hôm nay đến mốc daysAhead ngày tới, không tính sự kiện Đã hủy
                 var events = await _context.SuKiens.AsNoTracking()
-                    .Where(e => e.NgayBatDau >= today && e.NgayBatDau <= maxDate && e.TrangThai != "Đã hủy")
+                    .Where(e => e.NgayBatDau >= today && e.NgayBatDau <= maxDate && e.TrangThai != "Đã hủy" && e.TrangThai != "Hủy")
                     .OrderBy(e => e.NgayBatDau)
                     .ToListAsync();
 
-                // Lấy thông tin vé và checkin
-                var ticketTiers = await _context.HangVes.AsNoTracking().ToListAsync();
-                var dangKys = await _context.DangKys.AsNoTracking().ToListAsync();
-                var ticketDetails = await _context.ChiTietVes.AsNoTracking().ToListAsync();
-                var checkIns = await _context.CheckIns.AsNoTracking().ToListAsync();
-
-                var checkedInTicketIds = checkIns.Select(c => c.MaVe).ToHashSet();
-
-                var result = new List<UpcomingEventDto>();
-
-                foreach (var ev in events)
-                {
-                    var tiersOfEvent = ticketTiers.Where(t => t.MaSuKien == ev.MaSuKien).ToList();
-                    int sold = tiersOfEvent.Sum(t => t.SoLuongDaBan);
-
-                    var eventDangKyIds = dangKys.Where(d => d.MaSuKien == ev.MaSuKien).Select(d => d.MaDangKy).ToHashSet();
-                    var ticketsOfEvent = ticketDetails.Where(d => eventDangKyIds.Contains(d.MaDangKy)).ToList();
-                    int checkinCount = ticketsOfEvent.Count(d => checkedInTicketIds.Contains(d.MaVe));
-
-                    double ratio = sold > 0 ? Math.Round(Math.Min(100.0, ((double)checkinCount / sold) * 100.0), 1) : 0.0;
-
-                    result.Add(new UpcomingEventDto
-                    {
-                        MaSuKien = ev.MaSuKien,
-                        TenSuKien = ev.TenSuKien,
-                        NgayBatDau = ev.NgayBatDau,
-                        NgayKetThuc = ev.NgayKetThuc,
-                        DiaDiem = ev.MaDiaDiem,
-                        SoVeDaBan = sold,
-                        SoNguoiCheckIn = checkinCount,
-                        TyLeCheckIn = ratio,
-                        TrangThai = ev.TrangThai
-                    });
-                }
-
+                var result = await BuildDashboardEventDtosAsync(events);
                 return ServiceResult<List<UpcomingEventDto>>.Success(result, $"Lấy thành công {result.Count} sự kiện sắp diễn ra.");
             }
             catch (Exception ex)
@@ -147,12 +114,80 @@ namespace EventManagement.BLL.Services
             return Task.Run(() => GetUpcomingEventsAsync(daysAhead)).GetAwaiter().GetResult();
         }
 
+        public async Task<ServiceResult<List<UpcomingEventDto>>> GetAllEventsAsync()
+        {
+            try
+            {
+                var now = DateTime.Now;
+                var events = await _context.SuKiens.AsNoTracking().ToListAsync();
+
+                // Sắp xếp theo thời gian từ gần nhất tới xa nhất so với hiện tại
+                var orderedEvents = events
+                    .OrderBy(e => Math.Abs((e.NgayBatDau - now).Ticks))
+                    .ThenBy(e => e.NgayBatDau)
+                    .ToList();
+
+                var result = await BuildDashboardEventDtosAsync(orderedEvents);
+                return ServiceResult<List<UpcomingEventDto>>.Success(result, $"Lấy thành công {result.Count} sự kiện trong hệ thống.");
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult<List<UpcomingEventDto>>.Failed($"Lỗi lấy danh sách sự kiện: {ex.Message}");
+            }
+        }
+
+        public ServiceResult<List<UpcomingEventDto>> GetAllEvents()
+        {
+            return Task.Run(GetAllEventsAsync).GetAwaiter().GetResult();
+        }
+
+        private async Task<List<UpcomingEventDto>> BuildDashboardEventDtosAsync(List<SuKien> events)
+        {
+            var ticketTiers = await _context.HangVes.AsNoTracking().ToListAsync();
+            var dangKys = await _context.DangKys.AsNoTracking().ToListAsync();
+            var ticketDetails = await _context.ChiTietVes.AsNoTracking().ToListAsync();
+            var checkIns = await _context.CheckIns.AsNoTracking().ToListAsync();
+            var venues = await _context.DiaDiems.AsNoTracking()
+                .ToDictionaryAsync(v => v.MaDiaDiem, v => v.TenDiaDiem);
+
+            var checkedInTicketIds = checkIns.Select(c => c.MaVe).ToHashSet();
+            var result = new List<UpcomingEventDto>();
+
+            foreach (var ev in events)
+            {
+                var tiersOfEvent = ticketTiers.Where(t => t.MaSuKien == ev.MaSuKien).ToList();
+                int sold = tiersOfEvent.Sum(t => t.SoLuongDaBan);
+
+                var eventDangKyIds = dangKys.Where(d => d.MaSuKien == ev.MaSuKien).Select(d => d.MaDangKy).ToHashSet();
+                var ticketsOfEvent = ticketDetails.Where(d => eventDangKyIds.Contains(d.MaDangKy)).ToList();
+                int checkinCount = ticketsOfEvent.Count(d => checkedInTicketIds.Contains(d.MaVe));
+
+                double ratio = sold > 0 ? Math.Round(Math.Min(100.0, ((double)checkinCount / sold) * 100.0), 1) : 0.0;
+                string venueName = venues.TryGetValue(ev.MaDiaDiem, out var tenDiaDiem) ? tenDiaDiem : ev.MaDiaDiem;
+
+                result.Add(new UpcomingEventDto
+                {
+                    MaSuKien = ev.MaSuKien,
+                    TenSuKien = ev.TenSuKien,
+                    NgayBatDau = ev.NgayBatDau,
+                    NgayKetThuc = ev.NgayKetThuc,
+                    DiaDiem = venueName,
+                    SoVeDaBan = sold,
+                    SoNguoiCheckIn = checkinCount,
+                    TyLeCheckIn = ratio,
+                    TrangThai = ev.TrangThai
+                });
+            }
+
+            return result;
+        }
+
         public async Task<ServiceResult<List<EventRevenueChartDto>>> GetEventRevenueComparisonAsync(int limit = 5)
         {
             try
             {
                 var events = await _context.SuKiens.AsNoTracking()
-                    .Where(e => e.TrangThai != "Đã hủy")
+                    .Where(e => e.TrangThai != "Đã hủy" && e.TrangThai != "Hủy")
                     .Take(Math.Max(1, limit))
                     .ToListAsync();
 

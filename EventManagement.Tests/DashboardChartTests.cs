@@ -188,6 +188,16 @@ namespace EventManagement.Tests
                 return ServiceResult<List<UpcomingEventDto>>.Success(new List<UpcomingEventDto>());
             }
 
+            public Task<ServiceResult<List<UpcomingEventDto>>> GetAllEventsAsync()
+            {
+                return Task.FromResult(ServiceResult<List<UpcomingEventDto>>.Success(new List<UpcomingEventDto>()));
+            }
+
+            public ServiceResult<List<UpcomingEventDto>> GetAllEvents()
+            {
+                return ServiceResult<List<UpcomingEventDto>>.Success(new List<UpcomingEventDto>());
+            }
+
             public Task<ServiceResult<List<EventRevenueChartDto>>> GetEventRevenueComparisonAsync(int limit = 5)
             {
                 var list = new List<EventRevenueChartDto>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -17,6 +18,8 @@ namespace EventManagement.GUI.Forms
     public partial class FrmDashboard : FrmBase
     {
         private readonly IDashboardService _dashboardService;
+        private string? _sortColumnProperty;
+        private bool _sortAscending = true;
 
         public DashboardStatsDto? CurrentStats { get; private set; }
         public List<UpcomingEventDto>? CurrentUpcomingEvents { get; private set; }
@@ -34,11 +37,13 @@ namespace EventManagement.GUI.Forms
         private async void FrmDashboard_Load(object sender, EventArgs e)
         {
             this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            ConfigureDashboardGridColumns();
             ApplyUserSessionAndPermissions();
             DistributeQuickButtons();
             this.Resize += (s, ev) => DistributeQuickButtons();
             DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
             dgvUpcoming.CellDoubleClick += DgvUpcoming_CellDoubleClick;
+            dgvUpcoming.ColumnHeaderMouseClick += DgvUpcoming_ColumnHeaderMouseClick;
             await RefreshDashboardAsync();
         }
 
@@ -46,7 +51,83 @@ namespace EventManagement.GUI.Forms
         {
             DataSyncNotifier.GeneralDataChanged -= OnDataSyncChanged;
             dgvUpcoming.CellDoubleClick -= DgvUpcoming_CellDoubleClick;
+            dgvUpcoming.ColumnHeaderMouseClick -= DgvUpcoming_ColumnHeaderMouseClick;
             base.OnFormClosed(e);
+        }
+
+        private void ConfigureDashboardGridColumns()
+        {
+            foreach (DataGridViewColumn col in dgvUpcoming.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.Programmatic;
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            colMaSK.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNgayBatDau.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNgayBatDau.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+            colNgayKetThuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colNgayKetThuc.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+            colSoVe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colCheckIn.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTyLe.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
+
+        private void DgvUpcoming_ColumnHeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex < 0 || e.ColumnIndex >= dgvUpcoming.Columns.Count) return;
+            var clickedCol = dgvUpcoming.Columns[e.ColumnIndex];
+            string propertyName = clickedCol.DataPropertyName;
+            if (string.IsNullOrWhiteSpace(propertyName)) return;
+
+            if (string.Equals(_sortColumnProperty, propertyName, StringComparison.Ordinal))
+            {
+                _sortAscending = !_sortAscending;
+            }
+            else
+            {
+                _sortColumnProperty = propertyName;
+                _sortAscending = true;
+            }
+
+            SortUpcomingGridByColumn(propertyName, _sortAscending);
+        }
+
+        public void SortUpcomingGridByColumn(string propertyName, bool ascending)
+        {
+            if (CurrentUpcomingEvents == null || CurrentUpcomingEvents.Count == 0) return;
+
+            _sortColumnProperty = propertyName;
+            _sortAscending = ascending;
+
+            Func<UpcomingEventDto, object?> keySelector = propertyName switch
+            {
+                nameof(UpcomingEventDto.MaSuKien) => x => x.MaSuKien,
+                nameof(UpcomingEventDto.TenSuKien) => x => x.TenSuKien,
+                nameof(UpcomingEventDto.NgayBatDau) => x => x.NgayBatDau,
+                nameof(UpcomingEventDto.NgayKetThuc) => x => x.NgayKetThuc,
+                nameof(UpcomingEventDto.DiaDiem) => x => x.DiaDiem,
+                nameof(UpcomingEventDto.SoVeDaBan) => x => x.SoVeDaBan,
+                nameof(UpcomingEventDto.SoNguoiCheckIn) => x => x.SoNguoiCheckIn,
+                nameof(UpcomingEventDto.TyLeCheckIn) => x => x.TyLeCheckIn,
+                nameof(UpcomingEventDto.TrangThai) => x => x.TrangThai,
+                _ => x => x.NgayBatDau
+            };
+
+            CurrentUpcomingEvents = ascending
+                ? CurrentUpcomingEvents.OrderBy(keySelector).ToList()
+                : CurrentUpcomingEvents.OrderByDescending(keySelector).ToList();
+
+            dgvUpcoming.AutoGenerateColumns = false;
+            dgvUpcoming.DataSource = null;
+            dgvUpcoming.DataSource = CurrentUpcomingEvents;
+
+            foreach (DataGridViewColumn col in dgvUpcoming.Columns)
+            {
+                col.HeaderCell.SortGlyphDirection = string.Equals(col.DataPropertyName, propertyName, StringComparison.Ordinal)
+                    ? (ascending ? SortOrder.Ascending : SortOrder.Descending)
+                    : SortOrder.None;
+            }
         }
 
         private async void OnDataSyncChanged()
@@ -140,19 +221,31 @@ namespace EventManagement.GUI.Forms
                     CurrentStats = statsResult.Data;
                     UpdateKpiCards(statsResult.Data);
                 }
-
-                // 2. Nạp danh sách sự kiện sắp diễn ra trong 7 ngày
-                var upcomingResult = await _dashboardService.GetUpcomingEventsAsync(7);
-                if (upcomingResult.IsSuccess && upcomingResult.Data != null)
+                else if (!statsResult.IsSuccess)
                 {
-                    CurrentUpcomingEvents = upcomingResult.Data;
-                    dgvUpcoming.AutoGenerateColumns = false;
-                    dgvUpcoming.DataSource = upcomingResult.Data;
-                    lblUpcomingSummary.Text = $"Tìm thấy {upcomingResult.Data.Count} sự kiện sẽ diễn ra trong vòng 7 ngày tới.";
+                    MessageBox.Show(statsResult.Message, "Cảnh báo số liệu Dashboard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                // 2. Nạp danh sách toàn bộ sự kiện (mặc định từ gần nhất đến xa nhất)
+                var eventsResult = await _dashboardService.GetAllEventsAsync();
+                if (eventsResult.IsSuccess && eventsResult.Data != null)
+                {
+                    CurrentUpcomingEvents = eventsResult.Data;
+                    if (!string.IsNullOrWhiteSpace(_sortColumnProperty))
+                    {
+                        SortUpcomingGridByColumn(_sortColumnProperty, _sortAscending);
+                    }
+                    else
+                    {
+                        dgvUpcoming.AutoGenerateColumns = false;
+                        dgvUpcoming.DataSource = null;
+                        dgvUpcoming.DataSource = CurrentUpcomingEvents;
+                    }
+                    lblUpcomingSummary.Text = $"Hiển thị {CurrentUpcomingEvents.Count} sự kiện (từ gần nhất đến xa nhất). Bấm tiêu đề cột để sắp xếp.";
                 }
                 else
                 {
-                    lblUpcomingSummary.Text = "Hiện không có sự kiện nào diễn ra trong 7 ngày tới.";
+                    lblUpcomingSummary.Text = eventsResult.Message ?? "Không thể tải danh sách sự kiện.";
                 }
 
                 // 3. Hook nạp biểu đồ (được ghi đè ở Ngày 7)

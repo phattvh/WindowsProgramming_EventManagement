@@ -620,7 +620,7 @@
             this.grpUpcoming.Size = new System.Drawing.Size(1134, 252);
             this.grpUpcoming.TabIndex = 4;
             this.grpUpcoming.TabStop = false;
-            this.grpUpcoming.Text = "📅 CÁC SỰ KIỆN SẮP DIỄN RA TRONG 7 NGÀY TỚI";
+            this.grpUpcoming.Text = "📅 DANH SÁCH TẤT CẢ SỰ KIỆN";
             // 
             // dgvUpcoming
             // 
@@ -766,7 +766,7 @@
             this.lblUpcomingSummary.Name = "lblUpcomingSummary";
             this.lblUpcomingSummary.Size = new System.Drawing.Size(271, 20);
             this.lblUpcomingSummary.TabIndex = 0;
-            this.lblUpcomingSummary.Text = "Hiển thị các sự kiện bắt đầu trong 7 ngày tới.";
+            this.lblUpcomingSummary.Text = "Hiển thị toàn bộ sự kiện theo thời gian từ gần nhất đến xa nhất.";
             // 
             // FrmDashboard
             // 
