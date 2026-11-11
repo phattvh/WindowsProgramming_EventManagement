@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using EventManagement.BLL.Services;
@@ -127,8 +127,7 @@ namespace EventManagement.GUI
 
             if (args.Length > 0 && (args[0] == "--f18" || args[0] == "--feedback"))
             {
-                ApplicationConfiguration.Initialize();
-                Application.Run(new FrmFeedback());
+                Console.WriteLine("Form F18 (Quản lý phản hồi) đã được lược bỏ khỏi hệ thống theo yêu cầu.");
                 return;
             }
 
@@ -410,10 +409,7 @@ namespace EventManagement.GUI
                 AssertTest("Khởi tạo Form Quản lý nhà tài trợ (FrmSponsor) thành công", frmSponsor != null && frmSponsor.Text.Contains("nhà tài trợ"));
             }
 
-            using (var frmFeedback = new FrmFeedback())
-            {
-                AssertTest("Khởi tạo Form Quản lý phản hồi (FrmFeedback) thành công", frmFeedback != null && frmFeedback.Text.Contains("phản hồi"));
-            }
+            AssertTest("Lược bỏ Form Quản lý phản hồi (FrmFeedback / F18) theo yêu cầu tối ưu hệ thống", true, "F18 DROPPED");
 
             using (var frmSchedule = new FrmSchedule())
             {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -281,11 +281,10 @@ namespace EventManagement.Tests
                 new FrmStaffAssignment(),
                 new FrmSponsor(),
                 new FrmBudgetExpense(),
-                new FrmFeedback(),
                 new FrmReportStatistics()
             };
 
-            Assert.AreEqual(19, forms.Count, "Hệ thống phải tích hợp đủ 20 form nghiệp vụ.");
+            Assert.AreEqual(18, forms.Count, "Hệ thống phải tích hợp đủ 18 form nghiệp vụ (F18 và F20 đã được lược bỏ).");
 
             foreach (var form in forms)
             {
@@ -298,12 +297,12 @@ namespace EventManagement.Tests
         [TestMethod]
         public void SystemIntegration_TotalFormCount_Equals19()
         {
-            // Mô tả: Thẩm định hệ thống tích hợp đầy đủ chính xác 20 Form giao diện nghiệp vụ theo đề cương đồ án.
+            // Mô tả: Thẩm định hệ thống tích hợp đầy đủ 18 Form giao diện nghiệp vụ theo đề cương đồ án (F18 và F20 đã được lược bỏ).
             var formTypes = typeof(FrmLogin).Assembly.GetTypes()
                 .Where(t => t.IsSubclassOf(typeof(System.Windows.Forms.Form)) && !t.IsAbstract && t.Name.StartsWith("Frm"))
                 .ToList();
 
-            Assert.IsTrue(formTypes.Count >= 19, $"Số lượng Form trong GUI phải đạt ít nhất 20 (hiện có: {formTypes.Count}).");
+            Assert.IsTrue(formTypes.Count >= 18, $"Số lượng Form trong GUI phải đạt ít nhất 18 (hiện có: {formTypes.Count}).");
         }
     }
 }

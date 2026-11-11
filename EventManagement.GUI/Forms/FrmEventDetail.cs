@@ -274,6 +274,7 @@ namespace EventManagement.GUI.Forms
 
             StyleButton(btnMoF18, ButtonRole.Primary);
             btnMoF18.Text = "Quản lý phản hồi";
+            btnMoF18.Visible = false; // Form 18 (Quản lý phản hồi) đã được lược bỏ khỏi hệ thống
 
             StyleButton(btnDong, ButtonRole.Secondary);
             StyleButton(btnLamMoi, ButtonRole.Secondary);
@@ -1152,10 +1153,7 @@ namespace EventManagement.GUI.Forms
 
         private void btnMoF18_Click(object sender, EventArgs e)
         {
-            using var frm = new FrmFeedback();
-            frm.ShowDialog(this);
-            LoadTab9_DanhGia(_maSuKien);
-            UpdateKPICards();
+            OpenFeedbackForm();
         }
 
 
@@ -1233,10 +1231,7 @@ namespace EventManagement.GUI.Forms
 
         public void OpenFeedbackForm()
         {
-            using var frm = new FrmFeedback();
-            frm.ShowDialog(this);
-            LoadTab9_DanhGia(_maSuKien);
-            UpdateKPICards();
+            MessageBox.Show("Chức năng Quản lý phản hồi (Form 18) đã được lược bỏ khỏi hệ thống theo yêu cầu.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public void OpenCheckInCameraForm()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using EventManagement.Core.Session;
@@ -193,7 +193,6 @@ namespace EventManagement.GUI.Forms
             mnuStaff.DropDownItems.Add(CreateMenuItem("Diễn giả && Khách mời", Keys.Control | Keys.Shift | Keys.J, "UC09", (s, e) => NavigateTo("UC09", () => new FrmSpeaker(), "Diễn giả & Khách mời")));
             mnuStaff.DropDownItems.Add(CreateMenuItem("Hồ sơ người tham dự", Keys.None, "UC10", (s, e) => NavigateTo("UC10", () => new FrmAttendee(), "Hồ sơ người tham dự")));
             mnuStaff.DropDownItems.Add(CreateMenuItem("Nhà tài trợ", Keys.None, "UC16", (s, e) => NavigateTo("UC16", () => new FrmSponsor(), "Nhà tài trợ")));
-            mnuStaff.DropDownItems.Add(CreateMenuItem("Khảo sát && Phản hồi", Keys.None, "UC18", (s, e) => NavigateTo("UC18", () => new FrmFeedback(), "Khảo sát & Phản hồi")));
 
             // 5. MENU TÀI CHÍNH & BÁO CÁO (&T)
             var mnuFinance = new ToolStripMenuItem("&Tài chính && BC");
