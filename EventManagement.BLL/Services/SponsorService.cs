@@ -176,6 +176,7 @@ namespace EventManagement.BLL.Services
             existing.TongGiaTriTaiTro = dto.TongGiaTriTaiTro;
             existing.HinhThucTaiTro = dto.HinhThucTaiTro;
             existing.TrangThai = dto.TrangThai;
+            existing.MaSuKien = dto.MaSuKien;
 
             return ServiceResult.Success("Cập nhật thông tin nhà tài trợ thành công.");
         }
@@ -253,7 +254,7 @@ namespace EventManagement.BLL.Services
             }
 
             if (dto.TongGiaTriTaiTro < 0)
-                return ServiceResult.Failed("Giá trị tài trợ không được âm.");
+                return ServiceResult.Failed("Giá trị tài trợ phải >= 0!");
 
             return ServiceResult.Success();
         }

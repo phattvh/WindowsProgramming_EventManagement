@@ -181,6 +181,7 @@ namespace EventManagement.BLL.Services
             };
 
             _speakers.Add(newEntity);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Thêm mới hồ sơ diễn giả thành công!");
         }
 
@@ -229,6 +230,7 @@ namespace EventManagement.BLL.Services
             item.HinhAnh = dto.HinhAnh?.Trim();
             item.TrangThai = string.IsNullOrWhiteSpace(dto.TrangThai) ? item.TrangThai : dto.TrangThai.Trim();
 
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Cập nhật thông tin diễn giả thành công!");
         }
 
@@ -249,6 +251,7 @@ namespace EventManagement.BLL.Services
             }
 
             _speakers.Remove(item);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success($"Đã xóa hồ sơ diễn giả '{item.HoTen}' thành công!");
         }
 
@@ -261,6 +264,7 @@ namespace EventManagement.BLL.Services
             }
 
             item.TrangThai = "Ngừng hợp tác";
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success($"Đã chuyển trạng thái diễn giả '{item.HoTen}' sang 'Ngừng hợp tác' thành công theo quy tắc BR-20.");
         }
     }

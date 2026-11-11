@@ -42,14 +42,18 @@ namespace EventManagement.GUI.Forms
         private Button _btnAdd = null!;
         private Button _btnEdit = null!;
         private Button _btnDelete = null!;
+        private Button _btnCloseTier = null!;
         private Button _btnSave = null!;
         private Button _btnCancel = null!;
         private ErrorProvider _errorProvider = null!;
+
+        private static List<HangVe>? _sharedTicketTiers;
 
         public DataGridView DgvTiers => _dgvTiers;
         public Button BtnAdd => _btnAdd;
         public Button BtnEdit => _btnEdit;
         public Button BtnDelete => _btnDelete;
+        public Button BtnCloseTier => _btnCloseTier;
         public Button BtnSave => _btnSave;
         public Button BtnCancel => _btnCancel;
         public GroupBox GrpDetails => _grpDetails;
@@ -57,7 +61,11 @@ namespace EventManagement.GUI.Forms
         public FrmTicketTier()
         {
             _tierService = new TicketTierService();
-            _ticketTiers = GetInitialSeedData();
+            if (_sharedTicketTiers == null)
+            {
+                _sharedTicketTiers = GetInitialSeedData();
+            }
+            _ticketTiers = _sharedTicketTiers;
 
             InitializeComponent();
             LoadDataToGrid(_ticketTiers);
@@ -151,10 +159,10 @@ namespace EventManagement.GUI.Forms
             _txtTen = new TextBox { Location = new Point(600, 25), Width = 205 };
 
             var lblGia = new Label { Text = "Giá vé (VNĐ):", Location = new Point(825, 28), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _nudGiaVe = new NumericUpDown { Location = new Point(925, 25), Width = 110, Maximum = 100000000, Increment = 50000 };
+            _nudGiaVe = new NumericUpDown { Location = new Point(925, 25), Width = 110, Minimum = -100000000, Maximum = 100000000, Increment = 50000 };
 
             var lblPhatHanh = new Label { Text = "Số phát hành (*):", Location = new Point(20, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            _nudPhatHanh = new NumericUpDown { Location = new Point(140, 65), Width = 90, Maximum = 100000, Minimum = 1, Value = 100 };
+            _nudPhatHanh = new NumericUpDown { Location = new Point(140, 65), Width = 90, Minimum = -100000, Maximum = 100000, Value = 100 };
 
             var lblDaBan = new Label { Text = "Đã bán ra:", Location = new Point(250, 68), AutoSize = true, Font = new Font("Segoe UI", 9F) };
             _txtDaBan = new TextBox { Location = new Point(335, 65), Width = 80, ReadOnly = true, BackColor = Color.FromArgb(241, 245, 249) };
@@ -195,6 +203,10 @@ namespace EventManagement.GUI.Forms
             _btnDelete.Location = new Point(230, 11);
             _btnDelete.Click += BtnDelete_Click;
 
+            _btnCloseTier = CreateStyledButton("Đóng bán vé", Color.FromArgb(217, 119, 6), Color.White, 110, 32);
+            _btnCloseTier.Location = new Point(345, 11);
+            _btnCloseTier.Click += BtnCloseTier_Click;
+
             _btnSave = CreateStyledButton("Lưu dữ liệu", ColorPrimary, Color.White, 115, 32);
             _btnSave.Location = new Point(780, 11);
             _btnSave.Click += BtnSave_Click;
@@ -211,7 +223,7 @@ namespace EventManagement.GUI.Forms
                 _btnSave.Location = new Point(_btnCancel.Left - _btnSave.Width - 10, 11);
             };
 
-            _pnlButtons.Controls.AddRange(new Control[] { _btnAdd, _btnEdit, _btnDelete, _btnSave, _btnCancel });
+            _pnlButtons.Controls.AddRange(new Control[] { _btnAdd, _btnEdit, _btnDelete, _btnCloseTier, _btnSave, _btnCancel });
 
             // Layout
             var centerPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(15, 5, 15, 5) };
@@ -341,6 +353,7 @@ namespace EventManagement.GUI.Forms
                         e.CellStyle!.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ
                         e.CellStyle.Font = new Font(_dgvTiers.Font, FontStyle.Bold);
                         break;
+                    case "Đã đóng":
                     case "Đã đóng bán":
                         e.CellStyle!.ForeColor = Color.FromArgb(100, 116, 139); // Xám
                         break;
@@ -359,6 +372,7 @@ namespace EventManagement.GUI.Forms
                 "Sắp hết vé" => 1,
                 "Chưa mở bán" => 2,
                 "Hết vé" => 3,
+                "Đã đóng" => 4,
                 "Đã đóng bán" => 4,
                 _ => 5
             };
@@ -396,12 +410,14 @@ namespace EventManagement.GUI.Forms
                     BindRowToDetails(item);
                     _btnEdit.Enabled = true;
                     _btnDelete.Enabled = true;
+                    _btnCloseTier.Enabled = true;
                 }
                 else
                 {
                     ClearDetails();
                     _btnEdit.Enabled = false;
                     _btnDelete.Enabled = false;
+                    _btnCloseTier.Enabled = false;
                 }
             }
         }
@@ -450,6 +466,7 @@ namespace EventManagement.GUI.Forms
             _btnAdd.Enabled = !isEditing;
             _btnEdit.Enabled = !isEditing && hasSelection;
             _btnDelete.Enabled = !isEditing && hasSelection;
+            _btnCloseTier.Enabled = !isEditing && hasSelection;
 
             _btnSave.Enabled = isEditing;
             _btnCancel.Enabled = isEditing;
@@ -495,9 +512,49 @@ namespace EventManagement.GUI.Forms
             }
         }
 
+        private void BtnCloseTier_Click(object? sender, EventArgs e)
+        {
+            if (_dgvTiers.CurrentRow?.DataBoundItem is HangVe item)
+            {
+                var confirm = MessageBox.Show(
+                    $"Bạn có chắc chắn muốn đóng bán hạng vé '{item.TenHangVe}' ({item.MaHangVe}) không?",
+                    "Xác nhận đóng bán vé",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm == DialogResult.Yes)
+                {
+                    item.ThoiGianDongBan = DateTime.Now.AddSeconds(-1);
+                    TicketOrderService.CloseTicketTier(item.MaHangVe);
+                    try
+                    {
+                        using var db = new EventManagement.DAL.AppDbContext();
+                        var dbTier = db.HangVes.FirstOrDefault(h => h.MaHangVe == item.MaHangVe);
+                        if (dbTier != null)
+                        {
+                            dbTier.ThoiGianDongBan = item.ThoiGianDongBan;
+                            db.SaveChanges();
+                        }
+                    }
+                    catch { }
+                    LoadDataToGrid(_ticketTiers);
+                    MessageBox.Show($"Đã đóng bán hạng vé '{item.TenHangVe}' thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
         private void BtnSave_Click(object? sender, EventArgs e)
         {
             _errorProvider.Clear();
+
+            // Kiểm tra giá vé âm hoặc số lượng phát hành <= 0
+            if (_nudGiaVe.Value < 0 || _nudPhatHanh.Value <= 0)
+            {
+                if (_nudGiaVe.Value < 0) _errorProvider.SetError(_nudGiaVe, "Giá vé phải >= 0 và Số lượng phát hành phải lớn hơn 0!");
+                if (_nudPhatHanh.Value <= 0) _errorProvider.SetError(_nudPhatHanh, "Giá vé phải >= 0 và Số lượng phát hành phải lớn hơn 0!");
+                MessageBox.Show("Giá vé phải >= 0 và Số lượng phát hành phải lớn hơn 0!", "Lỗi nhập liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             var tier = new HangVe
             {

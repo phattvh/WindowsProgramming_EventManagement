@@ -461,7 +461,7 @@
             this.nudSucChuaToiDa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.nudSucChuaToiDa.Location = new System.Drawing.Point(740, 65);
             this.nudSucChuaToiDa.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
-            this.nudSucChuaToiDa.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudSucChuaToiDa.Minimum = new decimal(new int[] { 100000, 0, 0, -2147483648 });
             this.nudSucChuaToiDa.Name = "nudSucChuaToiDa";
             this.nudSucChuaToiDa.Size = new System.Drawing.Size(205, 24);
             this.nudSucChuaToiDa.TabIndex = 7;

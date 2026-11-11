@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
 using EventManagement.BLL.Services;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
@@ -1033,14 +1034,57 @@ namespace EventManagement.GUI.Forms
 
         private void LoadTab7_TaiTro(string maSuKien)
         {
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var eventDetails = db.ChiTietTaiTros
+                    .AsNoTracking()
+                    .Where(ct => ct.MaSuKien == maSuKien)
+                    .ToList();
+
+                if (eventDetails.Count > 0)
+                {
+                    var allSponsors = _sponsorService.GetAll().Data ?? new List<SponsorDto>();
+                    var list = new List<SponsorDto>();
+                    foreach (var ct in eventDetails)
+                    {
+                        var sp = allSponsors.FirstOrDefault(s => s.MaNhaTaiTro == ct.MaNhaTaiTro);
+                        list.Add(new SponsorDto
+                        {
+                            MaNhaTaiTro = ct.MaNhaTaiTro,
+                            TenToChuc = sp != null ? sp.TenToChuc : $"Nhà tài trợ {ct.MaNhaTaiTro}",
+                            GoiTaiTro = ct.HangTaiTro,
+                            TongGiaTriTaiTro = ct.GiaTri,
+                            HinhThucTaiTro = ct.HinhThucTaiTro,
+                            NguoiDaiDien = sp?.NguoiDaiDien ?? "Đại diện",
+                            SoDienThoai = sp?.SoDienThoai ?? "",
+                            TrangThai = sp?.TrangThai ?? "Đang hợp tác",
+                            MaSuKien = ct.MaSuKien
+                        });
+                    }
+                    _sponsorsCache = list;
+                    dgvTaiTro.AutoGenerateColumns = false;
+                    dgvTaiTro.DataSource = null;
+                    dgvTaiTro.DataSource = _sponsorsCache;
+                    decimal totalTaiTro = _sponsorsCache.Sum(s => s.TongGiaTriTaiTro);
+                    lblTab7Header.Text = $"DANH SÁCH NHÀ TÀI TRỢ & ĐỐI TÁC (TỔNG TÀI TRỢ: {totalTaiTro:N0} VNĐ)";
+                    if (lblTab7Footer != null)
+                        lblTab7Footer.Text = $"Số gói tài trợ: {_sponsorsCache.Count} gói | Tổng giá trị tài trợ: {totalTaiTro:N0} VNĐ";
+                    return;
+                }
+            }
+            catch { }
+
+            // Fallback nếu CSDL chưa có chi tiết tài trợ
             var res = _sponsorService.GetAll();
             _sponsorsCache = res.IsSuccess && res.Data != null ? res.Data : new List<SponsorDto>();
             dgvTaiTro.AutoGenerateColumns = false;
             dgvTaiTro.DataSource = null;
             dgvTaiTro.DataSource = _sponsorsCache;
-            lblTab7Header.Text = "DANH SÁCH NHÀ TÀI TRỢ & ĐỐI TÁC";
+            decimal fallbackTotal = _sponsorsCache.Sum(s => s.TongGiaTriTaiTro);
+            lblTab7Header.Text = $"DANH SÁCH NHÀ TÀI TRỢ & ĐỐI TÁC (TỔNG TÀI TRỢ: {fallbackTotal:N0} VNĐ)";
             if (lblTab7Footer != null)
-                lblTab7Footer.Text = $"Số nhà tài trợ: {_sponsorsCache.Count} đơn vị";
+                lblTab7Footer.Text = $"Số nhà tài trợ: {_sponsorsCache.Count} đơn vị | Tổng giá trị tài trợ: {fallbackTotal:N0} VNĐ";
         }
 
         private void btnMoF16_Click(object sender, EventArgs e)

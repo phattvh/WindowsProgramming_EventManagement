@@ -34,7 +34,7 @@ namespace EventManagement.Core.Entities
             get
             {
                 if (ThoiGianDongBan.HasValue && DateTime.Now > ThoiGianDongBan.Value)
-                    return "Đã đóng bán";
+                    return "Đã đóng";
                 if (ThoiGianMoBan.HasValue && DateTime.Now < ThoiGianMoBan.Value)
                     return "Chưa mở bán";
                 if (SoLuongConLai <= 0)

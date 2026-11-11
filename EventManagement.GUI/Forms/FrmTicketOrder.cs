@@ -148,6 +148,42 @@ namespace EventManagement.GUI.Forms
 
             SyncAttendeeGridRows((int)nudSoLuong.Value);
             RecalculateTotal();
+
+            DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
+            this.FormClosed += (s, e) => DataSyncNotifier.GeneralDataChanged -= OnDataSyncChanged;
+        }
+
+        private void OnDataSyncChanged()
+        {
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+            try
+            {
+                string currentEvent = GetSelectedEventCode();
+                if (this.InvokeRequired)
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        _isLoading = true;
+                        LoadEvents();
+                        _isLoading = false;
+                        if (!string.IsNullOrEmpty(currentEvent))
+                        {
+                            for (int i = 0; i < cboSuKien.Items.Count; i++)
+                            {
+                                if (cboSuKien.Items[i] is EventLookupItem item && item.MaSuKien == currentEvent)
+                                { cboSuKien.SelectedIndex = i; break; }
+                            }
+                        }
+                    }));
+                }
+                else
+                {
+                    _isLoading = true;
+                    LoadEvents();
+                    _isLoading = false;
+                }
+            }
+            catch { }
         }
 
         private string GetSelectedEventCode()
@@ -197,7 +233,7 @@ namespace EventManagement.GUI.Forms
             {
                 _currentTiers = _ticketOrderService.GetTicketTiersByEvent(maSuKien);
                 cboHangVe.DataSource = null;
-                cboHangVe.DisplayMember = "TenHangVe";
+                cboHangVe.DisplayMember = "DisplayName";
                 cboHangVe.ValueMember = "MaHangVe";
                 cboHangVe.DataSource = _currentTiers;
 
@@ -236,6 +272,15 @@ namespace EventManagement.GUI.Forms
             var tier = GetSelectedTier();
             if (tier != null)
             {
+                if (tier.IsClosed)
+                {
+                    lblTierInfo.Text = $"Đơn giá: {tier.GiaVe:N0} đ | HẠNG VÉ ĐÃ ĐÓNG BÁN (KHÔNG CHO PHÉP MUA)";
+                    lblTierInfo.ForeColor = Color.FromArgb(185, 28, 28);
+                    btnXacNhan.Enabled = false;
+                    return;
+                }
+
+                btnXacNhan.Enabled = true;
                 lblTierInfo.Text = $"Đơn giá: {tier.GiaVe:N0} đ | Còn lại: {tier.SoLuongConLai}/{tier.SoLuongPhatHanh} vé";
                 if (tier.SoLuongConLai <= 0)
                 {
@@ -249,11 +294,12 @@ namespace EventManagement.GUI.Forms
                 }
                 else
                 {
-                    lblTierInfo.ForeColor = Color.FromArgb(46, 125, 50);
+                    lblTierInfo.ForeColor = Color.FromArgb(22, 101, 52);
                 }
             }
             else
             {
+                btnXacNhan.Enabled = true;
                 lblTierInfo.Text = "Chưa có thông tin hạng vé";
                 lblTierInfo.ForeColor = Color.Gray;
             }
@@ -336,6 +382,12 @@ namespace EventManagement.GUI.Forms
             if (tier == null)
             {
                 errorProvider.SetError(cboHangVe, "Vui lòng chọn hạng vé.");
+                isValid = false;
+            }
+            else if (tier.IsClosed)
+            {
+                errorProvider.SetError(cboHangVe, $"Hạng vé '{tier.TenHangVe}' đã đóng bán, không thể đặt mua!");
+                MessageBox.Show($"Hạng vé '{tier.TenHangVe}' đã đóng bán, không thể đặt mua!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 isValid = false;
             }
 

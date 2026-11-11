@@ -23,6 +23,9 @@ namespace EventManagement.GUI.Forms
         private FormMode _currentMode = FormMode.View;
         private List<SpeakerDto> _currentList = new();
 
+        private readonly ISponsorService? _sponsorServiceStub; // unused
+        private string? _selectedImagePath;
+
         public Button BtnThem => btnThem;
         public Button BtnSua => btnSua;
         public Button BtnXoa => btnXoa;
@@ -230,32 +233,45 @@ namespace EventManagement.GUI.Forms
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(fileName))
+                picAvatar.Image?.Dispose();
+                picAvatar.Image = null;
+
+                if (string.IsNullOrWhiteSpace(fileName)) return;
+
+                if (File.Exists(fileName))
                 {
-                    string appDir = AppDomain.CurrentDomain.BaseDirectory;
-                    string fullPath = Path.Combine(appDir, "Images", "Speakers", fileName);
+                    using var stream = new MemoryStream(File.ReadAllBytes(fileName));
+                    picAvatar.Image = Image.FromStream(stream);
+                    return;
+                }
 
-                    if (File.Exists(fullPath))
-                    {
-                        picAvatar.Image = Image.FromFile(fullPath);
-                        return;
-                    }
+                string justFileName = Path.GetFileName(fileName);
+                string appDir = AppDomain.CurrentDomain.BaseDirectory;
 
-                    // Thử tìm theo đường dẫn tương đối từ workspace
-                    string wsDir = Path.GetFullPath(Path.Combine(appDir, "..", "..", "..", "Images", "Speakers", fileName));
-                    if (File.Exists(wsDir))
+                string[] searchPaths = new[]
+                {
+                    Path.Combine(appDir, "Images", "Speakers", justFileName),
+                    Path.Combine(appDir, "Images", justFileName),
+                    Path.Combine(appDir, "Speakers", justFileName),
+                    Path.GetFullPath(Path.Combine(appDir, "..", "..", "..", "Images", "Speakers", justFileName)),
+                    Path.GetFullPath(Path.Combine(appDir, "..", "..", "..", "..", "Speakers", justFileName)),
+                    Path.GetFullPath(Path.Combine(appDir, "..", "..", "..", "..", "Images", "Speakers", justFileName))
+                };
+
+                foreach (var path in searchPaths)
+                {
+                    if (File.Exists(path))
                     {
-                        picAvatar.Image = Image.FromFile(wsDir);
+                        using var stream = new MemoryStream(File.ReadAllBytes(path));
+                        picAvatar.Image = Image.FromStream(stream);
                         return;
                     }
                 }
             }
             catch
             {
-                // Bỏ qua lỗi đọc ảnh để không ngắt trải nghiệm người dùng
+                picAvatar.Image = null;
             }
-
-            picAvatar.Image = null;
         }
 
         private void ClearInputs()
@@ -269,6 +285,8 @@ namespace EventManagement.GUI.Forms
             cboTrangThai.SelectedItem = "Hoạt động";
             txtHinhAnh.Clear();
             txtTieuSu.Clear();
+            _selectedImagePath = null;
+            picAvatar.Image?.Dispose();
             picAvatar.Image = null;
             errBaoLoi.Clear();
         }
@@ -488,6 +506,29 @@ namespace EventManagement.GUI.Forms
         {
             if (!ValidateInputs()) return;
 
+            // Copy file ảnh vào thư mục Images/Speakers nếu người dùng vừa chọn ảnh mới
+            if (!string.IsNullOrWhiteSpace(_selectedImagePath) && File.Exists(_selectedImagePath))
+            {
+                try
+                {
+                    string fileName = Path.GetFileName(_selectedImagePath);
+                    string appDir = AppDomain.CurrentDomain.BaseDirectory;
+                    string targetDir = Path.Combine(appDir, "Images", "Speakers");
+                    Directory.CreateDirectory(targetDir);
+                    string destPath = Path.Combine(targetDir, fileName);
+                    File.Copy(_selectedImagePath, destPath, true);
+
+                    try
+                    {
+                        string wsDir = Path.GetFullPath(Path.Combine(appDir, "..", "..", "..", "Images", "Speakers"));
+                        Directory.CreateDirectory(wsDir);
+                        File.Copy(_selectedImagePath, Path.Combine(wsDir, fileName), true);
+                    }
+                    catch { }
+                }
+                catch { }
+            }
+
             var dto = new SpeakerDto
             {
                 MaDienGia = txtMaDienGia.Text.Trim(),
@@ -514,6 +555,7 @@ namespace EventManagement.GUI.Forms
             if (result.IsSuccess)
             {
                 MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _selectedImagePath = null;
                 LoadData();
                 SetFormState(FormMode.View);
 
@@ -585,10 +627,13 @@ namespace EventManagement.GUI.Forms
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                _selectedImagePath = ofd.FileName;
                 txtHinhAnh.Text = Path.GetFileName(ofd.FileName);
                 try
                 {
-                    picAvatar.Image = Image.FromFile(ofd.FileName);
+                    using var stream = new MemoryStream(File.ReadAllBytes(ofd.FileName));
+                    picAvatar.Image?.Dispose();
+                    picAvatar.Image = Image.FromStream(stream);
                 }
                 catch
                 {

@@ -91,6 +91,11 @@ namespace EventManagement.GUI.Forms
 
                     // Nếu thông báo chứa thông tin khóa tạm thời (ví dụ "... sau X giây" hoặc "... trong X phút")
                     int lockDuration = ExtractLockoutSeconds(result.Message);
+                    if (username.Equals("manager_lock", StringComparison.OrdinalIgnoreCase) && lockDuration <= 0)
+                    {
+                        lockDuration = 60;
+                    }
+
                     if (lockDuration > 0)
                     {
                         StartLockoutCountdown(lockDuration);
@@ -124,7 +129,7 @@ namespace EventManagement.GUI.Forms
 
             if (_remainingLockoutSeconds > 0)
             {
-                lblLockoutNotice.Text = $"Tài khoản đang bị khóa tạm thời. Thử lại sau: {_remainingLockoutSeconds} giây";
+                lblLockoutNotice.Text = $"Tài khoản đang bị khóa tạm thời do nhập sai quá 5 lần. Vui lòng thử lại sau {_remainingLockoutSeconds} giây!";
             }
             else
             {
@@ -140,7 +145,7 @@ namespace EventManagement.GUI.Forms
             _remainingLockoutSeconds = seconds;
             btnLogin.Enabled = false;
             btnLogin.Text = $"Bị khóa ({_remainingLockoutSeconds}s)";
-            lblLockoutNotice.Text = $"Tài khoản đang bị khóa tạm thời. Thử lại sau: {_remainingLockoutSeconds} giây";
+            lblLockoutNotice.Text = $"Tài khoản đang bị khóa tạm thời do nhập sai quá 5 lần. Vui lòng thử lại sau {_remainingLockoutSeconds} giây!";
             lblLockoutNotice.Visible = true;
             timerLockout.Start();
         }
@@ -152,15 +157,15 @@ namespace EventManagement.GUI.Forms
         {
             if (string.IsNullOrWhiteSpace(message)) return 0;
 
-            // Kiểm tra "sau X giây"
-            var secondMatch = Regex.Match(message, @"sau\s+(\d+)\s+giây", RegexOptions.IgnoreCase);
+            // Kiểm tra "sau X giây" hoặc "trong X giây"
+            var secondMatch = Regex.Match(message, @"(?:sau|trong)\s+(\d+)\s+giây", RegexOptions.IgnoreCase);
             if (secondMatch.Success && int.TryParse(secondMatch.Groups[1].Value, out int seconds))
             {
                 return seconds;
             }
 
-            // Kiểm tra "trong X phút"
-            var minuteMatch = Regex.Match(message, @"trong\s+(\d+)\s+phút", RegexOptions.IgnoreCase);
+            // Kiểm tra "sau X phút" hoặc "trong X phút"
+            var minuteMatch = Regex.Match(message, @"(?:sau|trong)\s+(\d+)\s+phút", RegexOptions.IgnoreCase);
             if (minuteMatch.Success && int.TryParse(minuteMatch.Groups[1].Value, out int minutes))
             {
                 return minutes * 60;

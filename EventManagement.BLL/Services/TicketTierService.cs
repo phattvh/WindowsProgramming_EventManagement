@@ -102,11 +102,8 @@ namespace EventManagement.BLL.Services
             if (string.IsNullOrWhiteSpace(tier.TenHangVe))
                 return ServiceResult<bool>.Failed("Tên hạng vé không được để trống.");
 
-            if (tier.GiaVe < 0)
-                return ServiceResult<bool>.Failed("Giá vé phải lớn hơn hoặc bằng 0.");
-
-            if (tier.SoLuongPhatHanh <= 0)
-                return ServiceResult<bool>.Failed("Số lượng phát hành phải lớn hơn 0.");
+            if (tier.GiaVe < 0 || tier.SoLuongPhatHanh <= 0)
+                return ServiceResult<bool>.Failed("Giá vé phải >= 0 và Số lượng phát hành phải lớn hơn 0!");
 
             if (tier.ThoiGianMoBan.HasValue && tier.ThoiGianDongBan.HasValue && tier.ThoiGianDongBan.Value <= tier.ThoiGianMoBan.Value)
             {
