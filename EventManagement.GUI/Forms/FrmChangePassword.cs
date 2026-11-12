@@ -22,7 +22,7 @@ namespace EventManagement.GUI.Forms
         public FrmChangePassword(IAuthService? authService, string? username = null)
         {
             InitializeComponent();
-            _authService = authService;
+            _authService = authService ?? new AuthService();
             _username = !string.IsNullOrWhiteSpace(username) 
                 ? username 
                 : (CurrentSession.IsLoggedIn ? CurrentSession.TenDangNhap : string.Empty);

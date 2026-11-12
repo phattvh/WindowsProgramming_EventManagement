@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -463,7 +463,7 @@ namespace EventManagement.GUI.Forms
 
             if (nudSucChuaToiDa.Value <= 0)
             {
-                errBaoLoi.SetError(nudSucChuaToiDa, "Sức chứa tối đa phải lớn hơn 0!");
+                errBaoLoi.SetError(nudSucChuaToiDa, "Sức chứa tối đa của địa điểm phải lớn hơn 0!");
                 isValid = false;
             }
 

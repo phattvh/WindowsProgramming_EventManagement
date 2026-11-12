@@ -206,6 +206,13 @@ namespace EventManagement.GUI.Forms
                 return;
             }
 
+            if (StaffAssignmentService.IsEventEnded(eventItem.Value))
+            {
+                lblKiemTraStatus.Text = "❌ Không thể phân công nhân sự vào sự kiện đã kết thúc!";
+                lblKiemTraStatus.ForeColor = ColorDanger;
+                return;
+            }
+
             if (dtpKetThuc.Value <= dtpBatDau.Value)
             {
                 lblKiemTraStatus.Text = "❌ Thời gian kết thúc phải lớn hơn thời gian bắt đầu!";
@@ -234,7 +241,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                lblKiemTraStatus.Text = "❌ Phát hiện xung đột trùng ca trực của nhân sự!";
+                lblKiemTraStatus.Text = $"❌ {checkRes.Message}";
                 lblKiemTraStatus.ForeColor = ColorDanger;
             }
         }
@@ -629,6 +636,12 @@ namespace EventManagement.GUI.Forms
             {
                 errBaoLoi.SetError(cboSuKien, "Vui lòng chọn sự kiện áp dụng.");
                 isValid = false;
+            }
+            else if (StaffAssignmentService.IsEventEnded(eventItem.Value))
+            {
+                errBaoLoi.SetError(cboSuKien, "Không thể phân công nhân sự vào sự kiện đã kết thúc!");
+                MessageBox.Show("Không thể phân công nhân sự vào sự kiện đã kết thúc!", "Lỗi phân công", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
             }
 
             var staffItem = cboNhanSu.SelectedItem as ComboBoxItem;

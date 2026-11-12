@@ -250,6 +250,27 @@ namespace EventManagement.BLL.Services
 
         #region Public Methods
 
+        public static void CloseTicketTier(string maHangVe)
+        {
+            var tier = _ticketTiers.FirstOrDefault(t => string.Equals(t.MaHangVe, maHangVe.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (tier != null)
+            {
+                tier.ThoiGianDongBan = DateTime.Now.AddSeconds(-1);
+            }
+
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var dbTier = db.HangVes.FirstOrDefault(h => h.MaHangVe == maHangVe.Trim());
+                if (dbTier != null)
+                {
+                    dbTier.ThoiGianDongBan = DateTime.Now.AddSeconds(-1);
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+        }
+
         public List<(string MaSuKien, string TenSuKien)> GetAvailableEvents()
         {
             return _events.ToList();
@@ -357,6 +378,11 @@ namespace EventManagement.BLL.Services
                 if (tier == null)
                 {
                     return ServiceResult<TicketOrderResultDto>.Failed($"Không tìm thấy hạng vé có mã '{request.MaHangVe}'.");
+                }
+
+                if (tier.IsClosed)
+                {
+                    return ServiceResult<TicketOrderResultDto>.Failed($"Hạng vé '{tier.TenHangVe}' đã đóng bán, không thể đặt vé.");
                 }
 
                 int available = tier.SoLuongConLai;

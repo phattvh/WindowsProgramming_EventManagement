@@ -54,7 +54,7 @@ namespace EventManagement.BLL.Services
 
                 decimal revenueFromOrders = paidOrders.Sum(d => d.TongTien);
                 decimal revenueFromTiers = ticketTiers.Sum(t => t.SoLuongDaBan * t.GiaVe);
-                stats.TongDoanhThuVe = Math.Max(revenueFromOrders, revenueFromTiers);
+                stats.TongDoanhThuVe = revenueFromOrders > 0 ? revenueFromOrders : revenueFromTiers;
 
                 var expenses = await _context.ChiPhiSuKiens.AsNoTracking().ToListAsync();
                 stats.TongChiPhiThucTe = expenses.Sum(c => c.SoTien);
@@ -193,11 +193,16 @@ namespace EventManagement.BLL.Services
 
                 var ticketTiers = await _context.HangVes.AsNoTracking().ToListAsync();
                 var expenses = await _context.ChiPhiSuKiens.AsNoTracking().ToListAsync();
+                var dangKys = await _context.DangKys.AsNoTracking()
+                    .Where(d => d.TrangThaiThanhToan == "Đã thanh toán")
+                    .ToListAsync();
 
                 var list = new List<EventRevenueChartDto>();
                 foreach (var ev in events)
                 {
-                    decimal rev = ticketTiers.Where(t => t.MaSuKien == ev.MaSuKien).Sum(t => t.SoLuongDaBan * t.GiaVe);
+                    decimal revFromOrders = dangKys.Where(d => d.MaSuKien == ev.MaSuKien).Sum(d => d.TongTien);
+                    decimal revFromTiers = ticketTiers.Where(t => t.MaSuKien == ev.MaSuKien).Sum(t => t.SoLuongDaBan * t.GiaVe);
+                    decimal rev = revFromOrders > 0 ? revFromOrders : revFromTiers;
                     decimal exp = expenses.Where(c => c.MaSuKien == ev.MaSuKien).Sum(c => c.SoTien);
 
                     list.Add(new EventRevenueChartDto
@@ -206,6 +211,18 @@ namespace EventManagement.BLL.Services
                         TenSuKien = ev.TenSuKien,
                         DoanhThu = rev,
                         ChiPhi = exp
+                    });
+                }
+
+                if (list.Count == 0)
+                {
+                    // Fallback sự kiện mẫu nếu cơ sở dữ liệu chưa có sự kiện
+                    list.Add(new EventRevenueChartDto
+                    {
+                        MaSuKien = "EVT202601",
+                        TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
+                        DoanhThu = 2000000m,
+                        ChiPhi = 75000000m
                     });
                 }
 

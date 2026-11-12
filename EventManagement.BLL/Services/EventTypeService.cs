@@ -84,6 +84,7 @@ namespace EventManagement.BLL.Services
             };
 
             _eventTypes.Add(newEntity);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Thêm mới loại sự kiện thành công!");
         }
 
@@ -112,6 +113,7 @@ namespace EventManagement.BLL.Services
                 existing.TrangThai = dto.TrangThai.Trim();
             }
 
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Cập nhật thông tin loại sự kiện thành công!");
         }
 
@@ -132,6 +134,7 @@ namespace EventManagement.BLL.Services
             }
 
             _eventTypes.Remove(existing);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success($"Đã xóa vĩnh viễn loại sự kiện '{existing.TenLoaiSK}'!");
         }
 

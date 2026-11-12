@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventManagement.Core.Entities
 {
@@ -12,12 +13,17 @@ namespace EventManagement.Core.Entities
         public string MaVe { get; set; } = string.Empty; // UNIQUE
         public DateTime ThoiGianCheckIn { get; set; } = DateTime.Now;
         public string NguoiThucHien { get; set; } = string.Empty; // Mã tài khoản nhân viên soát vé (FK NguoiDung)
+
+        [NotMapped]
         public string NguoiCheckIn
         {
             get => NguoiThucHien;
             set => NguoiThucHien = value;
         }
+
         public string HinhThucCheckIn { get; set; } = "Webcam QR Code"; // Webcam QR Code, Thủ công
+
+        [NotMapped]
         public string PhuongThuc
         {
             get => HinhThucCheckIn;

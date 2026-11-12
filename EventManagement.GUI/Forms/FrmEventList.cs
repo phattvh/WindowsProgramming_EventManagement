@@ -162,6 +162,21 @@ namespace EventManagement.GUI.Forms
             this.Resize += (s, ev) => DistributeSummaryStats();
             LoadData();
             SetFormState(FormMode.View);
+            DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
+            this.FormClosed += (s, ev) => DataSyncNotifier.GeneralDataChanged -= OnDataSyncChanged;
+        }
+
+        private void OnDataSyncChanged()
+        {
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+            try
+            {
+                if (this.InvokeRequired)
+                    this.BeginInvoke(new Action(() => { LoadAuxiliaryData(); LoadData(); }));
+                else
+                { LoadAuxiliaryData(); LoadData(); }
+            }
+            catch { }
         }
 
         public void DistributeSummaryStats()
@@ -260,7 +275,7 @@ namespace EventManagement.GUI.Forms
             nudSucChua.Value = dto.SucChua > 0 ? Math.Min(dto.SucChua, nudSucChua.Maximum) : 500;
             nudNganSach.Value = dto.NganSachDuKien >= 0 ? Math.Min(dto.NganSachDuKien, nudNganSach.Maximum) : 0;
             cboNguoiPhuTrach.Text = dto.NguoiPhuTrach ?? string.Empty;
-            btnHuySuKien.Enabled = _currentMode == FormMode.View && dto.TrangThai != "Đã hoàn thành" && dto.TrangThai != "Đã hủy";
+            btnHuySuKien.Enabled = _currentMode == FormMode.View;
             cboTrangThai.SelectedItem = dto.TrangThai;
             txtMoTa.Text = dto.MoTa ?? string.Empty;
 
@@ -339,12 +354,6 @@ namespace EventManagement.GUI.Forms
                     cboTrangThai.SelectedItem = prevSelected;
                 }
             }
-
-            if (!isEditing && dgvSuKien.CurrentRow?.DataBoundItem is EventListDto curDto && curDto.TrangThai == "Đã hoàn thành")
-            {
-                btnHuySuKien.Enabled = false;
-            }
-
 
             dgvSuKien.Enabled = !isEditing;
             pnlFilter.Enabled = !isEditing;
@@ -460,13 +469,13 @@ namespace EventManagement.GUI.Forms
                 return;
             }
 
-            if (dto.TrangThai == "Đã hoàn thành")
+            if (dto.TrangThai == "Đang diễn ra" || dto.TrangThai == "Đã kết thúc" || dto.TrangThai == "Đã hoàn thành")
             {
-                MessageBox.Show("Sự kiện đã hoàn thành không thể thực hiện thao tác hủy!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Sự kiện Đang diễn ra hoặc Đã kết thúc không được phép hủy!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (dto.TrangThai == "Đã hủy")
+            if (dto.TrangThai == "Đã hủy" || dto.TrangThai == "Hủy")
             {
                 MessageBox.Show("Sự kiện này đã ở trạng thái 'Đã hủy' từ trước!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;

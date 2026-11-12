@@ -218,6 +218,7 @@ namespace EventManagement.BLL.Services
             };
 
             _staffList.Add(newEntity);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Thêm mới hồ sơ nhân sự thành công!");
         }
 
@@ -266,6 +267,7 @@ namespace EventManagement.BLL.Services
             item.PhongBan = string.IsNullOrWhiteSpace(dto.PhongBan) ? item.PhongBan : dto.PhongBan.Trim();
             item.TrangThai = string.IsNullOrWhiteSpace(dto.TrangThai) ? item.TrangThai : dto.TrangThai.Trim();
 
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Cập nhật thông tin nhân sự thành công!");
         }
 
@@ -286,6 +288,7 @@ namespace EventManagement.BLL.Services
             }
 
             _staffList.Remove(item);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success($"Đã xóa hồ sơ nhân sự '{item.HoTen}' thành công!");
         }
 

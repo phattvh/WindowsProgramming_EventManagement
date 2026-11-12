@@ -165,6 +165,7 @@ namespace EventManagement.BLL.Services
             };
 
             _venues.Add(newEntity);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Thêm mới địa điểm thành công!");
         }
 
@@ -207,6 +208,7 @@ namespace EventManagement.BLL.Services
             }
             existing.GhiChu = dto.GhiChu?.Trim();
 
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Cập nhật thông tin địa điểm thành công!");
         }
 
@@ -227,6 +229,7 @@ namespace EventManagement.BLL.Services
             }
 
             _venues.Remove(existing);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success($"Đã xóa vĩnh viễn địa điểm '{existing.TenDiaDiem}'!");
         }
 

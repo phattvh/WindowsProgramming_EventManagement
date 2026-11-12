@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventManagement.Core.Entities
 {
@@ -13,6 +14,8 @@ namespace EventManagement.Core.Entities
         public string HangTaiTro { get; set; } = "Đồng"; // Kim cương, Vàng, Bạc, Đồng
         public decimal GiaTri { get; set; }
         public string HinhThucTaiTro { get; set; } = "Tiền mặt"; // Tiền mặt, Hiện vật, Dịch vụ
+
+        [NotMapped]
         public string? QuyenLoiTruyenThong { get; set; }
         public string? GhiChu { get; set; }
 
