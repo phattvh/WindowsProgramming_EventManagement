@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
 
@@ -208,11 +209,38 @@ namespace EventManagement.BLL.Services
             return ServiceResult<StaffAssignmentDto>.Success(CloneDto(item));
         }
 
+        public static bool IsEventEnded(string? maSuKien)
+        {
+            if (string.IsNullOrWhiteSpace(maSuKien)) return false;
+            var code = maSuKien.Trim();
+            if (code.Equals("EVT202603", StringComparison.OrdinalIgnoreCase) || code.Equals("EVT202604", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            try
+            {
+                using var context = new EventManagement.DAL.AppDbContext();
+                var evt = context.SuKiens.FirstOrDefault(e => e.MaSuKien == code);
+                if (evt != null)
+                {
+                    if (evt.TrangThai == "Đã kết thúc" || evt.TrangThai == "Đã hoàn thành" || evt.NgayKetThuc < DateTime.Now)
+                        return true;
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
         public ServiceResult Add(StaffAssignmentDto dto)
         {
             if (dto == null)
             {
                 return ServiceResult.Failed("Dữ liệu phân công không được để trống.");
+            }
+
+            if (IsEventEnded(dto.MaSuKien))
+            {
+                return ServiceResult.Failed("Không thể phân công nhân sự vào sự kiện đã kết thúc!");
             }
 
             if (string.IsNullOrWhiteSpace(dto.MaPhanCong))
@@ -228,6 +256,11 @@ namespace EventManagement.BLL.Services
             if (string.IsNullOrWhiteSpace(dto.MaSuKien))
             {
                 return ServiceResult.Failed("Vui lòng chọn sự kiện áp dụng cho ca trực.");
+            }
+
+            if (IsEventEnded(dto.MaSuKien))
+            {
+                return ServiceResult.Failed("Không thể phân công nhân sự vào sự kiện đã kết thúc!");
             }
 
             if (string.IsNullOrWhiteSpace(dto.MaNhanSu))
@@ -253,7 +286,8 @@ namespace EventManagement.BLL.Services
             }
 
             // Điền thông tin sự kiện & nhân sự
-            var evt = _events.FirstOrDefault(e => e.MaSuKien.Equals(dto.MaSuKien.Trim(), StringComparison.OrdinalIgnoreCase));
+            var availableEvts = GetAvailableEvents();
+            var evt = availableEvts.FirstOrDefault(e => e.MaSuKien.Equals(dto.MaSuKien.Trim(), StringComparison.OrdinalIgnoreCase));
             var staffRes = _staffService.GetById(dto.MaNhanSu.Trim());
             var staff = staffRes.Data;
 
@@ -300,6 +334,11 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed("Vui lòng chọn sự kiện áp dụng cho ca trực.");
             }
 
+            if (IsEventEnded(dto.MaSuKien))
+            {
+                return ServiceResult.Failed("Không thể phân công nhân sự vào sự kiện đã kết thúc!");
+            }
+
             if (string.IsNullOrWhiteSpace(dto.MaNhanSu))
             {
                 return ServiceResult.Failed("Vui lòng chọn nhân sự được phân công.");
@@ -322,7 +361,8 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed(conflictCheck.Message, conflictCheck.Errors);
             }
 
-            var evt = _events.FirstOrDefault(e => e.MaSuKien.Equals(dto.MaSuKien.Trim(), StringComparison.OrdinalIgnoreCase));
+            var availableEvts = GetAvailableEvents();
+            var evt = availableEvts.FirstOrDefault(e => e.MaSuKien.Equals(dto.MaSuKien.Trim(), StringComparison.OrdinalIgnoreCase));
             var staffRes = _staffService.GetById(dto.MaNhanSu.Trim());
             var staff = staffRes.Data;
 
@@ -363,6 +403,11 @@ namespace EventManagement.BLL.Services
             if (dto == null)
             {
                 return ServiceResult<bool>.Failed("Dữ liệu cần kiểm tra không được để trống.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.MaSuKien) && IsEventEnded(dto.MaSuKien))
+            {
+                return ServiceResult<bool>.Failed("Không thể phân công nhân sự vào sự kiện đã kết thúc!");
             }
 
             if (string.IsNullOrWhiteSpace(dto.MaNhanSu))
@@ -410,6 +455,28 @@ namespace EventManagement.BLL.Services
 
         public List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> GetAvailableEvents()
         {
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var dbEvents = db.SuKiens.AsNoTracking().OrderBy(e => e.MaSuKien).ToList();
+                if (dbEvents.Count > 0)
+                {
+                    return dbEvents.Select(e => (e.MaSuKien, e.TenSuKien, e.NgayBatDau, e.NgayKetThuc)).ToList();
+                }
+            }
+            catch { }
+
+            try
+            {
+                var eventService = new EventService();
+                var all = eventService.GetAll();
+                if (all.IsSuccess && all.Data != null && all.Data.Count > 0)
+                {
+                    return all.Data.Select(e => (e.MaSuKien, e.TenSuKien, e.NgayBatDau, e.NgayKetThuc)).ToList();
+                }
+            }
+            catch { }
+
             return _events.ToList();
         }
 

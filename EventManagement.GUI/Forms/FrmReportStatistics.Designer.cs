@@ -201,20 +201,20 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnIn.Location = new System.Drawing.Point(712, 27);
+            this.btnIn.Location = new System.Drawing.Point(645, 27);
             this.btnIn.Name = "btnIn";
-            this.btnIn.Size = new System.Drawing.Size(106, 34);
+            this.btnIn.Size = new System.Drawing.Size(170, 34);
             this.btnIn.TabIndex = 7;
-            this.btnIn.Text = "In ấn (Ctrl+P)";
+            this.btnIn.Text = "Xuất PDF / In Báo Cáo";
             this.btnIn.UseVisualStyleBackColor = true;
             // 
             // btnXem
             // 
             this.btnXem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnXem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnXem.Location = new System.Drawing.Point(598, 27);
+            this.btnXem.Location = new System.Drawing.Point(535, 27);
             this.btnXem.Name = "btnXem";
-            this.btnXem.Size = new System.Drawing.Size(107, 34);
+            this.btnXem.Size = new System.Drawing.Size(100, 34);
             this.btnXem.TabIndex = 6;
             this.btnXem.Text = "Xem báo cáo";
             this.btnXem.UseVisualStyleBackColor = true;

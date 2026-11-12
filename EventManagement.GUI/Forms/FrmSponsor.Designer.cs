@@ -53,6 +53,8 @@ namespace EventManagement.GUI.Forms
         private System.Windows.Forms.TextBox txtDiaChi;
         private System.Windows.Forms.Label lblGhiChu;
         private System.Windows.Forms.TextBox txtGhiChu;
+        private System.Windows.Forms.Label lblSuKien;
+        private System.Windows.Forms.ComboBox cboSuKien;
 
         private System.Windows.Forms.Panel pnlButtons;
         private System.Windows.Forms.Button btnThem;
@@ -129,6 +131,8 @@ namespace EventManagement.GUI.Forms
             this.txtDiaChi = new System.Windows.Forms.TextBox();
             this.lblGhiChu = new System.Windows.Forms.Label();
             this.txtGhiChu = new System.Windows.Forms.TextBox();
+            this.lblSuKien = new System.Windows.Forms.Label();
+            this.cboSuKien = new System.Windows.Forms.ComboBox();
 
             this.pnlButtons = new System.Windows.Forms.Panel();
             this.btnThem = new System.Windows.Forms.Button();
@@ -436,6 +440,8 @@ namespace EventManagement.GUI.Forms
             this.grbThongTin.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grbThongTin.BackColor = System.Drawing.Color.White;
+            this.grbThongTin.Controls.Add(this.cboSuKien);
+            this.grbThongTin.Controls.Add(this.lblSuKien);
             this.grbThongTin.Controls.Add(this.txtGhiChu);
             this.grbThongTin.Controls.Add(this.lblGhiChu);
             this.grbThongTin.Controls.Add(this.txtDiaChi);
@@ -655,6 +661,11 @@ namespace EventManagement.GUI.Forms
             2,
             0,
             0});
+            this.nudGiaTriTaiTro.Minimum = new decimal(new int[] {
+            1000000000,
+            0,
+            0,
+            -2147483648});
             this.nudGiaTriTaiTro.Name = "nudGiaTriTaiTro";
             this.nudGiaTriTaiTro.Size = new System.Drawing.Size(170, 23);
             this.nudGiaTriTaiTro.TabIndex = 15;
@@ -728,6 +739,27 @@ namespace EventManagement.GUI.Forms
             this.txtGhiChu.Name = "txtGhiChu";
             this.txtGhiChu.Size = new System.Drawing.Size(330, 23);
             this.txtGhiChu.TabIndex = 21;
+            // 
+            // lblSuKien
+            // 
+            this.lblSuKien.AutoSize = true;
+            this.lblSuKien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblSuKien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
+            this.lblSuKien.Location = new System.Drawing.Point(590, 175);
+            this.lblSuKien.Name = "lblSuKien";
+            this.lblSuKien.Size = new System.Drawing.Size(95, 15);
+            this.lblSuKien.TabIndex = 22;
+            this.lblSuKien.Text = "Sự kiện áp dụng (*):";
+            // 
+            // cboSuKien
+            // 
+            this.cboSuKien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSuKien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cboSuKien.FormattingEnabled = true;
+            this.cboSuKien.Location = new System.Drawing.Point(670, 172);
+            this.cboSuKien.Name = "cboSuKien";
+            this.cboSuKien.Size = new System.Drawing.Size(250, 23);
+            this.cboSuKien.TabIndex = 23;
 
             // 
             // pnlButtons

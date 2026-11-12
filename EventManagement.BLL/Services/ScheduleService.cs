@@ -266,6 +266,7 @@ namespace EventManagement.BLL.Services
             }
 
             _schedules.Add(CloneDto(dto));
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Thêm mới tiết mục lịch trình thành công!");
         }
 
@@ -332,6 +333,7 @@ namespace EventManagement.BLL.Services
             existing.DiaDiemChiTiet = string.IsNullOrWhiteSpace(dto.DiaDiemChiTiet) ? null : dto.DiaDiemChiTiet.Trim();
             existing.GhiChu = string.IsNullOrWhiteSpace(dto.GhiChu) ? null : dto.GhiChu.Trim();
 
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Cập nhật thông tin lịch trình thành công!");
         }
 
@@ -349,6 +351,7 @@ namespace EventManagement.BLL.Services
             }
 
             _schedules.Remove(existing);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success($"Đã xóa thành công tiết mục lịch trình [{maLichTrinh}].");
         }
 

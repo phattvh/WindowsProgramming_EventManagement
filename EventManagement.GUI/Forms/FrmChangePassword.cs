@@ -15,14 +15,14 @@ namespace EventManagement.GUI.Forms
         private readonly IAuthService? _authService;
         private readonly string _username;
 
-        public FrmChangePassword() : this(null, string.Empty)
+        public FrmChangePassword() : this(new AuthService(), string.Empty)
         {
         }
 
         public FrmChangePassword(IAuthService? authService, string? username = null)
         {
             InitializeComponent();
-            _authService = authService;
+            _authService = authService ?? new AuthService();
             _username = !string.IsNullOrWhiteSpace(username) 
                 ? username 
                 : (CurrentSession.IsLoggedIn ? CurrentSession.TenDangNhap : string.Empty);

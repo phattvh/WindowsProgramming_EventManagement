@@ -33,6 +33,7 @@ namespace EventManagement.GUI.Forms
         public DataGridView DgvNhaTaiTro => dgvNhaTaiTro;
         public GroupBox GrbThongTin => grbThongTin;
         public Panel PnlFilter => pnlFilter;
+        public ComboBox CboSuKien => cboSuKien;
 
         public FrmSponsor() : this(new SponsorService())
         {
@@ -168,6 +169,11 @@ namespace EventManagement.GUI.Forms
             lblHinhThuc.Location = new Point(col3X, 99);
             cboHinhThuc.Location = new Point(col3X + labelW, 96);
             cboHinhThuc.Size = new Size(inputW, 23);
+
+            // Row 4: Sự kiện áp dụng (*)
+            lblSuKien.Location = new Point(col3X, 133);
+            cboSuKien.Location = new Point(col3X + labelW, 130);
+            cboSuKien.Size = new Size(inputW, 23);
         }
 
         private void AdjustButtonLayout()
@@ -202,6 +208,13 @@ namespace EventManagement.GUI.Forms
             _isLoading = true;
             cboLocGoiTaiTro.SelectedIndex = 0; // "Tất cả"
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
+
+            cboSuKien.Items.Clear();
+            cboSuKien.Items.Add(new ComboBoxItem("EVT202601", "EVT202601 - Vietnam Tech Summit 2026"));
+            cboSuKien.Items.Add(new ComboBoxItem("EVT202602", "EVT202602 - Workshop Thực chiến GenAI 2026"));
+            cboSuKien.Items.Add(new ComboBoxItem("EVT202603", "EVT202603 - Hội nghị Khoa học IoT 2026"));
+            if (cboSuKien.Items.Count > 0) cboSuKien.SelectedIndex = 0;
+
             _isLoading = false;
 
             LoadData();
@@ -266,6 +279,18 @@ namespace EventManagement.GUI.Forms
             txtDiaChi.Text = dto.DiaChi ?? string.Empty;
             txtGhiChu.Text = dto.GhiChu ?? string.Empty;
 
+            if (!string.IsNullOrWhiteSpace(dto.MaSuKien))
+            {
+                for (int i = 0; i < cboSuKien.Items.Count; i++)
+                {
+                    if (cboSuKien.Items[i] is ComboBoxItem item && item.Value.Equals(dto.MaSuKien, StringComparison.OrdinalIgnoreCase))
+                    {
+                        cboSuKien.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+
             errBaoLoi.Clear();
         }
 
@@ -288,6 +313,7 @@ namespace EventManagement.GUI.Forms
             nudGiaTriTaiTro.Enabled = isEditing;
             cboHinhThuc.Enabled = isEditing;
             cboTrangThai.Enabled = isEditing;
+            cboSuKien.Enabled = isEditing;
             txtDiaChi.ReadOnly = !isEditing;
             txtGhiChu.ReadOnly = !isEditing;
 
@@ -318,6 +344,7 @@ namespace EventManagement.GUI.Forms
             nudGiaTriTaiTro.Value = 0;
             if (cboHinhThuc.Items.Count > 0) cboHinhThuc.SelectedIndex = 0;
             if (cboTrangThai.Items.Count > 0) cboTrangThai.SelectedIndex = 0;
+            if (cboSuKien.Items.Count > 0) cboSuKien.SelectedIndex = 0;
             txtDiaChi.Text = string.Empty;
             txtGhiChu.Text = string.Empty;
             errBaoLoi.Clear();
@@ -376,6 +403,16 @@ namespace EventManagement.GUI.Forms
         {
             if (!ValidateInputs()) return;
 
+            string selectedMaSuKien = "EVT202601";
+            if (cboSuKien.SelectedItem is ComboBoxItem cboItem)
+                selectedMaSuKien = cboItem.Value;
+            else if (cboSuKien.SelectedItem != null)
+            {
+                string txt = cboSuKien.SelectedItem.ToString() ?? "";
+                if (txt.Contains(" - ")) selectedMaSuKien = txt.Split(" - ")[0].Trim();
+                else selectedMaSuKien = txt.Trim();
+            }
+
             var dto = new SponsorDto
             {
                 MaNhaTaiTro = txtMaNhaTaiTro.Text.Trim(),
@@ -388,13 +425,27 @@ namespace EventManagement.GUI.Forms
                 HinhThucTaiTro = cboHinhThuc.SelectedItem?.ToString() ?? "Tiền mặt",
                 TrangThai = cboTrangThai.SelectedItem?.ToString() ?? "Đang hợp tác",
                 DiaChi = string.IsNullOrWhiteSpace(txtDiaChi.Text) ? null : txtDiaChi.Text.Trim(),
-                GhiChu = string.IsNullOrWhiteSpace(txtGhiChu.Text) ? null : txtGhiChu.Text.Trim()
+                GhiChu = string.IsNullOrWhiteSpace(txtGhiChu.Text) ? null : txtGhiChu.Text.Trim(),
+                MaSuKien = selectedMaSuKien
             };
 
             ServiceResult result;
             if (_currentMode == FormMode.Add)
             {
-                result = _sponsorService.Add(dto);
+                var existingSponsor = _sponsorService.GetById(dto.MaNhaTaiTro).Data;
+                if (existingSponsor != null)
+                {
+                    // Tiếp nhận thêm gói tài trợ cho nhà tài trợ đã có -> Tự cộng dồn giá trị (MG-39)
+                    existingSponsor.TongGiaTriTaiTro += dto.TongGiaTriTaiTro;
+                    existingSponsor.GoiTaiTro = dto.GoiTaiTro;
+                    existingSponsor.MaSuKien = selectedMaSuKien;
+                    existingSponsor.SoSuKienTaiTro++;
+                    result = ServiceResult.Success("Tiếp nhận gói tài trợ mới thành công, đã cộng dồn giá trị.");
+                }
+                else
+                {
+                    result = _sponsorService.Add(dto);
+                }
             }
             else
             {
@@ -403,6 +454,35 @@ namespace EventManagement.GUI.Forms
 
             if (result.IsSuccess)
             {
+                // Lưu vào bảng ChiTietTaiTro trong cơ sở dữ liệu (phục vụ Tab 7 F05 tự cộng dồn MG-39)
+                try
+                {
+                    using var context = new EventManagement.DAL.AppDbContext();
+                    int nextNum = 6;
+                    try { nextNum = context.ChiTietTaiTros.Count() + 1; } catch { }
+                    string maTaiTro = $"TT{nextNum:D3}";
+                    while (context.ChiTietTaiTros.Any(ct => ct.MaTaiTro == maTaiTro))
+                    {
+                        nextNum++;
+                        maTaiTro = $"TT{nextNum:D3}";
+                    }
+
+                    context.ChiTietTaiTros.Add(new EventManagement.Core.Entities.ChiTietTaiTro
+                    {
+                        MaTaiTro = maTaiTro,
+                        MaSuKien = selectedMaSuKien,
+                        MaNhaTaiTro = dto.MaNhaTaiTro,
+                        HangTaiTro = dto.GoiTaiTro,
+                        GiaTri = dto.TongGiaTriTaiTro,
+                        HinhThucTaiTro = dto.HinhThucTaiTro,
+                        GhiChu = dto.GhiChu
+                    });
+                    context.SaveChanges();
+                }
+                catch { }
+
+                EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(selectedMaSuKien, "SponsorUpdated");
+
                 MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetFormState(FormMode.View);
                 LoadData();
@@ -508,7 +588,8 @@ namespace EventManagement.GUI.Forms
 
             if (nudGiaTriTaiTro.Value < 0)
             {
-                errBaoLoi.SetError(nudGiaTriTaiTro, "Giá trị tài trợ không được âm.");
+                errBaoLoi.SetError(nudGiaTriTaiTro, "Giá trị tài trợ phải >= 0!");
+                MessageBox.Show("Giá trị tài trợ phải >= 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 isValid = false;
             }
 
@@ -552,6 +633,19 @@ namespace EventManagement.GUI.Forms
                 if (e.Control && e.KeyCode == Keys.S) { btnLuu.PerformClick(); e.Handled = true; }
                 else if (e.KeyCode == Keys.Escape) { btnHuy.PerformClick(); e.Handled = true; }
             }
+        }
+        private class ComboBoxItem
+        {
+            public string Value { get; set; }
+            public string Text { get; set; }
+
+            public ComboBoxItem(string value, string text)
+            {
+                Value = value;
+                Text = text;
+            }
+
+            public override string ToString() => Text;
         }
     }
 }

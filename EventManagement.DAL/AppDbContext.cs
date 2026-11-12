@@ -152,7 +152,9 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaLoaiSK).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.MaDiaDiem).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.TrangThai).HasMaxLength(30).HasDefaultValue("Dự kiến");
-                entity.Property(e => e.NguoiPhuTrach).HasMaxLength(20);
+                entity.Property(e => e.NguoiPhuTrach).HasColumnName("MaNguoiTao").HasMaxLength(20);
+                entity.Ignore(e => e.SucChua);
+                entity.Ignore(e => e.NganSachDuKien);
             });
 
             // Bảng 11: LichTrinh
@@ -169,6 +171,12 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("ChiTietTaiTro");
                 entity.HasKey(e => e.MaTaiTro);
+                entity.Property(e => e.MaTaiTro).HasMaxLength(20);
+                entity.Property(e => e.MaSuKien).HasMaxLength(20).IsRequired();
+                entity.Property(e => e.MaNhaTaiTro).HasMaxLength(20).IsRequired();
+                entity.Property(e => e.HangTaiTro).HasColumnName("GoiTaiTro").HasMaxLength(50);
+                entity.Property(e => e.GiaTri).HasColumnName("GiaTriTaiTro").HasPrecision(18, 2);
+                entity.Ignore(e => e.QuyenLoiTruyenThong);
             });
 
             // Bảng 13: HangVe
@@ -180,6 +188,7 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaSuKien).HasMaxLength(20).IsRequired();
                 entity.Property(e => e.TenHangVe).HasMaxLength(50).IsRequired();
                 entity.Property(e => e.GiaVe).HasPrecision(18, 2);
+                entity.Ignore(e => e.DonGia);
             });
 
             // Bảng 14: NguoiThamGia
@@ -187,6 +196,7 @@ namespace EventManagement.DAL
             {
                 entity.ToTable("NguoiThamGia");
                 entity.HasKey(e => e.MaNguoiThamGia);
+                entity.Ignore(e => e.DonViCongTac);
             });
 
             // Bảng 15: DangKy
@@ -216,6 +226,8 @@ namespace EventManagement.DAL
                 entity.Property(e => e.MaVe).HasMaxLength(30).IsRequired();
                 entity.HasIndex(e => e.MaVe).IsUnique();
                 entity.Property(e => e.NguoiThucHien).HasMaxLength(20).IsRequired();
+                entity.Ignore(e => e.NguoiCheckIn);
+                entity.Ignore(e => e.PhuongThuc);
 
                 entity.HasOne(e => e.ChiTietVe)
                       .WithOne(v => v.CheckIn)

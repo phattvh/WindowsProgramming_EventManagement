@@ -27,6 +27,7 @@ namespace EventManagement.Core.DTOs
         public DateTime? ThoiGianCheckIn { get; set; }
         public bool IsWarningDuplicate { get; set; } // True nếu vé đã quét trước đó (chặn quét 1 chiều)
         public DateTime? ThoiGianCheckInTruocDo { get; set; }
+        public string? NguoiCheckInTruocDo { get; set; }
     }
 
     /// <summary>

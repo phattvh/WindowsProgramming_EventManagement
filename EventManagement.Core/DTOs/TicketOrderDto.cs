@@ -39,5 +39,7 @@ namespace EventManagement.Core.DTOs
         public bool ConVe => SoLuongConLai > 0;
         public DateTime? ThoiGianMoBan { get; set; }
         public DateTime? ThoiGianDongBan { get; set; }
+        public bool IsClosed => ThoiGianDongBan.HasValue && DateTime.Now > ThoiGianDongBan.Value;
+        public string DisplayName => IsClosed ? $"{TenHangVe} (Đã đóng)" : TenHangVe;
     }
 }

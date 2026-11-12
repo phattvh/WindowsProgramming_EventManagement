@@ -108,6 +108,22 @@ namespace EventManagement.GUI.Forms
             // Nạp dữ liệu ban đầu
             LoadExpensesAndBudgetSummary();
             SetFormMode(FormMode.View);
+
+            DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
+            this.FormClosed += (s, e) => DataSyncNotifier.GeneralDataChanged -= OnDataSyncChanged;
+        }
+
+        private void OnDataSyncChanged()
+        {
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+            try
+            {
+                if (this.InvokeRequired)
+                    this.BeginInvoke(new Action(() => LoadExpensesAndBudgetSummary()));
+                else
+                    LoadExpensesAndBudgetSummary();
+            }
+            catch { }
         }
 
         private void LayoutBudgetCards()

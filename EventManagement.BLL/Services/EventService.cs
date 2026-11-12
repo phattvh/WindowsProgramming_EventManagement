@@ -521,9 +521,11 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed($"Không tìm thấy sự kiện '{maSuKien}'!");
             }
 
-            if (string.Equals(existing.TrangThai, "Đã hoàn thành", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(existing.TrangThai, "Đang diễn ra", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(existing.TrangThai, "Đã kết thúc", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(existing.TrangThai, "Đã hoàn thành", StringComparison.OrdinalIgnoreCase))
             {
-                return ServiceResult.Failed("Sự kiện đã hoàn thành không thể thực hiện thao tác hủy!");
+                return ServiceResult.Failed("Sự kiện Đang diễn ra hoặc Đã kết thúc không được phép hủy (không thể thực hiện thao tác hủy)!");
             }
             existing.TrangThai = "Đã hủy";
             EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Cancelled");

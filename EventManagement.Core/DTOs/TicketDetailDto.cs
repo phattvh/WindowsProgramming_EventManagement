@@ -19,5 +19,6 @@ namespace EventManagement.Core.DTOs
         public string TrangThaiVe { get; set; } = string.Empty;
         public DateTime NgayDangKy { get; set; }
         public DateTime? ThoiGianCheckIn { get; set; }
+        public string? NguoiCheckIn { get; set; }
     }
 }

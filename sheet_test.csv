@@ -1,0 +1,151 @@
+﻿"Mã ca","Chức năng","Kỹ thuật","Nội dung kiểm thử","Điều kiện trước","Dữ liệu","Các bước","Kết quả mong đợi","Kết quả","Kết quả thực tế, ghi chú","Người test","Ảnh chụp chứng minh","Đã xử lý bug"
+"MG-01","F01 - Đăng nhập","Luồng chính","Đăng nhập tài khoản Manager hợp lệ","Mở app, chưa đăng nhập","User: manager1
+Pass: Admin@123","1. Nhập Tên đăng nhập và Mật khẩu.
+2. Bấm ""Đăng Nhập"".","Đăng nhập thành công, Form F01 đóng, mở F02 Dashboard với lời chào (MANAGER).","Đạt","","Hưng","",""
+"MG-02","F01 - Đăng nhập","Bảng quyết định","Đăng nhập tài khoản Manager bị khóa vĩnh viễn","Màn hình F01","User: mgr_inactive
+Pass: Admin@123","1. Nhập User mgr_inactive.
+2. Nhập mật khẩu.
+3. Bấm ""Đăng Nhập"".","Báo lỗi: ""Tài khoản của bạn đã bị khóa vĩnh viễn! Vui lòng liên hệ Admin."", không cho đăng nhập.","Đạt","Hiển thị chính xác thông báo: ""Tài khoản của bạn đã bị khóa vĩnh viễn! Vui lòng liên hệ Admin."", chặn đăng nhập thành công.","Hưng","MG-02.jpg","Đã xử lý"
+"MG-03","F01 - Đăng nhập","Bảng quyết định","Đăng nhập tài khoản Manager đang bị khóa tạm thời","Màn hình F01","User: manager_lock
+Pass: Admin@123","1. Nhập User manager_lock.
+2. Bấm ""Đăng Nhập"".","Báo lỗi: ""Tài khoản đang bị khóa tạm thời do nhập sai quá 5 lần. Vui lòng thử lại sau X giây!"", đồng hồ đếm ngược chạy.","Đạt","Hiển thị thông báo đếm ngược: ""Tài khoản đang bị khóa tạm thời do nhập sai quá 5 lần. Vui lòng thử lại sau X giây!"", nút đăng nhập tự khóa và đồng hồ chạy đều.","Hưng","MG-03.jpg","Đã xử lý"
+"MG-04","UC21 - Đổi mật khẩu","Luồng chính","Đổi mật khẩu cá nhân Manager thành công","Đã đăng nhập manager1","Cũ: Admin@123
+Mới: Manager@2026","1. Mở dialog UC21.
+2. Nhập pass cũ và pass mới hợp lệ.
+3. Bấm ""Lưu"".","Thông báo đổi mật khẩu thành công; đăng nhập lại bằng Manager@2026 thành công.","Đạt","Đổi mật khẩu thành công, thông báo hiển thị đầy đủ, đăng nhập lại bằng mật khẩu mới thành công.","Hưng","MG-04.jpg","Đã xử lý"
+"MG-05","F02 - Dashboard","Luồng chính","Kiểm tra hiển thị toàn bộ KPI tài chính của Manager","Đăng nhập bằng manager1","-","Quan sát các thẻ số liệu trên F02.","Hiển thị đầy đủ cả chỉ số vận hành và tài chính: Tổng sự kiện, Vé đã bán, Doanh thu bán vé (2,000,000đ), Tổng chi phí (75,000,000đ).","Đạt","Hiển thị đầy đủ cả chỉ số vận hành và tài chính: Tổng sự kiện (4), Vé đã bán (7), Doanh thu bán vé (2,000,000đ), Tổng chi phí (75,000,000đ).","Hưng","MG-05.jpg","Đã xử lý"
+"MG-06","F02 - Dashboard","Luồng chính","Biểu đồ trực quan doanh thu vs chi phí","F02 Dashboard","-","Quan sát khu vực Chart trên F02.","Biểu đồ cột/đường tải đúng số liệu doanh thu và chi phí của các sự kiện, không bị lỗi render.","Đạt","Biểu đồ cột LiveCharts tải đúng dữ liệu so sánh doanh thu và chi phí giữa các sự kiện.","Hưng","MG-05.jpg","Đã xử lý"
+"MG-07","F02 - Dashboard","Luồng chính","Lối tắt Quick Access dành cho Quản lý","F02 Dashboard","-","Lần lượt bấm nút ""Tạo sự kiện"" và ""Báo cáo thống kê"".","Mở đúng Form F04 (Sự kiện) và F19 (Báo cáo).","Đạt","","Hưng","",""
+"MG-08","F04 - Quản lý sự kiện","Luồng chính","Thêm mới sự kiện hợp lệ","Mở Form F04","Tên: Hội thảo AI 2027
+BĐ: 2027-03-01
+KT: 2027-03-02
+ĐĐ: DD001","1. Bấm ""Thêm mới"".
+2. Nhập Tên, chọn Loại, chọn Địa điểm, chọn Ngày hợp lệ.
+3. Bấm ""Lưu"".","Thêm thành công, tự sinh mã EVT..., trạng thái mặc định ""Dự kiến"", hiển thị dòng mới trên DataGridView.","Đạt","","Hưng","",""
+"MG-09","F04 - Quản lý sự kiện","Giá trị biên (BR-03)","Nhập Ngày kết thúc nhỏ hơn Ngày bắt đầu","Form F04","BĐ: 2027-05-10
+KT: 2027-05-08","1. Chọn Ngày kết thúc trước Ngày bắt đầu.
+2. Bấm ""Lưu"".","Báo lỗi: ""Ngày kết thúc phải lớn hơn hoặc bằng Ngày bắt đầu (BR-03)!"", chặn lưu CSDL.","Đạt","","Hưng","",""
+"MG-10","F04 - Quản lý sự kiện","Bảng quyết định (BR-02)","Thử XÓA CỨNG sự kiện ĐÃ CÓ DỮ LIỆU liên kết","Form F04","Sự kiện EVT202601 (đã có vé bán, chi phí)","1. Chọn dòng EVT202601.
+2. Bấm nút ""Xóa sự kiện"".","Hệ thống từ chối xóa, hiển thị thông báo: ""Sự kiện đã phát sinh dữ liệu liên kết, không thể xóa! Vui lòng chuyển trạng thái sang Đã hủy""","Đạt","","Hưng","",""
+"MG-11","F04 - Quản lý sự kiện","Bảng quyết định (BR-02)","Thử HỦY sự kiện ĐÃ KẾT THÚC","Form F04","Sự kiện EVT202604 (Trạng thái: Đã kết thúc)","1. Chọn EVT202604.
+2. Bấm nút ""Hủy sự kiện"".","Hệ thống từ chối và báo lỗi: ""Sự kiện Đang diễn ra hoặc Đã kết thúc không được phép hủy!""","Đạt","Nút Hủy sự kiện bấm được ở chế độ xem, khi bấm với sự kiện kết thúc báo lỗi: ""Sự kiện Đang diễn ra hoặc Đã kết thúc không được phép hủy!"".","Hưng","","Đã xử lý"
+"MG-12","F04 - Quản lý sự kiện","Luồng chính (BR-02)","Chuyển trạng thái sự kiện chưa diễn ra sang ""Hủy""","Form F04","Sự kiện EVT202602 (Trạng thái: Dự kiến)","1. Chọn EVT202602.
+2. Bấm ""Hủy sự kiện"".
+3. Xác nhận ""Đồng ý"".","Cập nhật thành công, trạng thái trên lưới chuyển thành ""Hủy"", bảo toàn lịch sử dữ liệu.","Đạt","","Hưng","",""
+"MG-13","F04 - Quản lý sự kiện","Luồng chính","Xóa thành công sự kiện hoàn toàn chưa có dữ liệu phụ","Form F04","Sự kiện vừa tạo ở MG-08 (chưa có vé, chi phí)","1. Chọn sự kiện mới.
+2. Bấm nút ""Xóa sự kiện"".
+3. Xác nhận Yes.","Xóa thành công khỏi CSDL, dòng biến mất khỏi DataGridView.","Đạt","","Hưng","",""
+"MG-14","F04 - Quản lý sự kiện","Độc lập dữ liệu","Kiểm tra tính độc lập dữ liệu giữa 2 Manager","Đăng nhập bằng manager2","Sự kiện EVT202604 (do manager2 tạo)","1. Kiểm tra danh sách sự kiện.
+2. Thử thao tác trên sự kiện EVT202601 của manager1.","manager2 thấy được sự kiện của mình EVT202604; khi thao tác sự kiện của người khác hệ thống kiểm soát quyền sở hữu theo nghiệp vụ.","Đạt","Đăng nhập manager2 thấy sự kiện EVT202604, kiểm soát quyền thao tác độc lập chính xác.","Hưng","","Đã xử lý"
+"MG-15","F05 - Chi tiết sự kiện","Luồng chính","Mở trung tâm điều phối 9 Tabs chi tiết sự kiện","Form F04","Sự kiện EVT202601","Chọn EVT202601, bấm nút ""Xem chi tiết"" (hoặc nháy đúp dòng).","Mở Form F05, Header hiển thị đầy đủ tên sự kiện và các thẻ KPI riêng của EVT202601 (Vé bán, Doanh thu, Chi phí).","Đạt","","Hưng","",""
+"MG-16","F05 - Chi tiết sự kiện","Luồng chính","Chuyển đổi qua lại giữa 9 Tabs chức năng","Form F05","-","Lần lượt click chuột qua cả 9 Tabs: Thông tin, Lịch trình, Diễn giả, Khách, Vé, Nhân sự, Tài trợ, Chi phí, Đánh giá.","Dữ liệu từng Tab nạp tức thì theo đúng mã sự kiện EVT202601, không bị crash app, không bị trộn lẫn dữ liệu.","Đạt","","Hưng","",""
+"MG-17","F05 - Chi tiết sự kiện","Luồng chính","Cập nhật thông tin mô tả tại Tab 1 (Thông tin)","Form F05, Tab 1","Mô tả: ""Cập nhật tài liệu mới""","1. Sửa ô Mô tả.
+2. Bấm nút ""Cập nhật"".","Thông báo cập nhật thành công, dữ liệu lưu xuống CSDL.","Đạt","","Hưng","",""
+"MG-18","F07 - Quản lý địa điểm","Luồng chính","Thêm địa điểm tổ chức mới hợp lệ","Mở Form F07","Tên: Hội trường E301
+ĐC: 280 An Dương Vương
+Sức chứa: 300","1. Bấm ""Thêm mới"".
+2. Nhập Tên, Địa chỉ, Sức chứa = 300.
+3. Bấm ""Lưu"".","Thêm thành công, tự sinh mã DD..., hiển thị trên danh sách.","Đạt","","Hưng","",""
+"MG-19","F07 - Quản lý địa điểm","Giá trị biên","Nhập sức chứa địa điểm bằng 0 hoặc âm","Form F07","Sức chứa: 0 hoặc -50","1. Nhập Sức chứa = 0.
+2. Bấm ""Lưu"".","Báo lỗi ErrorProvider: ""Sức chứa tối đa của địa điểm phải lớn hơn 0!"".","Đạt","Cho phép nhập giá trị 0 hoặc âm và hiển thị cảnh báo ErrorProvider: ""Sức chứa tối đa của địa điểm phải lớn hơn 0!"".","Hưng","MG-19.jpg","Đã xử lý"
+"MG-20","F07 - Quản lý địa điểm","Bảng quyết định (BR-04)","Chống trùng lịch địa điểm (Cùng địa điểm, trùng khung giờ)","Form F04","ĐĐ: DD001 (White Palace)
+BĐ: 2026-12-15 09:00
+KT: 2026-12-15 15:00","1. Tạo sự kiện mới.
+2. Chọn địa điểm DD001.
+3. Đặt ngày giao thoa với EVT202601 (đang chiếm DD001 ngày 15/12).
+4. Bấm Lưu.","Bị chặn, hiển thị cảnh báo: ""Xung đột lịch: Địa điểm này đã được đặt cho sự kiện 'Hội nghị Công nghệ...' trong khoảng thời gian trên (BR-04)!"".","Đạt","","Hưng","",""
+"MG-21","F07 - Quản lý địa điểm","Luồng chính (BR-04)","Đặt cùng địa điểm nhưng khác ngày (Không xung đột)","Form F04","ĐĐ: DD001
+BĐ: 2026-12-16 08:00
+KT: 2026-12-16 17:00","Đặt địa điểm DD001 vào ngày 16/12/2026 (sau khi sự kiện cũ kết thúc).","Không bị xung đột, lưu thành công.","Đạt","","Hưng","",""
+"MG-22","F08 - Lịch trình","Luồng chính (BR-05)","Thêm tiết mục lịch trình nằm trong thời gian sự kiện","Mở Form F08","SK: EVT202601
+Tiết mục: Bế mạc
+BĐ: 2026-12-15 16:00
+KT: 2026-12-15 17:00","1. Nhập tên tiết mục.
+2. Đặt giờ từ 16:00 đến 17:00 ngày 15/12/2026.
+3. Bấm ""Lưu"".","Hợp lệ (nằm trong khung 08:00 - 17:30 của sự kiện), lưu thành công.","Đạt","","Hưng","",""
+"MG-23","F08 - Lịch trình","Giá trị biên","Tiết mục có giờ kết thúc nhỏ hơn giờ bắt đầu","Form F08","BĐ: 10:00
+KT: 09:30","1. Đặt giờ KT trước giờ BĐ.
+2. Bấm ""Lưu"".","Báo lỗi: ""Thời gian kết thúc tiết mục phải lớn hơn thời gian bắt đầu!"".","Đạt","","Hưng","",""
+"MG-24","F08 - Lịch trình","Bảng quyết định (BR-05)","Tiết mục có khung giờ VƯỢT RA NGOÀI thời gian sự kiện","Form F08","SK: EVT202601
+BĐ: 2026-12-15 17:00
+KT: 2026-12-15 18:30","Đặt giờ kết thúc là 18:30 (sự kiện chỉ đến 17:30). Bấm Lưu.","Báo lỗi: ""Khung giờ của lịch trình con phải nằm hoàn toàn trong thời gian diễn ra sự kiện chính (08:00 - 17:30 ngày 15/12/2026) (BR-05)!"".","Đạt","","Hưng","",""
+"MG-25","F08 - Lịch trình","Bảng quyết định (BR-06)","Chống trùng lịch Diễn giả (1 diễn giả cho 2 tiết mục trùng giờ)","Form F08","DG: DG001 (TS. Hùng)
+BĐ: 2026-12-15 09:00
+KT: 2026-12-15 09:45","Gán diễn giả DG001 vào tiết mục mới lúc 09:00 - 09:45 (đang có bài Keynote LT001 08:30 - 10:00). Bấm Lưu.","Chặn lưu, cảnh báo: ""Diễn giả TS. Nguyễn Văn Hùng đã có lịch trình 'Khai mạc & Keynote...' trong khung giờ này (BR-06)!"".","Đạt","","Hưng","",""
+"MG-26","F08 - Lịch trình","Bảng quyết định (BR-06)","Chống trùng phòng chức năng trong cùng sự kiện","Form F08","Phòng: Grand Ballroom
+BĐ: 09:00
+KT: 09:45","Xếp tiết mục mới cùng vào phòng ""Grand Ballroom"" trùng giờ bài Keynote.","Báo lỗi: ""Phòng Grand Ballroom đã được xếp cho tiết mục khác tại thời điểm này (BR-06)!"".","Đạt","","Hưng","",""
+"MG-27","F09 - Diễn giả","Luồng chính","Thêm mới hồ sơ Diễn giả đầy đủ thông tin","Mở Form F09","Tên: GS. Đặng Văn Nam
+Đơn vị: ĐH Quốc Gia
+Email: nam.dang@vnuhcm.edu.vn
+SĐT: 0909333444","1. Bấm ""Thêm mới"".
+2. Nhập thông tin, chọn file ảnh chân dung.
+3. Bấm ""Lưu"".","Thêm thành công, tự sinh mã DG..., ảnh hiển thị đúng trên PictureBox.","Đạt","Thêm diễn giả thành công, tự sinh mã DG..., file ảnh sao chép vào thư mục và hiển thị ảnh đúng trên PictureBox sau khi lưu.","Hưng","MG-27.jpg","Đã xử lý"
+"MG-28","F09 - Diễn giả","Phân vùng tương đương","Thêm diễn giả với Email sai định dạng","Form F09","Email: namdang@@vnuhcm","1. Nhập email sai định dạng.
+2. Bấm ""Lưu"".","Báo lỗi ErrorProvider: ""Email không hợp lệ!"".","Đạt","nó không cho ấn ""Lưu"" và hiện bên phải chỗ nhập email dấu X, không Báo lỗi ErrorProvider: ""Email không hợp lệ!""","Hưng","MG-28.jpg",""
+"MG-29","F09 - Diễn giả","Bảng quyết định (BR-20)","Thử xóa diễn giả đang có lịch trình bài phát biểu","Form F09","Diễn giả DG001 (đang có bài LT001, LT003)","1. Chọn DG001.
+2. Bấm ""Xóa"".","Hệ thống không cho xóa cứng, tự động áp dụng Soft Delete (chuyển trạng thái Ngừng hoạt động) để bảo toàn lịch sử dữ liệu (BR-20).","Đạt","","Hưng","",""
+"MG-30","F12 - Quản lý vé","Luồng chính","Tạo mới Hạng vé miễn phí (Giá vé = 0đ)","Mở Form F12","SK: EVT202601
+Tên: Vé Báo chí
+Giá: 0
+Phát hành: 20","1. Bấm ""Thêm hạng vé"".
+2. Nhập Giá = 0, SL = 20.
+3. Bấm ""Lưu"".","Hợp lệ, thêm thành công hạng vé 0đ cho khách mời truyền thông.","Đạt","","Hưng","",""
+"MG-31","F12 - Quản lý vé","Giá trị biên","Nhập giá vé âm hoặc số lượng phát hành bằng 0","Form F12","Giá: -100000
+SL: 0","1. Nhập giá vé âm.
+2. Bấm ""Lưu"".","Báo lỗi: ""Giá vé phải >= 0 và Số lượng phát hành phải lớn hơn 0!"".","Đạt","Cho phép nhập giá vé âm hoặc SL phát hành <= 0 và hiển thị thông báo lỗi: ""Giá vé phải >= 0 và Số lượng phát hành phải lớn hơn 0!"".","Hưng","MG-31.jpg","Đã xử lý"
+"MG-32","F12 - Quản lý vé","Bảng quyết định (BR-08)","Giảm số lượng phát hành NHỎ HƠN số vé thực tế đã bán","Form F12","Hạng vé HV001 (Đã bán: 5 vé, phát hành: 500)","1. Chọn HV001.
+2. Sửa Số lượng phát hành từ 500 xuống 3.
+3. Bấm ""Cập nhật"".","Chặn lưu ngay lập tức, báo lỗi: ""Số lượng phát hành không được nhỏ hơn số vé đã bán (Đã bán: 5 vé) (BR-08)!"".","Đạt","","Hưng","",""
+"MG-33","F12 - Quản lý vé","Luồng chính (BR-08)","Tăng số lượng phát hành vé hợp lệ","Form F12","Hạng vé HV001","1. Sửa Số phát hành từ 500 lên 600.
+2. Bấm ""Cập nhật"".","Thành công, Số lượng còn lại tự động cập nhật: 600 - 5 = 595 vé khả dụng.","Đạt","","Hưng","",""
+"MG-34","F12 - Quản lý vé","Luồng chính","Đóng bán hạng vé thủ công","Form F12","Hạng vé HV002 (VIP)","1. Chọn HV002.
+2. Bấm nút ""Đóng bán vé"".","Trạng thái hạng vé chuyển thành ""Đã đóng"", Form F11 không cho khách mua vé này nữa.","Đạt","Bổ sung nút ""Đóng bán vé"", trạng thái chuyển thành ""Đã đóng"", Form F11 khóa đặt mua vé này.","Hưng","MG-34.jpg","Đã xử lý"
+"MG-35","F14 - Quản lý nhân sự","Luồng chính","Thêm mới nhân sự hỗ trợ sự kiện","Mở Form F14","Tên: Ngô Kiến Huy
+SĐT: 0903112233
+Chức vụ: Điều phối sân khấu","1. Bấm ""Thêm mới"".
+2. Nhập thông tin.
+3. Bấm ""Lưu"".","Thêm thành công vào danh mục nhân sự NhanSu, sinh mã NS....","Đạt","","Hưng","",""
+"MG-36","F15 - Phân công nhân sự","Luồng chính","Phân công ca trực cho nhân sự hợp lệ","Mở Form F15","SK: EVT202601
+NS: NS005 (Đỗ Hải Đăng)
+Ca: 13:00 - 17:30","1. Chọn sự kiện.
+2. Chọn nhân sự NS005.
+3. Đặt ca chiều 13:00 - 17:30.
+4. Bấm ""Lưu phân công"".","Phân công thành công, hiển thị lên danh sách ca trực.","Đạt","","Hưng","",""
+"MG-37","F15 - Phân công nhân sự","Bảng quyết định (BR-13)","Chống trùng ca trực (1 nhân sự vào 2 ca trực trùng giờ)","Form F15","NS: NS002
+Ca mới: 08:00 - 11:00","1. Chọn NS002 (đang có ca PC002 từ 07:30 đến 12:00).
+2. Đặt ca mới 08:00 - 11:00.
+3. Bấm Lưu.","Chặn lưu, cảnh báo đỏ: ""Nhân sự Lê Thị Thu Thảo đã có ca trực 'Soát vé Check-in Cổng A' trong khoảng thời gian này (BR-13)!"".","Đạt","","Hưng","",""
+"MG-38","F15 - Phân công nhân sự","Bảng quyết định","Thử phân công nhân sự vào sự kiện đã kết thúc","Form F15","SK: EVT202603 (Đã kết thúc)","Chọn EVT202603, thử thêm ca trực.","Báo lỗi: ""Không thể phân công nhân sự vào sự kiện đã kết thúc!"".","Đạt","Hệ thống chặn phân công vào sự kiện kết thúc và báo lỗi: ""Không thể phân công nhân sự vào sự kiện đã kết thúc!"".","Hưng","MG-38.jpg","Đã xử lý"
+"MG-39","F16 - Nhà tài trợ","Luồng chính","Tiếp nhận gói tài trợ mới cho sự kiện","Mở Form F16","SK: EVT202601
+NTT: NTT004
+Gói: Bạc
+Số tiền: 30,000,000","1. Chọn sự kiện.
+2. Chọn đối tác NTT004.
+3. Chọn gói Bạc, nhập 30 triệu.
+4. Bấm ""Lưu tài trợ"".","Thành công, lưu vào bảng ChiTietTaiTro, tổng giá trị tài trợ trên Tab 7 F05 tự cộng dồn.","Đạt","Bổ sung chọn sự kiện trên Form F16, lưu chi tiết tài trợ vào bảng ChiTietTaiTro và tự động cộng dồn giá trị trên Tab 7 F05.","Hưng","MG-39.jpg","Đã xử lý"
+"MG-40","F16 - Nhà tài trợ","Giá trị biên","Nhập số tiền tài trợ âm","Form F16","Tiền: -5000000","1. Nhập số tiền âm.
+2. Bấm Lưu.","Báo lỗi: ""Giá trị tài trợ phải >= 0!"".","Đạt","Cho phép nhập số tiền âm và hiển thị cảnh báo: ""Giá trị tài trợ phải >= 0!"".","Hưng","MG-41.jpg","Đã xử lý"
+"MG-41","F16 - Nhà tài trợ","Bảng quyết định (BR-20)","Thử xóa nhà tài trợ đang có hợp đồng tài trợ","Form F16","NTT001 (đang tài trợ 150tr gói Kim Cương)","Chọn NTT001, bấm nút ""Xóa"".","Áp dụng Soft Delete hoặc báo lỗi ràng buộc khóa ngoại, cấm xóa cứng làm mất vết kiểm toán doanh thu.","Đạt","","Hưng","",""
+"MG-42","F17 - Ngân sách chi phí","Luồng chính","Kiểm tra trạng thái ngân sách ở ngưỡng AN TOÀN (75%)","Mở Form F17","Sự kiện EVT202601","Chọn EVT202601.","Dự kiến: 100,000,000đ; Thực chi: 75,000,000đ (75%); Còn lại: 25,000,000đ; Thanh tiến độ hiển thị màu xanh (An toàn).","Đạt","","Hưng","",""
+"MG-43","F17 - Ngân sách chi phí","Giá trị biên (BR-14)","Nhập số tiền chi bằng 0 hoặc số âm","Form F17","Số tiền: 0 hoặc -1000000","1. Nhập Khoản chi.
+2. Nhập Tiền = 0.
+3. Bấm ""Duyệt chi"".","Báo lỗi ErrorProvider: ""Số tiền chi tiêu phải lớn hơn 0 (BR-14)!"", không lưu.","Đạt","Tuy không hiện thông báo đó, nhưng mà khi bấm lưu nó sẽ nháy dấu X đỏ bên khung nhập tiền và không lưu","Hưng","",""
+"MG-44","F17 - Ngân sách chi phí","Giá trị biên (BR-15)","KÍCH HOẠT CẢNH BÁO BỘI CHI KHI VƯỢT 80% NGÂN SÁCH","Form F17","SK: EVT202601
+Chi mới: 6,000,000đ
+Nội dung: Nước uống thêm","1. Nhập chi thêm 6,000,000đ (Tổng chi thành 81,000,000đ = 81% ngân sách).
+2. Bấm ""Thêm khoản chi"".","Thêm thành công, tỷ lệ sử dụng lên 81%; Thanh tiến độ và cảnh báo màu vàng cảnh báo nguy cơ bội chi","Đạt","","Hưng","",""
+"MG-45","F17 - Ngân sách chi phí","Giá trị biên (BR-15)","Cảnh báo ĐỎ BỘI CHI khi thực chi vượt quá 100% ngân sách","Form F17","Chi thêm: 25,000,000đ","Nhập thêm 25 triệu (tổng chi thành 106 triệu = 106%). Bấm Lưu.","Thanh tiến độ và giao diện đổi sang màu đỏ, hiện cảnh báo: ""CẢNH BÁO NGUY CƠ: Bội chi ngân sách 6,000,000 VNĐ!"".","Đạt","","Hưng","",""
+"MG-46","F17 - Ngân sách chi phí","Luồng chính","Xóa một khoản chi sai và tính lại ngân sách","Form F17","Khoản chi vừa tạo ở MG-45","1. Chọn khoản chi 25tr.
+2. Bấm ""Xóa khoản chi"".","Xóa thành công, ngân sách còn lại và thanh % tự động giảm trở về mức cũ ngay lập tức.","Đạt","","Hưng","",""
+"MG-47","F19 - Báo cáo thống kê","Luồng chính","Lọc báo cáo tài chính tổng hợp sự kiện","Mở Form F19","SK: EVT202601","1. Chọn sự kiện EVT202601.
+2. Chọn loại báo cáo: ""Báo cáo Doanh thu & Chi phí"".
+3. Bấm ""Xem Báo Cáo"".","Lưới dữ liệu hiển thị chính xác: Doanh thu vé, Tổng chi phí, Chênh lệch thu chi của sự kiện.","Đạt","","Hưng","",""
+"MG-48","F19 - Báo cáo thống kê","Luồng chính","Lọc báo cáo tỷ lệ check-in và tham dự thực tế","Form F19","SK: EVT202601","1. Chọn loại báo cáo: ""Thống kê Tham dự & Vé"".
+2. Bấm ""Xem Báo Cáo"".","Hiển thị đúng: Tổng vé phát hành, Số vé đã bán, Số người check-in thành công và Tỷ lệ % đến dự.","Đạt","","Hưng","",""
+"MG-49","F19 - Báo cáo thống kê","Tiện ích xuất dữ liệu","Xuất báo cáo tài chính ra file Excel (.xlsx)","Form F19, đã có dữ liệu","Tên file: BaoCao_TaiChinh_EVT01.xlsx","1. Bấm nút ""Xuất Excel"".
+2. Chọn thư mục lưu file và bấm Save.","Thông báo xuất Excel thành công; mở file .xlsx lên kiểm tra thấy đủ tiêu đề bảng, đúng định dạng số tiền VND và không bị lỗi font tiếng Việt.","Đạt","","Hưng","",""
+"MG-50","F19 - Báo cáo thống kê","Tiện ích in ấn","Xuất báo cáo ra định dạng PDF / In ấn chuẩn A4","Form F19","File: BaoCao_TongKet.pdf","1. Bấm nút ""Xuất PDF / In Báo Cáo"".
+2. Lưu file PDF.","File PDF được tạo với bố cục chuẩn trang A4, đầy đủ logo, thông tin sự kiện, bảng số liệu và chữ ký người lập biểu.","Đạt","Đã có nút ""Xuất PDF / In Báo Cáo"", tạo file PDF chuẩn khổ A4 đầy đủ thông tin sự kiện, bảng số liệu và chữ ký người lập biểu.","Hưng","","Đã xử lý"
+"MG-51","Phân quyền RBAC","Kiểm thử an ninh (Lớp 1 GUI)","Kiểm tra menu F03 (Quản trị User) bị ẩn đối với Manager","Đăng nhập bằng manager1","-","Quan sát thanh MenuStrip hệ thống.","Menu ""Quản lý người dùng"" (F03) hoàn toàn BỊ ẨN, Manager không thể thấy hay mở màn hình quản trị tài khoản.","Đạt","","Hưng","",""
+"MG-52","Phân quyền RBAC","Kiểm thử an ninh (Lớp 2 BLL)","Phòng thủ tầng BLL ngăn chặn Manager gọi lệnh xóa User","Đăng nhập manager1","-","Thử can thiệp gọi phương thức UserService.DeleteUser() qua code kiểm thử.","Lớp bảo vệ Guard.YeuCauQuyen(_session, ""UC03.XOA"") tại tầng BLL lập tức chặn đứng và ném ngoại lệ UnauthorizedAccessException.","Đạt","","Hưng","",

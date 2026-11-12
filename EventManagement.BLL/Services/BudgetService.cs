@@ -248,6 +248,7 @@ namespace EventManagement.BLL.Services
                 dto.TrangThai = "Đã duyệt";
 
             _expenses.Add(CloneDto(dto));
+            DataSyncNotifier.NotifyExpenseChanged(dto.MaSuKien, dto.SoTien);
 
             var status = GetBudgetStatus(dto.MaSuKien);
             return ServiceResult<BudgetAlertDto>.Success(status.Data!, "Thêm mới phiếu chi thành công!");
@@ -279,6 +280,7 @@ namespace EventManagement.BLL.Services
                 existing.TrangThai = dto.TrangThai.Trim();
 
             var status = GetBudgetStatus(existing.MaSuKien);
+            DataSyncNotifier.NotifyExpenseChanged(existing.MaSuKien, dto.SoTien);
             return ServiceResult<BudgetAlertDto>.Success(status.Data!, "Cập nhật phiếu chi thành công!");
         }
 
@@ -292,6 +294,7 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed($"Không tìm thấy phiếu chi '{maChiPhi}' để xóa.");
 
             _expenses.Remove(existing);
+            DataSyncNotifier.NotifyDataChanged();
             return ServiceResult.Success("Xóa phiếu chi thành công.");
         }
 
