@@ -280,14 +280,19 @@ namespace EventManagement.GUI.Forms
                     return;
                 }
 
-                btnXacNhan.Enabled = true;
-                lblTierInfo.Text = $"Đơn giá: {tier.GiaVe:N0} đ | Còn lại: {tier.SoLuongConLai}/{tier.SoLuongPhatHanh} vé";
                 if (tier.SoLuongConLai <= 0)
                 {
+                    lblTierInfo.Text = $"Đơn giá: {tier.GiaVe:N0} đ | Còn lại: 0/{tier.SoLuongPhatHanh} vé - ĐÃ HẾT VÉ (SOLD-OUT)";
                     lblTierInfo.ForeColor = Color.Red;
-                    lblTierInfo.Text += " (HẾT VÉ)";
+                    btnXacNhan.Enabled = false;
+                    errorProvider.SetError(cboHangVe, "Đã hết vé (Sold-out)");
+                    return;
                 }
-                else if (tier.SoLuongConLai <= 10)
+
+                errorProvider.SetError(cboHangVe, string.Empty);
+                btnXacNhan.Enabled = true;
+                lblTierInfo.Text = $"Đơn giá: {tier.GiaVe:N0} đ | Còn lại: {tier.SoLuongConLai}/{tier.SoLuongPhatHanh} vé";
+                if (tier.SoLuongConLai <= 10)
                 {
                     lblTierInfo.ForeColor = Color.DarkOrange;
                     lblTierInfo.Text += " (SẮP HẾT)";
@@ -390,6 +395,12 @@ namespace EventManagement.GUI.Forms
                 MessageBox.Show($"Hạng vé '{tier.TenHangVe}' đã đóng bán, không thể đặt mua!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 isValid = false;
             }
+            else if (tier.SoLuongConLai <= 0)
+            {
+                errorProvider.SetError(cboHangVe, "Đã hết vé (Sold-out)");
+                MessageBox.Show($"Hạng vé '{tier.TenHangVe}' đã hết vé (Sold-out), không thể đặt mua!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                isValid = false;
+            }
 
             int qty = (int)nudSoLuong.Value;
             if (qty < 1 || qty > 10)
@@ -483,7 +494,7 @@ namespace EventManagement.GUI.Forms
                     BindIssuedTickets(_lastIssuedTickets);
 
                     MessageBox.Show(
-                        $"Đặt vé thành công!\nMã đơn đăng ký: {result.Data.MaDangKy}\nTổng cộng: {result.Data.SoLuong} vé đã được phát hành kèm mã QR hợp lệ.",
+                        $"Thanh toán thành công {result.Data.TongTien:N0} VNĐ!\nMã đơn đăng ký: {result.Data.MaDangKy}\nTổng cộng: {result.Data.SoLuong} vé đã được phát hành kèm mã QR hợp lệ.",
                         "Thành công",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);

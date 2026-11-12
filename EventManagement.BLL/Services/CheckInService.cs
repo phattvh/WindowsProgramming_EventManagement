@@ -81,7 +81,7 @@ namespace EventManagement.BLL.Services
                 if (ticket == null)
                 {
                     LogHistory("UNKNOWN", "Không rõ", "N/A", request.PhuongThuc, false, $"Mã không tồn tại: {token}");
-                    return ServiceResult<CheckInResultDto>.Failed($"Mã vé hoặc mã QR '{token}' không tồn tại trong hệ thống.");
+                    return ServiceResult<CheckInResultDto>.Failed("Mã vé không tồn tại trong hệ thống!");
                 }
 
                 // 2. Kiểm tra sự kiện tương ứng (BR-11: Đúng sự kiện)
@@ -109,7 +109,8 @@ namespace EventManagement.BLL.Services
                 if (ticket.ThoiGianCheckIn != null || string.Equals(ticket.TrangThaiVe, "Đã check-in", StringComparison.OrdinalIgnoreCase))
                 {
                     DateTime previousScanTime = ticket.ThoiGianCheckIn ?? DateTime.Now;
-                    string warnMsg = $"CẢNH BÁO: Vé '{ticket.MaVe}' ({ticket.TenNguoiThamGia}) đã được check-in trước đó vào lúc {previousScanTime:HH:mm:ss dd/MM/yyyy}!";
+                    string prevChecker = !string.IsNullOrWhiteSpace(ticket.NguoiCheckIn) ? ticket.NguoiCheckIn : "Nhân viên";
+                    string warnMsg = $"CẢNH BÁO: Vé này đã check-in vào lúc {previousScanTime:HH:mm:ss dd/MM/yyyy} bởi {prevChecker}!";
 
                     LogHistory(ticket.MaVe, ticket.TenNguoiThamGia, ticket.TenHangVe, request.PhuongThuc, false,
                         $"Quét trùng lặp lúc {previousScanTime:HH:mm:ss}");
@@ -119,6 +120,7 @@ namespace EventManagement.BLL.Services
                         IsSuccess = false,
                         IsWarningDuplicate = true,
                         ThoiGianCheckInTruocDo = previousScanTime,
+                        NguoiCheckInTruocDo = prevChecker,
                         MaVe = ticket.MaVe,
                         TenNguoiThamGia = ticket.TenNguoiThamGia,
                         TenSuKien = ticket.TenSuKien,
@@ -131,6 +133,7 @@ namespace EventManagement.BLL.Services
 
                 // 5. Check-in thành công (Hợp lệ lần đầu)
                 ticket.ThoiGianCheckIn = DateTime.Now;
+                ticket.NguoiCheckIn = string.IsNullOrWhiteSpace(request.NguoiCheckIn) ? "STAFF" : request.NguoiCheckIn.Trim();
                 ticket.TrangThaiVe = "Đã check-in";
 
                 string successMsg = $"Check-in thành công: {ticket.TenNguoiThamGia} - Hạng: {ticket.TenHangVe}";

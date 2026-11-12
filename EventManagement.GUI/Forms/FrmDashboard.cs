@@ -98,11 +98,44 @@ namespace EventManagement.GUI.Forms
 
                 CanAccessAdminFeatures = CurrentSession.IsAdmin 
                     || CurrentSession.CoQuyen("UC03");
+
+                // Phân quyền cho nhân viên Staff (ST-11):
+                // Ẩn các thẻ tài chính (Doanh thu & Chi phí), ẩn biểu đồ so sánh doanh thu
+                bool isStaff = string.Equals(role, "STAFF", StringComparison.OrdinalIgnoreCase);
+                if (isStaff)
+                {
+                    pnlCard3.Visible = false; // Ẩn thẻ Doanh thu / Chi phí
+                    pnlRevenueChart.Visible = false; // Ẩn biểu đồ Doanh thu sự kiện
+                    
+                    // Căn chỉnh lại 3 thẻ KPI còn lại trên TableLayoutPanel
+                    tblKpiCards.ColumnStyles[0].Width = 33.33F;
+                    tblKpiCards.ColumnStyles[1].Width = 33.33F;
+                    tblKpiCards.ColumnStyles[2].Width = 0F;
+                    tblKpiCards.ColumnStyles[3].Width = 33.34F;
+
+                    // Mở rộng biểu đồ Check-in chiếm trọn không gian biểu đồ
+                    tblCharts.ColumnStyles[0].Width = 0F;
+                    tblCharts.ColumnStyles[1].Width = 100F;
+                }
+                else
+                {
+                    pnlCard3.Visible = true;
+                    pnlRevenueChart.Visible = true;
+                    tblKpiCards.ColumnStyles[0].Width = 25F;
+                    tblKpiCards.ColumnStyles[1].Width = 25F;
+                    tblKpiCards.ColumnStyles[2].Width = 25F;
+                    tblKpiCards.ColumnStyles[3].Width = 25F;
+
+                    tblCharts.ColumnStyles[0].Width = 62F;
+                    tblCharts.ColumnStyles[1].Width = 38F;
+                }
             }
             else
             {
                 lblUserGreeting.Text = "Xin chào: Quản trị viên";
                 CanAccessAdminFeatures = true;
+                pnlCard3.Visible = true;
+                pnlRevenueChart.Visible = true;
 
                 // Khi chạy độc lập không đăng nhập: Hiển thị đầy đủ để demo
                 foreach (Control c in flpQuickButtons.Controls)
