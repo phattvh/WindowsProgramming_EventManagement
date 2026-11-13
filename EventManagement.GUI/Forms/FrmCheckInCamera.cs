@@ -43,6 +43,8 @@ namespace EventManagement.GUI.Forms
         public DataGridView DgvRecentCheckIns => dgvRecentCheckIns;
         public Label LblSubTitle => lblSubTitle;
 
+        private Button? _btnUploadQrImage;
+
         public FrmCheckInCamera() : this(new CheckInService())
         {
         }
@@ -67,8 +69,62 @@ namespace EventManagement.GUI.Forms
                 }
             };
 
+            AddUploadQrButton();
             ApplyCustomStyles();
             WireEvents();
+        }
+
+        private void AddUploadQrButton()
+        {
+            try
+            {
+                _btnUploadQrImage = new Button
+                {
+                    Name = "btnUploadQrImage",
+                    Text = "📁 Chọn ảnh QR",
+                    Size = new Size(126, 32),
+                    Location = new Point(300, 15),
+                    Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                    Cursor = Cursors.Hand,
+                    UseVisualStyleBackColor = true
+                };
+                StyleButton(_btnUploadQrImage, ButtonRole.Secondary);
+                _btnUploadQrImage.Click += BtnUploadQrImage_Click;
+                grpManual.Controls.Add(_btnUploadQrImage);
+            }
+            catch { }
+        }
+
+        private void BtnUploadQrImage_Click(object? sender, EventArgs e)
+        {
+            using var ofd = new OpenFileDialog
+            {
+                Title = "Chọn file ảnh mã QR để soát vé",
+                Filter = "File ảnh QR (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|Tất cả tệp (*.*)|*.*"
+            };
+
+            if (ofd.ShowDialog(this) == DialogResult.OK)
+            {
+                try
+                {
+                    using var bmp = new Bitmap(ofd.FileName);
+                    var decodeResult = _barcodeReader.Decode(bmp);
+                    if (decodeResult != null && !string.IsNullOrWhiteSpace(decodeResult.Text))
+                    {
+                        string scannedText = decodeResult.Text.Trim();
+                        txtMaVeManual.Text = scannedText;
+                        ExecuteCheckIn(scannedText, "File ảnh QR");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể giải mã QR từ ảnh đã chọn. Vui lòng thử ảnh rõ nét hơn hoặc nhập mã thủ công.", "Không nhận dạng được QR", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi đọc file ảnh: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void ApplyCustomStyles()
@@ -321,6 +377,14 @@ namespace EventManagement.GUI.Forms
                 using (Bitmap scanBitmap = (Bitmap)eventArgs.Frame.Clone())
                 {
                     var result = _barcodeReader.Decode(scanBitmap);
+                    if (result == null || string.IsNullOrWhiteSpace(result.Text))
+                    {
+                        // Thử xoay 90 độ nếu góc quét bị nghiêng
+                        using var rotated = (Bitmap)scanBitmap.Clone();
+                        rotated.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        result = _barcodeReader.Decode(rotated);
+                    }
+
                     if (result != null && !string.IsNullOrWhiteSpace(result.Text))
                     {
                         string scannedText = result.Text.Trim();
@@ -426,11 +490,13 @@ namespace EventManagement.GUI.Forms
             lblStatusTitle.ForeColor = Color.FromArgb(185, 28, 28);    // Red dark #B91C1C
             lblStatusDetail.ForeColor = Color.FromArgb(153, 27, 27);
 
-            lblStatusTitle.Text = "⚠ CẢNH BÁO QUÉT TRÙNG LẶP: VÉ ĐÃ ĐƯỢC CHECK-IN TRƯỚC ĐÓ!";
             string timeStr = checkIn.ThoiGianCheckInTruocDo.HasValue 
                 ? checkIn.ThoiGianCheckInTruocDo.Value.ToString("HH:mm:ss dd/MM/yyyy") 
                 : "Không rõ thời gian";
-            lblStatusDetail.Text = $"Mã vé: {checkIn.MaVe} | Người tham gia: {checkIn.TenNguoiThamGia} | Thời gian đã check-in: {timeStr}";
+            string checker = !string.IsNullOrWhiteSpace(checkIn.NguoiCheckInTruocDo) ? checkIn.NguoiCheckInTruocDo : "nhân viên";
+
+            lblStatusTitle.Text = $"⚠ CẢNH BÁO: Vé này đã check-in vào lúc {timeStr} bởi {checker}!";
+            lblStatusDetail.Text = $"Mã vé: {checkIn.MaVe} | Người tham gia: {checkIn.TenNguoiThamGia} | Trạng thái: Từ chối check-in lần hai";
         }
 
         private void ShowBannerError(string errorMessage)
@@ -439,7 +505,9 @@ namespace EventManagement.GUI.Forms
             lblStatusTitle.ForeColor = Color.FromArgb(185, 28, 28);
             lblStatusDetail.ForeColor = Color.FromArgb(127, 29, 29);
 
-            lblStatusTitle.Text = "✗ TỪ CHỐI CHECK-IN: VÉ KHÔNG HỢP LỆ";
+            lblStatusTitle.Text = errorMessage.Contains("không tồn tại", StringComparison.OrdinalIgnoreCase)
+                ? "✗ Mã vé không tồn tại trong hệ thống!"
+                : "✗ TỪ CHỐI CHECK-IN: VÉ KHÔNG HỢP LỆ";
             lblStatusDetail.Text = errorMessage;
         }
 
