@@ -357,7 +357,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi tải dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi tải dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -629,13 +629,13 @@ namespace EventManagement.GUI.Forms
                 var result = _scheduleService.Delete(selected.MaLichTrinh);
                 if (result.IsSuccess)
                 {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                     SetFormState(FormMode.View);
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(StripBrTags(result.Message), "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -656,7 +656,7 @@ namespace EventManagement.GUI.Forms
 
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
                 SetFormState(FormMode.View);
 
@@ -675,13 +675,13 @@ namespace EventManagement.GUI.Forms
             else
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine(result.Message);
+                sb.AppendLine(StripBrTags(result.Message));
                 if (result.Errors != null && result.Errors.Count > 0)
                 {
                     sb.AppendLine("\nChi tiết cảnh báo:");
                     foreach (var err in result.Errors)
                     {
-                        sb.AppendLine($"• {err}");
+                        sb.AppendLine($"• {StripBrTags(err)}");
                     }
                 }
                 MessageBox.Show(sb.ToString(), "Cảnh báo trùng lịch trình", MessageBoxButtons.OK, MessageBoxIcon.Warning);

@@ -28,6 +28,18 @@ namespace EventManagement.GUI.Forms
         public static readonly Color ColorWarning = Color.FromArgb(217, 119, 6);      // Vàng cam #D97706
         public static readonly Color ColorDanger = Color.FromArgb(220, 38, 38);       // Đỏ cảnh báo #DC2626
 
+        /// <summary>
+        /// Loại bỏ tất cả mã quy tắc nghiệp vụ dạng (BR-xx), BR-xx khỏi thông báo người dùng để đảm bảo thông điệp tự nhiên, thân thiện.
+        /// </summary>
+        public static string StripBrTags(string? message)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return string.Empty;
+            var cleaned = System.Text.RegularExpressions.Regex.Replace(message, @"\s*\(BR-\d+\):", ":", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\s*\[?\(?BR-\d+\)?\]?", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\s{2,}", " ");
+            return cleaned.Trim();
+        }
+
         private MenuStrip? _navMenuStrip;
 
         /// <summary>
@@ -72,7 +84,7 @@ namespace EventManagement.GUI.Forms
 
                 if (this is FrmLogin)
                 {
-                    this.ClientSize = new Size(420, 345);
+                    this.ClientSize = new Size(420, 355);
                 }
                 else if (this is FrmChangePassword)
                 {
@@ -105,7 +117,7 @@ namespace EventManagement.GUI.Forms
 
                 if (this is FrmLogin)
                 {
-                    this.ClientSize = new Size(420, 345);
+                    this.ClientSize = new Size(420, 355);
                 }
                 else if (this is FrmChangePassword)
                 {

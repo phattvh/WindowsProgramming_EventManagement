@@ -168,7 +168,7 @@
             this.lblSubtitle.Name = "lblSubtitle";
             this.lblSubtitle.Size = new System.Drawing.Size(530, 15);
             this.lblSubtitle.TabIndex = 1;
-            this.lblSubtitle.Text = "Thiết lập timeline chi tiết, kiểm soát xung đột phòng chức năng và phân công diễn giả (BR-05 & BR-06)";
+            this.lblSubtitle.Text = "Thiết lập timeline chi tiết, kiểm soát xung đột phòng chức năng và phân công diễn giả";
 
             // 
             // pnlFilter
@@ -625,7 +625,7 @@
             this.btnKiemTraXungDot.Name = "btnKiemTraXungDot";
             this.btnKiemTraXungDot.Size = new System.Drawing.Size(235, 32);
             this.btnKiemTraXungDot.TabIndex = 16;
-            this.btnKiemTraXungDot.Text = "⚡ Kiểm tra xung đột BR-05 & BR-06";
+            this.btnKiemTraXungDot.Text = "⚡ Kiểm tra xung đột";
             this.btnKiemTraXungDot.UseVisualStyleBackColor = false;
             this.btnKiemTraXungDot.Click += new System.EventHandler(this.btnKiemTraXungDot_Click);
 

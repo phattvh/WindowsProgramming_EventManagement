@@ -433,7 +433,7 @@ namespace EventManagement.GUI.Forms
             var result = _eventService.Delete(dto.MaSuKien);
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
             }
             else
@@ -442,21 +442,21 @@ namespace EventManagement.GUI.Forms
                 if (result.ErrorCode == "BR-02")
                 {
                     var optCancel = MessageBox.Show(
-                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái sự kiện này sang 'Đã hủy' ngay bây giờ không?",
-                        "Cảnh báo ràng buộc nghiệp vụ BR-02",
+                        $"{StripBrTags(result.Message)}\n\nBạn có muốn chuyển trạng thái sự kiện này sang 'Đã hủy' ngay bây giờ không?",
+                        "Cảnh Báo Ràng Buộc Dữ Liệu",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
                     if (optCancel == DialogResult.Yes)
                     {
                         var cancelRes = _eventService.CancelEvent(dto.MaSuKien);
-                        MessageBox.Show(cancelRes.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(StripBrTags(cancelRes.Message), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadData();
                     }
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Lỗi xóa sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(StripBrTags(result.Message), "Lỗi xóa sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -482,7 +482,7 @@ namespace EventManagement.GUI.Forms
             }
 
             var confirm = MessageBox.Show(
-                $"Xác nhận hủy tổ chức sự kiện:\n\n[{dto.MaSuKien}] {dto.TenSuKien}\n\nTrạng thái sự kiện sẽ chuyển sang 'Đã hủy' (BR-02)?",
+                $"Xác nhận hủy tổ chức sự kiện:\n\n[{dto.MaSuKien}] {dto.TenSuKien}\n\nTrạng thái sự kiện sẽ chuyển sang 'Đã hủy'?",
                 "Xác nhận hủy sự kiện",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -492,12 +492,12 @@ namespace EventManagement.GUI.Forms
             var result = _eventService.CancelEvent(dto.MaSuKien);
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi hủy sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi hủy sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -531,7 +531,7 @@ namespace EventManagement.GUI.Forms
             // Thuật toán BR-03: NgayKetThuc >= NgayBatDau
             if (dtpNgayKetThuc.Value < dtpNgayBatDau.Value)
             {
-                errBaoLoi.SetError(dtpNgayKetThuc, "Ngày kết thúc không được trước ngày bắt đầu (BR-03)!");
+                errBaoLoi.SetError(dtpNgayKetThuc, "Ngày kết thúc không được trước ngày bắt đầu!");
                 hasError = true;
             }
 
@@ -570,7 +570,7 @@ namespace EventManagement.GUI.Forms
 
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetFormState(FormMode.View);
                 LoadData();
 
@@ -587,14 +587,14 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi lưu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi lưu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result.ErrorCode == "BR-03")
                 {
-                    errBaoLoi.SetError(dtpNgayKetThuc, result.Message);
+                    errBaoLoi.SetError(dtpNgayKetThuc, StripBrTags(result.Message));
                 }
                 else if (result.ErrorCode == "BR-04")
                 {
-                    errBaoLoi.SetError(cboDiaDiem, result.Message);
+                    errBaoLoi.SetError(cboDiaDiem, StripBrTags(result.Message));
                 }
             }
         }

@@ -142,7 +142,7 @@ namespace EventManagement.GUI.Forms
             // 4. Details GroupBox
             _grpDetails = new GroupBox
             {
-                Text = "Thông tin hạng vé & Thiết lập số lượng phát hành (BR-08, BR-09)",
+                Text = "Thông tin hạng vé & Thiết lập số lượng phát hành",
                 Dock = DockStyle.Bottom,
                 Height = 175,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
