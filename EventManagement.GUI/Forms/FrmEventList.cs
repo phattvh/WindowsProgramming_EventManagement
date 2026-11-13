@@ -53,8 +53,38 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvSuKien);
             dgvSuKien.AutoGenerateColumns = false;
-            dgvSuKien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvSuKien.ScrollBars = ScrollBars.Both;
+
+            foreach (DataGridViewColumn col in dgvSuKien.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            colMaSuKien.Width = 95;
+            colTenSuKien.MinimumWidth = 240;
+            colTenLoaiSK.MinimumWidth = 150;
+            colTenLoaiSK.Width = 180;
+            colTenDiaDiem.MinimumWidth = 180;
+            colTenDiaDiem.Width = 220;
+            colNgayBatDau.MinimumWidth = 125;
+            colNgayBatDau.Width = 135;
+            colNgayKetThuc.MinimumWidth = 125;
+            colNgayKetThuc.Width = 135;
+            colSucChua.MinimumWidth = 75;
+            colSucChua.Width = 85;
+            colNganSachDuKien.MinimumWidth = 120;
+            colNganSachDuKien.Width = 135;
+            colNguoiPhuTrach.MinimumWidth = 130;
+            colNguoiPhuTrach.Width = 145;
+            colTrangThai.MinimumWidth = 100;
+            colTrangThai.Width = 115;
+            colSoVeDaBan.MinimumWidth = 80;
+            colSoVeDaBan.Width = 90;
+            colTyLeCheckIn.MinimumWidth = 85;
+            colTyLeCheckIn.Width = 95;
+
+            colTenSuKien.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
             dgvSuKien.CellDoubleClick += (s, e) =>
             {
                 if (e.RowIndex >= 0)

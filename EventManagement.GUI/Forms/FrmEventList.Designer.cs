@@ -746,7 +746,7 @@ namespace EventManagement.GUI.Forms
             this.cboLoaiSK.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLoaiSK.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboLoaiSK.FormattingEnabled = true;
-            this.cboLoaiSK.Location = new System.Drawing.Point(700, 25);
+            this.cboLoaiSK.Location = new System.Drawing.Point(685, 25);
             this.cboLoaiSK.Name = "cboLoaiSK";
             this.cboLoaiSK.Size = new System.Drawing.Size(165, 23);
             this.cboLoaiSK.TabIndex = 5;
@@ -769,7 +769,7 @@ namespace EventManagement.GUI.Forms
             this.cboTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThai.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboTrangThai.FormattingEnabled = true;
-            this.cboTrangThai.Location = new System.Drawing.Point(985, 25);
+            this.cboTrangThai.Location = new System.Drawing.Point(975, 25);
             this.cboTrangThai.Name = "cboTrangThai";
             this.cboTrangThai.Size = new System.Drawing.Size(200, 23);
             this.cboTrangThai.TabIndex = 7;
@@ -815,7 +815,7 @@ namespace EventManagement.GUI.Forms
             this.dtpNgayBatDau.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpNgayBatDau.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpNgayBatDau.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpNgayBatDau.Location = new System.Drawing.Point(540, 60);
+            this.dtpNgayBatDau.Location = new System.Drawing.Point(530, 60);
             this.dtpNgayBatDau.Name = "dtpNgayBatDau";
             this.dtpNgayBatDau.Size = new System.Drawing.Size(165, 23);
             this.dtpNgayBatDau.TabIndex = 11;
@@ -826,7 +826,7 @@ namespace EventManagement.GUI.Forms
             this.lblNgayKetThuc.AutoSize = true;
             this.lblNgayKetThuc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblNgayKetThuc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(23)))), ((int)(((byte)(42)))));
-            this.lblNgayKetThuc.Location = new System.Drawing.Point(730, 63);
+            this.lblNgayKetThuc.Location = new System.Drawing.Point(715, 63);
             this.lblNgayKetThuc.Name = "lblNgayKetThuc";
             this.lblNgayKetThuc.Size = new System.Drawing.Size(84, 15);
             this.lblNgayKetThuc.TabIndex = 12;
@@ -838,7 +838,7 @@ namespace EventManagement.GUI.Forms
             this.dtpNgayKetThuc.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpNgayKetThuc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpNgayKetThuc.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpNgayKetThuc.Location = new System.Drawing.Point(860, 60);
+            this.dtpNgayKetThuc.Location = new System.Drawing.Point(835, 60);
             this.dtpNgayKetThuc.Name = "dtpNgayKetThuc";
             this.dtpNgayKetThuc.Size = new System.Drawing.Size(165, 23);
             this.dtpNgayKetThuc.TabIndex = 13;
