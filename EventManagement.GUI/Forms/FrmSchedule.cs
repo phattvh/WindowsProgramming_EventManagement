@@ -120,7 +120,7 @@ namespace EventManagement.GUI.Forms
             colDiaDiemChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             // Bố trí thanh lọc và bảng không bị đè bởi Header
-            pnlFilter.Top = pnlHeader.Bottom + 10;
+            pnlFilter.Top = pnlHeader.Bottom + 12;
             dgvLichTrinh.Top = pnlFilter.Bottom + 10;
             if (grbThongTin != null)
             {
@@ -131,11 +131,11 @@ namespace EventManagement.GUI.Forms
             dgvLichTrinh.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             colMaLichTrinh.Width = 95;
             colTenSuKien.Width = 260;
-            colTenTietMuc.Width = 320;
+            colTenTietMuc.Width = 350;
             colNgayDienRa.Width = 105;
             colKhungGio.Width = 115;
-            colDiaDiemChiTiet.Width = 220;
-            colTenDienGia.Width = 180;
+            colDiaDiemChiTiet.Width = 240;
+            colTenDienGia.Width = 190;
             colGhiChu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colGhiChu.MinimumWidth = 200;
             colTenDienGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -160,7 +160,7 @@ namespace EventManagement.GUI.Forms
             int col1X = margin;
             int col2X = margin + colWidth + gap;
 
-            int labelWidth = 140;
+            int labelWidth = 165;
             int inputWidth = colWidth - labelWidth;
 
             // Dòng 1: Mã lịch trình | Sự kiện

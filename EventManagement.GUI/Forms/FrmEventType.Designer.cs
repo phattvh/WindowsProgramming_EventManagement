@@ -354,9 +354,9 @@
             // txtTenLoaiSK
             // 
             this.txtTenLoaiSK.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtTenLoaiSK.Location = new System.Drawing.Point(505, 29);
+            this.txtTenLoaiSK.Location = new System.Drawing.Point(525, 29);
             this.txtTenLoaiSK.Name = "txtTenLoaiSK";
-            this.txtTenLoaiSK.Size = new System.Drawing.Size(350, 24);
+            this.txtTenLoaiSK.Size = new System.Drawing.Size(330, 24);
             this.txtTenLoaiSK.TabIndex = 3;
 
             // 
@@ -399,11 +399,11 @@
             // txtMoTa
             // 
             this.txtMoTa.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtMoTa.Location = new System.Drawing.Point(505, 69);
+            this.txtMoTa.Location = new System.Drawing.Point(525, 69);
             this.txtMoTa.Multiline = true;
             this.txtMoTa.Name = "txtMoTa";
             this.txtMoTa.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtMoTa.Size = new System.Drawing.Size(350, 54);
+            this.txtMoTa.Size = new System.Drawing.Size(330, 54);
             this.txtMoTa.TabIndex = 7;
 
             // 

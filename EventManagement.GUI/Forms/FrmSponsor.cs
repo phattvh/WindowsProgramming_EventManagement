@@ -109,7 +109,7 @@ namespace EventManagement.GUI.Forms
             int col2X = margin + colWidth + gap;
             int col3X = margin + (colWidth * 2) + (gap * 2);
 
-            int labelW = 115;
+            int labelW = 140;
             int inputW = colWidth - labelW - 10;
 
             // Cột 1: Thông tin tổ chức

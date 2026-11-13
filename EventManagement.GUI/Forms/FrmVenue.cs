@@ -55,7 +55,7 @@ namespace EventManagement.GUI.Forms
             colSoSuKienToChuc.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Bố trí thanh lọc và bảng không bị đè bởi Header
-            pnlFilter.Top = pnlHeader.Bottom + 10;
+            pnlFilter.Top = pnlHeader.Bottom + 12;
             dgvDiaDiem.Top = pnlFilter.Bottom + 10;
             if (pnlButtons != null)
             {
@@ -84,6 +84,12 @@ namespace EventManagement.GUI.Forms
 
         private void FrmVenue_Load(object sender, EventArgs e)
         {
+            pnlFilter.Top = pnlHeader.Bottom + 12;
+            dgvDiaDiem.Top = pnlFilter.Bottom + 10;
+            if (pnlButtons != null)
+            {
+                dgvDiaDiem.Height = Math.Max(120, pnlButtons.Top - 10 - dgvDiaDiem.Top);
+            }
             LoadData();
             SetFormState(FormMode.View);
         }

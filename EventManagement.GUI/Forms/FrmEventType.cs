@@ -53,7 +53,7 @@ namespace EventManagement.GUI.Forms
             colTrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Bố trí thanh lọc và bảng không bị đè bởi Header
-            pnlFilter.Top = pnlHeader.Bottom + 10;
+            pnlFilter.Top = pnlHeader.Bottom + 12;
             dgvLoaiSuKien.Top = pnlFilter.Bottom + 10;
             if (pnlButtons != null)
             {
@@ -75,6 +75,12 @@ namespace EventManagement.GUI.Forms
 
         private void FrmEventType_Load(object sender, EventArgs e)
         {
+            pnlFilter.Top = pnlHeader.Bottom + 12;
+            dgvLoaiSuKien.Top = pnlFilter.Bottom + 10;
+            if (pnlButtons != null)
+            {
+                dgvLoaiSuKien.Height = Math.Max(120, pnlButtons.Top - 10 - dgvLoaiSuKien.Top);
+            }
             LoadData();
             SetFormState(FormMode.View);
         }

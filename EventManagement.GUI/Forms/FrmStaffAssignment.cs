@@ -87,14 +87,25 @@ namespace EventManagement.GUI.Forms
 
             colMaPhanCong.FillWeight = 50;
             colTenNhanSu.FillWeight = 90;
-            colPhongBan.FillWeight = 60;
-            colChucVuNhanSu.FillWeight = 70;
+            colPhongBan.FillWeight = 75;
+            colChucVuNhanSu.FillWeight = 75;
             colSoDienThoai.FillWeight = 65;
             colNgayTruc.FillWeight = 60;
-            colKhungGio.FillWeight = 70;
+            colKhungGio.FillWeight = 75;
             colTenSuKien.FillWeight = 160;
             colNhiemVu.FillWeight = 150;
             colGhiChu.FillWeight = 130;
+
+            colMaPhanCong.MinimumWidth = 65;
+            colTenNhanSu.MinimumWidth = 120;
+            colPhongBan.MinimumWidth = 135;
+            colChucVuNhanSu.MinimumWidth = 135;
+            colSoDienThoai.MinimumWidth = 105;
+            colNgayTruc.MinimumWidth = 95;
+            colKhungGio.MinimumWidth = 135;
+            colTenSuKien.MinimumWidth = 240;
+            colNhiemVu.MinimumWidth = 190;
+            colGhiChu.MinimumWidth = 180;
 
             dgvPhanCong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvPhanCong.ScrollBars = ScrollBars.Both;
@@ -124,7 +135,7 @@ namespace EventManagement.GUI.Forms
 
             int col1X = margin;
             int col2X = margin + colWidth + gap;
-            int labelW = 120;
+            int labelW = 145;
             int inputW = colWidth - labelW - 10;
 
             // Dòng 1: Mã ca | Sự kiện

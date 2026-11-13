@@ -539,7 +539,7 @@ namespace EventManagement.GUI.Forms
             this.dtpBatDau.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpBatDau.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpBatDau.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpBatDau.Location = new System.Drawing.Point(125, 95);
+            this.dtpBatDau.Location = new System.Drawing.Point(145, 95);
             this.dtpBatDau.Name = "dtpBatDau";
             this.dtpBatDau.Size = new System.Drawing.Size(155, 23);
             this.dtpBatDau.TabIndex = 9;
@@ -550,7 +550,7 @@ namespace EventManagement.GUI.Forms
             this.lblKetThuc.AutoSize = true;
             this.lblKetThuc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblKetThuc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.lblKetThuc.Location = new System.Drawing.Point(305, 98);
+            this.lblKetThuc.Location = new System.Drawing.Point(320, 98);
             this.lblKetThuc.Name = "lblKetThuc";
             this.lblKetThuc.Size = new System.Drawing.Size(91, 15);
             this.lblKetThuc.TabIndex = 10;
@@ -562,7 +562,7 @@ namespace EventManagement.GUI.Forms
             this.dtpKetThuc.CustomFormat = "dd/MM/yyyy HH:mm";
             this.dtpKetThuc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpKetThuc.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpKetThuc.Location = new System.Drawing.Point(420, 95);
+            this.dtpKetThuc.Location = new System.Drawing.Point(445, 95);
             this.dtpKetThuc.Name = "dtpKetThuc";
             this.dtpKetThuc.Size = new System.Drawing.Size(155, 23);
             this.dtpKetThuc.TabIndex = 11;
