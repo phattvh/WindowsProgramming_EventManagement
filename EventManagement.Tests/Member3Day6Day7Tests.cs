@@ -300,13 +300,14 @@ namespace EventManagement.Tests
         [TestMethod]
         public void BR11_CheckIn_ValidTicket_Succeeds()
         {
-            // Reset trạng thái vé VE00001 về hợp lệ
-            _checkInService.ResetCheckInForDemo("VE00001");
+            var ticket = TicketOrderService.GetIssuedTicketsList().FirstOrDefault(t => t.MaSuKien == "EVT202601")
+                         ?? TicketOrderService.GetIssuedTicketsList().First();
+            _checkInService.ResetCheckInForDemo(ticket.MaVe);
 
             var req = new CheckInRequestDto
             {
-                MaSuKien = "EVT202601",
-                MaQRLuocDoc = "VE00001",
+                MaSuKien = ticket.MaSuKien,
+                MaQRLuocDoc = ticket.MaVe,
                 PhuongThuc = "Webcam QR"
             };
 
@@ -320,13 +321,14 @@ namespace EventManagement.Tests
         [TestMethod]
         public void BR12_CheckIn_DuplicateScan_TriggersWarningAndRejects()
         {
-            // Quét lần 1: thành công
-            _checkInService.ResetCheckInForDemo("VE00002");
+            var ticket = TicketOrderService.GetIssuedTicketsList().FirstOrDefault(t => t.MaSuKien == "EVT202601" && t.MaVe != "VE001_1")
+                         ?? TicketOrderService.GetIssuedTicketsList().Last();
+            _checkInService.ResetCheckInForDemo(ticket.MaVe);
 
             var req1 = new CheckInRequestDto
             {
-                MaSuKien = "EVT202601",
-                MaQRLuocDoc = "VE00002",
+                MaSuKien = ticket.MaSuKien,
+                MaQRLuocDoc = ticket.MaVe,
                 PhuongThuc = "Webcam QR"
             };
 

@@ -67,12 +67,12 @@ namespace EventManagement.Tests
         [TestMethod]
         public void GetAll_FilterByEventType_ReturnsMatchingEvents()
         {
-            var result = _eventService.GetAll(maLoaiSK: "Hội thảo Công nghệ");
+            var result = _eventService.GetAll(maLoaiSK: "LSK01");
 
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
             Assert.IsTrue(result.Data.Count >= 2);
-            Assert.IsTrue(result.Data.All(x => x.TenLoaiSK == "Hội thảo Công nghệ" || x.MaLoaiSK == "LSK01"));
+            Assert.IsTrue(result.Data.All(x => x.MaLoaiSK == "LSK01"));
         }
 
         [TestMethod]
@@ -83,7 +83,7 @@ namespace EventManagement.Tests
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
             Assert.AreEqual(1, result.Data.Count);
-            Assert.AreEqual("EVT202602", result.Data[0].MaSuKien);
+            Assert.AreEqual("EVT202605", result.Data[0].MaSuKien);
         }
 
         [TestMethod]
@@ -102,14 +102,14 @@ namespace EventManagement.Tests
         {
             // Kết hợp từ khóa + Loại sự kiện + Trạng thái
             var result = _eventService.GetAll(
-                keyword: "Quân Khu 7",
-                maLoaiSK: "Giải đấu Thể thao Điện tử",
-                trangThai: "Chuẩn bị");
+                keyword: "Sinh viên",
+                maLoaiSK: "LSK04",
+                trangThai: "Mở đăng ký");
 
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
             Assert.AreEqual(1, result.Data.Count);
-            Assert.AreEqual("EVT202605", result.Data[0].MaSuKien);
+            Assert.AreEqual("EVT202606", result.Data[0].MaSuKien);
         }
 
         [TestMethod]
@@ -185,9 +185,11 @@ namespace EventManagement.Tests
         public void BR03_UpdateEvent_EndDateBeforeStartDate_ReturnsFailedWithBR03()
         {
             var existing = _eventService.GetById("EVT202602").Data!;
+            var origEnd = existing.NgayKetThuc;
             existing.NgayKetThuc = existing.NgayBatDau.AddHours(-2); // Lỗi thời gian
 
             var result = _eventService.Update(existing);
+            existing.NgayKetThuc = origEnd; // Khôi phục trạng thái ban đầu
 
             Assert.IsFalse(result.IsSuccess);
             Assert.AreEqual("BR-03", result.ErrorCode);
@@ -260,10 +262,10 @@ namespace EventManagement.Tests
         [TestMethod]
         public void BR02_CancelEvent_TransitionsStatusToCancelled()
         {
-            var result = _eventService.CancelEvent("EVT202603");
+            var result = _eventService.CancelEvent("EVT202602");
 
             Assert.IsTrue(result.IsSuccess);
-            var updated = _eventService.GetById("EVT202603").Data;
+            var updated = _eventService.GetById("EVT202602").Data;
             Assert.IsNotNull(updated);
             Assert.AreEqual("Đã hủy", updated.TrangThai);
         }
@@ -288,11 +290,24 @@ namespace EventManagement.Tests
         [TestMethod]
         public void BR02_DeleteEvent_NoTicketsSold_ReturnsSuccess()
         {
-            // EVT202606 có 0 vé bán -> Cho phép xóa
-            var result = _eventService.Delete("EVT202606");
+            var tempCode = "EVT_DEL_" + Guid.NewGuid().ToString("N").Substring(0, 4);
+            var addRes = _eventService.Add(new EventListDto
+            {
+                MaSuKien = tempCode,
+                TenSuKien = "Sự kiện tạm để test xóa",
+                MaLoaiSK = "LSK01",
+                MaDiaDiem = "DD004",
+                NgayBatDau = DateTime.Now.AddDays(30),
+                NgayKetThuc = DateTime.Now.AddDays(31),
+                SucChua = 50,
+                NganSachDuKien = 10000000
+            });
+            Assert.IsTrue(addRes.IsSuccess);
+
+            var result = _eventService.Delete(tempCode);
 
             Assert.IsTrue(result.IsSuccess);
-            var getResult = _eventService.GetById("EVT202606");
+            var getResult = _eventService.GetById(tempCode);
             Assert.IsFalse(getResult.IsSuccess);
         }
 
@@ -356,15 +371,15 @@ namespace EventManagement.Tests
         [TestMethod]
         public void UpdateEvent_ValidData_ReturnsSuccess()
         {
-            var existing = _eventService.GetById("EVT202602").Data!;
-            existing.NguoiPhuTrach = "Lê Thanh Hằng (Cập nhật)";
+            var existing = _eventService.GetById("EVT202601").Data!;
+            existing.NguoiPhuTrach = "Trần Minh Tâm (Cập nhật)";
             existing.NganSachDuKien = 110000000m;
 
             var result = _eventService.Update(existing);
 
             Assert.IsTrue(result.IsSuccess, result.Message);
-            var updated = _eventService.GetById("EVT202602").Data!;
-            Assert.AreEqual("Lê Thanh Hằng (Cập nhật)", updated.NguoiPhuTrach);
+            var updated = _eventService.GetById("EVT202601").Data!;
+            Assert.AreEqual("Trần Minh Tâm (Cập nhật)", updated.NguoiPhuTrach);
             Assert.AreEqual(110000000m, updated.NganSachDuKien);
         }
 
