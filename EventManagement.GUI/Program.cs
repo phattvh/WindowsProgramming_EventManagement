@@ -217,15 +217,20 @@ namespace EventManagement.GUI
             }
 
             ApplicationConfiguration.Initialize();
-            try
+
+            // Khởi tạo và nạp dữ liệu nền trong Task.Run bất đồng bộ để FrmLogin hiển thị tức thì (< 0.5s)
+            _ = Task.Run(() =>
             {
-                using var seedContext = new EventManagement.DAL.AppDbContext();
-                EventManagement.DAL.DatabaseInitializer.EnsureDataSeeded(seedContext);
-            }
-            catch
-            {
-                // Bỏ qua nếu chưa kết nối được CSDL ở giai đoạn khởi động
-            }
+                try
+                {
+                    using var seedContext = new EventManagement.DAL.AppDbContext();
+                    EventManagement.DAL.DatabaseInitializer.EnsureDataSeeded(seedContext);
+                }
+                catch
+                {
+                    // Bỏ qua nếu chưa kết nối được CSDL ở giai đoạn khởi động
+                }
+            });
 
             // Vòng đời đăng nhập và quản lý phiên làm việc (Session Lifecycle):
             // 1. Mở FrmLogin để người dùng đăng nhập tài khoản (admin, manager1, staff1,...)

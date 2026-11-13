@@ -11,7 +11,7 @@ namespace EventManagement.DAL
     public static class DatabaseConfigHelper
     {
         public const string DefaultConnectionName = "DefaultConnection";
-        public const string FallbackConnectionString = "Server=.;Database=EventManagementDb;Trusted_Connection=True;TrustServerCertificate=True;";
+        public const string FallbackConnectionString = "Server=.;Database=EventManagementDb;Trusted_Connection=True;TrustServerCertificate=True;Connect Timeout=2;";
 
         /// <summary>
         /// Danh sách máy chủ SQL Server ứng viên cục bộ phổ biến cho môi trường chạy máy chấm thi / bảo vệ đồ án.
