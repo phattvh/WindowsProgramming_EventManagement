@@ -25,20 +25,41 @@ namespace EventManagement.BLL.Services
                 try
                 {
                     using var db = new EventManagement.DAL.AppDbContext();
-                    var list = db.NhaTaiTros.Select(n => new SponsorDto
+                    var allSponsors = db.NhaTaiTros.ToList();
+                    var allDetails = db.ChiTietTaiTros.ToList();
+
+                    var list = allSponsors.Select(n =>
                     {
-                        MaNhaTaiTro = n.MaNhaTaiTro,
-                        TenToChuc = n.TenToChuc,
-                        NguoiDaiDien = n.NguoiDaiDien,
-                        Email = n.Email,
-                        SoDienThoai = n.SoDienThoai,
-                        DiaChi = n.DiaChi ?? "Việt Nam",
-                        GhiChu = n.GhiChu,
-                        GoiTaiTro = "Tiêu chuẩn",
-                        TongGiaTriTaiTro = db.ChiTietTaiTros.Where(ct => ct.MaNhaTaiTro == n.MaNhaTaiTro).Sum(ct => (decimal?)ct.GiaTri) ?? 0m,
-                        HinhThucTaiTro = "Tiền mặt",
-                        TrangThai = "Đang hợp tác",
-                        SoSuKienTaiTro = db.ChiTietTaiTros.Count(ct => ct.MaNhaTaiTro == n.MaNhaTaiTro)
+                        var sponsorDetails = allDetails.Where(ct => ct.MaNhaTaiTro == n.MaNhaTaiTro).ToList();
+                        // Xác định gói tài trợ cao nhất (Kim Cương > Vàng > Bạc > Đồng) hoặc dòng mới nhất
+                        string goiTaiTro = "Đồng";
+                        if (sponsorDetails.Any(ct => ct.HangTaiTro.Contains("Kim Cương", StringComparison.OrdinalIgnoreCase)))
+                            goiTaiTro = "Kim Cương";
+                        else if (sponsorDetails.Any(ct => ct.HangTaiTro.Contains("Vàng", StringComparison.OrdinalIgnoreCase)))
+                            goiTaiTro = "Vàng";
+                        else if (sponsorDetails.Any(ct => ct.HangTaiTro.Contains("Bạc", StringComparison.OrdinalIgnoreCase)))
+                            goiTaiTro = "Bạc";
+                        else if (sponsorDetails.Any(ct => !string.IsNullOrWhiteSpace(ct.HangTaiTro)))
+                            goiTaiTro = sponsorDetails.First(ct => !string.IsNullOrWhiteSpace(ct.HangTaiTro)).HangTaiTro;
+
+                        var firstDetail = sponsorDetails.FirstOrDefault();
+
+                        return new SponsorDto
+                        {
+                            MaNhaTaiTro = n.MaNhaTaiTro,
+                            TenToChuc = n.TenToChuc,
+                            NguoiDaiDien = n.NguoiDaiDien,
+                            Email = n.Email,
+                            SoDienThoai = n.SoDienThoai,
+                            DiaChi = n.DiaChi ?? "Việt Nam",
+                            GhiChu = n.GhiChu,
+                            GoiTaiTro = goiTaiTro,
+                            TongGiaTriTaiTro = sponsorDetails.Sum(ct => (decimal?)ct.GiaTri) ?? 0m,
+                            HinhThucTaiTro = firstDetail?.HinhThucTaiTro ?? "Tiền mặt",
+                            TrangThai = "Đang hợp tác",
+                            SoSuKienTaiTro = sponsorDetails.Count,
+                            MaSuKien = firstDetail?.MaSuKien
+                        };
                     }).ToList();
 
                     if (list.Any())
