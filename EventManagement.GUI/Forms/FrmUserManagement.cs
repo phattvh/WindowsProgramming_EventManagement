@@ -56,6 +56,11 @@ namespace EventManagement.GUI.Forms
             colSoLanSai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colKhoaDenKhi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            txtHoTen.MaxLength = 100;
+            txtTenDangNhap.MaxLength = 50;
+            txtEmail.MaxLength = 100;
+            txtSoDienThoai.MaxLength = 15;
+
             foreach (Control input in new Control[] { txtTenDangNhap, txtHoTen, txtEmail, txtMatKhau, txtSoDienThoai, cboNhomQuyen, cboTrangThai })
             {
                 errorProvider.SetIconPadding(input, 4);
@@ -446,59 +451,68 @@ namespace EventManagement.GUI.Forms
             string role = cboNhomQuyen.SelectedItem?.ToString() ?? "STAFF";
             string status = cboTrangThai.SelectedItem?.ToString() ?? "Hoạt động";
 
-            if (_currentMode == FormMode.Add)
+            try
             {
-                var createDto = new CreateUserDto
+                if (_currentMode == FormMode.Add)
                 {
-                    TenDangNhap = username,
-                    MatKhau = password,
-                    HoTen = fullName,
-                    Email = email,
-                    SoDienThoai = phone,
-                    MaNhomQuyen = role,
-                    TrangThai = status
-                };
+                    var createDto = new CreateUserDto
+                    {
+                        TenDangNhap = username,
+                        MatKhau = password,
+                        HoTen = fullName,
+                        Email = email,
+                        SoDienThoai = phone,
+                        MaNhomQuyen = role,
+                        TrangThai = status
+                    };
 
-                var result = await _userService.CreateAsync(createDto);
-                if (result.IsSuccess)
-                {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await LoadDataAsync();
-                    SetFormState(FormMode.View);
+                    var result = await _userService.CreateAsync(createDto);
+                    if (result.IsSuccess)
+                    {
+                        MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await LoadDataAsync();
+                        SetFormState(FormMode.View);
+                    }
+                    else
+                    {
+                        lblThongTinKhoa.Text = $"⚠️ {result.Message}";
+                        lblThongTinKhoa.ForeColor = Color.Red;
+                        MessageBox.Show(result.Message, "Không thể thêm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        errorProvider.SetError(txtTenDangNhap, result.Message);
+                    }
                 }
-                else
+                else if (_currentMode == FormMode.Edit && _selectedUser != null)
                 {
-                    lblThongTinKhoa.Text = $"⚠️ {result.Message}";
-                    lblThongTinKhoa.ForeColor = Color.Red;
-                    MessageBox.Show(result.Message, "Không thể thêm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    errorProvider.SetError(txtTenDangNhap, result.Message);
+                    var updateDto = new UpdateUserDto
+                    {
+                        HoTen = fullName,
+                        Email = email,
+                        SoDienThoai = phone,
+                        MaNhomQuyen = role,
+                        TrangThai = status,
+                        MatKhauMoi = string.IsNullOrWhiteSpace(password) ? null : password
+                    };
+
+                    var result = await _userService.UpdateAsync(_selectedUser.MaNguoiDung, updateDto);
+                    if (result.IsSuccess)
+                    {
+                        MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await LoadDataAsync();
+                        SetFormState(FormMode.View);
+                    }
+                    else
+                    {
+                        lblThongTinKhoa.Text = $"⚠️ {result.Message}";
+                        lblThongTinKhoa.ForeColor = Color.Red;
+                        MessageBox.Show(result.Message, "Không thể cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
-            else if (_currentMode == FormMode.Edit && _selectedUser != null)
+            catch (Exception ex)
             {
-                var updateDto = new UpdateUserDto
-                {
-                    HoTen = fullName,
-                    Email = email,
-                    SoDienThoai = phone,
-                    MaNhomQuyen = role,
-                    TrangThai = status,
-                    MatKhauMoi = string.IsNullOrWhiteSpace(password) ? null : password
-                };
-
-                var result = await _userService.UpdateAsync(_selectedUser.MaNguoiDung, updateDto);
-                if (result.IsSuccess)
-                {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await LoadDataAsync();
-                    SetFormState(FormMode.View);
-                }
-                else
-                {
-                    lblThongTinKhoa.Text = $"⚠️ {result.Message}";
-                    lblThongTinKhoa.ForeColor = Color.Red;
-                    MessageBox.Show(result.Message, "Không thể cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                lblThongTinKhoa.Text = $"⚠️ Lỗi hệ thống: {ex.Message}";
+                lblThongTinKhoa.ForeColor = Color.Red;
+                MessageBox.Show($"Không thể lưu thông tin người dùng:\n{ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -625,6 +639,10 @@ namespace EventManagement.GUI.Forms
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 errors.Add((nameof(txtHoTen), "Họ và tên không được để trống!"));
+            }
+            else if (fullName.Trim().Length > 100)
+            {
+                errors.Add((nameof(txtHoTen), "Họ và tên không được vượt quá 100 ký tự!"));
             }
 
             if (string.IsNullOrWhiteSpace(email))

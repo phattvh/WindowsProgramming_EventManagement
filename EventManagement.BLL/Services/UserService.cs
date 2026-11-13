@@ -124,6 +124,11 @@ namespace EventManagement.BLL.Services
                 return ServiceResult<UserDto>.Failed("Họ và tên không được để trống!");
             }
 
+            if (dto.HoTen.Trim().Length > 100)
+            {
+                return ServiceResult<UserDto>.Failed("Họ và tên không được vượt quá 100 ký tự!");
+            }
+
             if (string.IsNullOrWhiteSpace(dto.Email))
             {
                 return ServiceResult<UserDto>.Failed("Email không được để trống!");
@@ -205,6 +210,11 @@ namespace EventManagement.BLL.Services
             if (string.IsNullOrWhiteSpace(dto.HoTen))
             {
                 return ServiceResult.Failed("Họ và tên không được để trống!");
+            }
+
+            if (dto.HoTen.Trim().Length > 100)
+            {
+                return ServiceResult.Failed("Họ và tên không được vượt quá 100 ký tự!");
             }
 
             if (string.IsNullOrWhiteSpace(dto.Email))
