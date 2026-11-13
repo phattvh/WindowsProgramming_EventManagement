@@ -23,7 +23,7 @@ namespace EventManagement.GUI.Common
         /// <summary>
         /// Xây dựng chuỗi dữ liệu cột so sánh Doanh thu vs Chi phí theo sự kiện.
         /// </summary>
-        public static (ISeries[] Series, string[] XLabels) BuildRevenueExpenseSeries(IEnumerable<EventRevenueChartDto>? data)
+        public static (ISeries[] Series, string[] XLabels) BuildRevenueExpenseSeries(IEnumerable<EventRevenueChartDto>? data, int maxLabelLength = 12)
         {
             var list = data?.ToList() ?? new List<EventRevenueChartDto>();
 
@@ -36,7 +36,7 @@ namespace EventManagement.GUI.Common
             var xLabels = list.Select(e =>
             {
                 var name = string.IsNullOrWhiteSpace(e.TenSuKien) ? "Sự kiện" : e.TenSuKien;
-                return name.Length > 12 ? name.Substring(0, 12) + "..." : name;
+                return name.Length > maxLabelLength ? name.Substring(0, maxLabelLength) + "..." : name;
             }).ToArray();
 
             var revValues = list.Select(e => (double)e.DoanhThu).ToArray();
@@ -99,17 +99,19 @@ namespace EventManagement.GUI.Common
         /// <summary>
         /// Xây dựng trục X cho biểu đồ cột với nhãn chỉ định.
         /// </summary>
-        public static Axis[] BuildXAxes(string[] labels)
+        public static Axis[] BuildXAxes(string[] labels, double? textSize = null)
         {
-            return new Axis[]
+            var axis = new Axis
             {
-                new Axis
-                {
-                    Labels = labels,
-                    LabelsPaint = new SolidColorPaint(TextColor),
-                    LabelsRotation = 15
-                }
+                Labels = labels,
+                LabelsPaint = new SolidColorPaint(TextColor),
+                LabelsRotation = 0
             };
+            if (textSize.HasValue)
+            {
+                axis.TextSize = textSize.Value;
+            }
+            return new Axis[] { axis };
         }
 
         /// <summary>

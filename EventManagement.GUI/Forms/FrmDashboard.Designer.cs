@@ -523,7 +523,7 @@
             this.pnlChartsContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlChartsContainer.Location = new System.Drawing.Point(0, 228);
             this.pnlChartsContainer.Name = "pnlChartsContainer";
-            this.pnlChartsContainer.Size = new System.Drawing.Size(1134, 230);
+            this.pnlChartsContainer.Size = new System.Drawing.Size(1134, 260);
             this.pnlChartsContainer.TabIndex = 3;
             // 
             // tblCharts

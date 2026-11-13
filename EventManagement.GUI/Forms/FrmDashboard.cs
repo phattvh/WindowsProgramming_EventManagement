@@ -310,9 +310,9 @@ namespace EventManagement.GUI.Forms
                         new EventRevenueChartDto { MaSuKien = "EVT202601", TenSuKien = "Vietnam Tech Summit 2026", DoanhThu = 2000000m, ChiPhi = 75000000m },
                         new EventRevenueChartDto { MaSuKien = "EVT202602", TenSuKien = "Workshop GenAI 2026", DoanhThu = 1500000m, ChiPhi = 44000000m }
                     };
-                var (series, xLabels) = Common.DashboardChartBuilder.BuildRevenueExpenseSeries(chartData);
+                var (series, xLabels) = Common.DashboardChartBuilder.BuildRevenueExpenseSeries(chartData, maxLabelLength: 100);
                 chartRevenue.Series = series;
-                chartRevenue.XAxes = Common.DashboardChartBuilder.BuildXAxes(xLabels);
+                chartRevenue.XAxes = Common.DashboardChartBuilder.BuildXAxes(xLabels, textSize: 11);
                 chartRevenue.YAxes = Common.DashboardChartBuilder.BuildCurrencyYAxes();
 
                 // 2. Dữ liệu biểu đồ tròn Tỷ lệ Check-in
