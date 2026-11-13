@@ -70,3 +70,7 @@ nunit-*.xml
 # Unused scratch signature images
 **/Chữ ký*.*
 **/Images/Speakers/Chữ ký*.*
+
+.release/
+*.exe
+
