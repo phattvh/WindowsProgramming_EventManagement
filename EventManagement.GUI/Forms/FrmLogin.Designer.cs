@@ -88,10 +88,11 @@ namespace EventManagement.GUI.Forms
 
             // lblLockoutNotice
             this.lblLockoutNotice.ForeColor = System.Drawing.Color.Red;
-            this.lblLockoutNotice.Location = new System.Drawing.Point(30, 232);
+            this.lblLockoutNotice.Location = new System.Drawing.Point(20, 230);
             this.lblLockoutNotice.Name = "lblLockoutNotice";
-            this.lblLockoutNotice.Size = new System.Drawing.Size(360, 36);
+            this.lblLockoutNotice.Size = new System.Drawing.Size(380, 52);
             this.lblLockoutNotice.TabIndex = 6;
+            this.lblLockoutNotice.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblLockoutNotice.Visible = false;
 
             // btnLogin
@@ -101,7 +102,7 @@ namespace EventManagement.GUI.Forms
             this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnLogin.ForeColor = System.Drawing.Color.White;
-            this.btnLogin.Location = new System.Drawing.Point(30, 275);
+            this.btnLogin.Location = new System.Drawing.Point(30, 290);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(170, 42);
             this.btnLogin.TabIndex = 7;
@@ -117,7 +118,7 @@ namespace EventManagement.GUI.Forms
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnExit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.btnExit.Location = new System.Drawing.Point(220, 275);
+            this.btnExit.Location = new System.Drawing.Point(220, 290);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(170, 42);
             this.btnExit.TabIndex = 8;
@@ -136,9 +137,9 @@ namespace EventManagement.GUI.Forms
             // FrmLogin
             this.AcceptButton = this.btnLogin;
             this.CancelButton = this.btnExit;
-            this.ClientSize = new System.Drawing.Size(420, 345);
-            this.MinimumSize = new System.Drawing.Size(436, 384);
-            this.MaximumSize = new System.Drawing.Size(436, 384);
+            this.ClientSize = new System.Drawing.Size(420, 355);
+            this.MinimumSize = new System.Drawing.Size(436, 395);
+            this.MaximumSize = new System.Drawing.Size(436, 395);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.lblLockoutNotice);
