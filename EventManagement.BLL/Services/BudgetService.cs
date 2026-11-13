@@ -17,6 +17,27 @@ namespace EventManagement.BLL.Services
         private static readonly List<(string MaSuKien, string TenSuKien, decimal NganSachDuKien)> _events = new();
         private static readonly List<ExpenseDto> _expenses = new();
 
+        private static readonly Dictionary<string, decimal> _defaultEventBudgets = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["EVT202601"] = 210000000m,
+            ["EVT202602"] = 80000000m,
+            ["EVT202603"] = 150000000m,
+            ["EVT202604"] = 120000000m,
+            ["EVT202605"] = 120000000m,
+            ["EVT202606"] = 160000000m,
+            ["EVT202607"] = 95000000m,
+            ["EVT202608"] = 100000000m,
+            ["EVT202609"] = 150000000m,
+            ["EVT202610"] = 100000000m
+        };
+
+        private static decimal ResolveDefaultBudget(string maSuKien, decimal existingBudget)
+        {
+            if (existingBudget > 0) return existingBudget;
+            if (_defaultEventBudgets.TryGetValue(maSuKien, out decimal defaultVal)) return defaultVal;
+            return 100000000m; // Ngân sách cơ bản 100 triệu mặc định cho mỗi sự kiện
+        }
+
         private void EnsureLoadedFromDb()
         {
             if (_expenses.Count == 0 && _events.Count == 0)
@@ -28,7 +49,10 @@ namespace EventManagement.BLL.Services
                     foreach (var e in evts)
                     {
                         if (!_events.Any(x => x.MaSuKien == e.MaSuKien))
-                            _events.Add((e.MaSuKien, e.TenSuKien, e.NganSachDuKien));
+                        {
+                            decimal budget = ResolveDefaultBudget(e.MaSuKien, e.NganSachDuKien);
+                            _events.Add((e.MaSuKien, e.TenSuKien, budget));
+                        }
                     }
 
                     var exps = db.ChiPhiSuKiens.Select(c => new ExpenseDto
@@ -183,7 +207,7 @@ namespace EventManagement.BLL.Services
                 return ServiceResult<BudgetAlertDto>.Failed("Vui lòng chọn sự kiện.");
 
             var evt = _events.FirstOrDefault(e => string.Equals(e.MaSuKien, maSuKien.Trim(), StringComparison.OrdinalIgnoreCase));
-            decimal budget = evt != default ? evt.NganSachDuKien : 0m;
+            decimal budget = evt != default && evt.NganSachDuKien > 0 ? evt.NganSachDuKien : ResolveDefaultBudget(maSuKien, 0m);
 
             decimal totalSpent = _expenses
                 .Where(e => string.Equals(e.MaSuKien, maSuKien.Trim(), StringComparison.OrdinalIgnoreCase))
