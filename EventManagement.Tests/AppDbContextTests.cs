@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using EventManagement.Core.Entities;
 using EventManagement.DAL;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace EventManagement.Tests
@@ -113,6 +116,49 @@ namespace EventManagement.Tests
 
             // Verify EF Core Model contains 20 entities
             context.Model.GetEntityTypes().Should().HaveCount(20);
+        }
+
+        [TestMethod]
+        public void AppDbContext_SqlServerModel_HasNoShadowForeignKeyColumns_AndMatchesSqlSchema()
+        {
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlServer("Server=.;Database=EventManagementDB;Trusted_Connection=True;TrustServerCertificate=True;")
+                .Options;
+
+            using var context = new AppDbContext(options);
+
+            // 1. Không được có bất kỳ shadow property nào (ví dụ DiaDiemMaDiaDiem, LoaiSuKienMaLoaiSK, SuKienMaSuKien...)
+            var shadowProps = context.Model.GetEntityTypes()
+                .SelectMany(et => et.GetProperties().Where(p => p.IsShadowProperty())
+                    .Select(p => $"{et.GetTableName()}.{p.GetColumnName()}"))
+                .ToList();
+            shadowProps.Should().BeEmpty("mọi khóa ngoại phải map trực tiếp vào cột khóa ngoại thật trong CSDL");
+
+            // 2. Kiểm tra danh sách cột các bảng DashboardService truy vấn khớp 01_Database_Schema.sql
+            var expectedColumns = new Dictionary<string, string[]>
+            {
+                ["SuKien"] = new[] { "MaSuKien", "TenSuKien", "MaLoaiSK", "MaDiaDiem", "NgayBatDau", "NgayKetThuc", "TrangThai", "MoTa" },
+                ["HangVe"] = new[] { "MaHangVe", "MaSuKien", "TenHangVe", "GiaVe", "SoLuongPhatHanh", "SoLuongDaBan", "ThoiGianMoBan", "ThoiGianDongBan" },
+                ["DangKy"] = new[] { "MaDangKy", "MaSuKien", "MaNguoiThamGia", "MaHangVe", "NgayDangKy", "SoLuong", "TongTien", "TrangThaiThanhToan", "PhuongThucThanhToan" },
+                ["ChiTietVe"] = new[] { "MaVe", "MaDangKy", "MaQR", "TenNguoiThamGia", "Email", "TrangThaiVe" },
+                ["CheckIn"] = new[] { "MaCheckIn", "MaVe", "ThoiGianCheckIn", "NguoiThucHien", "HinhThucCheckIn", "GhiChu" },
+                ["ChiPhiSuKien"] = new[] { "MaChiPhi", "MaSuKien", "KhoanMucChi", "SoTien", "NgayChi", "NguoiDuyet", "GhiChu" },
+                ["DiaDiem"] = new[] { "MaDiaDiem", "TenDiaDiem", "DiaChi", "SucChuaToiDa", "GhiChu" },
+                ["NguoiThamGia"] = new[] { "MaNguoiThamGia", "HoTen", "GioiTinh", "Email", "SoDienThoai", "DonViCongTac" },
+                ["NhaTaiTro"] = new[] { "MaNhaTaiTro", "TenToChuc", "NguoiDaiDien", "Email", "SoDienThoai", "DiaChi" }
+            };
+
+            foreach (var kv in expectedColumns)
+            {
+                var entityType = context.Model.GetEntityTypes()
+                    .First(et => et.GetTableName() == kv.Key);
+                var tableId = StoreObjectIdentifier.Table(kv.Key, entityType.GetSchema());
+                var actualCols = entityType.GetProperties()
+                    .Select(p => p.GetColumnName(tableId))
+                    .ToList();
+
+                actualCols.Should().BeEquivalentTo(kv.Value, $"bảng {kv.Key} phải khớp đúng cột SQL Server");
+            }
         }
     }
 }

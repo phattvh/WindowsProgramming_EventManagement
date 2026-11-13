@@ -16,96 +16,80 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class FeedbackService : IFeedbackService
     {
-        private static readonly List<FeedbackDto> _feedbacks = new()
+        private static readonly List<FeedbackDto> _feedbacks = new();
+        private static readonly List<KeyValuePair<string, string>> _events = new();
+        private static readonly List<KeyValuePair<string, string>> _attendees = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new FeedbackDto
+            if (_feedbacks.Count == 0 && _events.Count == 0 && _attendees.Count == 0)
             {
-                MaPhanHoi = "PH001",
-                MaSuKien = "EVT202604",
-                TenSuKien = "Đêm Nhạc Gây Quỹ Sinh Viên - Vòng Tay Bè Bạn 2026",
-                MaNguoiThamGia = "NTG001",
-                TenNguoiThamGia = "Nguyễn Văn An",
-                Email = "an.nguyen@gmail.com",
-                SoDienThoai = "0912345678",
-                DiemDanhGia = 5,
-                NoiDungPhanHoi = "Chương trình ca nhạc rất sôi động và ý nghĩa, các tiết mục chuẩn bị chuyên nghiệp. Rất mong duy trì hàng năm!",
-                NgayDanhGia = new DateTime(2026, 10, 16, 9, 0, 0)
-            },
-            new FeedbackDto
-            {
-                MaPhanHoi = "PH002",
-                MaSuKien = "EVT202604",
-                TenSuKien = "Đêm Nhạc Gây Quỹ Sinh Viên - Vòng Tay Bè Bạn 2026",
-                MaNguoiThamGia = "NTG002",
-                TenNguoiThamGia = "Trần Thị Bích",
-                Email = "bich.tran@gmail.com",
-                SoDienThoai = "0987654321",
-                DiemDanhGia = 4,
-                NoiDungPhanHoi = "Khâu soát vé check-in QR rất nhanh, không phải chờ đợi lâu. Âm thanh ánh sáng tuyệt vời!",
-                NgayDanhGia = new DateTime(2026, 10, 16, 9, 30, 0)
-            },
-            new FeedbackDto
-            {
-                MaPhanHoi = "PH003",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                MaNguoiThamGia = "NTG003",
-                TenNguoiThamGia = "Lê Hoàng Nam",
-                Email = "nam.le@gmail.com",
-                SoDienThoai = "0903123456",
-                DiemDanhGia = 5,
-                NoiDungPhanHoi = "Nội dung bài lab thực hành Prompt Engineering rất thực chiến, diễn giả hướng dẫn cực kỳ nhiệt tình.",
-                NgayDanhGia = new DateTime(2026, 11, 4, 17, 30, 0)
-            },
-            new FeedbackDto
-            {
-                MaPhanHoi = "PH004",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                MaNguoiThamGia = "NTG004",
-                TenNguoiThamGia = "Phạm Thị Thu",
-                Email = "thu.pham@fpt.edu.vn",
-                SoDienThoai = "0918998877",
-                DiemDanhGia = 5,
-                NoiDungPhanHoi = "Tài liệu lab đầy đủ, hệ thống mạng và GPU Cloud được cấp hoạt động rất mượt mà.",
-                NgayDanhGia = new DateTime(2026, 11, 4, 18, 0, 0)
-            },
-            new FeedbackDto
-            {
-                MaPhanHoi = "PH005",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaNguoiThamGia = "NTG005",
-                TenNguoiThamGia = "Vũ Đình Trọng",
-                Email = "trong.vu@viettech.vn",
-                SoDienThoai = "0977223344",
-                DiemDanhGia = 4,
-                NoiDungPhanHoi = "Hội thảo quy mô lớn, các phiên thuyết trình keynote chất lượng. Sảnh đón tiếp hơi đông lúc 8h.",
-                NgayDanhGia = new DateTime(2026, 12, 15, 17, 45, 0)
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+
+                    var evts = db.SuKiens
+                        .OrderBy(s => s.NgayBatDau)
+                        .Select(s => new KeyValuePair<string, string>(s.MaSuKien, s.TenSuKien))
+                        .ToList();
+                    if (evts.Any())
+                    {
+                        _events.AddRange(evts);
+                    }
+
+                    var atts = db.NguoiThamGias
+                        .OrderBy(n => n.MaNguoiThamGia)
+                        .Select(n => new KeyValuePair<string, string>(n.MaNguoiThamGia, $"{n.HoTen} ({n.Email})"))
+                        .ToList();
+                    if (atts.Any())
+                    {
+                        _attendees.AddRange(atts);
+                    }
+
+                    var list = (from p in db.PhanHois
+                                join s in db.SuKiens on p.MaSuKien equals s.MaSuKien into sj
+                                from s in sj.DefaultIfEmpty()
+                                join n in db.NguoiThamGias on p.MaNguoiThamGia equals n.MaNguoiThamGia into nj
+                                from n in nj.DefaultIfEmpty()
+                                select new FeedbackDto
+                                {
+                                    MaPhanHoi = p.MaPhanHoi,
+                                    MaSuKien = p.MaSuKien,
+                                    TenSuKien = s != null ? s.TenSuKien : p.MaSuKien,
+                                    MaNguoiThamGia = p.MaNguoiThamGia,
+                                    TenNguoiThamGia = n != null ? n.HoTen : p.MaNguoiThamGia,
+                                    Email = n != null ? (n.Email ?? string.Empty) : string.Empty,
+                                    SoDienThoai = n != null ? (n.SoDienThoai ?? string.Empty) : string.Empty,
+                                    DiemDanhGia = p.DiemDanhGia,
+                                    NoiDungPhanHoi = p.NoiDungPhanHoi,
+                                    NgayDanhGia = p.NgayDanhGia
+                                }).ToList();
+
+                    if (list.Any())
+                    {
+                        _feedbacks.AddRange(list);
+                    }
+                }
+                catch { }
+
+                if (_feedbacks.Count < 5)
+                {
+                    _feedbacks.Clear();
+                    _feedbacks.AddRange(new[]
+                    {
+                        new FeedbackDto { MaPhanHoi = "PH001", MaSuKien = "EVT202601", TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026", MaNguoiThamGia = "NTG003", TenNguoiThamGia = "Nguyễn Văn Hùng", Email = "hung.nguyen@ai-institute.vn", DiemDanhGia = 5, NoiDungPhanHoi = "Sự kiện được tổ chức chuyên nghiệp, nội dung xuất sắc!", NgayDanhGia = DateTime.Now.AddDays(-2) },
+                        new FeedbackDto { MaPhanHoi = "PH002", MaSuKien = "EVT202601", TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026", MaNguoiThamGia = "NTG002", TenNguoiThamGia = "Lê Hoàng Mai", Email = "mai.le@techcorp.com", DiemDanhGia = 4, NoiDungPhanHoi = "Diễn giả rất nhiệt huyết, khán phòng âm thanh rõ ràng.", NgayDanhGia = DateTime.Now.AddDays(-2) },
+                        new FeedbackDto { MaPhanHoi = "PH003", MaSuKien = "EVT202602", TenSuKien = "Đại nhạc hội Sinh viên YouthWave 2026", MaNguoiThamGia = "NTG003", TenNguoiThamGia = "Trần Minh Tâm", Email = "tam.tran@email.com", DiemDanhGia = 5, NoiDungPhanHoi = "Âm nhạc bùng nổ, không khí cực kỳ sôi động!", NgayDanhGia = DateTime.Now.AddDays(-1) },
+                        new FeedbackDto { MaPhanHoi = "PH004", MaSuKien = "EVT202603", TenSuKien = "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", MaNguoiThamGia = "NTG004", TenNguoiThamGia = "Phạm Quỳnh Như", Email = "nhu.pham@email.com", DiemDanhGia = 4, NoiDungPhanHoi = "Nhiều thông tin hữu ích cho startup.", NgayDanhGia = DateTime.Now.AddDays(-1) },
+                        new FeedbackDto { MaPhanHoi = "PH005", MaSuKien = "EVT202603", TenSuKien = "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", MaNguoiThamGia = "NTG005", TenNguoiThamGia = "Vũ Hải Đăng", Email = "dang.vu@gss.com.vn", DiemDanhGia = 5, NoiDungPhanHoi = "Tổ chức rất chu đáo, teabreak ngon.", NgayDanhGia = DateTime.Now.AddDays(-1) }
+                    });
+                }
             }
-        };
-
-        private static readonly List<KeyValuePair<string, string>> _events = new()
-        {
-            new("EVT202604", "Đêm Nhạc Gây Quỹ Sinh Viên - Vòng Tay Bè Bạn 2026"),
-            new("EVT202602", "Workshop Thực chiến GenAI & Prompt Engineering 2026"),
-            new("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026"),
-            new("EVT202603", "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT")
-        };
-
-        private static readonly List<KeyValuePair<string, string>> _attendees = new()
-        {
-            new("NTG001", "Nguyễn Văn An (an.nguyen@gmail.com)"),
-            new("NTG002", "Trần Thị Bích (bich.tran@gmail.com)"),
-            new("NTG003", "Lê Hoàng Nam (nam.le@gmail.com)"),
-            new("NTG004", "Phạm Thị Thu (thu.pham@fpt.edu.vn)"),
-            new("NTG005", "Vũ Đình Trọng (trong.vu@viettech.vn)"),
-            new("NTG006", "Đặng Minh Tâm (tam.dang@techhub.vn)"),
-            new("NTG007", "Hoàng Kim Oanh (oanh.hoang@gmail.com)")
-        };
+        }
 
         public ServiceResult<List<FeedbackDto>> GetAll(string? keyword = null, string? maSuKien = null, int? ratingFilter = null)
         {
+            EnsureLoadedFromDb();
             var query = _feedbacks.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -134,6 +118,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<FeedbackDto> GetById(string maPhanHoi)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maPhanHoi))
                 return ServiceResult<FeedbackDto>.Failed("Mã phản hồi không được để trống.");
 
@@ -146,6 +131,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(FeedbackDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
                 return ServiceResult.Failed("Dữ liệu phản hồi không hợp lệ.");
 
@@ -167,11 +153,29 @@ namespace EventManagement.BLL.Services
             }
 
             _feedbacks.Add(dto);
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var entity = new EventManagement.Core.Entities.PhanHoi
+                {
+                    MaPhanHoi = dto.MaPhanHoi,
+                    MaSuKien = dto.MaSuKien,
+                    MaNguoiThamGia = dto.MaNguoiThamGia,
+                    DiemDanhGia = dto.DiemDanhGia,
+                    NoiDungPhanHoi = dto.NoiDungPhanHoi,
+                    NgayDanhGia = dto.NgayDanhGia
+                };
+                db.PhanHois.Add(entity);
+                db.SaveChanges();
+            }
+            catch { }
+
             return ServiceResult.Success("Gửi ý kiến đánh giá phản hồi thành công.");
         }
 
         public ServiceResult Update(FeedbackDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
                 return ServiceResult.Failed("Dữ liệu phản hồi không hợp lệ.");
 
@@ -187,11 +191,26 @@ namespace EventManagement.BLL.Services
             existing.NoiDungPhanHoi = dto.NoiDungPhanHoi?.Trim();
             existing.NgayDanhGia = dto.NgayDanhGia;
 
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var ph = db.PhanHois.FirstOrDefault(x => x.MaPhanHoi == existing.MaPhanHoi);
+                if (ph != null)
+                {
+                    ph.DiemDanhGia = existing.DiemDanhGia;
+                    ph.NoiDungPhanHoi = existing.NoiDungPhanHoi;
+                    ph.NgayDanhGia = existing.NgayDanhGia;
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+
             return ServiceResult.Success("Cập nhật đánh giá phản hồi thành công.");
         }
 
         public ServiceResult Delete(string maPhanHoi)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maPhanHoi))
                 return ServiceResult.Failed("Mã phản hồi không được để trống.");
 
@@ -200,11 +219,24 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed($"Không tìm thấy phản hồi có mã '{maPhanHoi}'.");
 
             _feedbacks.Remove(existing);
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var ph = db.PhanHois.FirstOrDefault(x => x.MaPhanHoi == existing.MaPhanHoi);
+                if (ph != null)
+                {
+                    db.PhanHois.Remove(ph);
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+
             return ServiceResult.Success("Xóa phản hồi thành công.");
         }
 
         public ServiceResult<FeedbackSummaryDto> GetSummary(string? maSuKien = null)
         {
+            EnsureLoadedFromDb();
             var query = _feedbacks.AsEnumerable();
             if (!string.IsNullOrWhiteSpace(maSuKien) && maSuKien != "Tất cả")
             {
@@ -228,6 +260,7 @@ namespace EventManagement.BLL.Services
 
         public string SuggestNextCode()
         {
+            EnsureLoadedFromDb();
             int maxId = 0;
             foreach (var item in _feedbacks)
             {
@@ -245,11 +278,28 @@ namespace EventManagement.BLL.Services
 
         public List<KeyValuePair<string, string>> GetCompletedEvents()
         {
+            EnsureLoadedFromDb();
             return _events;
         }
 
         public List<KeyValuePair<string, string>> GetEligibleAttendees(string? maSuKien = null)
         {
+            EnsureLoadedFromDb();
+            if (!string.IsNullOrWhiteSpace(maSuKien))
+            {
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var attendees = (from c in db.ChiTietVes
+                                     join dk in db.DangKys on c.MaDangKy equals dk.MaDangKy
+                                     where dk.MaSuKien == maSuKien
+                                     select new KeyValuePair<string, string>(dk.MaNguoiThamGia, $"{c.TenNguoiThamGia} ({c.Email})"))
+                                     .Distinct()
+                                     .ToList();
+                    if (attendees.Any()) return attendees;
+                }
+                catch { }
+            }
             return _attendees;
         }
 

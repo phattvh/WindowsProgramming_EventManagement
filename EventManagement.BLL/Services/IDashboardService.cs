@@ -16,6 +16,9 @@ namespace EventManagement.BLL.Services
         Task<ServiceResult<List<UpcomingEventDto>>> GetUpcomingEventsAsync(int daysAhead = 7);
         ServiceResult<List<UpcomingEventDto>> GetUpcomingEvents(int daysAhead = 7);
 
+        Task<ServiceResult<List<UpcomingEventDto>>> GetAllEventsAsync();
+        ServiceResult<List<UpcomingEventDto>> GetAllEvents();
+
         Task<ServiceResult<List<EventRevenueChartDto>>> GetEventRevenueComparisonAsync(int limit = 5);
         ServiceResult<List<EventRevenueChartDto>> GetEventRevenueComparison(int limit = 5);
 

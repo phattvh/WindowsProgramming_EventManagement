@@ -87,14 +87,25 @@ namespace EventManagement.GUI.Forms
 
             colMaPhanCong.FillWeight = 50;
             colTenNhanSu.FillWeight = 90;
-            colPhongBan.FillWeight = 60;
-            colChucVuNhanSu.FillWeight = 70;
+            colPhongBan.FillWeight = 75;
+            colChucVuNhanSu.FillWeight = 75;
             colSoDienThoai.FillWeight = 65;
             colNgayTruc.FillWeight = 60;
-            colKhungGio.FillWeight = 70;
+            colKhungGio.FillWeight = 75;
             colTenSuKien.FillWeight = 160;
             colNhiemVu.FillWeight = 150;
             colGhiChu.FillWeight = 130;
+
+            colMaPhanCong.MinimumWidth = 65;
+            colTenNhanSu.MinimumWidth = 120;
+            colPhongBan.MinimumWidth = 135;
+            colChucVuNhanSu.MinimumWidth = 135;
+            colSoDienThoai.MinimumWidth = 105;
+            colNgayTruc.MinimumWidth = 95;
+            colKhungGio.MinimumWidth = 135;
+            colTenSuKien.MinimumWidth = 240;
+            colNhiemVu.MinimumWidth = 190;
+            colGhiChu.MinimumWidth = 180;
 
             dgvPhanCong.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvPhanCong.ScrollBars = ScrollBars.Both;
@@ -124,7 +135,7 @@ namespace EventManagement.GUI.Forms
 
             int col1X = margin;
             int col2X = margin + colWidth + gap;
-            int labelW = 120;
+            int labelW = 145;
             int inputW = colWidth - labelW - 10;
 
             // Dòng 1: Mã ca | Sự kiện
@@ -241,7 +252,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                lblKiemTraStatus.Text = $"❌ {checkRes.Message}";
+                lblKiemTraStatus.Text = $"❌ {StripBrTags(checkRes.Message)}";
                 lblKiemTraStatus.ForeColor = ColorDanger;
             }
         }
@@ -323,7 +334,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi tải dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi tải dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -549,13 +560,13 @@ namespace EventManagement.GUI.Forms
                 var result = _assignmentService.Delete(selected.MaPhanCong);
                 if (result.IsSuccess)
                 {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                     SetFormState(FormMode.View);
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(StripBrTags(result.Message), "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -576,7 +587,7 @@ namespace EventManagement.GUI.Forms
 
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
                 SetFormState(FormMode.View);
 
@@ -595,13 +606,13 @@ namespace EventManagement.GUI.Forms
             else
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine(result.Message);
+                sb.AppendLine(StripBrTags(result.Message));
                 if (result.Errors != null && result.Errors.Count > 0)
                 {
                     sb.AppendLine("\nChi tiết cảnh báo:");
                     foreach (var err in result.Errors)
                     {
-                        sb.AppendLine($"  • {err}");
+                        sb.AppendLine($"  • {StripBrTags(err)}");
                     }
                 }
                 MessageBox.Show(sb.ToString(), "Cảnh báo trùng ca trực", MessageBoxButtons.OK, MessageBoxIcon.Warning);

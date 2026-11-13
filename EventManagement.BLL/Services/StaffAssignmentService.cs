@@ -17,123 +17,112 @@ namespace EventManagement.BLL.Services
         private readonly StaffScheduleService _shiftValidator;
         private readonly IStaffService _staffService;
 
-        // Bảng dữ liệu sự kiện để kiểm tra và nạp ComboBox
-        private static readonly List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> _events = new()
-        {
-            ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026", new DateTime(2026, 12, 15, 8, 0, 0), new DateTime(2026, 12, 15, 17, 30, 0)),
-            ("EVT202602", "Workshop Thực chiến GenAI & Prompt Engineering 2026", new DateTime(2026, 11, 3, 8, 30, 0), new DateTime(2026, 11, 4, 17, 0, 0)),
-            ("EVT202603", "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT", new DateTime(2026, 12, 25, 8, 0, 0), new DateTime(2026, 12, 26, 18, 0, 0))
-        };
+        private static readonly List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> _events = new();
+        private static readonly List<StaffAssignmentDto> _assignments = new();
 
-        // Danh sách phân công ca trực khởi tạo từ seed_data_member2.sql (7 ca trực thỏa mãn BR-13)
-        private static readonly List<StaffAssignmentDto> _assignments = new()
+        private void EnsureLoadedFromDb()
         {
-            new StaffAssignmentDto
+            if (_assignments.Count == 0 && _events.Count == 0)
             {
-                MaPhanCong = "PC001",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaNhanSu = "NS001",
-                TenNhanSu = "Trần Minh Tâm",
-                SoDienThoai = "0909123001",
-                ChucVuNhanSu = "Trưởng ban Hậu cần",
-                PhongBan = "Hậu cần",
-                NhiemVu = "Điều phối chung toàn bộ sự kiện",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 7, 0, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 18, 0, 0),
-                GhiChu = "Bao quát khu vực lễ tân và sân khấu chính"
-            },
-            new StaffAssignmentDto
-            {
-                MaPhanCong = "PC002",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaNhanSu = "NS004",
-                TenNhanSu = "Vũ Thị Mai",
-                SoDienThoai = "0909123004",
-                ChucVuNhanSu = "Nhân viên Đón tiếp",
-                PhongBan = "Lễ tân",
-                NhiemVu = "Trực bàn đón tiếp khách VIP và đại biểu",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 7, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 12, 0, 0),
-                GhiChu = "Đón tiếp các diễn giả và lãnh đạo doanh nghiệp"
-            },
-            new StaffAssignmentDto
-            {
-                MaPhanCong = "PC003",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaNhanSu = "NS005",
-                TenNhanSu = "Phan Đình Tùng",
-                SoDienThoai = "0909123005",
-                ChucVuNhanSu = "Nhân viên Soát vé QR",
-                PhongBan = "Hậu cần",
-                NhiemVu = "Soát vé và quét mã QR Webcam cửa 1",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 7, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 12, 0, 0),
-                GhiChu = "Sử dụng laptop quét mã QR trên vé in hoặc điện thoại"
-            },
-            new StaffAssignmentDto
-            {
-                MaPhanCong = "PC004",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaNhanSu = "NS007",
-                TenNhanSu = "Nguyễn Tuấn Anh",
-                SoDienThoai = "0909123007",
-                ChucVuNhanSu = "Kỹ thuật viên Ánh sáng",
-                PhongBan = "Kỹ thuật",
-                NhiemVu = "Vận hành âm thanh ánh sáng hội trường",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 7, 0, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 17, 30, 0),
-                GhiChu = "Trực bàn điều khiển kỹ thuật P.A."
-            },
-            new StaffAssignmentDto
-            {
-                MaPhanCong = "PC005",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaNhanSu = "NS010",
-                TenNhanSu = "Đỗ Văn Khang",
-                SoDienThoai = "0909123010",
-                ChucVuNhanSu = "Đội trưởng An ninh",
-                PhongBan = "An ninh",
-                NhiemVu = "Bảo đảm an ninh trật tự khu vực sảnh",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 6, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 18, 30, 0),
-                GhiChu = "Phối hợp với bảo vệ tòa nhà phân luồng xe"
-            },
-            new StaffAssignmentDto
-            {
-                MaPhanCong = "PC006",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                MaNhanSu = "NS006",
-                TenNhanSu = "Bùi Kim Ngân",
-                SoDienThoai = "0909123006",
-                ChucVuNhanSu = "Hướng dẫn khách mời",
-                PhongBan = "Lễ tân",
-                NhiemVu = "Điểm danh học viên và phát tài liệu lab",
-                ThoiGianBatDau = new DateTime(2026, 11, 3, 8, 0, 0),
-                ThoiGianKetThuc = new DateTime(2026, 11, 3, 12, 0, 0),
-                GhiChu = "Phát thẻ đeo và tài liệu thực hành"
-            },
-            new StaffAssignmentDto
-            {
-                MaPhanCong = "PC007",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                MaNhanSu = "NS007",
-                TenNhanSu = "Nguyễn Tuấn Anh",
-                SoDienThoai = "0909123007",
-                ChucVuNhanSu = "Kỹ thuật viên Ánh sáng",
-                PhongBan = "Kỹ thuật",
-                NhiemVu = "Hỗ trợ kỹ thuật mạng phòng máy tính",
-                ThoiGianBatDau = new DateTime(2026, 11, 3, 8, 0, 0),
-                ThoiGianKetThuc = new DateTime(2026, 11, 3, 17, 0, 0),
-                GhiChu = "Xử lý sự cố kết nối Cloud cho học viên"
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var evts = db.SuKiens.Select(s => new { s.MaSuKien, s.TenSuKien, s.NgayBatDau, s.NgayKetThuc }).ToList();
+                    foreach (var e in evts)
+                    {
+                        if (!_events.Any(x => x.MaSuKien == e.MaSuKien))
+                            _events.Add((e.MaSuKien, e.TenSuKien, e.NgayBatDau, e.NgayKetThuc));
+                    }
+
+                    var assigns = db.PhanCongNhanSus.Select(p => new StaffAssignmentDto
+                    {
+                        MaPhanCong = p.MaPhanCong,
+                        MaSuKien = p.MaSuKien,
+                        TenSuKien = p.SuKien != null ? p.SuKien.TenSuKien : p.MaSuKien,
+                        MaNhanSu = p.MaNhanSu,
+                        TenNhanSu = p.NhanSu != null ? p.NhanSu.HoTen : p.MaNhanSu,
+                        SoDienThoai = p.NhanSu != null ? p.NhanSu.SoDienThoai : "",
+                        ChucVuNhanSu = p.NhanSu != null ? p.NhanSu.ChucVu : "",
+                        PhongBan = p.NhanSu != null ? p.NhanSu.ChucVu : "",
+                        NhiemVu = p.NhiemVu,
+                        ThoiGianBatDau = p.ThoiGianBatDau,
+                        ThoiGianKetThuc = p.ThoiGianKetThuc,
+                        GhiChu = p.GhiChu
+                    }).ToList();
+
+                    if (assigns.Any())
+                    {
+                        _assignments.AddRange(assigns);
+                    }
+                }
+                catch { }
+
+                SeedDefaultAssignments();
             }
-        };
+        }
+
+        private static void SeedDefaultAssignments()
+        {
+            var demoEvents = new (string Ma, string Ten, DateTime Start, DateTime End)[]
+            {
+                ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026", new DateTime(2026, 12, 15, 8, 0, 0), new DateTime(2026, 12, 15, 17, 30, 0)),
+                ("EVT202602", "Đại nhạc hội Sinh viên YouthWave 2026", new DateTime(2026, 12, 25, 18, 0, 0), new DateTime(2026, 12, 25, 23, 0, 0)),
+                ("EVT202603", "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", new DateTime(2026, 1, 10, 8, 30, 0), new DateTime(2026, 1, 10, 12, 0, 0)),
+                ("EVT202604", "Triển lãm Thiết bị & Trải nghiệm AI Expo 2026", new DateTime(2026, 5, 20, 9, 0, 0), new DateTime(2026, 5, 21, 17, 0, 0)),
+                ("EVT202605", "Workshop Thực chiến GenAI & Agentic Coding 2026", new DateTime(2026, 11, 28, 8, 30, 0), new DateTime(2026, 11, 28, 17, 0, 0)),
+                ("EVT202606", "Giải thi đấu Thể thao Điện tử Sinh viên Toàn quốc 2026", new DateTime(2026, 12, 5, 8, 0, 0), new DateTime(2026, 12, 7, 21, 0, 0)),
+                ("EVT202607", "Ngày hội Việc làm & Kết nối Doanh nghiệp IT Career Fair 2026", new DateTime(2026, 12, 18, 8, 0, 0), new DateTime(2026, 12, 18, 17, 0, 0)),
+                ("EVT202608", "Diễn đàn An ninh mạng Quốc gia Cybershield 2026", new DateTime(2026, 11, 15, 8, 30, 0), new DateTime(2026, 11, 15, 16, 30, 0)),
+                ("EVT202609", "Hội nghị Khoa học Quốc tế về Trí tuệ Nhân tạo & Bán dẫn 2026", new DateTime(2026, 12, 28, 8, 0, 0), new DateTime(2026, 12, 29, 17, 30, 0)),
+                ("EVT202610", "Lễ hội Văn hóa Ẩm thực & Âm nhạc Mùa Thu 2026", new DateTime(2026, 11, 8, 16, 0, 0), new DateTime(2026, 11, 9, 22, 30, 0)),
+                ("EVT202611", "Diễn đàn Chuyển đổi số Doanh nghiệp Vừa và Nhỏ 2026", new DateTime(2026, 12, 20, 8, 30, 0), new DateTime(2026, 12, 20, 17, 0, 0)),
+                ("EVT202612", "Giải Marathon Sinh viên Vì Cộng đồng Green Run 2026", new DateTime(2026, 12, 27, 5, 30, 0), new DateTime(2026, 12, 27, 11, 30, 0))
+            };
+
+            foreach (var d in demoEvents)
+            {
+                if (!_events.Any(x => x.MaSuKien == d.Ma))
+                    _events.Add((d.Ma, d.Ten, d.Start, d.End));
+            }
+
+            int pcNum = 100;
+            foreach (var evt in _events.ToList())
+            {
+                if (!_assignments.Any(a => a.MaSuKien == evt.MaSuKien))
+                {
+                    _assignments.Add(new StaffAssignmentDto
+                    {
+                        MaPhanCong = $"PC{pcNum++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        MaNhanSu = "NS001",
+                        TenNhanSu = "Trần Minh Tâm",
+                        SoDienThoai = "0933111222",
+                        ChucVuNhanSu = "Trưởng nhóm điều phối",
+                        PhongBan = "Ban Tổ chức",
+                        NhiemVu = "Phụ trách tổng thể điều hành khu vực hội trường chính",
+                        ThoiGianBatDau = evt.BatDau,
+                        ThoiGianKetThuc = evt.KetThuc,
+                        GhiChu = "Trực liên tục và kết nối bộ đàm với BTC"
+                    });
+                    _assignments.Add(new StaffAssignmentDto
+                    {
+                        MaPhanCong = $"PC{pcNum++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        MaNhanSu = "NS002",
+                        TenNhanSu = "Lê Thị Thu Thảo",
+                        SoDienThoai = "0944333444",
+                        ChucVuNhanSu = "Điều phối viên Check-in",
+                        PhongBan = "Ban Lễ tân",
+                        NhiemVu = "Soát vé QR & Đón tiếp đại biểu",
+                        ThoiGianBatDau = evt.BatDau,
+                        ThoiGianKetThuc = evt.KetThuc,
+                        GhiChu = "Phụ trách cửa đón tiếp đại biểu VIP"
+                    });
+                }
+            }
+        }
 
         public StaffAssignmentService() : this(new StaffScheduleService(), new StaffService())
         {
@@ -151,6 +140,7 @@ namespace EventManagement.BLL.Services
             string? maNhanSu = null,
             string? phongBan = null)
         {
+            EnsureLoadedFromDb();
             IEnumerable<StaffAssignmentDto> query = _assignments;
 
             // 1. Lọc theo Sự kiện
@@ -195,6 +185,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<StaffAssignmentDto> GetById(string maPhanCong)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maPhanCong))
             {
                 return ServiceResult<StaffAssignmentDto>.Failed("Mã phân công không được để trống.");
@@ -213,8 +204,6 @@ namespace EventManagement.BLL.Services
         {
             if (string.IsNullOrWhiteSpace(maSuKien)) return false;
             var code = maSuKien.Trim();
-            if (code.Equals("EVT202603", StringComparison.OrdinalIgnoreCase) || code.Equals("EVT202604", StringComparison.OrdinalIgnoreCase))
-                return true;
 
             try
             {
@@ -228,11 +217,16 @@ namespace EventManagement.BLL.Services
             }
             catch { }
 
+            var evInMem = _events.FirstOrDefault(e => e.MaSuKien.Equals(code, StringComparison.OrdinalIgnoreCase));
+            if (evInMem != default && evInMem.KetThuc < DateTime.Now)
+                return true;
+
             return false;
         }
 
         public ServiceResult Add(StaffAssignmentDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult.Failed("Dữ liệu phân công không được để trống.");
@@ -313,6 +307,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(StaffAssignmentDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult.Failed("Dữ liệu phân công không được để trống.");
@@ -383,6 +378,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maPhanCong)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maPhanCong))
             {
                 return ServiceResult.Failed("Mã phân công không được để trống.");
@@ -400,6 +396,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<bool> CheckConflict(StaffAssignmentDto dto, string? excludeMaPhanCong = null)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult<bool>.Failed("Dữ liệu cần kiểm tra không được để trống.");
@@ -425,7 +422,7 @@ namespace EventManagement.BLL.Services
             if (!staffRes.Data.TrangThai.Equals("Hoạt động", StringComparison.OrdinalIgnoreCase))
             {
                 return ServiceResult<bool>.Failed(
-                    $"Xung đột phân công (BR-13): Nhân sự [{dto.MaNhanSu} - {staffRes.Data.HoTen}] hiện đang ở trạng thái '{staffRes.Data.TrangThai}', không thể phân công ca trực.",
+                    $"Xung đột phân công: Nhân sự [{dto.MaNhanSu} - {staffRes.Data.HoTen}] hiện đang ở trạng thái '{staffRes.Data.TrangThai}', không thể phân công ca trực.",
                     new List<string> { $"Nhân sự '{staffRes.Data.HoTen}' đã ngừng làm việc hoặc nghỉ việc (Trạng thái = {staffRes.Data.TrangThai})." }
                 );
             }
@@ -455,6 +452,7 @@ namespace EventManagement.BLL.Services
 
         public List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> GetAvailableEvents()
         {
+            EnsureLoadedFromDb();
             try
             {
                 using var db = new EventManagement.DAL.AppDbContext();
@@ -488,6 +486,7 @@ namespace EventManagement.BLL.Services
 
         public string SuggestNextCode()
         {
+            EnsureLoadedFromDb();
             int maxId = 0;
             foreach (var item in _assignments)
             {

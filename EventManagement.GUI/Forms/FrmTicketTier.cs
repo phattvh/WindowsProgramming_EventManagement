@@ -61,10 +61,7 @@ namespace EventManagement.GUI.Forms
         public FrmTicketTier()
         {
             _tierService = new TicketTierService();
-            if (_sharedTicketTiers == null)
-            {
-                _sharedTicketTiers = GetInitialSeedData();
-            }
+            _sharedTicketTiers ??= LoadTicketTiersFromDb();
             _ticketTiers = _sharedTicketTiers;
 
             InitializeComponent();
@@ -86,7 +83,7 @@ namespace EventManagement.GUI.Forms
                 Dock = DockStyle.Top,
                 Height = 60,
                 BackColor = ColorPrimary,
-                Padding = new Padding(20, 0, 0, 0)
+                Padding = new Padding(0)
             };
             _lblTitle = new Label
             {
@@ -94,7 +91,7 @@ namespace EventManagement.GUI.Forms
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft
+                TextAlign = ContentAlignment.MiddleCenter
             };
             _pnlHeader.Controls.Add(_lblTitle);
 
@@ -109,7 +106,19 @@ namespace EventManagement.GUI.Forms
 
             var lblEvent = new Label { Text = "Sự kiện:", AutoSize = true, Location = new Point(15, 15) };
             _cboEventFilter = new ComboBox { Location = new Point(78, 12), Width = 230, DropDownStyle = ComboBoxStyle.DropDownList };
-            _cboEventFilter.Items.AddRange(new object[] { "Tất cả sự kiện", "EVT202601 (Vietnam Tech Summit)", "EVT202602 (Workshop GenAI)" });
+            _cboEventFilter.Items.Add(new KeyValuePair<string, string>("", "Tất cả sự kiện"));
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var evts = db.SuKiens.OrderBy(e => e.NgayBatDau).Select(e => new KeyValuePair<string, string>(e.MaSuKien, $"{e.MaSuKien} - {e.TenSuKien}")).ToList();
+                foreach (var ev in evts)
+                {
+                    _cboEventFilter.Items.Add(ev);
+                }
+            }
+            catch { }
+            _cboEventFilter.DisplayMember = "Value";
+            _cboEventFilter.ValueMember = "Key";
             _cboEventFilter.SelectedIndex = 0;
             _cboEventFilter.SelectedIndexChanged += (s, e) => DoFilter();
 
@@ -142,7 +151,7 @@ namespace EventManagement.GUI.Forms
             // 4. Details GroupBox
             _grpDetails = new GroupBox
             {
-                Text = "Thông tin hạng vé & Thiết lập số lượng phát hành (BR-08, BR-09)",
+                Text = "Thông tin hạng vé & Thiết lập số lượng phát hành",
                 Dock = DockStyle.Bottom,
                 Height = 175,
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
@@ -438,7 +447,7 @@ namespace EventManagement.GUI.Forms
         private void ClearDetails()
         {
             _txtMa.Clear();
-            _txtMaSuKien.Text = "EVT202602";
+            _txtMaSuKien.Text = _cboEventFilter.SelectedItem is KeyValuePair<string, string> sel && !string.IsNullOrEmpty(sel.Key) ? sel.Key : string.Empty;
             _txtTen.Clear();
             _nudGiaVe.Value = 0;
             _nudPhatHanh.Value = 100;
@@ -623,10 +632,10 @@ namespace EventManagement.GUI.Forms
         {
             var query = _ticketTiers.AsEnumerable();
 
-            if (_cboEventFilter.SelectedIndex == 1)
-                query = query.Where(t => t.MaSuKien == "EVT202601");
-            else if (_cboEventFilter.SelectedIndex == 2)
-                query = query.Where(t => t.MaSuKien == "EVT202602");
+            if (_cboEventFilter.SelectedItem is KeyValuePair<string, string> selEvt && !string.IsNullOrEmpty(selEvt.Key))
+            {
+                query = query.Where(t => t.MaSuKien == selEvt.Key);
+            }
 
             if (!string.IsNullOrWhiteSpace(_txtSearch.Text))
             {
@@ -637,17 +646,17 @@ namespace EventManagement.GUI.Forms
             LoadDataToGrid(query);
         }
 
-        private List<HangVe> GetInitialSeedData()
+        private static List<HangVe> LoadTicketTiersFromDb()
         {
-            return new List<HangVe>
+            try
             {
-                new HangVe { MaHangVe = "HV001", MaSuKien = "EVT202601", TenHangVe = "Standard", GiaVe = 200000, SoLuongPhatHanh = 800, SoLuongDaBan = 159, ThoiGianMoBan = new DateTime(2026, 11, 1), ThoiGianDongBan = new DateTime(2026, 12, 14) },
-                new HangVe { MaHangVe = "HV002", MaSuKien = "EVT202601", TenHangVe = "VIP", GiaVe = 800000, SoLuongPhatHanh = 200, SoLuongDaBan = 50, ThoiGianMoBan = new DateTime(2026, 11, 1), ThoiGianDongBan = new DateTime(2026, 12, 14) },
-                new HangVe { MaHangVe = "HV005", MaSuKien = "EVT202601", TenHangVe = "Early Bird", GiaVe = 150000, SoLuongPhatHanh = 150, SoLuongDaBan = 150, ThoiGianMoBan = new DateTime(2026, 10, 15), ThoiGianDongBan = new DateTime(2026, 10, 31) },
-                new HangVe { MaHangVe = "HV003", MaSuKien = "EVT202602", TenHangVe = "Standard", GiaVe = 300000, SoLuongPhatHanh = 100, SoLuongDaBan = 98, ThoiGianMoBan = new DateTime(2026, 10, 1), ThoiGianDongBan = new DateTime(2026, 11, 2) },
-                new HangVe { MaHangVe = "HV004", MaSuKien = "EVT202602", TenHangVe = "VIP", GiaVe = 600000, SoLuongPhatHanh = 50, SoLuongDaBan = 10, ThoiGianMoBan = new DateTime(2026, 10, 1), ThoiGianDongBan = new DateTime(2026, 11, 2) },
-                new HangVe { MaHangVe = "HV006", MaSuKien = "EVT202602", TenHangVe = "Early Bird", GiaVe = 250000, SoLuongPhatHanh = 50, SoLuongDaBan = 50, ThoiGianMoBan = new DateTime(2026, 9, 15), ThoiGianDongBan = new DateTime(2026, 9, 30) }
-            };
+                using var db = new EventManagement.DAL.AppDbContext();
+                return db.HangVes.ToList();
+            }
+            catch
+            {
+                return new List<HangVe>();
+            }
         }
     }
 }

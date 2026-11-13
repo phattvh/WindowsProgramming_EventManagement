@@ -86,14 +86,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblBannerTitle
             // 
-            this.lblBannerTitle.AutoSize = true;
+            this.lblBannerTitle.AutoSize = false;
+            this.lblBannerTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBannerTitle.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblBannerTitle.ForeColor = System.Drawing.Color.White;
-            this.lblBannerTitle.Location = new System.Drawing.Point(15, 16);
+            this.lblBannerTitle.Location = new System.Drawing.Point(0, 0);
             this.lblBannerTitle.Name = "lblBannerTitle";
-            this.lblBannerTitle.Size = new System.Drawing.Size(220, 25);
+            this.lblBannerTitle.Size = new System.Drawing.Size(1104, 58);
             this.lblBannerTitle.TabIndex = 0;
             this.lblBannerTitle.Text = "BÁO CÁO THỐNG KÊ";
+            this.lblBannerTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // grpFilter
             // 
@@ -125,16 +127,16 @@ namespace EventManagement.GUI.Forms
             this.pnlReportType.Controls.Add(this.radTongHop);
             this.pnlReportType.Controls.Add(this.radVeDienTu);
             this.pnlReportType.Controls.Add(this.radQuyetToan);
-            this.pnlReportType.Location = new System.Drawing.Point(72, 72);
+            this.pnlReportType.Location = new System.Drawing.Point(85, 72);
             this.pnlReportType.Name = "pnlReportType";
-            this.pnlReportType.Size = new System.Drawing.Size(600, 32);
+            this.pnlReportType.Size = new System.Drawing.Size(680, 32);
             this.pnlReportType.TabIndex = 11;
             // 
             // radTongHop
             // 
             this.radTongHop.AutoSize = true;
             this.radTongHop.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.radTongHop.Location = new System.Drawing.Point(380, 5);
+            this.radTongHop.Location = new System.Drawing.Point(410, 5);
             this.radTongHop.Name = "radTongHop";
             this.radTongHop.Size = new System.Drawing.Size(161, 19);
             this.radTongHop.TabIndex = 2;
@@ -149,7 +151,7 @@ namespace EventManagement.GUI.Forms
             this.radVeDienTu.Name = "radVeDienTu";
             this.radVeDienTu.Size = new System.Drawing.Size(180, 19);
             this.radVeDienTu.TabIndex = 1;
-            this.radVeDienTu.Text = "2. Vé điện tử && Doanh thu";
+            this.radVeDienTu.Text = "2. Vé điện tử & Doanh thu";
             this.radVeDienTu.UseVisualStyleBackColor = true;
             // 
             // radQuyetToan
@@ -179,7 +181,7 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnLamMoi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnLamMoi.Location = new System.Drawing.Point(980, 27);
+            this.btnLamMoi.Location = new System.Drawing.Point(975, 27);
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.Size = new System.Drawing.Size(110, 34);
             this.btnLamMoi.TabIndex = 9;
@@ -190,9 +192,9 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnXuatExcel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnXuatExcel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnXuatExcel.Location = new System.Drawing.Point(825, 27);
+            this.btnXuatExcel.Location = new System.Drawing.Point(828, 27);
             this.btnXuatExcel.Name = "btnXuatExcel";
-            this.btnXuatExcel.Size = new System.Drawing.Size(148, 34);
+            this.btnXuatExcel.Size = new System.Drawing.Size(135, 34);
             this.btnXuatExcel.TabIndex = 8;
             this.btnXuatExcel.Text = "Xuất Excel (Ctrl+E)";
             this.btnXuatExcel.UseVisualStyleBackColor = true;
@@ -201,9 +203,9 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnIn.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnIn.Location = new System.Drawing.Point(645, 27);
+            this.btnIn.Location = new System.Drawing.Point(666, 27);
             this.btnIn.Name = "btnIn";
-            this.btnIn.Size = new System.Drawing.Size(170, 34);
+            this.btnIn.Size = new System.Drawing.Size(150, 34);
             this.btnIn.TabIndex = 7;
             this.btnIn.Text = "Xuất PDF / In Báo Cáo";
             this.btnIn.UseVisualStyleBackColor = true;
@@ -212,9 +214,9 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnXem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnXem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnXem.Location = new System.Drawing.Point(535, 27);
+            this.btnXem.Location = new System.Drawing.Point(539, 27);
             this.btnXem.Name = "btnXem";
-            this.btnXem.Size = new System.Drawing.Size(100, 34);
+            this.btnXem.Size = new System.Drawing.Size(115, 34);
             this.btnXem.TabIndex = 6;
             this.btnXem.Text = "Xem báo cáo";
             this.btnXem.UseVisualStyleBackColor = true;
@@ -224,16 +226,16 @@ namespace EventManagement.GUI.Forms
             this.dtpDenNgay.CustomFormat = "dd/MM/yyyy";
             this.dtpDenNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpDenNgay.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpDenNgay.Location = new System.Drawing.Point(495, 33);
+            this.dtpDenNgay.Location = new System.Drawing.Point(490, 33);
             this.dtpDenNgay.Name = "dtpDenNgay";
-            this.dtpDenNgay.Size = new System.Drawing.Size(95, 23);
+            this.dtpDenNgay.Size = new System.Drawing.Size(105, 23);
             this.dtpDenNgay.TabIndex = 5;
             // 
             // lblDenNgay
             // 
             this.lblDenNgay.AutoSize = true;
             this.lblDenNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblDenNgay.Location = new System.Drawing.Point(432, 37);
+            this.lblDenNgay.Location = new System.Drawing.Point(420, 37);
             this.lblDenNgay.Name = "lblDenNgay";
             this.lblDenNgay.Size = new System.Drawing.Size(60, 15);
             this.lblDenNgay.TabIndex = 4;
@@ -244,16 +246,16 @@ namespace EventManagement.GUI.Forms
             this.dtpTuNgay.CustomFormat = "dd/MM/yyyy";
             this.dtpTuNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpTuNgay.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpTuNgay.Location = new System.Drawing.Point(325, 33);
+            this.dtpTuNgay.Location = new System.Drawing.Point(298, 33);
             this.dtpTuNgay.Name = "dtpTuNgay";
-            this.dtpTuNgay.Size = new System.Drawing.Size(95, 23);
+            this.dtpTuNgay.Size = new System.Drawing.Size(105, 23);
             this.dtpTuNgay.TabIndex = 3;
             // 
             // lblTuNgay
             // 
             this.lblTuNgay.AutoSize = true;
             this.lblTuNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblTuNgay.Location = new System.Drawing.Point(268, 37);
+            this.lblTuNgay.Location = new System.Drawing.Point(235, 37);
             this.lblTuNgay.Name = "lblTuNgay";
             this.lblTuNgay.Size = new System.Drawing.Size(52, 15);
             this.lblTuNgay.TabIndex = 2;
@@ -264,9 +266,9 @@ namespace EventManagement.GUI.Forms
             this.cboSuKien.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSuKien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboSuKien.FormattingEnabled = true;
-            this.cboSuKien.Location = new System.Drawing.Point(72, 33);
+            this.cboSuKien.Location = new System.Drawing.Point(80, 33);
             this.cboSuKien.Name = "cboSuKien";
-            this.cboSuKien.Size = new System.Drawing.Size(185, 23);
+            this.cboSuKien.Size = new System.Drawing.Size(140, 23);
             this.cboSuKien.TabIndex = 1;
             // 
             // lblSuKien

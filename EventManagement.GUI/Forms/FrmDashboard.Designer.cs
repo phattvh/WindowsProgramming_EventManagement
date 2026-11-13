@@ -523,14 +523,14 @@
             this.pnlChartsContainer.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlChartsContainer.Location = new System.Drawing.Point(0, 228);
             this.pnlChartsContainer.Name = "pnlChartsContainer";
-            this.pnlChartsContainer.Size = new System.Drawing.Size(1134, 230);
+            this.pnlChartsContainer.Size = new System.Drawing.Size(1134, 260);
             this.pnlChartsContainer.TabIndex = 3;
             // 
             // tblCharts
             // 
             this.tblCharts.ColumnCount = 2;
-            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62F));
-            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38F));
+            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 0F));
+            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblCharts.Controls.Add(this.pnlRevenueChart, 0, 0);
             this.tblCharts.Controls.Add(this.pnlCheckInChart, 1, 0);
             this.tblCharts.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -552,6 +552,7 @@
             this.pnlRevenueChart.Name = "pnlRevenueChart";
             this.pnlRevenueChart.Size = new System.Drawing.Size(682, 214);
             this.pnlRevenueChart.TabIndex = 0;
+            this.pnlRevenueChart.Visible = false;
             // 
             // lblRevenueChartTitle
             // 
@@ -620,7 +621,7 @@
             this.grpUpcoming.Size = new System.Drawing.Size(1134, 252);
             this.grpUpcoming.TabIndex = 4;
             this.grpUpcoming.TabStop = false;
-            this.grpUpcoming.Text = "📅 CÁC SỰ KIỆN SẮP DIỄN RA TRONG 7 NGÀY TỚI";
+            this.grpUpcoming.Text = "📅 DANH SÁCH TẤT CẢ SỰ KIỆN";
             // 
             // dgvUpcoming
             // 
@@ -766,7 +767,7 @@
             this.lblUpcomingSummary.Name = "lblUpcomingSummary";
             this.lblUpcomingSummary.Size = new System.Drawing.Size(271, 20);
             this.lblUpcomingSummary.TabIndex = 0;
-            this.lblUpcomingSummary.Text = "Hiển thị các sự kiện bắt đầu trong 7 ngày tới.";
+            this.lblUpcomingSummary.Text = "Hiển thị toàn bộ sự kiện theo thời gian từ gần nhất đến xa nhất.";
             // 
             // FrmDashboard
             // 

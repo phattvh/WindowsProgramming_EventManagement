@@ -113,14 +113,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(16, 9);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(490, 25);
+            this.lblTitle.Size = new System.Drawing.Size(1160, 65);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "QUẢN LÝ CHI PHÍ & NGÂN SÁCH SỰ KIỆN";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblSubTitle
             // 
@@ -771,6 +773,7 @@ namespace EventManagement.GUI.Forms
             this.Controls.Add(this.pnlTopHeader);
             this.MinimumSize = new System.Drawing.Size(1100, 680);
             this.Name = "FrmBudgetExpense";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hệ Thống Quản Lý Sự Kiện";
             this.pnlTopHeader.ResumeLayout(false);
             this.pnlTopHeader.PerformLayout();

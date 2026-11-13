@@ -119,5 +119,41 @@ namespace EventManagement.Tests
             Assert.IsFalse(string.IsNullOrWhiteSpace(DatabaseInitializer.DefaultPasswordHash));
             Assert.IsTrue(DatabaseInitializer.DefaultPasswordHash.StartsWith("$2a$11$"));
         }
+
+        [TestMethod]
+        public void F03_DetailInputs_HaveEnoughRightMargin_ForErrorProvider()
+        {
+            // Mô tả (AD-14, AD-15): Đảm bảo ô cột 3 (txtMatKhau, txtSoDienThoai) chừa đủ lề phải cho icon ErrorProvider không bị cắt.
+            using var form = new FrmUserManagement(new MockUserService());
+            form.Show();
+            form.LayoutDetailGroup();
+
+            var grpDetail = form.Controls.Find("grpDetail", true)[0];
+            int rightMarginPassword = grpDetail.ClientSize.Width - form.txtMatKhau.Right;
+            int rightMarginPhone = grpDetail.ClientSize.Width - form.txtSoDienThoai.Right;
+
+            Assert.IsTrue(rightMarginPassword >= 24, $"Lề phải txtMatKhau ({rightMarginPassword}px) phải >= 24px.");
+            Assert.IsTrue(rightMarginPhone >= 24, $"Lề phải txtSoDienThoai ({rightMarginPhone}px) phải >= 24px.");
+
+            form.Hide();
+        }
+
+        [TestMethod]
+        public void F03_ValidateAllUserInputs_ReturnsAllInvalidFieldsSimultaneously()
+        {
+            // Mô tả (AD-15): Khi cả Email, Số điện thoại và Mật khẩu đều sai, phải trả về đồng thời cả 3 lỗi.
+            var errors = FrmUserManagement.ValidateAllUserInputs(
+                username: "admin_test",
+                fullName: "Nguyen Van A",
+                email: "admin.gmail.com",
+                phone: "09012",
+                password: "123",
+                isNewUser: true);
+
+            Assert.AreEqual(3, errors.Count);
+            Assert.IsTrue(errors.Any(e => e.Field == nameof(FrmUserManagement.txtEmail)));
+            Assert.IsTrue(errors.Any(e => e.Field == nameof(FrmUserManagement.txtSoDienThoai)));
+            Assert.IsTrue(errors.Any(e => e.Field == nameof(FrmUserManagement.txtMatKhau)));
+        }
     }
 }

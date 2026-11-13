@@ -296,8 +296,8 @@ namespace EventManagement.GUI.Forms
                 if (result.ErrorCode == "BR-20")
                 {
                     var opt = MessageBox.Show(
-                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái nhân sự này sang 'Nghỉ việc' theo quy tắc BR-20 thay vì xóa vĩnh viễn?",
-                        "Cảnh báo nghiệp vụ BR-20",
+                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái nhân sự này sang 'Nghỉ việc' thay vì xóa vĩnh viễn?",
+                        "Cảnh báo nghiệp vụ",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning);
 
@@ -442,32 +442,38 @@ namespace EventManagement.GUI.Forms
         private bool ValidateInputs()
         {
             bool isValid = true;
+            string? firstError = null;
+            Control? firstControl = null;
             errBaoLoi.Clear();
+
+            void SetFieldError(Control ctrl, string message)
+            {
+                errBaoLoi.SetError(ctrl, message);
+                firstError ??= message;
+                firstControl ??= ctrl;
+                isValid = false;
+            }
 
             if (string.IsNullOrWhiteSpace(txtMaNhanSu.Text))
             {
-                errBaoLoi.SetError(txtMaNhanSu, "Mã nhân sự không được để trống!");
-                isValid = false;
+                SetFieldError(txtMaNhanSu, "Mã nhân sự không được để trống!");
             }
 
             if (string.IsNullOrWhiteSpace(txtHoTen.Text))
             {
-                errBaoLoi.SetError(txtHoTen, "Họ và tên nhân sự không được để trống!");
-                isValid = false;
+                SetFieldError(txtHoTen, "Họ và tên nhân sự không được để trống!");
             }
 
             if (string.IsNullOrWhiteSpace(txtSoDienThoai.Text))
             {
-                errBaoLoi.SetError(txtSoDienThoai, "Số điện thoại nhân sự không được để trống!");
-                isValid = false;
+                SetFieldError(txtSoDienThoai, "Số điện thoại nhân sự không được để trống!");
             }
             else
             {
                 string phone = txtSoDienThoai.Text.Trim();
-                if (!Regex.IsMatch(phone, @"^[0-9]{8,15}$"))
+                if (!Regex.IsMatch(phone, @"^(0|\+84)[0-9]{9,10}$"))
                 {
-                    errBaoLoi.SetError(txtSoDienThoai, "Số điện thoại phải từ 8 đến 15 chữ số!");
-                    isValid = false;
+                    SetFieldError(txtSoDienThoai, "Số điện thoại không hợp lệ (cần 10–11 chữ số, bắt đầu bằng 0 hoặc +84)!");
                 }
             }
 
@@ -476,9 +482,14 @@ namespace EventManagement.GUI.Forms
                 string email = txtEmail.Text.Trim();
                 if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 {
-                    errBaoLoi.SetError(txtEmail, "Email không đúng định dạng chuẩn (ví dụ: name@domain.com)!");
-                    isValid = false;
+                    SetFieldError(txtEmail, "Email không đúng định dạng chuẩn (ví dụ: name@domain.com)!");
                 }
+            }
+
+            if (!isValid && firstError != null)
+            {
+                firstControl?.Focus();
+                MessageBox.Show(firstError, "Dữ liệu chưa hợp lệ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return isValid;

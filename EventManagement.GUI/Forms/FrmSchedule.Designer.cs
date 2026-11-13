@@ -149,14 +149,16 @@
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(18, 14);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(465, 25);
+            this.lblTitle.Size = new System.Drawing.Size(1100, 56);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "📅 QUẢN LÝ LỊCH TRÌNH TIẾT MỤC SỰ KIỆN";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             // 
             // lblSubtitle
@@ -168,7 +170,8 @@
             this.lblSubtitle.Name = "lblSubtitle";
             this.lblSubtitle.Size = new System.Drawing.Size(530, 15);
             this.lblSubtitle.TabIndex = 1;
-            this.lblSubtitle.Text = "Thiết lập timeline chi tiết, kiểm soát xung đột phòng chức năng và phân công diễn giả (BR-05 & BR-06)";
+            this.lblSubtitle.Text = "Thiết lập timeline chi tiết, kiểm soát xung đột phòng chức năng và phân công diễn giả";
+            this.lblSubtitle.Visible = false;
 
             // 
             // pnlFilter
@@ -625,7 +628,7 @@
             this.btnKiemTraXungDot.Name = "btnKiemTraXungDot";
             this.btnKiemTraXungDot.Size = new System.Drawing.Size(235, 32);
             this.btnKiemTraXungDot.TabIndex = 16;
-            this.btnKiemTraXungDot.Text = "⚡ Kiểm tra xung đột BR-05 & BR-06";
+            this.btnKiemTraXungDot.Text = "⚡ Kiểm tra xung đột";
             this.btnKiemTraXungDot.UseVisualStyleBackColor = false;
             this.btnKiemTraXungDot.Click += new System.EventHandler(this.btnKiemTraXungDot_Click);
 

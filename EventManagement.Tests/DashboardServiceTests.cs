@@ -218,5 +218,30 @@ namespace EventManagement.Tests
             result.Data.Should().Contain(e => e.MaSuKien == "SK_REV" && e.DoanhThu == 5000000m && e.ChiPhi == 3000000m);
         }
         // Mô tả: Thẩm định dữ liệu so sánh thu chi phục vụ vẽ biểu đồ cột đa trục trong LiveCharts2.
+
+        [TestMethod]
+        [Description("Kiểm tra GetAllEventsAsync trả về đủ sự kiện mọi trạng thái, sắp xếp từ gần nhất đến xa nhất.")]
+        public async Task GetAllEventsAsync_ReturnsAllStatuses_SortedNearestToFarthest()
+        {
+            using var context = CreateInMemoryContext();
+            var service = new DashboardService(context);
+
+            context.DiaDiems.Add(new DiaDiem { MaDiaDiem = "DD01", TenDiaDiem = "White Palace", DiaChi = "TP.HCM", SucChuaToiDa = 1000 });
+            context.SuKiens.AddRange(
+                new SuKien { MaSuKien = "EVT_FAR", TenSuKien = "Xa nhất", TrangThai = "Đã kết thúc", NgayBatDau = DateTime.Now.AddDays(-60), NgayKetThuc = DateTime.Now.AddDays(-59), MaDiaDiem = "DD01" },
+                new SuKien { MaSuKien = "EVT_NEAR", TenSuKien = "Gần nhất", TrangThai = "Mở đăng ký", NgayBatDau = DateTime.Now.AddDays(3), NgayKetThuc = DateTime.Now.AddDays(4), MaDiaDiem = "DD01" },
+                new SuKien { MaSuKien = "EVT_CANCEL", TenSuKien = "Đã hủy", TrangThai = "Hủy", NgayBatDau = DateTime.Now.AddDays(20), NgayKetThuc = DateTime.Now.AddDays(21), MaDiaDiem = "DD01" }
+            );
+            await context.SaveChangesAsync();
+
+            var result = await service.GetAllEventsAsync();
+
+            result.IsSuccess.Should().BeTrue();
+            result.Data.Should().HaveCount(3);
+            result.Data![0].MaSuKien.Should().Be("EVT_NEAR");
+            result.Data[0].DiaDiem.Should().Be("White Palace");
+            result.Data[1].MaSuKien.Should().Be("EVT_CANCEL");
+            result.Data[2].MaSuKien.Should().Be("EVT_FAR");
+        }
     }
 }

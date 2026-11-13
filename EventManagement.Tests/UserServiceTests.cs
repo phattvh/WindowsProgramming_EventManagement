@@ -4,6 +4,7 @@ using EventManagement.BLL.Services;
 using EventManagement.Core.DTOs;
 using EventManagement.Core.Entities;
 using EventManagement.Core.Security;
+using EventManagement.Core.Session;
 using EventManagement.DAL;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,12 @@ namespace EventManagement.Tests
     public class UserServiceTests
     {
         private readonly IPasswordHasher _hasher = new PasswordHasher();
+
+        [TestCleanup]
+        public void CleanupSession()
+        {
+            CurrentSession.DangXuat();
+        }
 
         private AppDbContext CreateContext()
         {
@@ -341,6 +348,175 @@ namespace EventManagement.Tests
             result.IsSuccess.Should().BeTrue();
             var updated = await context.NguoiDungs.FindAsync("U_TOGGLE");
             updated!.TrangThai.Should().Be("Khóa vĩnh viễn");
+        }
+
+        [TestMethod]
+        public async Task CreateAsync_AutoGeneratesUsrPrefixedCode_Sequentially()
+        {
+            // Arrange (AD-09, AD-10, AD-11): Đã có USR001..USR011
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            for (int i = 1; i <= 11; i++)
+            {
+                context.NguoiDungs.Add(new NguoiDung
+                {
+                    MaNguoiDung = $"USR{i:D3}",
+                    TenDangNhap = $"user{i:D2}",
+                    HoTen = $"User {i}",
+                    Email = $"user{i}@event.vn",
+                    MaNhomQuyen = i == 1 ? "ADMIN" : "STAFF"
+                });
+            }
+            await context.SaveChangesAsync();
+
+            // Act
+            var res12 = await service.CreateAsync(new CreateUserDto
+            {
+                TenDangNhap = "staff_new",
+                MatKhau = "Staff@123",
+                HoTen = "Hoang Van Nam",
+                Email = "nam@event.vn",
+                MaNhomQuyen = "STAFF"
+            });
+
+            var res13 = await service.CreateAsync(new CreateUserDto
+            {
+                TenDangNhap = "mgr_new",
+                MatKhau = "Manager@123",
+                HoTen = "Hoa Phat",
+                Email = "phat@event.vn",
+                MaNhomQuyen = "MANAGER"
+            });
+
+            // Assert
+            res12.IsSuccess.Should().BeTrue();
+            res12.Data!.MaNguoiDung.Should().Be("USR012");
+            res13.IsSuccess.Should().BeTrue();
+            res13.Data!.MaNguoiDung.Should().Be("USR013");
+        }
+
+        [TestMethod]
+        public async Task DeleteAsync_LastActiveAdmin_WhenOnlyLockedAdminExists_ReturnsFailed()
+        {
+            // Arrange (AD-25): 1 Admin Hoạt động + 1 Admin Khóa tạm thời
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            context.NguoiDungs.AddRange(
+                new NguoiDung
+                {
+                    MaNguoiDung = "USR001",
+                    TenDangNhap = "admin",
+                    HoTen = "Active Admin",
+                    Email = "admin@event.vn",
+                    MaNhomQuyen = "ADMIN",
+                    TrangThai = "Hoạt động"
+                },
+                new NguoiDung
+                {
+                    MaNguoiDung = "USR005",
+                    TenDangNhap = "admin_lock",
+                    HoTen = "Locked Admin",
+                    Email = "admin.lock@event.vn",
+                    MaNhomQuyen = "ADMIN",
+                    TrangThai = "Khóa tạm thời"
+                });
+            await context.SaveChangesAsync();
+
+            // Act
+            var result = await service.DeleteAsync("USR001");
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Message.Should().Contain("cuối cùng");
+            (await context.NguoiDungs.FindAsync("USR001")).Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task DeleteAsync_CurrentlyLoggedInUser_ReturnsFailed()
+        {
+            // Arrange (AD-43): Đang đăng nhập USR001, hệ thống vẫn còn USR004 (ADMIN khác)
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            context.NguoiDungs.AddRange(
+                new NguoiDung
+                {
+                    MaNguoiDung = "USR001",
+                    TenDangNhap = "admin",
+                    HoTen = "Primary Admin",
+                    Email = "admin@event.vn",
+                    MaNhomQuyen = "ADMIN",
+                    TrangThai = "Hoạt động"
+                },
+                new NguoiDung
+                {
+                    MaNguoiDung = "USR004",
+                    TenDangNhap = "admin2",
+                    HoTen = "Backup Admin",
+                    Email = "admin2@event.vn",
+                    MaNhomQuyen = "ADMIN",
+                    TrangThai = "Hoạt động"
+                });
+            await context.SaveChangesAsync();
+
+            CurrentSession.DangNhap("USR001", "admin", "Primary Admin", "admin@event.vn", "ADMIN", new[] { "UC03" });
+
+            // Act
+            var result = await service.DeleteAsync("USR001");
+
+            // Assert
+            result.IsSuccess.Should().BeFalse();
+            result.Message.Should().Contain("đang sử dụng");
+            (await context.NguoiDungs.FindAsync("USR001")).Should().NotBeNull();
+        }
+
+        [TestMethod]
+        public async Task UpdateAndToggleLockAsync_SelfAccount_ReturnsFailed()
+        {
+            // Arrange: Admin đang đăng nhập không được tự khóa hoặc tự hạ quyền chính mình dù còn Admin khác
+            using var context = CreateContext();
+            var service = new UserService(context, _hasher);
+
+            context.NguoiDungs.AddRange(
+                new NguoiDung
+                {
+                    MaNguoiDung = "USR001",
+                    TenDangNhap = "admin",
+                    HoTen = "Primary Admin",
+                    Email = "admin@event.vn",
+                    MaNhomQuyen = "ADMIN",
+                    TrangThai = "Hoạt động"
+                },
+                new NguoiDung
+                {
+                    MaNguoiDung = "USR004",
+                    TenDangNhap = "admin2",
+                    HoTen = "Backup Admin",
+                    Email = "admin2@event.vn",
+                    MaNhomQuyen = "ADMIN",
+                    TrangThai = "Hoạt động"
+                });
+            await context.SaveChangesAsync();
+
+            CurrentSession.DangNhap("USR001", "admin", "Primary Admin", "admin@event.vn", "ADMIN", new[] { "UC03" });
+
+            // Act
+            var demoteResult = await service.UpdateAsync("USR001", new UpdateUserDto
+            {
+                HoTen = "Primary Admin",
+                Email = "admin@event.vn",
+                MaNhomQuyen = "STAFF",
+                TrangThai = "Hoạt động"
+            });
+            var lockResult = await service.ToggleLockAsync("USR001");
+
+            // Assert
+            demoteResult.IsSuccess.Should().BeFalse();
+            demoteResult.Message.Should().Contain("đang sử dụng");
+            lockResult.IsSuccess.Should().BeFalse();
+            lockResult.Message.Should().Contain("đang sử dụng");
         }
     }
 }

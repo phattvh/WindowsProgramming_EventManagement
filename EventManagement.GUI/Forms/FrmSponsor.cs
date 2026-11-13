@@ -109,7 +109,7 @@ namespace EventManagement.GUI.Forms
             int col2X = margin + colWidth + gap;
             int col3X = margin + (colWidth * 2) + (gap * 2);
 
-            int labelW = 115;
+            int labelW = 140;
             int inputW = colWidth - labelW - 10;
 
             // Cột 1: Thông tin tổ chức
@@ -210,9 +210,16 @@ namespace EventManagement.GUI.Forms
             cboLocTrangThai.SelectedIndex = 0; // "Tất cả"
 
             cboSuKien.Items.Clear();
-            cboSuKien.Items.Add(new ComboBoxItem("EVT202601", "EVT202601 - Vietnam Tech Summit 2026"));
-            cboSuKien.Items.Add(new ComboBoxItem("EVT202602", "EVT202602 - Workshop Thực chiến GenAI 2026"));
-            cboSuKien.Items.Add(new ComboBoxItem("EVT202603", "EVT202603 - Hội nghị Khoa học IoT 2026"));
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var evts = db.SuKiens.OrderBy(e => e.NgayBatDau).ToList();
+                foreach (var ev in evts)
+                {
+                    cboSuKien.Items.Add(new ComboBoxItem(ev.MaSuKien, $"{ev.MaSuKien} - {ev.TenSuKien}"));
+                }
+            }
+            catch { }
             if (cboSuKien.Items.Count > 0) cboSuKien.SelectedIndex = 0;
 
             _isLoading = false;
@@ -403,7 +410,7 @@ namespace EventManagement.GUI.Forms
         {
             if (!ValidateInputs()) return;
 
-            string selectedMaSuKien = "EVT202601";
+            string? selectedMaSuKien = null;
             if (cboSuKien.SelectedItem is ComboBoxItem cboItem)
                 selectedMaSuKien = cboItem.Value;
             else if (cboSuKien.SelectedItem != null)

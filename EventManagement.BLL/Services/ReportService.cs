@@ -66,15 +66,38 @@ namespace EventManagement.BLL.Services
             {
                 byte[] qrBytes = GenerateQrCodeImageBytes(t.MaQR, 200, 200);
 
+                DateTime start = DateTime.Now;
+                DateTime end = DateTime.Now;
+                string venueName = "Địa điểm tổ chức";
+                string venueAddress = "Chưa cập nhật";
+
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var sk = db.SuKiens.FirstOrDefault(s => s.TenSuKien == t.TenSuKien || s.MaSuKien == t.TenSuKien);
+                    if (sk != null)
+                    {
+                        start = sk.NgayBatDau;
+                        end = sk.NgayKetThuc;
+                        var dd = db.DiaDiems.FirstOrDefault(d => d.MaDiaDiem == sk.MaDiaDiem);
+                        if (dd != null)
+                        {
+                            venueName = dd.TenDiaDiem;
+                            venueAddress = dd.DiaChi;
+                        }
+                    }
+                }
+                catch { }
+
                 resultList.Add(new TicketReceiptDto
                 {
                     MaVe = t.MaVe,
                     MaDangKy = t.MaDangKy,
                     TenSuKien = t.TenSuKien,
-                    NgayBatDau = new DateTime(2026, 12, 15, 8, 30, 0),
-                    NgayKetThuc = new DateTime(2026, 12, 15, 17, 30, 0),
-                    TenDiaDiem = "Trung tâm Hội nghị Quốc gia NCC",
-                    DiaChiDiaDiem = "Đại lộ Thăng Long, Mễ Trì, Nam Từ Liêm, Hà Nội",
+                    NgayBatDau = start,
+                    NgayKetThuc = end,
+                    TenDiaDiem = venueName,
+                    DiaChiDiaDiem = venueAddress,
                     TenHangVe = t.TenHangVe,
                     DonGia = t.GiaVe,
                     TenNguoiThamGia = t.TenNguoiThamGia,
@@ -90,10 +113,15 @@ namespace EventManagement.BLL.Services
 
         public SettlementDto GenerateFinancialSettlement(string? maSuKien, DateTime? tuNgay = null, DateTime? denNgay = null)
         {
-            string selectedEventId = maSuKien?.Trim() ?? "EVT202601";
             var events = _ticketOrderService.GetAvailableEvents();
+            string selectedEventId = maSuKien?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(selectedEventId) && events.Count > 0)
+            {
+                selectedEventId = events[0].MaSuKien;
+            }
+
             var evt = events.FirstOrDefault(e => string.Equals(e.MaSuKien, selectedEventId, StringComparison.OrdinalIgnoreCase));
-            string eventName = evt.TenSuKien ?? "Hội nghị Công nghệ Vietnam Tech Summit 2026";
+            string eventName = evt.TenSuKien ?? selectedEventId;
 
             // 1. Tính doanh thu bán vé thực tế
             var allTickets = TicketOrderService.GetIssuedTicketsList();
@@ -108,14 +136,8 @@ namespace EventManagement.BLL.Services
             {
                 // Tổng giá trị tài trợ từ các nhà tài trợ đang hợp tác
                 sponsorRevenue = sponsors
-                    .Where(s => s.TrangThai == "Đang hợp tác")
+                    .Where(s => s.TrangThai == "Đang hợp tác" && (string.IsNullOrEmpty(selectedEventId) || s.MaSuKien == selectedEventId || s.TenSuKien == eventName))
                     .Sum(s => s.TongGiaTriTaiTro);
-            }
-
-            // Fallback nếu không có tài trợ
-            if (sponsorRevenue == 0m)
-            {
-                sponsorRevenue = 150_000_000m; // Tài trợ mặc định cho sự kiện mẫu
             }
 
             // 3. Lấy danh sách chi phí thực tế từ BudgetService
@@ -135,13 +157,13 @@ namespace EventManagement.BLL.Services
             decimal totalActualExpense = expenses.Sum(x => x.SoTien);
 
             var budgetStatusRes = _budgetService.GetBudgetStatus(selectedEventId);
-            decimal plannedBudget = budgetStatusRes.Data?.NganSachDuKien ?? 150_000_000m;
+            decimal plannedBudget = budgetStatusRes.Data?.NganSachDuKien ?? 0m;
 
             return new SettlementDto
             {
                 MaSuKien = selectedEventId,
                 TenSuKien = eventName,
-                TuNgay = tuNgay ?? new DateTime(2026, 11, 1),
+                TuNgay = tuNgay ?? DateTime.Today.AddMonths(-1),
                 DenNgay = denNgay ?? DateTime.Now,
                 NganSachDuKien = plannedBudget,
                 TongDoanhThuBanVe = ticketRevenue,
@@ -153,7 +175,13 @@ namespace EventManagement.BLL.Services
 
         public EventSummaryKpiDto GenerateEventSummary(string? maSuKien)
         {
-            string selectedEventId = maSuKien?.Trim() ?? "EVT202601";
+            var events = _ticketOrderService.GetAvailableEvents();
+            string selectedEventId = maSuKien?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(selectedEventId) && events.Count > 0)
+            {
+                selectedEventId = events[0].MaSuKien;
+            }
+
             var settlement = GenerateFinancialSettlement(selectedEventId);
             var checkInStats = _checkInService.GetCheckInStatistics(selectedEventId);
 
@@ -161,15 +189,32 @@ namespace EventManagement.BLL.Services
             int totalIssued = tiers.Sum(t => t.SoLuongPhatHanh);
             int totalSold = tiers.Sum(t => t.SoLuongDaBan);
 
+            DateTime startTime = DateTime.Now;
+            DateTime endTime = DateTime.Now;
+            string venue = "Chưa xác định";
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var sk = db.SuKiens.FirstOrDefault(s => s.MaSuKien == selectedEventId);
+                if (sk != null)
+                {
+                    startTime = sk.NgayBatDau;
+                    endTime = sk.NgayKetThuc;
+                    var dd = db.DiaDiems.FirstOrDefault(d => d.MaDiaDiem == sk.MaDiaDiem);
+                    if (dd != null) venue = dd.TenDiaDiem;
+                }
+            }
+            catch { }
+
             return new EventSummaryKpiDto
             {
                 MaSuKien = selectedEventId,
                 TenSuKien = settlement.TenSuKien,
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 8, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 17, 30, 0),
-                DiaDiem = "Trung tâm Hội nghị Quốc gia NCC",
-                TongVePhatHanh = totalIssued > 0 ? totalIssued : 1000,
-                TongVeDaBan = totalSold > 0 ? totalSold : checkInStats.TongVePhatHanh,
+                ThoiGianBatDau = startTime,
+                ThoiGianKetThuc = endTime,
+                DiaDiem = venue,
+                TongVePhatHanh = totalIssued,
+                TongVeDaBan = totalSold,
                 TongLuotCheckIn = checkInStats.DaCheckIn,
                 TongDoanhThuVe = settlement.TongDoanhThuBanVe,
                 TongTienTaiTro = settlement.TongTienTaiTro,
@@ -187,11 +232,6 @@ namespace EventManagement.BLL.Services
                 {
                     list.Add(GenerateEventSummary(evt.MaSuKien));
                 }
-            }
-            else
-            {
-                list.Add(GenerateEventSummary("EVT202601"));
-                list.Add(GenerateEventSummary("EVT202602"));
             }
             return list;
         }

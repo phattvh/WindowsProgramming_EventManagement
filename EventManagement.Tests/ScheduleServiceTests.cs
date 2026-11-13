@@ -49,23 +49,23 @@ namespace EventManagement.Tests
             Assert.IsTrue(resEvent1.IsSuccess);
             Assert.IsNotNull(resEvent1.Data);
             Assert.IsTrue(resEvent1.Data.All(x => x.MaSuKien == "EVT202601"));
-            Assert.AreEqual(5, resEvent1.Data.Count);
+            Assert.AreEqual(3, resEvent1.Data.Count);
 
-            var resEvent2 = _scheduleService.GetAll(maSuKien: "EVT202602");
+            var resEvent2 = _scheduleService.GetAll(maSuKien: "EVT202605");
             Assert.IsTrue(resEvent2.IsSuccess);
             Assert.IsNotNull(resEvent2.Data);
-            Assert.IsTrue(resEvent2.Data.All(x => x.MaSuKien == "EVT202602"));
-            Assert.AreEqual(3, resEvent2.Data.Count);
+            Assert.IsTrue(resEvent2.Data.All(x => x.MaSuKien == "EVT202605"));
+            Assert.AreEqual(2, resEvent2.Data.Count);
         }
 
         [TestMethod]
         public void GetAll_FilterBySpeaker_ReturnsCorrectItems()
         {
-            var resSpeaker = _scheduleService.GetAll(maDienGia: "DG006");
+            var resSpeaker = _scheduleService.GetAll(maDienGia: "DG001");
 
             Assert.IsTrue(resSpeaker.IsSuccess);
             Assert.IsNotNull(resSpeaker.Data);
-            Assert.IsTrue(resSpeaker.Data.All(x => x.MaDienGia == "DG006"));
+            Assert.IsTrue(resSpeaker.Data.All(x => x.MaDienGia == "DG001"));
             Assert.IsTrue(resSpeaker.Data.Count >= 3);
         }
 

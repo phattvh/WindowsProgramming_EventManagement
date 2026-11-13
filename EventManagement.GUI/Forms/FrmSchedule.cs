@@ -120,7 +120,7 @@ namespace EventManagement.GUI.Forms
             colDiaDiemChiTiet.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
 
             // Bố trí thanh lọc và bảng không bị đè bởi Header
-            pnlFilter.Top = pnlHeader.Bottom + 10;
+            pnlFilter.Top = pnlHeader.Bottom + 12;
             dgvLichTrinh.Top = pnlFilter.Bottom + 10;
             if (grbThongTin != null)
             {
@@ -131,11 +131,11 @@ namespace EventManagement.GUI.Forms
             dgvLichTrinh.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             colMaLichTrinh.Width = 95;
             colTenSuKien.Width = 260;
-            colTenTietMuc.Width = 320;
+            colTenTietMuc.Width = 350;
             colNgayDienRa.Width = 105;
             colKhungGio.Width = 115;
-            colDiaDiemChiTiet.Width = 220;
-            colTenDienGia.Width = 180;
+            colDiaDiemChiTiet.Width = 240;
+            colTenDienGia.Width = 190;
             colGhiChu.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colGhiChu.MinimumWidth = 200;
             colTenDienGia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -160,52 +160,54 @@ namespace EventManagement.GUI.Forms
             int col1X = margin;
             int col2X = margin + colWidth + gap;
 
-            int labelWidth = 140;
-            int inputWidth = colWidth - labelWidth;
+            int labelWidth1 = 145;
+            int inputWidth1 = colWidth - labelWidth1;
+            int labelWidth2 = 85;
+            int inputWidth2 = colWidth - labelWidth2;
 
             // Dòng 1: Mã lịch trình | Sự kiện
             int r1Y = 28;
-            lblMaLichTrinh.Location = new Point(col1X, r1Y + 3);
-            txtMaLichTrinh.Location = new Point(col1X + labelWidth, r1Y);
-            txtMaLichTrinh.Size = new Size(inputWidth, 23);
+            lblMaLichTrinh.Location = new Point(col1X + labelWidth1 - lblMaLichTrinh.PreferredWidth - 8, r1Y + 3);
+            txtMaLichTrinh.Location = new Point(col1X + labelWidth1, r1Y);
+            txtMaLichTrinh.Size = new Size(Math.Min(160, inputWidth1), 23);
 
-            lblSuKien.Location = new Point(col2X, r1Y + 3);
-            cboSuKien.Location = new Point(col2X + labelWidth, r1Y);
-            cboSuKien.Size = new Size(inputWidth, 23);
+            lblSuKien.Location = new Point(col2X + labelWidth2 - lblSuKien.PreferredWidth - 8, r1Y + 3);
+            cboSuKien.Location = new Point(col2X + labelWidth2, r1Y);
+            cboSuKien.Size = new Size(inputWidth2, 23);
 
             // Dòng 2: Tên tiết mục | Diễn giả
             int r2Y = 62;
-            lblTenTietMuc.Location = new Point(col1X, r2Y + 3);
-            txtTenTietMuc.Location = new Point(col1X + labelWidth, r2Y);
-            txtTenTietMuc.Size = new Size(inputWidth, 23);
+            lblTenTietMuc.Location = new Point(col1X + labelWidth1 - lblTenTietMuc.PreferredWidth - 8, r2Y + 3);
+            txtTenTietMuc.Location = new Point(col1X + labelWidth1, r2Y);
+            txtTenTietMuc.Size = new Size(inputWidth1, 23);
 
-            lblDienGia.Location = new Point(col2X, r2Y + 3);
-            cboDienGia.Location = new Point(col2X + labelWidth, r2Y);
-            cboDienGia.Size = new Size(inputWidth, 23);
+            lblDienGia.Location = new Point(col2X + labelWidth2 - lblDienGia.PreferredWidth - 8, r2Y + 3);
+            cboDienGia.Location = new Point(col2X + labelWidth2, r2Y);
+            cboDienGia.Size = new Size(inputWidth2, 23);
 
             // Dòng 3: Bắt đầu | Kết thúc
             int r3Y = 96;
-            lblBatDau.Location = new Point(col1X, r3Y + 3);
-            dtpBatDau.Location = new Point(col1X + labelWidth, r3Y);
-            dtpBatDau.Size = new Size(inputWidth, 23);
+            lblBatDau.Location = new Point(col1X + labelWidth1 - lblBatDau.PreferredWidth - 8, r3Y + 3);
+            dtpBatDau.Location = new Point(col1X + labelWidth1, r3Y);
+            dtpBatDau.Size = new Size(Math.Min(180, inputWidth1), 23);
 
-            lblKetThuc.Location = new Point(col2X, r3Y + 3);
-            dtpKetThuc.Location = new Point(col2X + labelWidth, r3Y);
-            dtpKetThuc.Size = new Size(inputWidth, 23);
+            lblKetThuc.Location = new Point(col2X + labelWidth2 - lblKetThuc.PreferredWidth - 8, r3Y + 3);
+            dtpKetThuc.Location = new Point(col2X + labelWidth2, r3Y);
+            dtpKetThuc.Size = new Size(Math.Min(180, inputWidth2), 23);
 
             // Dòng 4: Phòng / Hội trường | Ghi chú
             int r4Y = 130;
-            lblDiaDiemChiTiet.Location = new Point(col1X, r4Y + 3);
-            txtDiaDiemChiTiet.Location = new Point(col1X + labelWidth, r4Y);
-            txtDiaDiemChiTiet.Size = new Size(inputWidth, 23);
+            lblDiaDiemChiTiet.Location = new Point(col1X + labelWidth1 - lblDiaDiemChiTiet.PreferredWidth - 8, r4Y + 3);
+            txtDiaDiemChiTiet.Location = new Point(col1X + labelWidth1, r4Y);
+            txtDiaDiemChiTiet.Size = new Size(inputWidth1, 23);
 
-            lblGhiChu.Location = new Point(col2X, r4Y + 3);
-            txtGhiChu.Location = new Point(col2X + labelWidth, r4Y);
-            txtGhiChu.Size = new Size(inputWidth, 23);
+            lblGhiChu.Location = new Point(col2X + labelWidth2 - lblGhiChu.PreferredWidth - 8, r4Y + 3);
+            txtGhiChu.Location = new Point(col2X + labelWidth2, r4Y);
+            txtGhiChu.Size = new Size(inputWidth2, 23);
 
-            // Dòng 5: Nhãn trạng thái kiểm tra xung đột tự động đặt tại góc trái dưới
-            lblKiemTraStatus.Location = new Point(col1X, 168);
-            lblKiemTraStatus.Size = new Size(clientW - (margin * 2), 24);
+            // Dòng 5: Nhãn trạng thái kiểm tra xung đột tự động căn thẳng hàng với control nhập
+            lblKiemTraStatus.Location = new Point(col1X + labelWidth1, 166);
+            lblKiemTraStatus.Size = new Size(clientW - (col1X + labelWidth1) - margin, 24);
         }
 
         private void AdjustFilterLayout()
@@ -357,7 +359,7 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi tải dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi tải dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -629,13 +631,13 @@ namespace EventManagement.GUI.Forms
                 var result = _scheduleService.Delete(selected.MaLichTrinh);
                 if (result.IsSuccess)
                 {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                     SetFormState(FormMode.View);
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(StripBrTags(result.Message), "Không thể xóa", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -656,7 +658,7 @@ namespace EventManagement.GUI.Forms
 
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
                 SetFormState(FormMode.View);
 
@@ -675,13 +677,13 @@ namespace EventManagement.GUI.Forms
             else
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendLine(result.Message);
+                sb.AppendLine(StripBrTags(result.Message));
                 if (result.Errors != null && result.Errors.Count > 0)
                 {
                     sb.AppendLine("\nChi tiết cảnh báo:");
                     foreach (var err in result.Errors)
                     {
-                        sb.AppendLine($"• {err}");
+                        sb.AppendLine($"• {StripBrTags(err)}");
                     }
                 }
                 MessageBox.Show(sb.ToString(), "Cảnh báo trùng lịch trình", MessageBoxButtons.OK, MessageBoxIcon.Warning);

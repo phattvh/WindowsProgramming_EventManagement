@@ -106,7 +106,7 @@ namespace EventManagement.GUI.Forms
             int colWidth = (contentWidth - 20) / 2;
             int col1X = 20;
             int col2X = 20 + colWidth + 20;
-            int labelW = 120;
+            int labelW = 140;
             int inputW = colWidth - labelW - 10;
 
             // Dòng 1: Mã diễn giả | Họ tên

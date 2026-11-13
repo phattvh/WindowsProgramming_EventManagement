@@ -14,19 +14,36 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class EventTypeService : IEventTypeService
     {
-        // Danh sách lưu trữ mô phỏng cho tầng BLL khi chưa gắn DbContext thực tế
-        private static readonly List<EventTypeDto> _eventTypes = new()
+        private static readonly List<EventTypeDto> _eventTypes = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new EventTypeDto { MaLoaiSK = "LSK01", TenLoaiSK = "Hội thảo Công nghệ", MoTa = "Diễn đàn trao đổi công nghệ và giải pháp phần mềm hiện đại", SoSuKien = 2, TrangThai = "Hoạt động" },
-            new EventTypeDto { MaLoaiSK = "LSK02", TenLoaiSK = "Hội nghị Khách hàng", MoTa = "Gặp gỡ, tri ân đối tác và khách hàng thường niên", SoSuKien = 1, TrangThai = "Hoạt động" },
-            new EventTypeDto { MaLoaiSK = "LSK03", TenLoaiSK = "Giải đấu Thể thao Điện tử", MoTa = "Giải đấu giao hữu eSports dành cho sinh viên", SoSuKien = 1, TrangThai = "Hoạt động" },
-            new EventTypeDto { MaLoaiSK = "LSK04", TenLoaiSK = "Hội nghị Khoa học (Symposium)", MoTa = "Diễn đàn học thuật báo cáo nghiên cứu và công bố công trình khoa học", SoSuKien = 0, TrangThai = "Hoạt động" },
-            new EventTypeDto { MaLoaiSK = "LSK05", TenLoaiSK = "Workshop Kỹ năng & Đào tạo", MoTa = "Các buổi thực hành chuyên môn ngắn hạn, tương tác trực tiếp", SoSuKien = 0, TrangThai = "Hoạt động" },
-            new EventTypeDto { MaLoaiSK = "LSK06", TenLoaiSK = "Ngày hội Việc làm (Career Fair)", MoTa = "Kết nối doanh nghiệp tuyển dụng với sinh viên và ứng viên CNTT", SoSuKien = 0, TrangThai = "Hoạt động" }
-        };
+            if (_eventTypes.Count == 0)
+            {
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var list = db.LoaiSuKiens.Select(l => new EventTypeDto
+                    {
+                        MaLoaiSK = l.MaLoaiSK,
+                        TenLoaiSK = l.TenLoaiSK,
+                        MoTa = l.MoTa,
+                        SoSuKien = db.SuKiens.Count(s => s.MaLoaiSK == l.MaLoaiSK),
+                        TrangThai = "Hoạt động"
+                    }).ToList();
+
+                    if (list.Any())
+                    {
+                        _eventTypes.AddRange(list);
+                    }
+                }
+                catch { }
+            }
+        }
 
         public ServiceResult<List<EventTypeDto>> GetAll(string? keyword = null, string? statusFilter = null)
         {
+            EnsureLoadedFromDb();
             var query = _eventTypes.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -47,6 +64,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<EventTypeDto> GetById(string maLoaiSK)
         {
+            EnsureLoadedFromDb();
             var item = _eventTypes.FirstOrDefault(x => x.MaLoaiSK.Equals(maLoaiSK, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -57,6 +75,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(EventTypeDto dto)
         {
+            EnsureLoadedFromDb();
             // Kiểm tra tính hợp lệ dữ liệu
             if (string.IsNullOrWhiteSpace(dto.MaLoaiSK))
             {
@@ -90,6 +109,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(EventTypeDto dto)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(dto.MaLoaiSK))
             {
                 return ServiceResult.Failed("Mã loại sự kiện không hợp lệ!");
@@ -119,6 +139,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maLoaiSK)
         {
+            EnsureLoadedFromDb();
             var existing = _eventTypes.FirstOrDefault(x => x.MaLoaiSK.Equals(maLoaiSK, StringComparison.OrdinalIgnoreCase));
             if (existing == null)
             {
@@ -129,7 +150,7 @@ namespace EventManagement.BLL.Services
             if (existing.SoSuKien > 0)
             {
                 return ServiceResult.Failed(
-                    $"Quy tắc nghiệp vụ BR-07: Loại sự kiện '{existing.TenLoaiSK}' đang được áp dụng cho {existing.SoSuKien} sự kiện. Không thể xóa dữ liệu!",
+                    $"Loại sự kiện '{existing.TenLoaiSK}' đang được áp dụng cho {existing.SoSuKien} sự kiện. Không thể xóa dữ liệu!",
                     "BR-07");
             }
 
@@ -140,6 +161,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult SoftDelete(string maLoaiSK)
         {
+            EnsureLoadedFromDb();
             // Quy tắc BR-20: Soft delete chuyển trạng thái
             var existing = _eventTypes.FirstOrDefault(x => x.MaLoaiSK.Equals(maLoaiSK, StringComparison.OrdinalIgnoreCase));
             if (existing == null)
@@ -148,8 +170,7 @@ namespace EventManagement.BLL.Services
             }
 
             existing.TrangThai = "Ngừng áp dụng";
-            DataSyncNotifier.NotifyDataChanged();
-            return ServiceResult.Success($"Đã chuyển trạng thái loại sự kiện '{existing.TenLoaiSK}' sang 'Ngừng áp dụng' (BR-20)!");
+            return ServiceResult.Success($"Đã chuyển trạng thái loại sự kiện '{existing.TenLoaiSK}' sang 'Ngừng áp dụng'!");
         }
     }
 }

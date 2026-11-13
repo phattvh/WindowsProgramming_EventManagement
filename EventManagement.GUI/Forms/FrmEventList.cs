@@ -53,13 +53,43 @@ namespace EventManagement.GUI.Forms
 
             StyleDataGridView(dgvSuKien);
             dgvSuKien.AutoGenerateColumns = false;
-            dgvSuKien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dgvSuKien.ScrollBars = ScrollBars.Both;
+
+            foreach (DataGridViewColumn col in dgvSuKien.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+
+            colMaSuKien.Width = 95;
+            colTenSuKien.MinimumWidth = 240;
+            colTenLoaiSK.MinimumWidth = 150;
+            colTenLoaiSK.Width = 180;
+            colTenDiaDiem.MinimumWidth = 180;
+            colTenDiaDiem.Width = 220;
+            colNgayBatDau.MinimumWidth = 125;
+            colNgayBatDau.Width = 135;
+            colNgayKetThuc.MinimumWidth = 125;
+            colNgayKetThuc.Width = 135;
+            colSucChua.MinimumWidth = 75;
+            colSucChua.Width = 85;
+            colNganSachDuKien.MinimumWidth = 120;
+            colNganSachDuKien.Width = 135;
+            colNguoiPhuTrach.MinimumWidth = 130;
+            colNguoiPhuTrach.Width = 145;
+            colTrangThai.MinimumWidth = 100;
+            colTrangThai.Width = 115;
+            colSoVeDaBan.MinimumWidth = 80;
+            colSoVeDaBan.Width = 90;
+            colTyLeCheckIn.MinimumWidth = 85;
+            colTyLeCheckIn.Width = 95;
+
+            colTenSuKien.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
             dgvSuKien.CellDoubleClick += (s, e) =>
             {
                 if (e.RowIndex >= 0)
                 {
-                    btnChiTiet_Click(s, e);
+                    btnChiTiet_Click(s ?? this, e);
                 }
             };
 
@@ -157,9 +187,10 @@ namespace EventManagement.GUI.Forms
         private void FrmEventList_Load(object sender, EventArgs e)
         {
             this.Text = "Hệ Thống Quản Lý Sự Kiện";
+            this.WindowState = FormWindowState.Maximized;
             _isLoading = false;
-            DistributeSummaryStats();
-            this.Resize += (s, ev) => DistributeSummaryStats();
+            LayoutResponsiveControls();
+            this.Resize += (s, ev) => LayoutResponsiveControls();
             LoadData();
             SetFormState(FormMode.View);
             DataSyncNotifier.GeneralDataChanged += OnDataSyncChanged;
@@ -188,6 +219,155 @@ namespace EventManagement.GUI.Forms
             for (int i = 0; i < labels.Length; i++)
             {
                 labels[i].Location = new Point(10 + i * colWidth, 10);
+            }
+        }
+
+        public void LayoutResponsiveControls()
+        {
+            DistributeSummaryStats();
+
+            // 1. Responsive layout cho pnlFilter (Bộ lọc phía trên)
+            int filterW = pnlFilter.ClientSize.Width;
+            if (filterW >= 1200)
+            {
+                int item2X = Math.Max(240, (int)(filterW * 0.19));
+                lblLocLoaiSK.Location = new Point(item2X, 16);
+                cboLocLoaiSK.Location = new Point(item2X + 95, 13);
+                cboLocLoaiSK.Width = 150;
+
+                int item3X = Math.Max(item2X + 270, (int)(filterW * 0.39));
+                lblLocTrangThai.Location = new Point(item3X, 16);
+                cboLocTrangThai.Location = new Point(item3X + 85, 13);
+                cboLocTrangThai.Width = 140;
+
+                int item4X = Math.Max(item3X + 250, (int)(filterW * 0.59));
+                chkLocThoiGian.Location = new Point(item4X, 15);
+                dtpLocTuNgay.Location = new Point(item4X + 100, 13);
+                dtpLocTuNgay.Width = 110;
+                lblDenNgay.Location = new Point(item4X + 220, 16);
+                dtpLocDenNgay.Location = new Point(item4X + 240, 13);
+                dtpLocDenNgay.Width = 110;
+            }
+            else
+            {
+                lblLocLoaiSK.Location = new Point(240, 16);
+                cboLocLoaiSK.Location = new Point(335, 13);
+                cboLocLoaiSK.Width = 145;
+
+                lblLocTrangThai.Location = new Point(500, 16);
+                cboLocTrangThai.Location = new Point(585, 13);
+                cboLocTrangThai.Width = 135;
+
+                chkLocThoiGian.Location = new Point(740, 15);
+                dtpLocTuNgay.Location = new Point(840, 13);
+                dtpLocTuNgay.Width = 105;
+
+                lblDenNgay.Location = new Point(955, 16);
+                dtpLocDenNgay.Location = new Point(975, 13);
+                dtpLocDenNgay.Width = 105;
+            }
+
+            // 2. Responsive layout cho grbThongTin (Chi tiết sự kiện ở phía dưới)
+            int totalW = grbThongTin.ClientSize.Width;
+            if (totalW >= 1200)
+            {
+                int col2X = Math.Max(220, (int)(totalW * 0.19));
+                int col3X = Math.Max(col2X + 340, (int)(totalW * 0.48));
+                int col4X = Math.Max(col3X + 310, (int)(totalW * 0.74));
+
+                // Hàng 1: Mã, Tên, Loại, Trạng thái
+                lblMaSuKien.Location = new Point(15, 28);
+                txtMaSuKien.Location = new Point(105, 25);
+                txtMaSuKien.Width = 95;
+
+                lblTenSuKien.Location = new Point(col2X, 28);
+                txtTenSuKien.Location = new Point(col2X + 120, 25);
+                txtTenSuKien.Width = Math.Max(200, col3X - (col2X + 120) - 25);
+
+                lblLoaiSK.Location = new Point(col3X, 28);
+                cboLoaiSK.Location = new Point(col3X + 120, 25);
+                cboLoaiSK.Width = Math.Max(165, col4X - (col3X + 120) - 25);
+
+                lblTrangThai.Location = new Point(col4X, 28);
+                cboTrangThai.Location = new Point(col4X + 115, 25);
+                cboTrangThai.Width = Math.Max(180, totalW - (col4X + 115) - 25);
+
+                // Hàng 2: Địa điểm, Ngày bắt đầu, Ngày kết thúc
+                lblDiaDiem.Location = new Point(15, 63);
+                cboDiaDiem.Location = new Point(105, 60);
+                cboDiaDiem.Width = Math.Max(240, col2X - 105 - 25);
+
+                lblNgayBatDau.Location = new Point(col2X, 63);
+                dtpNgayBatDau.Location = new Point(col2X + 135, 60);
+                dtpNgayBatDau.Width = Math.Max(165, Math.Min(220, col3X - (col2X + 135) - 25));
+
+                lblNgayKetThuc.Location = new Point(col3X, 63);
+                dtpNgayKetThuc.Location = new Point(col3X + 140, 60);
+                dtpNgayKetThuc.Width = Math.Max(165, Math.Min(220, col4X - (col3X + 140) - 25));
+
+                // Hàng 3: Sức chứa, Ngân sách, Người phụ trách
+                lblSucChua.Location = new Point(15, 98);
+                nudSucChua.Location = new Point(115, 95);
+                nudSucChua.Width = 100;
+
+                lblNganSach.Location = new Point(col2X, 98);
+                nudNganSach.Location = new Point(col2X + 140, 95);
+                nudNganSach.Width = Math.Max(160, Math.Min(220, col3X - (col2X + 140) - 25));
+
+                lblNguoiPhuTrach.Location = new Point(col3X, 98);
+                cboNguoiPhuTrach.Location = new Point(col3X + 150, 95);
+                cboNguoiPhuTrach.Width = Math.Max(220, totalW - (col3X + 150) - 25);
+
+                // Hàng 4: Mô tả sự kiện
+                lblMoTa.Location = new Point(15, 133);
+                txtMoTa.Location = new Point(125, 130);
+                txtMoTa.Width = Math.Max(600, totalW - 145);
+            }
+            else
+            {
+                lblMaSuKien.Location = new Point(15, 28);
+                txtMaSuKien.Location = new Point(105, 25);
+                txtMaSuKien.Width = 95;
+
+                lblTenSuKien.Location = new Point(220, 28);
+                txtTenSuKien.Location = new Point(340, 25);
+                txtTenSuKien.Width = 235;
+
+                lblLoaiSK.Location = new Point(595, 28);
+                cboLoaiSK.Location = new Point(715, 25);
+                cboLoaiSK.Width = 165;
+
+                lblTrangThai.Location = new Point(895, 28);
+                cboTrangThai.Location = new Point(1005, 25);
+                cboTrangThai.Width = 180;
+
+                lblDiaDiem.Location = new Point(15, 63);
+                cboDiaDiem.Location = new Point(105, 60);
+                cboDiaDiem.Width = 290;
+
+                lblNgayBatDau.Location = new Point(415, 63);
+                dtpNgayBatDau.Location = new Point(550, 60);
+                dtpNgayBatDau.Width = 165;
+
+                lblNgayKetThuc.Location = new Point(735, 63);
+                dtpNgayKetThuc.Location = new Point(870, 60);
+                dtpNgayKetThuc.Width = 165;
+
+                lblSucChua.Location = new Point(15, 98);
+                nudSucChua.Location = new Point(115, 95);
+                nudSucChua.Width = 100;
+
+                lblNganSach.Location = new Point(235, 98);
+                nudNganSach.Location = new Point(375, 95);
+                nudNganSach.Width = 160;
+
+                lblNguoiPhuTrach.Location = new Point(560, 98);
+                cboNguoiPhuTrach.Location = new Point(705, 95);
+                cboNguoiPhuTrach.Width = 230;
+
+                lblMoTa.Location = new Point(15, 133);
+                txtMoTa.Location = new Point(125, 130);
+                txtMoTa.Width = Math.Max(500, totalW - 145);
             }
         }
 
@@ -433,7 +613,7 @@ namespace EventManagement.GUI.Forms
             var result = _eventService.Delete(dto.MaSuKien);
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
             }
             else
@@ -442,21 +622,21 @@ namespace EventManagement.GUI.Forms
                 if (result.ErrorCode == "BR-02")
                 {
                     var optCancel = MessageBox.Show(
-                        $"{result.Message}\n\nBạn có muốn chuyển trạng thái sự kiện này sang 'Đã hủy' ngay bây giờ không?",
-                        "Cảnh báo ràng buộc nghiệp vụ BR-02",
+                        $"{StripBrTags(result.Message)}\n\nBạn có muốn chuyển trạng thái sự kiện này sang 'Đã hủy' ngay bây giờ không?",
+                        "Cảnh Báo Ràng Buộc Dữ Liệu",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
                     if (optCancel == DialogResult.Yes)
                     {
                         var cancelRes = _eventService.CancelEvent(dto.MaSuKien);
-                        MessageBox.Show(cancelRes.Message, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(StripBrTags(cancelRes.Message), "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadData();
                     }
                 }
                 else
                 {
-                    MessageBox.Show(result.Message, "Lỗi xóa sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(StripBrTags(result.Message), "Lỗi xóa sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -482,7 +662,7 @@ namespace EventManagement.GUI.Forms
             }
 
             var confirm = MessageBox.Show(
-                $"Xác nhận hủy tổ chức sự kiện:\n\n[{dto.MaSuKien}] {dto.TenSuKien}\n\nTrạng thái sự kiện sẽ chuyển sang 'Đã hủy' (BR-02)?",
+                $"Xác nhận hủy tổ chức sự kiện:\n\n[{dto.MaSuKien}] {dto.TenSuKien}\n\nTrạng thái sự kiện sẽ chuyển sang 'Đã hủy'?",
                 "Xác nhận hủy sự kiện",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -492,12 +672,12 @@ namespace EventManagement.GUI.Forms
             var result = _eventService.CancelEvent(dto.MaSuKien);
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi hủy sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi hủy sự kiện", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -531,7 +711,7 @@ namespace EventManagement.GUI.Forms
             // Thuật toán BR-03: NgayKetThuc >= NgayBatDau
             if (dtpNgayKetThuc.Value < dtpNgayBatDau.Value)
             {
-                errBaoLoi.SetError(dtpNgayKetThuc, "Ngày kết thúc không được trước ngày bắt đầu (BR-03)!");
+                errBaoLoi.SetError(dtpNgayKetThuc, "Ngày kết thúc không được trước ngày bắt đầu!");
                 hasError = true;
             }
 
@@ -570,7 +750,7 @@ namespace EventManagement.GUI.Forms
 
             if (result.IsSuccess)
             {
-                MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(StripBrTags(result.Message), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetFormState(FormMode.View);
                 LoadData();
 
@@ -587,14 +767,14 @@ namespace EventManagement.GUI.Forms
             }
             else
             {
-                MessageBox.Show(result.Message, "Lỗi lưu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(StripBrTags(result.Message), "Lỗi lưu dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 if (result.ErrorCode == "BR-03")
                 {
-                    errBaoLoi.SetError(dtpNgayKetThuc, result.Message);
+                    errBaoLoi.SetError(dtpNgayKetThuc, StripBrTags(result.Message));
                 }
                 else if (result.ErrorCode == "BR-04")
                 {
-                    errBaoLoi.SetError(cboDiaDiem, result.Message);
+                    errBaoLoi.SetError(cboDiaDiem, StripBrTags(result.Message));
                 }
             }
         }

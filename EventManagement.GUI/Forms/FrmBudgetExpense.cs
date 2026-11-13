@@ -39,12 +39,23 @@ namespace EventManagement.GUI.Forms
         public Panel PnlCardPercent => pnlCardPercent;
         public Label LblSubTitle => lblSubTitle;
 
-        public FrmBudgetExpense() : this(new BudgetService())
+        private string? _initialEventId;
+
+        public FrmBudgetExpense() : this(null, new BudgetService())
         {
         }
 
-        public FrmBudgetExpense(IBudgetService budgetService)
+        public FrmBudgetExpense(string? initialEventId) : this(initialEventId, new BudgetService())
         {
+        }
+
+        public FrmBudgetExpense(IBudgetService budgetService) : this(null, budgetService)
+        {
+        }
+
+        public FrmBudgetExpense(string? initialEventId, IBudgetService budgetService)
+        {
+            _initialEventId = initialEventId;
             InitializeComponent();
             _budgetService = budgetService ?? new BudgetService();
             ApplyCustomStyles();
@@ -77,6 +88,11 @@ namespace EventManagement.GUI.Forms
             colTrangThai.FillWeight = 10;
             colDienGiai.FillWeight = 18;
 
+            lblTitle.Text = "QUẢN LÝ CHI PHÍ & NGÂN SÁCH SỰ KIỆN";
+            lblTitle.AutoSize = false;
+            lblTitle.Dock = DockStyle.Fill;
+            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
+
             // Anchor filter bar & details
             btnLamMoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblSearch.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -93,6 +109,7 @@ namespace EventManagement.GUI.Forms
             txtDienGiai.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             pnlBudgetCards.Resize += (s, e) => LayoutBudgetCards();
+            pnlActions.Resize += (s, e) => SetFormMode(_currentMode);
             this.Resize += (s, e) =>
             {
                 if (scContent != null && scContent.Width > 800)
@@ -166,9 +183,26 @@ namespace EventManagement.GUI.Forms
                 cboFormSuKien.Items.Add($"{ev.MaSuKien} - {ev.TenSuKien}");
             }
 
-            if (cboFilterSuKien.Items.Count > 1)
+            if (!string.IsNullOrWhiteSpace(_initialEventId))
             {
-                cboFilterSuKien.SelectedIndex = 1; // Mặc định chọn EVT202601
+                bool found = false;
+                for (int i = 1; i < cboFilterSuKien.Items.Count; i++)
+                {
+                    if (cboFilterSuKien.Items[i].ToString()?.StartsWith(_initialEventId, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        cboFilterSuKien.SelectedIndex = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    cboFilterSuKien.SelectedIndex = cboFilterSuKien.Items.Count > 1 ? 1 : 0;
+                }
+            }
+            else if (cboFilterSuKien.Items.Count > 1)
+            {
+                cboFilterSuKien.SelectedIndex = 1;
             }
             else
             {
@@ -365,15 +399,34 @@ namespace EventManagement.GUI.Forms
 
             if (isEditing)
             {
-                btnLuu.Location = new Point(8, 12);
-                btnHuy.Location = new Point(138, 12);
+                int btnW = 120;
+                int gap = 16;
+                int totalW = btnW * 2 + gap;
+                int startX = Math.Max(8, (pnlActions.ClientSize.Width - totalW) / 2);
+
+                btnLuu.Size = new Size(btnW, 34);
+                btnHuy.Size = new Size(btnW, 34);
+                btnLuu.Location = new Point(startX, 15);
+                btnHuy.Location = new Point(startX + btnW + gap, 15);
             }
             else
             {
-                btnThem.Location = new Point(8, 12);
-                btnSua.Location = new Point(138, 12);
-                btnXoa.Location = new Point(268, 12);
-                btnXuatExcel.Location = new Point(8, 56);
+                int btnActionW = 78;
+                int btnExcelW = 115;
+                int gap = 8;
+                int totalW = btnActionW * 3 + btnExcelW + gap * 3;
+                int startX = Math.Max(4, (pnlActions.ClientSize.Width - totalW) / 2);
+
+                btnThem.Size = new Size(btnActionW, 34);
+                btnSua.Size = new Size(btnActionW, 34);
+                btnXoa.Size = new Size(btnActionW, 34);
+                btnXuatExcel.Size = new Size(btnExcelW, 34);
+                btnXuatExcel.Text = "Xuất Excel";
+
+                btnThem.Location = new Point(startX, 15);
+                btnSua.Location = new Point(startX + btnActionW + gap, 15);
+                btnXoa.Location = new Point(startX + (btnActionW + gap) * 2, 15);
+                btnXuatExcel.Location = new Point(startX + (btnActionW + gap) * 3, 15);
             }
 
             dgvChiPhi.Enabled = !isEditing;
@@ -500,6 +553,7 @@ namespace EventManagement.GUI.Forms
             if (string.IsNullOrWhiteSpace(khoanMuc))
             {
                 errorProvider.SetError(txtKhoanMucChi, "Tên khoản mục chi không được để trống.");
+                MessageBox.Show("Tên khoản mục chi không được để trống!", "Lỗi Nhập Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtKhoanMucChi.Focus();
                 return;
             }
@@ -508,6 +562,7 @@ namespace EventManagement.GUI.Forms
             if (soTien <= 0)
             {
                 errorProvider.SetError(nudSoTien, "Số tiền chi phí phải lớn hơn 0 VNĐ.");
+                MessageBox.Show("Số tiền chi tiêu bắt buộc phải lớn hơn 0 VNĐ!", "Lỗi Nhập Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 nudSoTien.Focus();
                 return;
             }
@@ -516,6 +571,7 @@ namespace EventManagement.GUI.Forms
             if (string.IsNullOrWhiteSpace(maSuKien))
             {
                 errorProvider.SetError(cboFormSuKien, "Vui lòng chọn sự kiện áp dụng cho khoản chi.");
+                MessageBox.Show("Vui lòng chọn sự kiện áp dụng cho khoản chi!", "Lỗi Nhập Liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cboFormSuKien.Focus();
                 return;
             }

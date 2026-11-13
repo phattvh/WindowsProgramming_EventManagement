@@ -19,17 +19,29 @@ namespace EventManagement.Tests
         // PHẦN 1: KIỂM THỬ TASK T3-25 (Script SQL Dữ Liệu Mẫu Bảo Vệ 04_FinalDemoData.sql)
         // =========================================================================
 
+        private static string ResolveScriptPath(string fileName)
+        {
+            var dir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+            while (dir != null)
+            {
+                string p1 = Path.Combine(dir.FullName, "scripts", fileName);
+                if (File.Exists(p1)) return p1;
+                string p2 = Path.Combine(dir.FullName, fileName);
+                if (File.Exists(p2)) return p2;
+                dir = dir.Parent;
+            }
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\scripts", fileName);
+        }
+
         [TestMethod]
         public void DemoScript_FinalDemoDataFile_ExistsAndNonEmpty()
         {
             // Mô tả: Kiểm tra file script 04_FinalDemoData.sql tồn tại trong thư mục gốc hoặc thư mục scripts và có kích thước lớn hơn 1000 bytes.
-            string rootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\04_FinalDemoData.sql");
-            string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\scripts\04_FinalDemoData.sql");
+            string activePath = ResolveScriptPath("04_FinalDemoData.sql");
 
-            bool exists = File.Exists(rootPath) || File.Exists(scriptPath);
+            bool exists = File.Exists(activePath);
             Assert.IsTrue(exists, "File 04_FinalDemoData.sql phải tồn tại để nạp CSDL bảo vệ đồ án.");
 
-            string activePath = File.Exists(rootPath) ? rootPath : scriptPath;
             var fileInfo = new FileInfo(activePath);
             Assert.IsTrue(fileInfo.Length > 1000, "Script dữ liệu mẫu phải có nội dung đầy đủ cho 20 bảng.");
         }
@@ -38,9 +50,7 @@ namespace EventManagement.Tests
         public void DemoScript_ContainsRequiredAccounts_AndScenarioKeys()
         {
             // Mô tả: Kiểm tra script 04_FinalDemoData.sql chứa đầy đủ 3 tài khoản mẫu chuẩn (admin, manager1, staff1), mã QR mẫu GUID và nhãn cảnh báo vượt ngân sách BR-14.
-            string rootPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\04_FinalDemoData.sql");
-            string scriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\scripts\04_FinalDemoData.sql");
-            string activePath = File.Exists(rootPath) ? rootPath : scriptPath;
+            string activePath = ResolveScriptPath("04_FinalDemoData.sql");
 
             string sqlContent = File.ReadAllText(activePath);
 

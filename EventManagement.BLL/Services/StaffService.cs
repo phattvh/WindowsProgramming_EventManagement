@@ -15,122 +15,39 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class StaffService : IStaffService
     {
-        private static readonly List<StaffDto> _staffList = new()
+        private static readonly List<StaffDto> _staffList = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new StaffDto
+            if (_staffList.Count == 0)
             {
-                MaNhanSu = "NS001",
-                HoTen = "Trần Minh Tâm",
-                SoDienThoai = "0909123001",
-                Email = "tam.tm@eventhub.vn",
-                ChucDanh = "Trưởng ban Hậu cần",
-                PhongBan = "Hậu cần",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 2
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS002",
-                HoTen = "Lê Thanh Hằng",
-                SoDienThoai = "0909123002",
-                Email = "hang.lt@eventhub.vn",
-                ChucDanh = "Trưởng ban Lễ tân",
-                PhongBan = "Lễ tân",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 1
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS003",
-                HoTen = "Nguyễn Hoàng Long",
-                SoDienThoai = "0909123003",
-                Email = "long.nh@eventhub.vn",
-                ChucDanh = "Kỹ thuật viên Âm thanh",
-                PhongBan = "Kỹ thuật",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 1
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS004",
-                HoTen = "Vũ Thị Mai",
-                SoDienThoai = "0909123004",
-                Email = "mai.vt@eventhub.vn",
-                ChucDanh = "Nhân viên Đón tiếp",
-                PhongBan = "Lễ tân",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS005",
-                HoTen = "Phan Đình Tùng",
-                SoDienThoai = "0909123005",
-                Email = "tung.pd@eventhub.vn",
-                ChucDanh = "Nhân viên Soát vé QR",
-                PhongBan = "Hậu cần",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS006",
-                HoTen = "Bùi Kim Ngân",
-                SoDienThoai = "0909123006",
-                Email = "ngan.bk@eventhub.vn",
-                ChucDanh = "Hướng dẫn khách mời",
-                PhongBan = "Lễ tân",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS007",
-                HoTen = "Nguyễn Tuấn Anh",
-                SoDienThoai = "0909123007",
-                Email = "anh.nt@eventhub.vn",
-                ChucDanh = "Kỹ thuật viên Ánh sáng",
-                PhongBan = "Kỹ thuật",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS008",
-                HoTen = "Hoàng Minh Châu",
-                SoDienThoai = "0909123008",
-                Email = "chau.hm@eventhub.vn",
-                ChucDanh = "Điều phối viên Sự kiện",
-                PhongBan = "Điều phối",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS009",
-                HoTen = "Trần Thị Hương",
-                SoDienThoai = "0909123009",
-                Email = "huong.tt@eventhub.vn",
-                ChucDanh = "Tiếp đón Diễn giả VIP",
-                PhongBan = "Lễ tân",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
-            },
-            new StaffDto
-            {
-                MaNhanSu = "NS010",
-                HoTen = "Đỗ Văn Khang",
-                SoDienThoai = "0909123010",
-                Email = "khang.dv@eventhub.vn",
-                ChucDanh = "Đội trưởng An ninh",
-                PhongBan = "An ninh",
-                TrangThai = "Hoạt động",
-                SoCaTrucThamGia = 0
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var list = db.NhanSus.Select(n => new StaffDto
+                    {
+                        MaNhanSu = n.MaNhanSu,
+                        HoTen = n.HoTen,
+                        SoDienThoai = n.SoDienThoai,
+                        Email = n.Email,
+                        ChucDanh = n.ChucVu,
+                        PhongBan = n.ChucVu,
+                        TrangThai = "Hoạt động",
+                        SoCaTrucThamGia = db.PhanCongNhanSus.Count(p => p.MaNhanSu == n.MaNhanSu)
+                    }).ToList();
+
+                    if (list.Any())
+                    {
+                        _staffList.AddRange(list);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         public ServiceResult<List<StaffDto>> GetAll(string? keyword = null, string? statusFilter = null, string? departmentFilter = null)
         {
+            EnsureLoadedFromDb();
             var query = _staffList.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -159,6 +76,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<StaffDto> GetById(string maNhanSu)
         {
+            EnsureLoadedFromDb();
             var item = _staffList.FirstOrDefault(x => x.MaNhanSu.Equals(maNhanSu, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -169,6 +87,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(StaffDto dto)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(dto.MaNhanSu))
             {
                 return ServiceResult.Failed("Mã nhân sự không được để trống!");
@@ -191,9 +110,9 @@ namespace EventManagement.BLL.Services
             }
 
             string phone = dto.SoDienThoai.Trim();
-            if (!Regex.IsMatch(phone, @"^[0-9]{8,15}$"))
+            if (!Regex.IsMatch(phone, @"^(0|\+84)[0-9]{9,10}$"))
             {
-                return ServiceResult.Failed("Số điện thoại nhân sự phải từ 8 đến 15 chữ số!");
+                return ServiceResult.Failed("Số điện thoại nhân sự không hợp lệ (cần 10–11 chữ số, bắt đầu bằng 0 hoặc +84)!");
             }
 
             if (!string.IsNullOrWhiteSpace(dto.Email))
@@ -224,6 +143,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(StaffDto dto)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(dto.MaNhanSu))
             {
                 return ServiceResult.Failed("Mã nhân sự không hợp lệ!");
@@ -246,9 +166,9 @@ namespace EventManagement.BLL.Services
             }
 
             string phone = dto.SoDienThoai.Trim();
-            if (!Regex.IsMatch(phone, @"^[0-9]{8,15}$"))
+            if (!Regex.IsMatch(phone, @"^(0|\+84)[0-9]{9,10}$"))
             {
-                return ServiceResult.Failed("Số điện thoại nhân sự phải từ 8 đến 15 chữ số!");
+                return ServiceResult.Failed("Số điện thoại nhân sự không hợp lệ (cần 10–11 chữ số, bắt đầu bằng 0 hoặc +84)!");
             }
 
             if (!string.IsNullOrWhiteSpace(dto.Email))
@@ -273,6 +193,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maNhanSu)
         {
+            EnsureLoadedFromDb();
             var item = _staffList.FirstOrDefault(x => x.MaNhanSu.Equals(maNhanSu, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -283,7 +204,7 @@ namespace EventManagement.BLL.Services
             if (item.SoCaTrucThamGia > 0)
             {
                 return ServiceResult.Failed(
-                    $"Nhân sự '{item.HoTen}' đã được phân công tham gia {item.SoCaTrucThamGia} ca trực sự kiện. Theo quy tắc toàn vẹn dữ liệu BR-20, bạn không thể xóa cứng hồ sơ này!",
+                    $"Nhân sự '{item.HoTen}' đã được phân công tham gia {item.SoCaTrucThamGia} ca trực sự kiện nên không thể xóa cứng hồ sơ này!",
                     "BR-20");
             }
 
@@ -294,6 +215,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult SoftDelete(string maNhanSu)
         {
+            EnsureLoadedFromDb();
             var item = _staffList.FirstOrDefault(x => x.MaNhanSu.Equals(maNhanSu, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -301,8 +223,7 @@ namespace EventManagement.BLL.Services
             }
 
             item.TrangThai = "Nghỉ việc";
-            DataSyncNotifier.NotifyDataChanged();
-            return ServiceResult.Success($"Đã chuyển trạng thái nhân sự '{item.HoTen}' sang 'Nghỉ việc' thành công theo quy tắc BR-20.");
+            return ServiceResult.Success($"Đã chuyển trạng thái nhân sự '{item.HoTen}' sang 'Nghỉ việc' thành công.");
         }
     }
 }

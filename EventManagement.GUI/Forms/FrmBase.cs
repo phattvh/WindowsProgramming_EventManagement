@@ -28,6 +28,18 @@ namespace EventManagement.GUI.Forms
         public static readonly Color ColorWarning = Color.FromArgb(217, 119, 6);      // Vàng cam #D97706
         public static readonly Color ColorDanger = Color.FromArgb(220, 38, 38);       // Đỏ cảnh báo #DC2626
 
+        /// <summary>
+        /// Loại bỏ tất cả mã quy tắc nghiệp vụ dạng (BR-xx), BR-xx khỏi thông báo người dùng để đảm bảo thông điệp tự nhiên, thân thiện.
+        /// </summary>
+        public static string StripBrTags(string? message)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return string.Empty;
+            var cleaned = System.Text.RegularExpressions.Regex.Replace(message, @"\s*\(BR-\d+\):", ":", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\s*\[?\(?BR-\d+\)?\]?", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\s{2,}", " ");
+            return cleaned.Trim();
+        }
+
         private MenuStrip? _navMenuStrip;
 
         /// <summary>
@@ -72,7 +84,7 @@ namespace EventManagement.GUI.Forms
 
                 if (this is FrmLogin)
                 {
-                    this.ClientSize = new Size(420, 345);
+                    this.ClientSize = new Size(420, 355);
                 }
                 else if (this is FrmChangePassword)
                 {
@@ -105,7 +117,7 @@ namespace EventManagement.GUI.Forms
 
                 if (this is FrmLogin)
                 {
-                    this.ClientSize = new Size(420, 345);
+                    this.ClientSize = new Size(420, 355);
                 }
                 else if (this is FrmChangePassword)
                 {
@@ -138,6 +150,15 @@ namespace EventManagement.GUI.Forms
                     InitializeGlobalNavigationMenu();
                 }
 
+                ApplyResponsiveLayout(this);
+            }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            if (!DesignMode && !(this is FrmLogin || this is FrmChangePassword || this is FrmServerConfig))
+            {
                 ApplyResponsiveLayout(this);
             }
         }
@@ -379,12 +400,13 @@ namespace EventManagement.GUI.Forms
                 "HỆ THỐNG QUẢN LÝ SỰ KIỆN (EVENT MANAGEMENT SYSTEM)\n" +
                 "Đồ án môn Lập trình Windows Cuối kỳ\n\n" +
                 "• Phiên bản: 1.0.0 (Windows Forms .NET 8.0)\n" +
+                "• Đơn vị phát triển: Nhóm WINDOWN\n" +
                 "• Chuẩn thiết kế: Corporate Blue Theme & UI/UX Standards\n" +
                 "• Tính năng: MenuStrip điều hướng toàn cục + Lối tắt phím nhanh (Hotkeys)\n" +
                 "• Bảo mật: Kiểm soát phân quyền 2 lớp (AD-4 / Role-Based Access Control)\n" +
-                "• Bản quyền: © 2026 Nhóm sinh viên thực hiện.";
+                "• Bản quyền: © 2026 Nhóm WINDOWN - Tất cả các quyền được bảo lưu.";
 
-            MessageBox.Show(this, msg, "Giới Thiệu Phần Mềm", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, msg, "Giới Thiệu Phần Mềm - Nhóm WINDOWN", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         /// <summary>
@@ -479,12 +501,13 @@ namespace EventManagement.GUI.Forms
 
             if (pnlHeader != null && pnlFilter != null)
             {
-                int targetFilterTop = pnlHeader.Bottom + 10;
-                if (pnlFilter.Top < targetFilterTop)
+                int targetFilterTop = pnlHeader.Bottom + 12;
+                if (pnlFilter.Top != targetFilterTop)
                 {
+                    int shift = targetFilterTop - pnlFilter.Top;
                     pnlFilter.Top = targetFilterTop;
 
-                    if (mainGrid != null && mainGrid.Top < pnlFilter.Bottom + 10)
+                    if (mainGrid != null)
                     {
                         int targetGridTop = pnlFilter.Bottom + 10;
                         int gridShift = targetGridTop - mainGrid.Top;
@@ -526,8 +549,18 @@ namespace EventManagement.GUI.Forms
             dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
             dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = ColorText;
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgv.ColumnHeadersHeight = 36;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+            foreach (DataGridViewColumn col in dgv.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            dgv.ColumnAdded -= Dgv_ColumnAddedCenterHeader;
+            dgv.ColumnAdded += Dgv_ColumnAddedCenterHeader;
+            dgv.DataBindingComplete -= Dgv_DataBindingCompleteCenterHeader;
+            dgv.DataBindingComplete += Dgv_DataBindingCompleteCenterHeader;
 
             // Row Style & Zebra Striping
             dgv.RowTemplate.Height = 32;
@@ -536,6 +569,25 @@ namespace EventManagement.GUI.Forms
             dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254); // Xanh nhạt khi chọn
             dgv.DefaultCellStyle.SelectionForeColor = ColorText;
             dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+        }
+
+        private static void Dgv_ColumnAddedCenterHeader(object? sender, DataGridViewColumnEventArgs e)
+        {
+            if (e.Column != null)
+            {
+                e.Column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+        }
+
+        private static void Dgv_DataBindingCompleteCenterHeader(object? sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            if (sender is DataGridView grid)
+            {
+                foreach (DataGridViewColumn col in grid.Columns)
+                {
+                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
         }
 
         /// <summary>

@@ -56,6 +56,16 @@ namespace EventManagement.GUI.Forms
             colSoLanSai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colKhoaDenKhi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            txtHoTen.MaxLength = 100;
+            txtTenDangNhap.MaxLength = 50;
+            txtEmail.MaxLength = 100;
+            txtSoDienThoai.MaxLength = 15;
+
+            foreach (Control input in new Control[] { txtTenDangNhap, txtHoTen, txtEmail, txtMatKhau, txtSoDienThoai, cboNhomQuyen, cboTrangThai })
+            {
+                errorProvider.SetIconPadding(input, 4);
+            }
+
             grpDetail.Resize += (s, e) => LayoutDetailGroup();
             LayoutDetailGroup();
         }
@@ -94,49 +104,54 @@ namespace EventManagement.GUI.Forms
 
         public void LayoutDetailGroup()
         {
-            int totalW = grpDetail.ClientSize.Width - 40;
-            if (totalW < 300) return;
-            int colW = totalW / 3;
+            const int marginLeft = 20;
+            const int marginRight = 32; // Chừa đủ chỗ cho icon ErrorProvider bên phải cột 3
+            const int colGap = 28;      // Chừa đủ chỗ cho icon ErrorProvider giữa các cột
+
+            int usableW = grpDetail.ClientSize.Width - marginLeft - marginRight - (colGap * 2);
+            if (usableW < 300) return;
+            int colW = usableW / 3;
 
             // Cột 1
-            int c1X = 20;
+            int c1X = marginLeft;
             lblMaNguoiDung.Location = new Point(c1X, 30);
             txtMaNguoiDung.Location = new Point(c1X + 115, 26);
-            txtMaNguoiDung.Width = Math.Max(100, colW - 130);
+            txtMaNguoiDung.Width = Math.Max(100, colW - 115);
 
             lblHoTen.Location = new Point(c1X, 70);
             txtHoTen.Location = new Point(c1X + 115, 66);
-            txtHoTen.Width = Math.Max(100, colW - 130);
+            txtHoTen.Width = Math.Max(100, colW - 115);
 
             lblNhomQuyen.Location = new Point(c1X, 110);
             cboNhomQuyen.Location = new Point(c1X + 115, 106);
-            cboNhomQuyen.Width = Math.Max(100, colW - 130);
+            cboNhomQuyen.Width = Math.Max(100, colW - 115);
 
             // Cột 2
-            int c2X = c1X + colW + 15;
+            int c2X = c1X + colW + colGap;
             lblTenDangNhap.Location = new Point(c2X, 30);
             txtTenDangNhap.Location = new Point(c2X + 115, 26);
-            txtTenDangNhap.Width = Math.Max(100, colW - 130);
+            txtTenDangNhap.Width = Math.Max(100, colW - 115);
 
             lblEmail.Location = new Point(c2X, 70);
             txtEmail.Location = new Point(c2X + 115, 66);
-            txtEmail.Width = Math.Max(100, colW - 130);
+            txtEmail.Width = Math.Max(100, colW - 115);
 
             lblTrangThai.Location = new Point(c2X, 110);
             cboTrangThai.Location = new Point(c2X + 115, 106);
-            cboTrangThai.Width = Math.Max(100, colW - 130);
+            cboTrangThai.Width = Math.Max(100, colW - 115);
 
             // Cột 3
-            int c3X = c2X + colW + 15;
+            int c3X = c2X + colW + colGap;
             lblMatKhau.Location = new Point(c3X, 30);
             txtMatKhau.Location = new Point(c3X + 90, 26);
-            txtMatKhau.Width = Math.Max(100, colW - 105);
+            txtMatKhau.Width = Math.Max(100, colW - 90);
 
             lblSoDienThoai.Location = new Point(c3X, 70);
             txtSoDienThoai.Location = new Point(c3X + 90, 66);
-            txtSoDienThoai.Width = Math.Max(100, colW - 105);
+            txtSoDienThoai.Width = Math.Max(100, colW - 90);
 
-            lblThongTinKhoa.Location = new Point(20, 150);
+            lblThongTinKhoa.Location = new Point(marginLeft, 150);
+            lblThongTinKhoa.MaximumSize = new Size(Math.Max(300, grpDetail.ClientSize.Width - marginLeft - marginRight), 32);
         }
 
         public async Task LoadDataAsync()
@@ -165,7 +180,7 @@ namespace EventManagement.GUI.Forms
                     ClearDetail();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải danh sách tài khoản người dùng. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -243,6 +258,7 @@ namespace EventManagement.GUI.Forms
                     btnLuu.Location = new Point(0, 7);
                     btnHuy.Location = new Point(120, 7);
 
+                    lblThongTinKhoa.Text = string.Empty;
                     txtTenDangNhap.Focus();
                     break;
 
@@ -276,6 +292,7 @@ namespace EventManagement.GUI.Forms
                     btnLuu.Location = new Point(0, 7);
                     btnHuy.Location = new Point(120, 7);
 
+                    lblThongTinKhoa.Text = string.Empty;
                     txtHoTen.Focus();
                     break;
             }
@@ -379,6 +396,17 @@ namespace EventManagement.GUI.Forms
         {
             if (_selectedUser == null) return;
 
+            if (CurrentSession.IsLoggedIn &&
+                string.Equals(_selectedUser.MaNguoiDung, CurrentSession.MaNguoiDung, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show(
+                    "Không thể xóa tài khoản bạn đang sử dụng trong phiên làm việc hiện tại!",
+                    "Không thể xóa tài khoản",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             var confirm = MessageBox.Show(
                 $"Bạn có chắc chắn muốn xóa tài khoản '{_selectedUser.TenDangNhap}' ({_selectedUser.HoTen})?",
                 "Xác nhận xóa tài khoản",
@@ -410,67 +438,81 @@ namespace EventManagement.GUI.Forms
             bool isNew = _currentMode == FormMode.Add;
 
             errorProvider.Clear();
+            lblThongTinKhoa.Text = string.Empty;
 
-            // Thẩm định tính hợp lệ của dữ liệu
-            var validation = ValidateUserInput(username, fullName, email, phone, password, isNew);
-            if (!validation.IsValid)
+            // Thẩm định tính hợp lệ của dữ liệu và hiển thị đồng thời tất cả các ô bị sai
+            var validationErrors = ValidateAllUserInputs(username, fullName, email, phone, password, isNew);
+            if (validationErrors.Count > 0)
             {
-                ApplyValidationError(validation.ErrorField, validation.ErrorMessage);
+                ApplyValidationErrors(validationErrors);
                 return;
             }
 
             string role = cboNhomQuyen.SelectedItem?.ToString() ?? "STAFF";
             string status = cboTrangThai.SelectedItem?.ToString() ?? "Hoạt động";
 
-            if (_currentMode == FormMode.Add)
+            try
             {
-                var createDto = new CreateUserDto
+                if (_currentMode == FormMode.Add)
                 {
-                    TenDangNhap = username,
-                    MatKhau = password,
-                    HoTen = fullName,
-                    Email = email,
-                    SoDienThoai = phone,
-                    MaNhomQuyen = role,
-                    TrangThai = status
-                };
+                    var createDto = new CreateUserDto
+                    {
+                        TenDangNhap = username,
+                        MatKhau = password,
+                        HoTen = fullName,
+                        Email = email,
+                        SoDienThoai = phone,
+                        MaNhomQuyen = role,
+                        TrangThai = status
+                    };
 
-                var result = await _userService.CreateAsync(createDto);
-                if (result.IsSuccess)
-                {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await LoadDataAsync();
-                    SetFormState(FormMode.View);
+                    var result = await _userService.CreateAsync(createDto);
+                    if (result.IsSuccess)
+                    {
+                        MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await LoadDataAsync();
+                        SetFormState(FormMode.View);
+                    }
+                    else
+                    {
+                        lblThongTinKhoa.Text = $"⚠️ {result.Message}";
+                        lblThongTinKhoa.ForeColor = Color.Red;
+                        MessageBox.Show(result.Message, "Không thể thêm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        errorProvider.SetError(txtTenDangNhap, result.Message);
+                    }
                 }
-                else
+                else if (_currentMode == FormMode.Edit && _selectedUser != null)
                 {
-                    MessageBox.Show(result.Message, "Không thể thêm", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    errorProvider.SetError(txtTenDangNhap, result.Message);
+                    var updateDto = new UpdateUserDto
+                    {
+                        HoTen = fullName,
+                        Email = email,
+                        SoDienThoai = phone,
+                        MaNhomQuyen = role,
+                        TrangThai = status,
+                        MatKhauMoi = string.IsNullOrWhiteSpace(password) ? null : password
+                    };
+
+                    var result = await _userService.UpdateAsync(_selectedUser.MaNguoiDung, updateDto);
+                    if (result.IsSuccess)
+                    {
+                        MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        await LoadDataAsync();
+                        SetFormState(FormMode.View);
+                    }
+                    else
+                    {
+                        lblThongTinKhoa.Text = $"⚠️ {result.Message}";
+                        lblThongTinKhoa.ForeColor = Color.Red;
+                        MessageBox.Show(result.Message, "Không thể cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
-            else if (_currentMode == FormMode.Edit && _selectedUser != null)
+            catch (Exception ex)
             {
-                var updateDto = new UpdateUserDto
-                {
-                    HoTen = fullName,
-                    Email = email,
-                    SoDienThoai = phone,
-                    MaNhomQuyen = role,
-                    TrangThai = status,
-                    MatKhauMoi = string.IsNullOrWhiteSpace(password) ? null : password
-                };
-
-                var result = await _userService.UpdateAsync(_selectedUser.MaNguoiDung, updateDto);
-                if (result.IsSuccess)
-                {
-                    MessageBox.Show(result.Message, "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    await LoadDataAsync();
-                    SetFormState(FormMode.View);
-                }
-                else
-                {
-                    MessageBox.Show(result.Message, "Không thể cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
+                lblThongTinKhoa.Text = $"⚠️ Lỗi hệ thống: {ex.Message}";
+                lblThongTinKhoa.ForeColor = Color.Red;
+                MessageBox.Show($"Không thể lưu thông tin người dùng:\n{ex.Message}", "Lỗi hệ thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -544,31 +586,100 @@ namespace EventManagement.GUI.Forms
             }
         }
 
-        private void ApplyValidationError(string? field, string? message)
+        private Control? ResolveInputControl(string? field) => field switch
         {
-            switch (field)
+            nameof(txtTenDangNhap) => txtTenDangNhap,
+            nameof(txtHoTen) => txtHoTen,
+            nameof(txtEmail) => txtEmail,
+            nameof(txtSoDienThoai) => txtSoDienThoai,
+            nameof(txtMatKhau) => txtMatKhau,
+            _ => null
+        };
+
+        private void ApplyValidationErrors(IReadOnlyList<(string Field, string Message)> errors)
+        {
+            Control? firstControl = null;
+            foreach (var (field, message) in errors)
             {
-                case nameof(txtTenDangNhap):
-                    errorProvider.SetError(txtTenDangNhap, message);
-                    txtTenDangNhap.Focus();
-                    break;
-                case nameof(txtHoTen):
-                    errorProvider.SetError(txtHoTen, message);
-                    txtHoTen.Focus();
-                    break;
-                case nameof(txtEmail):
-                    errorProvider.SetError(txtEmail, message);
-                    txtEmail.Focus();
-                    break;
-                case nameof(txtSoDienThoai):
-                    errorProvider.SetError(txtSoDienThoai, message);
-                    txtSoDienThoai.Focus();
-                    break;
-                case nameof(txtMatKhau):
-                    errorProvider.SetError(txtMatKhau, message);
-                    txtMatKhau.Focus();
-                    break;
+                var control = ResolveInputControl(field);
+                if (control != null)
+                {
+                    errorProvider.SetError(control, message);
+                    firstControl ??= control;
+                }
             }
+
+            lblThongTinKhoa.Text = $"⚠️ {string.Join(" | ", errors.Select(e => e.Message))}";
+            lblThongTinKhoa.ForeColor = Color.Red;
+            firstControl?.Focus();
+        }
+
+        /// <summary>
+        /// Thẩm định đồng thời tất cả các trường nhập liệu người dùng Form F03.
+        /// </summary>
+        public static List<(string Field, string Message)> ValidateAllUserInputs(
+            string username,
+            string fullName,
+            string email,
+            string? phone,
+            string? password,
+            bool isNewUser)
+        {
+            var errors = new List<(string Field, string Message)>();
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                errors.Add((nameof(txtTenDangNhap), "Tên đăng nhập không được để trống!"));
+            }
+            else if (username.Length < 3)
+            {
+                errors.Add((nameof(txtTenDangNhap), "Tên đăng nhập phải có ít nhất 3 ký tự!"));
+            }
+
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                errors.Add((nameof(txtHoTen), "Họ và tên không được để trống!"));
+            }
+            else if (fullName.Trim().Length > 100)
+            {
+                errors.Add((nameof(txtHoTen), "Họ và tên không được vượt quá 100 ký tự!"));
+            }
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                errors.Add((nameof(txtEmail), "Email không được để trống!"));
+            }
+            else if (!Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase))
+            {
+                errors.Add((nameof(txtEmail), "Định dạng email không hợp lệ (ví dụ: user@example.com)!"));
+            }
+
+            if (!string.IsNullOrWhiteSpace(phone))
+            {
+                string cleanPhone = phone.Trim();
+                if (!Regex.IsMatch(cleanPhone, @"^(0|\+84)[0-9]{9,10}$"))
+                {
+                    errors.Add((nameof(txtSoDienThoai), "Số điện thoại không hợp lệ (cần 10 số, bắt đầu bằng 0 hoặc +84)!"));
+                }
+            }
+
+            if (isNewUser)
+            {
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    errors.Add((nameof(txtMatKhau), "Mật khẩu không được để trống khi tạo tài khoản mới!"));
+                }
+                else if (password.Length < 6)
+                {
+                    errors.Add((nameof(txtMatKhau), "Mật khẩu phải có độ dài tối thiểu 6 ký tự!"));
+                }
+            }
+            else if (!string.IsNullOrWhiteSpace(password) && password.Length < 6)
+            {
+                errors.Add((nameof(txtMatKhau), "Mật khẩu mới phải có độ dài tối thiểu 6 ký tự!"));
+            }
+
+            return errors;
         }
 
         /// <summary>
@@ -576,68 +687,19 @@ namespace EventManagement.GUI.Forms
         /// Hàm public static phục vụ viết Unit Test tự động không cần môi trường GUI
         /// </summary>
         public static (bool IsValid, string? ErrorField, string? ErrorMessage) ValidateUserInput(
-            string username, 
-            string fullName, 
-            string email, 
-            string? phone, 
-            string? password, 
+            string username,
+            string fullName,
+            string email,
+            string? phone,
+            string? password,
             bool isNewUser)
         {
-            if (string.IsNullOrWhiteSpace(username))
+            var errors = ValidateAllUserInputs(username, fullName, email, phone, password, isNewUser);
+            if (errors.Count == 0)
             {
-                return (false, nameof(txtTenDangNhap), "Tên đăng nhập không được để trống!");
+                return (true, null, null);
             }
-
-            if (username.Length < 3)
-            {
-                return (false, nameof(txtTenDangNhap), "Tên đăng nhập phải có ít nhất 3 ký tự!");
-            }
-
-            if (string.IsNullOrWhiteSpace(fullName))
-            {
-                return (false, nameof(txtHoTen), "Họ và tên không được để trống!");
-            }
-
-            if (string.IsNullOrWhiteSpace(email))
-            {
-                return (false, nameof(txtEmail), "Email không được để trống!");
-            }
-
-            // Kiểm tra định dạng Email chuẩn
-            string emailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            if (!Regex.IsMatch(email, emailRegex, RegexOptions.IgnoreCase))
-            {
-                return (false, nameof(txtEmail), "Định dạng email không hợp lệ (ví dụ: user@example.com)!");
-            }
-
-            // Kiểm tra Số điện thoại nếu có nhập
-            if (!string.IsNullOrWhiteSpace(phone))
-            {
-                string cleanPhone = phone.Trim();
-                if (!Regex.IsMatch(cleanPhone, @"^(0|\+84)[0-9]{9,10}$"))
-                {
-                    return (false, nameof(txtSoDienThoai), "Số điện thoại không hợp lệ (cần 10 số, bắt đầu bằng 0 hoặc +84)!");
-                }
-            }
-
-            // Kiểm tra Mật khẩu khi tạo mới
-            if (isNewUser)
-            {
-                if (string.IsNullOrWhiteSpace(password))
-                {
-                    return (false, nameof(txtMatKhau), "Mật khẩu không được để trống khi tạo tài khoản mới!");
-                }
-                if (password.Length < 6)
-                {
-                    return (false, nameof(txtMatKhau), "Mật khẩu phải có độ dài tối thiểu 6 ký tự!");
-                }
-            }
-            else if (!string.IsNullOrWhiteSpace(password) && password.Length < 6)
-            {
-                return (false, nameof(txtMatKhau), "Mật khẩu mới phải có độ dài tối thiểu 6 ký tự!");
-            }
-
-            return (true, null, null);
+            return (false, errors[0].Field, errors[0].Message);
         }
     }
 }

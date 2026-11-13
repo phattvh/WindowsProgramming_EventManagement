@@ -72,16 +72,24 @@ namespace EventManagement.Tests
         }
 
         [TestMethod]
-        public void F05_Tab8AndTab9_HeadersStandardized()
+        public void F05_Tab8HeaderStandardized_And_FeedbackTabRemoved()
         {
-            // Mô tả: Kiểm tra tiêu đề Tab 8 ('TIẾN ĐỘ NGÂN SÁCH') và Tab 9 ('Ý KIẾN ĐÓNG GÓP')
+            // Mô tả: Kiểm tra tiêu đề Tab 8 ('TIẾN ĐỘ NGÂN SÁCH'), F05 còn 8 Tab (đã bỏ Tab 'Khảo sát & Phản hồi') và nhãn chọn sự kiện không bị che
             using var form = new FrmEventDetail();
+            form.Show();
 
             var lblTab8Header = form.GetType().GetField("lblTab8Header", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(form) as Label;
-            var lblTab9Header = form.GetType().GetField("lblTab9Header", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(form) as Label;
+            var tabMain = form.GetType().GetField("tabMain", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(form) as TabControl;
+            var lblChonSuKien = form.GetType().GetField("lblChonSuKien", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(form) as Label;
+            var cboChonSuKien = form.GetType().GetField("cboChonSuKien", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(form) as ComboBox;
 
             lblTab8Header!.Text.Should().Be("TIẾN ĐỘ NGÂN SÁCH");
-            lblTab9Header!.Text.Should().Be("Ý KIẾN ĐÓNG GÓP");
+            tabMain.Should().NotBeNull();
+            tabMain!.TabPages.Count.Should().Be(8);
+            tabMain.TabPages.ContainsKey("tabDanhGia").Should().BeFalse();
+            lblChonSuKien!.Right.Should().BeLessThanOrEqualTo(cboChonSuKien!.Left - 6);
+
+            form.Hide();
         }
 
         [TestMethod]

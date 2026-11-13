@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using EventManagement.BLL.Services;
 using EventManagement.Core.Common;
 using EventManagement.Core.DTOs;
+using SkiaSharp;
 
 namespace EventManagement.GUI.Forms
 {
@@ -77,6 +78,9 @@ namespace EventManagement.GUI.Forms
             dgvReportData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvReportData.AutoGenerateColumns = false;
 
+            grpFilter.Resize += (s, e) => LayoutFilterButtons();
+            LayoutFilterButtons();
+
             pnlKpiBottom.Resize += (s, e) => LayoutKpiBottom();
             LayoutKpiBottom();
 
@@ -131,6 +135,18 @@ namespace EventManagement.GUI.Forms
                     ExecuteLoadReport();
             }
             catch { }
+        }
+
+        private void LayoutFilterButtons()
+        {
+            if (grpFilter == null || btnLamMoi == null || btnXuatExcel == null || btnIn == null || btnXem == null) return;
+            int rightEdge = grpFilter.ClientSize.Width - 16;
+            if (rightEdge < 600) return;
+
+            btnLamMoi.Location = new Point(rightEdge - btnLamMoi.Width, 27);
+            btnXuatExcel.Location = new Point(btnLamMoi.Left - 12 - btnXuatExcel.Width, 27);
+            btnIn.Location = new Point(btnXuatExcel.Left - 12 - btnIn.Width, 27);
+            btnXem.Location = new Point(btnIn.Left - 12 - btnXem.Width, 27);
         }
 
         private void LayoutKpiBottom()
@@ -243,7 +259,7 @@ namespace EventManagement.GUI.Forms
                     lblTrangThai.Text = $"Kết luận: {_currentSettlement.DanhGiaQuyetToan} ({_currentSettlement.ChenhLechThuChi:#,##0} VNĐ)";
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải dữ liệu báo cáo quyết toán. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -315,7 +331,7 @@ namespace EventManagement.GUI.Forms
                 lblTrangThai.ForeColor = ColorPrimaryLight;
                 lblTrangThai.Text = "Trạng thái: Vé điện tử hợp lệ tích hợp QR";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải dữ liệu báo cáo vé điện tử. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -403,7 +419,7 @@ namespace EventManagement.GUI.Forms
                 lblTrangThai.ForeColor = ColorSuccess;
                 lblTrangThai.Text = "Chỉ số KPI đạt tiến độ chuẩn";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 MessageBox.Show("Không thể tải dữ liệu thống kê KPI. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -472,7 +488,12 @@ namespace EventManagement.GUI.Forms
             {
                 Title = "Xuất Báo Cáo Ra Định Dạng PDF / In Báo Cáo",
                 Filter = "Tệp PDF (*.pdf)|*.pdf|In qua máy in vật lý (*.*)|*.*",
-                FileName = "BaoCao_TongKet.pdf"
+                FileName = _selectedReportMode switch
+                {
+                    1 => $"BaoCaoQuyetToan_{DateTime.Now:yyyyMMdd_HHmmss}.pdf",
+                    2 => $"BaoCaoVeDienTu_{DateTime.Now:yyyyMMdd_HHmmss}.pdf",
+                    _ => $"ThongKeKpi_{DateTime.Now:yyyyMMdd_HHmmss}.pdf"
+                }
             };
 
             if (sfd.ShowDialog(this) != DialogResult.OK) return;
@@ -480,47 +501,20 @@ namespace EventManagement.GUI.Forms
             string targetFile = sfd.FileName;
             if (Path.GetExtension(targetFile).Equals(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                bool pdfGenerated = false;
                 try
                 {
-                    string pdfPrinter = "Microsoft Print to PDF";
-                    bool hasPdfPrinter = PrinterSettings.InstalledPrinters.Cast<string>()
-                        .Any(p => p.Equals(pdfPrinter, StringComparison.OrdinalIgnoreCase));
+                    GenerateRealTextPdfReport(targetFile);
 
-                    if (hasPdfPrinter)
-                    {
-                        var prevPrinter = _printDoc.PrinterSettings.PrinterName;
-                        var prevPrintToFile = _printDoc.PrinterSettings.PrintToFile;
-                        var prevPrintFileName = _printDoc.PrinterSettings.PrintFileName;
-
-                        _printDoc.PrinterSettings.PrinterName = pdfPrinter;
-                        _printDoc.PrinterSettings.PrintToFile = true;
-                        _printDoc.PrinterSettings.PrintFileName = targetFile;
-
-                        _printDoc.Print();
-
-                        _printDoc.PrinterSettings.PrintToFile = prevPrintToFile;
-                        _printDoc.PrinterSettings.PrinterName = prevPrinter;
-                        _printDoc.PrinterSettings.PrintFileName = prevPrintFileName;
-
-                        pdfGenerated = File.Exists(targetFile) && new FileInfo(targetFile).Length > 0;
-                    }
+                    MessageBox.Show(
+                        $"Xuất báo cáo PDF thành công!\n\nĐường dẫn: {targetFile}\nĐịnh dạng: Chuẩn trang A4, văn bản Vector (True Text) sắc nét, có thể chọn/sao chép/chỉnh sửa nội dung, bảng biểu cân đối không bị chồng chéo.",
+                        "Xuất PDF Thành Công",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    pdfGenerated = false;
+                    MessageBox.Show($"Lỗi khi tạo tệp PDF: {ex.Message}", "Lỗi Xuất Báo Cáo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                if (!pdfGenerated)
-                {
-                    GenerateFallbackPdfReport(targetFile);
-                }
-
-                MessageBox.Show(
-                    $"Xuất báo cáo PDF thành công!\n\nĐường dẫn: {targetFile}\nBố cục: Trang A4 chuẩn, đầy đủ thông tin sự kiện, bảng số liệu và chữ ký người lập biểu.",
-                    "Xuất PDF Thành Công",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
             }
             else
             {
@@ -541,70 +535,305 @@ namespace EventManagement.GUI.Forms
             }
         }
 
-        private void GenerateFallbackPdfReport(string filePath)
+        public void GenerateRealTextPdfReport(string filePath)
         {
-            try
+            using var stream = File.Create(filePath);
+            using var doc = SKDocument.CreatePdf(stream);
+            using var canvas = doc.BeginPage(595, 842); // Khổ A4 tiêu chuẩn quốc tế: 595 x 842 pt
+
+            using var typefaceRegular = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Normal)
+                                        ?? SKTypeface.FromFamilyName("Arial", SKFontStyle.Normal)
+                                        ?? SKTypeface.Default;
+            using var typefaceBold = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Bold)
+                                     ?? SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold)
+                                     ?? SKTypeface.Default;
+            using var typefaceItalic = SKTypeface.FromFamilyName("Segoe UI", SKFontStyle.Italic)
+                                       ?? SKTypeface.FromFamilyName("Arial", SKFontStyle.Italic)
+                                       ?? SKTypeface.Default;
+
+            using var paintTitle = new SKPaint { Typeface = typefaceBold, TextSize = 15f, Color = new SKColor(30, 58, 138), IsAntialias = true };
+            using var paintSubTitle = new SKPaint { Typeface = typefaceBold, TextSize = 10f, Color = new SKColor(30, 41, 59), IsAntialias = true };
+            using var paintItalic = new SKPaint { Typeface = typefaceItalic, TextSize = 8.5f, Color = new SKColor(100, 116, 139), IsAntialias = true };
+            using var paintSectionHeader = new SKPaint { Typeface = typefaceBold, TextSize = 10f, Color = new SKColor(30, 58, 138), IsAntialias = true };
+            using var paintTh = new SKPaint { Typeface = typefaceBold, TextSize = 8.5f, Color = new SKColor(30, 41, 59), IsAntialias = true };
+            using var paintTd = new SKPaint { Typeface = typefaceRegular, TextSize = 8.5f, Color = new SKColor(30, 41, 59), IsAntialias = true };
+            using var paintSuccess = new SKPaint { Typeface = typefaceBold, TextSize = 9f, Color = new SKColor(22, 163, 74), IsAntialias = true };
+            using var paintDanger = new SKPaint { Typeface = typefaceBold, TextSize = 9f, Color = new SKColor(220, 38, 38), IsAntialias = true };
+
+            using var paintBorder = new SKPaint { Color = new SKColor(226, 232, 240), Style = SKPaintStyle.Stroke, StrokeWidth = 1f, IsAntialias = true };
+            using var paintKpiBorder = new SKPaint { Color = new SKColor(203, 213, 225), Style = SKPaintStyle.Stroke, StrokeWidth = 1f, IsAntialias = true };
+            using var paintBoxBg = new SKPaint { Color = new SKColor(248, 250, 252), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var paintHeaderBg = new SKPaint { Color = new SKColor(241, 245, 249), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var paintZebraBg = new SKPaint { Color = new SKColor(248, 250, 252), Style = SKPaintStyle.Fill, IsAntialias = true };
+            using var paintWhiteBg = new SKPaint { Color = SKColors.White, Style = SKPaintStyle.Fill, IsAntialias = true };
+
+            float left = 36f;
+            float top = 36f;
+            float width = 523f;
+            float y = top;
+
+            canvas.DrawRect(0, 0, 595, 842, paintWhiteBg);
+
+            if (_selectedReportMode == 1 && _currentSettlement != null)
             {
-                using var bmp = new Bitmap(794, 1123);
-                using (var g = Graphics.FromImage(bmp))
+                // Báo Cáo Quyết Toán Tài Chính Sự Kiện
+                string title = "BÁO CÁO QUYẾT TOÁN TÀI CHÍNH SỰ KIỆN";
+                float titleW = paintTitle.MeasureText(title);
+                canvas.DrawText(title, left + (width - titleW) / 2f, y + 16, paintTitle);
+                y += 28;
+
+                string subTitle = $"Sự kiện: {_currentSettlement.TenSuKien} (Mã SK: {_currentSettlement.MaSuKien})";
+                float subW = paintSubTitle.MeasureText(subTitle);
+                canvas.DrawText(subTitle, left + (width - subW) / 2f, y + 12, paintSubTitle);
+                y += 20;
+
+                string period = $"Kỳ quyết toán: Từ {_currentSettlement.TuNgay:dd/MM/yyyy} đến {_currentSettlement.DenNgay:dd/MM/yyyy}";
+                float perW = paintItalic.MeasureText(period);
+                canvas.DrawText(period, left + (width - perW) / 2f, y + 10, paintItalic);
+                y += 22;
+
+                // Khung tổng hợp KPI
+                float kpiH = 70f;
+                canvas.DrawRoundRect(left, y, width, kpiH, 4, 4, paintBoxBg);
+                canvas.DrawRoundRect(left, y, width, kpiH, 4, 4, paintKpiBorder);
+
+                float halfW = width / 2f;
+                DrawSkiaCellText(canvas, $"Ngân sách dự kiến: {_currentSettlement.NganSachDuKien:#,##0} VNĐ", left + 12, halfW - 20, y + 8, 16, paintTd, StringAlignment.Near, 0);
+                DrawSkiaCellText(canvas, $"Doanh thu bán vé: {_currentSettlement.TongDoanhThuBanVe:#,##0} VNĐ", left + 12, halfW - 20, y + 26, 16, paintTd, StringAlignment.Near, 0);
+
+                DrawSkiaCellText(canvas, $"Tiền tài trợ tiếp nhận: {_currentSettlement.TongTienTaiTro:#,##0} VNĐ", left + halfW + 12, halfW - 20, y + 8, 16, paintTd, StringAlignment.Near, 0);
+                DrawSkiaCellText(canvas, $"TỔNG NGUỒN THU: {_currentSettlement.TongThu:#,##0} VNĐ", left + halfW + 12, halfW - 20, y + 26, 16, paintSuccess, StringAlignment.Near, 0);
+
+                canvas.DrawLine(left + 12, y + 46, left + width - 12, y + 46, paintBorder);
+
+                var paintDiff = _currentSettlement.ChenhLechThuChi >= 0 ? paintSuccess : paintDanger;
+                string bottomSummary = $"TỔNG THỰC CHI: {_currentSettlement.TongThucChi:#,##0} VNĐ   |   CHÊNH LỆCH: {_currentSettlement.ChenhLechThuChi:#,##0} VNĐ";
+                DrawSkiaCellText(canvas, bottomSummary, left + 12, width - 24, y + 48, 18, paintDiff, StringAlignment.Near, 0);
+
+                y += kpiH + 18;
+
+                // Tiêu đề bảng
+                canvas.DrawText("DANH SÁCH CÁC KHOẢN CHI THỰC TẾ", left, y + 11, paintSectionHeader);
+                y += 18;
+
+                // Cấu trúc cột bảng (tổng chiều rộng 523pt hoàn toàn vừa vặn khổ A4)
+                float[] colW = { 35f, 155f, 183f, 65f, 85f };
+                string[] headers = { "STT", "Khoản mục chi", "Diễn giải / Ghi chú", "Ngày chi", "Số tiền (VNĐ)" };
+                StringAlignment[] aligns = { StringAlignment.Center, StringAlignment.Near, StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
+
+                // Header bảng
+                float headerH = 24f;
+                canvas.DrawRect(left, y, width, headerH, paintHeaderBg);
+                canvas.DrawRect(left, y, width, headerH, paintBorder);
+
+                float curX = left;
+                for (int i = 0; i < colW.Length; i++)
                 {
-                    g.Clear(Color.White);
-                    var pageBounds = new Rectangle(0, 0, 794, 1123);
-                    var marginBounds = new Rectangle(40, 40, 714, 1043);
-                    var args = new PrintPageEventArgs(g, marginBounds, pageBounds, new PageSettings());
-                    PrintDoc_PrintPage(this, args);
+                    if (i > 0) canvas.DrawLine(curX, y, curX, y + headerH, paintBorder);
+                    DrawSkiaCellText(canvas, headers[i], curX, colW[i], y, headerH, paintTh, aligns[i]);
+                    curX += colW[i];
+                }
+                y += headerH;
+
+                // Dữ liệu bảng chi phí
+                float rowH = 22f;
+                int index = 1;
+                var listChi = _currentSettlement.DanhSachChiPhi.Take(15).ToList();
+                for (int r = 0; r < listChi.Count; r++)
+                {
+                    var chi = listChi[r];
+                    var rowBg = (r % 2 == 1) ? paintZebraBg : paintWhiteBg;
+                    canvas.DrawRect(left, y, width, rowH, rowBg);
+                    canvas.DrawRect(left, y, width, rowH, paintBorder);
+
+                    string[] cells = {
+                        index++.ToString(),
+                        chi.KhoanMucChi,
+                        chi.DienGiai ?? "",
+                        chi.NgayChi.ToString("dd/MM/yyyy"),
+                        chi.SoTien.ToString("#,##0")
+                    };
+
+                    curX = left;
+                    for (int i = 0; i < colW.Length; i++)
+                    {
+                        if (i > 0) canvas.DrawLine(curX, y, curX, y + rowH, paintBorder);
+                        DrawSkiaCellText(canvas, cells[i], curX, colW[i], y, rowH, paintTd, aligns[i]);
+                        curX += colW[i];
+                    }
+                    y += rowH;
                 }
 
-                using var ms = new MemoryStream();
-                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-                byte[] imgBytes = ms.ToArray();
+                // Dòng tổng cộng thực chi
+                float sumH = 24f;
+                canvas.DrawRect(left, y, width, sumH, paintHeaderBg);
+                canvas.DrawRect(left, y, width, sumH, paintBorder);
 
-                using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-                using var writer = new StreamWriter(fs, Encoding.ASCII);
-                var offsets = new List<long>();
+                float sumLabelW = colW[0] + colW[1] + colW[2] + colW[3];
+                canvas.DrawLine(left + sumLabelW, y, left + sumLabelW, y + sumH, paintBorder);
+                DrawSkiaCellText(canvas, "TỔNG CỘNG THỰC CHI:", left, sumLabelW, y, sumH, paintTh, StringAlignment.Far, 8);
+                DrawSkiaCellText(canvas, $"{_currentSettlement.TongThucChi:#,##0} VNĐ", left + sumLabelW, colW[4], y, sumH, paintDanger, StringAlignment.Far, 5);
+                y += sumH + 35;
 
-                void WriteObj(string content)
+                // Khối chữ ký 3 bên
+                float sigColW = width / 3f;
+                string[] sigTitles = { "NGƯỜI LẬP BIỂU", "KẾ TOÁN TRƯỞNG", "TRƯỞNG BAN TỔ CHỨC" };
+                string[] sigNotes = { "(Ký, ghi rõ họ tên)", "(Ký, ghi rõ họ tên)", "(Ký, đóng dấu)" };
+
+                for (int i = 0; i < 3; i++)
                 {
-                    offsets.Add(fs.Position);
-                    writer.Write(content);
-                    writer.Flush();
+                    float sx = left + i * sigColW;
+                    DrawSkiaCellText(canvas, sigTitles[i], sx, sigColW, y, 16, paintTh, StringAlignment.Center, 0);
+                    DrawSkiaCellText(canvas, sigNotes[i], sx, sigColW, y + 14, 16, paintItalic, StringAlignment.Center, 0);
                 }
-
-                writer.WriteLine("%PDF-1.4");
-                writer.Flush();
-
-                WriteObj("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
-                WriteObj("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
-                WriteObj("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>\nendobj\n");
-
-                offsets.Add(fs.Position);
-                writer.Write($"4 0 obj\n<< /Type /XObject /Subtype /Image /Width {bmp.Width} /Height {bmp.Height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length {imgBytes.Length} >>\nstream\n");
-                writer.Flush();
-                fs.Write(imgBytes, 0, imgBytes.Length);
-                fs.Flush();
-                writer.Write("\nendstream\nendobj\n");
-                writer.Flush();
-
-                string contentStream = "q\n595 0 0 842 0 0 cm\n/Im1 Do\nQ\n";
-                byte[] contentBytes = Encoding.ASCII.GetBytes(contentStream);
-                WriteObj($"5 0 obj\n<< /Length {contentBytes.Length} >>\nstream\n{contentStream}endstream\nendobj\n");
-
-                long xrefPos = fs.Position;
-                writer.WriteLine("xref");
-                writer.WriteLine($"0 {offsets.Count + 1}");
-                writer.WriteLine("0000000000 65535 f ");
-                foreach (var off in offsets)
-                {
-                    writer.WriteLine($"{off:D10} 00000 n ");
-                }
-                writer.WriteLine("trailer");
-                writer.WriteLine($"<< /Size {offsets.Count + 1} /Root 1 0 R >>");
-                writer.WriteLine("startxref");
-                writer.WriteLine(xrefPos);
-                writer.WriteLine("%%EOF");
-                writer.Flush();
             }
-            catch { }
+            else if (_selectedReportMode == 2)
+            {
+                // Báo Cáo Vé Điện Tử & Doanh Thu
+                string title = "BÁO CÁO TỔNG HỢP VÉ ĐIỆN TỬ & DOANH THU";
+                float titleW = paintTitle.MeasureText(title);
+                canvas.DrawText(title, left + (width - titleW) / 2f, y + 16, paintTitle);
+                y += 28;
+
+                string summary = $"Tổng số vé: {_currentTickets.Count} vé   |   Tổng doanh thu: {_currentTickets.Sum(t => t.DonGia):#,##0} VNĐ";
+                float sumW = paintSubTitle.MeasureText(summary);
+                canvas.DrawText(summary, left + (width - sumW) / 2f, y + 12, paintSubTitle);
+                y += 26;
+
+                float[] colW = { 65f, 100f, 125f, 145f, 88f };
+                string[] headers = { "Mã vé", "Hạng vé", "Người tham gia", "Mã QR", "Đơn giá (VNĐ)" };
+                StringAlignment[] aligns = { StringAlignment.Center, StringAlignment.Near, StringAlignment.Near, StringAlignment.Center, StringAlignment.Far };
+
+                float headerH = 24f;
+                canvas.DrawRect(left, y, width, headerH, paintHeaderBg);
+                canvas.DrawRect(left, y, width, headerH, paintBorder);
+
+                float curX = left;
+                for (int i = 0; i < colW.Length; i++)
+                {
+                    if (i > 0) canvas.DrawLine(curX, y, curX, y + headerH, paintBorder);
+                    DrawSkiaCellText(canvas, headers[i], curX, colW[i], y, headerH, paintTh, aligns[i]);
+                    curX += colW[i];
+                }
+                y += headerH;
+
+                float rowH = 22f;
+                var listTickets = _currentTickets.Take(25).ToList();
+                for (int r = 0; r < listTickets.Count; r++)
+                {
+                    var ticket = listTickets[r];
+                    var rowBg = (r % 2 == 1) ? paintZebraBg : paintWhiteBg;
+                    canvas.DrawRect(left, y, width, rowH, rowBg);
+                    canvas.DrawRect(left, y, width, rowH, paintBorder);
+
+                    string[] cells = {
+                        ticket.MaVe,
+                        ticket.TenHangVe,
+                        ticket.TenNguoiThamGia,
+                        ticket.MaQR,
+                        ticket.DonGia.ToString("#,##0")
+                    };
+
+                    curX = left;
+                    for (int i = 0; i < colW.Length; i++)
+                    {
+                        if (i > 0) canvas.DrawLine(curX, y, curX, y + rowH, paintBorder);
+                        DrawSkiaCellText(canvas, cells[i], curX, colW[i], y, rowH, paintTd, aligns[i]);
+                        curX += colW[i];
+                    }
+                    y += rowH;
+                }
+            }
+            else
+            {
+                // Báo Cáo Thống Kê Chỉ Số Hoạt Động (KPI) Sự Kiện
+                string title = "BÁO CÁO THỐNG KÊ CHỈ SỐ HOẠT ĐỘNG (KPI) SỰ KIỆN";
+                float titleW = paintTitle.MeasureText(title);
+                canvas.DrawText(title, left + (width - titleW) / 2f, y + 16, paintTitle);
+                y += 28;
+
+                float[] colW = { 65f, 195f, 55f, 55f, 58f, 95f };
+                string[] headers = { "Mã SK", "Tên sự kiện", "Vé bán", "Check-in", "% Bán vé", "Doanh thu (VNĐ)" };
+                StringAlignment[] aligns = { StringAlignment.Center, StringAlignment.Near, StringAlignment.Center, StringAlignment.Center, StringAlignment.Center, StringAlignment.Far };
+
+                float headerH = 24f;
+                canvas.DrawRect(left, y, width, headerH, paintHeaderBg);
+                canvas.DrawRect(left, y, width, headerH, paintBorder);
+
+                float curX = left;
+                for (int i = 0; i < colW.Length; i++)
+                {
+                    if (i > 0) canvas.DrawLine(curX, y, curX, y + headerH, paintBorder);
+                    DrawSkiaCellText(canvas, headers[i], curX, colW[i], y, headerH, paintTh, aligns[i]);
+                    curX += colW[i];
+                }
+                y += headerH;
+
+                float rowH = 22f;
+                var listKpis = _currentKpis.Take(25).ToList();
+                for (int r = 0; r < listKpis.Count; r++)
+                {
+                    var kpi = listKpis[r];
+                    var rowBg = (r % 2 == 1) ? paintZebraBg : paintWhiteBg;
+                    canvas.DrawRect(left, y, width, rowH, rowBg);
+                    canvas.DrawRect(left, y, width, rowH, paintBorder);
+
+                    string[] cells = {
+                        kpi.MaSuKien,
+                        kpi.TenSuKien,
+                        kpi.TongVeDaBan.ToString(),
+                        kpi.TongLuotCheckIn.ToString(),
+                        $"{kpi.TyLeBanVe:0.0}%",
+                        kpi.TongDoanhThu.ToString("#,##0")
+                    };
+
+                    curX = left;
+                    for (int i = 0; i < colW.Length; i++)
+                    {
+                        if (i > 0) canvas.DrawLine(curX, y, curX, y + rowH, paintBorder);
+                        DrawSkiaCellText(canvas, cells[i], curX, colW[i], y, rowH, paintTd, aligns[i]);
+                        curX += colW[i];
+                    }
+                    y += rowH;
+                }
+            }
+
+            doc.EndPage();
+            doc.Close();
+        }
+
+        private static string TruncateSkiaText(string text, SKPaint paint, float maxWidth)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            if (paint.MeasureText(text) <= maxWidth) return text;
+
+            string ellipsis = "...";
+            float ellipsisWidth = paint.MeasureText(ellipsis);
+            if (ellipsisWidth >= maxWidth) return string.Empty;
+
+            int len = text.Length;
+            while (len > 0 && paint.MeasureText(text.Substring(0, len)) + ellipsisWidth > maxWidth)
+            {
+                len--;
+            }
+            return text.Substring(0, len) + ellipsis;
+        }
+
+        private static void DrawSkiaCellText(SKCanvas canvas, string text, float cellX, float cellWidth, float cellY, float cellHeight, SKPaint paint, StringAlignment alignment = StringAlignment.Near, float padding = 5f)
+        {
+            float maxTextWidth = Math.Max(0, cellWidth - padding * 2);
+            string truncated = TruncateSkiaText(text, paint, maxTextWidth);
+            float textWidth = paint.MeasureText(truncated);
+
+            float textX = alignment switch
+            {
+                StringAlignment.Center => cellX + (cellWidth - textWidth) / 2f,
+                StringAlignment.Far => cellX + cellWidth - padding - textWidth,
+                _ => cellX + padding
+            };
+
+            float textY = cellY + (cellHeight / 2f) - ((paint.FontMetrics.Ascent + paint.FontMetrics.Descent) / 2f);
+            canvas.DrawText(truncated, textX, textY, paint);
         }
 
         private void PrintDoc_PrintPage(object sender, PrintPageEventArgs e)
@@ -614,6 +843,7 @@ namespace EventManagement.GUI.Forms
 
             using var fontTitle = new Font("Segoe UI", 16F, FontStyle.Bold);
             using var fontHeader = new Font("Segoe UI", 10F, FontStyle.Bold);
+            using var fontTh = new Font("Segoe UI", 9F, FontStyle.Bold);
             using var fontBody = new Font("Segoe UI", 9F, FontStyle.Regular);
             using var fontItalic = new Font("Segoe UI", 8.5F, FontStyle.Italic);
 
@@ -622,7 +852,10 @@ namespace EventManagement.GUI.Forms
             using var brushSuccess = new SolidBrush(ColorSuccess);
             using var brushDanger = new SolidBrush(ColorDanger);
             using var penBorder = new Pen(ColorBorder);
-            using var penDark = new Pen(Color.FromArgb(100, 116, 139));
+
+            using var sfLeft = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter, LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Near };
+            using var sfCenter = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter, LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Center };
+            using var sfRight = new StringFormat(StringFormatFlags.NoWrap) { Trimming = StringTrimming.EllipsisCharacter, LineAlignment = StringAlignment.Center, Alignment = StringAlignment.Far };
 
             int left = 40;
             int y = 40;
@@ -630,7 +863,7 @@ namespace EventManagement.GUI.Forms
 
             if (_selectedReportMode == 1 && _currentSettlement != null)
             {
-                // In Báo Cáo Quyết Toán Tài Chính (Tương ứng BaoCaoQuyetToan.rdlc)
+                // In Báo Cáo Quyết Toán Tài Chính
                 string title = "BÁO CÁO QUYẾT TOÁN TÀI CHÍNH SỰ KIỆN";
                 var titleSize = g.MeasureString(title, fontTitle);
                 g.DrawString(title, fontTitle, brushTitle, left + (width - titleSize.Width) / 2, y);
@@ -664,52 +897,66 @@ namespace EventManagement.GUI.Forms
                 g.DrawString("DANH SÁCH CÁC KHOẢN CHI THỰC TẾ", fontHeader, brushTitle, left, y);
                 y += 22;
 
-                // Header Bảng
-                int col0 = left;
-                int col1 = left + 40;
-                int col2 = left + 260;
-                int col3 = left + 470;
-                int col4 = left + 570;
-                int col5 = left + width;
+                int[] colW = { 45, 210, 250, 90, width - 45 - 210 - 250 - 90 };
+                string[] headers = { "STT", "Khoản mục chi", "Diễn giải / Ghi chú", "Ngày chi", "Số tiền (VNĐ)" };
+                StringFormat[] aligns = { sfCenter, sfLeft, sfLeft, sfCenter, sfRight };
 
-                g.FillRectangle(new SolidBrush(Color.FromArgb(241, 245, 249)), left, y, width, 26);
-                g.DrawRectangle(penBorder, left, y, width, 26);
-                g.DrawString("STT", fontHeader, brushText, col0 + 5, y + 5);
-                g.DrawString("Khoản mục chi", fontHeader, brushText, col1 + 5, y + 5);
-                g.DrawString("Diễn giải / Ghi chú", fontHeader, brushText, col2 + 5, y + 5);
-                g.DrawString("Ngày chi", fontHeader, brushText, col3 + 5, y + 5);
-                g.DrawString("Số tiền (VNĐ)", fontHeader, brushText, col4 + 5, y + 5);
-                y += 26;
+                int headerH = 26;
+                g.FillRectangle(new SolidBrush(Color.FromArgb(241, 245, 249)), left, y, width, headerH);
+                g.DrawRectangle(penBorder, left, y, width, headerH);
 
-                int index = 1;
-                foreach (var chi in _currentSettlement.DanhSachChiPhi.Take(15)) // Hiển thị vừa trang A4
+                int curX = left;
+                for (int i = 0; i < colW.Length; i++)
                 {
-                    g.DrawRectangle(penBorder, left, y, width, 22);
-                    g.DrawString(index++.ToString(), fontBody, brushText, col0 + 5, y + 4);
-                    g.DrawString(chi.KhoanMucChi, fontBody, brushText, col1 + 5, y + 4);
-                    g.DrawString(chi.DienGiai ?? "", fontBody, brushText, col2 + 5, y + 4);
-                    g.DrawString(chi.NgayChi.ToString("dd/MM/yyyy"), fontBody, brushText, col3 + 5, y + 4);
-                    g.DrawString(chi.SoTien.ToString("#,##0"), fontBody, brushText, col4 + 5, y + 4);
-                    y += 22;
+                    if (i > 0) g.DrawLine(penBorder, curX, y, curX, y + headerH);
+                    g.DrawString(headers[i], fontTh, brushText, new RectangleF(curX + 4, y, colW[i] - 8, headerH), aligns[i]);
+                    curX += colW[i];
+                }
+                y += headerH;
+
+                int rowH = 24;
+                int index = 1;
+                foreach (var chi in _currentSettlement.DanhSachChiPhi.Take(15))
+                {
+                    g.DrawRectangle(penBorder, left, y, width, rowH);
+                    string[] cells = {
+                        index++.ToString(),
+                        chi.KhoanMucChi,
+                        chi.DienGiai ?? "",
+                        chi.NgayChi.ToString("dd/MM/yyyy"),
+                        chi.SoTien.ToString("#,##0")
+                    };
+
+                    curX = left;
+                    for (int i = 0; i < colW.Length; i++)
+                    {
+                        if (i > 0) g.DrawLine(penBorder, curX, y, curX, y + rowH);
+                        g.DrawString(cells[i], fontBody, brushText, new RectangleF(curX + 4, y, colW[i] - 8, rowH), aligns[i]);
+                        curX += colW[i];
+                    }
+                    y += rowH;
                 }
 
                 // Dòng tổng cộng
-                g.FillRectangle(new SolidBrush(Color.FromArgb(248, 250, 252)), left, y, width, 26);
-                g.DrawRectangle(penBorder, left, y, width, 26);
-                g.DrawString("TỔNG CỘNG THỰC CHI:", fontHeader, brushText, col2 + 5, y + 5);
-                g.DrawString($"{_currentSettlement.TongThucChi:#,##0} VNĐ", fontHeader, brushDanger, col4 + 5, y + 5);
-                y += 50;
+                int sumH = 26;
+                g.FillRectangle(new SolidBrush(Color.FromArgb(248, 250, 252)), left, y, width, sumH);
+                g.DrawRectangle(penBorder, left, y, width, sumH);
+                int sumLabelW = colW[0] + colW[1] + colW[2] + colW[3];
+                g.DrawLine(penBorder, left + sumLabelW, y, left + sumLabelW, y + sumH);
+                g.DrawString("TỔNG CỘNG THỰC CHI:", fontHeader, brushText, new RectangleF(left, y, sumLabelW - 8, sumH), sfRight);
+                g.DrawString($"{_currentSettlement.TongThucChi:#,##0} VNĐ", fontHeader, brushDanger, new RectangleF(left + sumLabelW, y, colW[4] - 8, sumH), sfRight);
+                y += sumH + 40;
 
                 // Chữ ký 3 bên
                 int sigColWidth = width / 3;
-                g.DrawString("NGƯỜI LẬP BIỂU", fontHeader, brushText, left + (sigColWidth - 110) / 2, y);
-                g.DrawString("KẾ TOÁN TRƯỞNG", fontHeader, brushText, left + sigColWidth + (sigColWidth - 120) / 2, y);
-                g.DrawString("TRƯỞNG BAN TỔ CHỨC", fontHeader, brushText, left + sigColWidth * 2 + (sigColWidth - 140) / 2, y);
+                g.DrawString("NGƯỜI LẬP BIỂU", fontHeader, brushText, new RectangleF(left, y, sigColWidth, 20), sfCenter);
+                g.DrawString("KẾ TOÁN TRƯỞNG", fontHeader, brushText, new RectangleF(left + sigColWidth, y, sigColWidth, 20), sfCenter);
+                g.DrawString("TRƯỞNG BAN TỔ CHỨC", fontHeader, brushText, new RectangleF(left + sigColWidth * 2, y, sigColWidth, 20), sfCenter);
 
-                y += 18;
-                g.DrawString("(Ký, ghi rõ họ tên)", fontItalic, brushText, left + (sigColWidth - 110) / 2, y);
-                g.DrawString("(Ký, ghi rõ họ tên)", fontItalic, brushText, left + sigColWidth + (sigColWidth - 120) / 2, y);
-                g.DrawString("(Ký, đóng dấu)", fontItalic, brushText, left + sigColWidth * 2 + (sigColWidth - 140) / 2, y);
+                y += 20;
+                g.DrawString("(Ký, ghi rõ họ tên)", fontItalic, brushText, new RectangleF(left, y, sigColWidth, 18), sfCenter);
+                g.DrawString("(Ký, ghi rõ họ tên)", fontItalic, brushText, new RectangleF(left + sigColWidth, y, sigColWidth, 18), sfCenter);
+                g.DrawString("(Ký, đóng dấu)", fontItalic, brushText, new RectangleF(left + sigColWidth * 2, y, sigColWidth, 18), sfCenter);
             }
             else if (_selectedReportMode == 2)
             {
@@ -722,24 +969,43 @@ namespace EventManagement.GUI.Forms
                 g.DrawString($"Tổng số vé: {_currentTickets.Count} vé | Doanh thu: {_currentTickets.Sum(t => t.DonGia):#,##0} VNĐ", fontHeader, brushText, left, y);
                 y += 30;
 
-                g.FillRectangle(new SolidBrush(Color.FromArgb(241, 245, 249)), left, y, width, 26);
-                g.DrawRectangle(penBorder, left, y, width, 26);
-                g.DrawString("Mã vé", fontHeader, brushText, left + 10, y + 5);
-                g.DrawString("Hạng vé", fontHeader, brushText, left + 120, y + 5);
-                g.DrawString("Người tham gia", fontHeader, brushText, left + 240, y + 5);
-                g.DrawString("Mã QR", fontHeader, brushText, left + 430, y + 5);
-                g.DrawString("Đơn giá (VNĐ)", fontHeader, brushText, left + 580, y + 5);
-                y += 26;
+                int[] colW = { 80, 130, 160, 200, width - 80 - 130 - 160 - 200 };
+                string[] headers = { "Mã vé", "Hạng vé", "Người tham gia", "Mã QR", "Đơn giá (VNĐ)" };
+                StringFormat[] aligns = { sfCenter, sfLeft, sfLeft, sfCenter, sfRight };
 
+                int headerH = 26;
+                g.FillRectangle(new SolidBrush(Color.FromArgb(241, 245, 249)), left, y, width, headerH);
+                g.DrawRectangle(penBorder, left, y, width, headerH);
+
+                int curX = left;
+                for (int i = 0; i < colW.Length; i++)
+                {
+                    if (i > 0) g.DrawLine(penBorder, curX, y, curX, y + headerH);
+                    g.DrawString(headers[i], fontTh, brushText, new RectangleF(curX + 4, y, colW[i] - 8, headerH), aligns[i]);
+                    curX += colW[i];
+                }
+                y += headerH;
+
+                int rowH = 24;
                 foreach (var ticket in _currentTickets.Take(25))
                 {
-                    g.DrawRectangle(penBorder, left, y, width, 22);
-                    g.DrawString(ticket.MaVe, fontBody, brushText, left + 10, y + 4);
-                    g.DrawString(ticket.TenHangVe, fontBody, brushText, left + 120, y + 4);
-                    g.DrawString(ticket.TenNguoiThamGia, fontBody, brushText, left + 240, y + 4);
-                    g.DrawString(ticket.MaQR, fontBody, brushText, left + 430, y + 4);
-                    g.DrawString(ticket.DonGia.ToString("#,##0"), fontBody, brushText, left + 580, y + 4);
-                    y += 22;
+                    g.DrawRectangle(penBorder, left, y, width, rowH);
+                    string[] cells = {
+                        ticket.MaVe,
+                        ticket.TenHangVe,
+                        ticket.TenNguoiThamGia,
+                        ticket.MaQR,
+                        ticket.DonGia.ToString("#,##0")
+                    };
+
+                    curX = left;
+                    for (int i = 0; i < colW.Length; i++)
+                    {
+                        if (i > 0) g.DrawLine(penBorder, curX, y, curX, y + rowH);
+                        g.DrawString(cells[i], fontBody, brushText, new RectangleF(curX + 4, y, colW[i] - 8, rowH), aligns[i]);
+                        curX += colW[i];
+                    }
+                    y += rowH;
                 }
             }
             else
@@ -750,26 +1016,44 @@ namespace EventManagement.GUI.Forms
                 g.DrawString(title, fontTitle, brushTitle, left + (width - titleSize.Width) / 2, y);
                 y += 35;
 
-                g.FillRectangle(new SolidBrush(Color.FromArgb(241, 245, 249)), left, y, width, 26);
-                g.DrawRectangle(penBorder, left, y, width, 26);
-                g.DrawString("Mã SK", fontHeader, brushText, left + 10, y + 5);
-                g.DrawString("Tên sự kiện", fontHeader, brushText, left + 90, y + 5);
-                g.DrawString("Vé bán", fontHeader, brushText, left + 340, y + 5);
-                g.DrawString("Check-in", fontHeader, brushText, left + 420, y + 5);
-                g.DrawString("% Bán vé", fontHeader, brushText, left + 500, y + 5);
-                g.DrawString("Doanh thu (VNĐ)", fontHeader, brushText, left + 580, y + 5);
-                y += 26;
+                int[] colW = { 80, 250, 75, 75, 80, width - 80 - 250 - 75 - 75 - 80 };
+                string[] headers = { "Mã SK", "Tên sự kiện", "Vé bán", "Check-in", "% Bán vé", "Doanh thu (VNĐ)" };
+                StringFormat[] aligns = { sfCenter, sfLeft, sfCenter, sfCenter, sfCenter, sfRight };
 
+                int headerH = 26;
+                g.FillRectangle(new SolidBrush(Color.FromArgb(241, 245, 249)), left, y, width, headerH);
+                g.DrawRectangle(penBorder, left, y, width, headerH);
+
+                int curX = left;
+                for (int i = 0; i < colW.Length; i++)
+                {
+                    if (i > 0) g.DrawLine(penBorder, curX, y, curX, y + headerH);
+                    g.DrawString(headers[i], fontTh, brushText, new RectangleF(curX + 4, y, colW[i] - 8, headerH), aligns[i]);
+                    curX += colW[i];
+                }
+                y += headerH;
+
+                int rowH = 24;
                 foreach (var kpi in _currentKpis.Take(25))
                 {
-                    g.DrawRectangle(penBorder, left, y, width, 22);
-                    g.DrawString(kpi.MaSuKien, fontBody, brushText, left + 10, y + 4);
-                    g.DrawString(kpi.TenSuKien, fontBody, brushText, left + 90, y + 4);
-                    g.DrawString(kpi.TongVeDaBan.ToString(), fontBody, brushText, left + 340, y + 4);
-                    g.DrawString(kpi.TongLuotCheckIn.ToString(), fontBody, brushText, left + 420, y + 4);
-                    g.DrawString($"{kpi.TyLeBanVe:0.0}%", fontBody, brushText, left + 500, y + 4);
-                    g.DrawString(kpi.TongDoanhThu.ToString("#,##0"), fontBody, brushText, left + 580, y + 4);
-                    y += 22;
+                    g.DrawRectangle(penBorder, left, y, width, rowH);
+                    string[] cells = {
+                        kpi.MaSuKien,
+                        kpi.TenSuKien,
+                        kpi.TongVeDaBan.ToString(),
+                        kpi.TongLuotCheckIn.ToString(),
+                        $"{kpi.TyLeBanVe:0.0}%",
+                        kpi.TongDoanhThu.ToString("#,##0")
+                    };
+
+                    curX = left;
+                    for (int i = 0; i < colW.Length; i++)
+                    {
+                        if (i > 0) g.DrawLine(penBorder, curX, y, curX, y + rowH);
+                        g.DrawString(cells[i], fontBody, brushText, new RectangleF(curX + 4, y, colW[i] - 8, rowH), aligns[i]);
+                        curX += colW[i];
+                    }
+                    y += rowH;
                 }
             }
 
@@ -820,7 +1104,7 @@ namespace EventManagement.GUI.Forms
 
                     MessageBox.Show($"Xuất dữ liệu báo cáo thành công ra file:\n{sfd.FileName}", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     MessageBox.Show("Có lỗi xảy ra trong quá trình xuất dữ liệu. Vui lòng thử lại sau.", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }

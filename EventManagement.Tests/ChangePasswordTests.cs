@@ -1,3 +1,5 @@
+using System.Reflection;
+using EventManagement.BLL.Services;
 using EventManagement.GUI.Forms;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -80,6 +82,17 @@ namespace EventManagement.Tests
             result.IsValid.Should().BeTrue();
             result.ErrorField.Should().BeNull();
             result.ErrorMessage.Should().BeNull();
+        }
+
+        [TestMethod]
+        public void DefaultConstructor_InitializesAuthService_NotNull()
+        {
+            // Mô tả (AD-04): Mở dialog Đổi mật khẩu mặc định phải khởi tạo sẵn AuthService
+            using var form = new FrmChangePassword();
+            var authField = typeof(FrmChangePassword).GetField("_authService", BindingFlags.NonPublic | BindingFlags.Instance);
+            var authService = authField?.GetValue(form) as IAuthService;
+
+            authService.Should().NotBeNull();
         }
     }
 }

@@ -81,14 +81,17 @@ namespace EventManagement.GUI.Forms
                 }
                 else
                 {
-                    lblStatus.Text = "✗ " + message;
+                    // AD-42: Chuẩn hóa câu thông báo khi không thể kết nối tới SQL Server
+                    string displayMsg = "Không thể kết nối đến máy chủ SQL Server!";
+                    lblStatus.Text = "✗ " + displayMsg;
                     lblStatus.ForeColor = Color.Firebrick;
                     IsConnectionSuccessful = false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lblStatus.Text = "✗ " + ex.Message;
+                // AD-42: Hệ thống bắt lỗi nhẹ nhàng (try-catch), không bị văng app (Crash)
+                lblStatus.Text = "✗ Không thể kết nối đến máy chủ SQL Server!";
                 lblStatus.ForeColor = Color.Firebrick;
                 IsConnectionSuccessful = false;
             }

@@ -167,14 +167,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(400, 25);
+            this.lblTitle.Size = new System.Drawing.Size(1060, 56);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "💎 QUẢN LÝ NHÀ TÀI TRỢ VÀ ĐỐI TÁC";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             // 
             // pnlFilter

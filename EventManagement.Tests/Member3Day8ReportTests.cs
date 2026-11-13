@@ -210,6 +210,31 @@ namespace EventManagement.Tests
             Assert.IsTrue(File.Exists(rdlcPath1), $"File VeDienTu.rdlc phải tồn tại tại: {rdlcPath1}");
             Assert.IsTrue(File.Exists(rdlcPath2), $"File BaoCaoQuyetToan.rdlc phải tồn tại tại: {rdlcPath2}");
         }
+
+        [TestMethod]
+        public void T323_GenerateRealTextPdfReport_F19_GeneratesVectorPdfSuccessfully()
+        {
+            string tempPdf = Path.Combine(Path.GetTempPath(), $"test_f19_{Guid.NewGuid()}.pdf");
+            try
+            {
+                using var frm = new FrmReportStatistics();
+                frm.GenerateRealTextPdfReport(tempPdf);
+
+                Assert.IsTrue(File.Exists(tempPdf), "File PDF phải được tạo thành công.");
+                var fileInfo = new FileInfo(tempPdf);
+                Assert.IsTrue(fileInfo.Length > 500, "File PDF phải có kích thước hợp lệ.");
+
+                string pdfContent = File.ReadAllText(tempPdf);
+                Assert.IsTrue(pdfContent.Contains("%PDF-"), "Header tệp phải đúng chuẩn định dạng PDF.");
+            }
+            finally
+            {
+                if (File.Exists(tempPdf))
+                {
+                    File.Delete(tempPdf);
+                }
+            }
+        }
         #endregion
     }
 }

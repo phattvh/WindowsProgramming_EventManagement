@@ -138,14 +138,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(18, 14);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(370, 25);
+            this.lblTitle.Size = new System.Drawing.Size(1060, 56);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "👥 QUẢN LÝ NHÂN SỰ BAN TỔ CHỨC";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             // 
             // pnlFilter
@@ -214,9 +216,9 @@ namespace EventManagement.GUI.Forms
             "An ninh",
             "Điều phối",
             "Truyền thông"});
-            this.cboLocPhongBan.Location = new System.Drawing.Point(455, 12);
+            this.cboLocPhongBan.Location = new System.Drawing.Point(465, 12);
             this.cboLocPhongBan.Name = "cboLocPhongBan";
-            this.cboLocPhongBan.Size = new System.Drawing.Size(150, 24);
+            this.cboLocPhongBan.Size = new System.Drawing.Size(135, 24);
             this.cboLocPhongBan.TabIndex = 3;
             this.cboLocPhongBan.SelectedIndexChanged += new System.EventHandler(this.cboLocPhongBan_SelectedIndexChanged);
 
@@ -242,9 +244,9 @@ namespace EventManagement.GUI.Forms
             "Tất cả",
             "Hoạt động",
             "Nghỉ việc"});
-            this.cboLocTrangThai.Location = new System.Drawing.Point(705, 12);
+            this.cboLocTrangThai.Location = new System.Drawing.Point(720, 12);
             this.cboLocTrangThai.Name = "cboLocTrangThai";
-            this.cboLocTrangThai.Size = new System.Drawing.Size(150, 24);
+            this.cboLocTrangThai.Size = new System.Drawing.Size(135, 24);
             this.cboLocTrangThai.TabIndex = 5;
             this.cboLocTrangThai.SelectedIndexChanged += new System.EventHandler(this.cboLocTrangThai_SelectedIndexChanged);
 

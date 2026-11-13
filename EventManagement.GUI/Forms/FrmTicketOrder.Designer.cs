@@ -97,14 +97,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(16, 19);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(433, 25);
+            this.lblTitle.Size = new System.Drawing.Size(1160, 65);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "ĐĂNG KÝ VÉ SỰ KIỆN";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblSubTitle
             // 
@@ -115,7 +117,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Name = "lblSubTitle";
             this.lblSubTitle.Size = new System.Drawing.Size(569, 15);
             this.lblSubTitle.TabIndex = 1;
-            this.lblSubTitle.Text = "Cho phép mua 1–10 vé (BR-10), kiểm soát kho vé (BR-09), tự sinh mã QR GUID (BR-17) & Transaction (BR-18)";
+            this.lblSubTitle.Text = "Cho phép mua 1–10 vé, kiểm soát kho vé tự động & bảo đảm an toàn dữ liệu";
             this.lblSubTitle.Visible = false;
             // 
             // scMain

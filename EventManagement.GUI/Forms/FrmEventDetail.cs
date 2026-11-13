@@ -122,6 +122,18 @@ namespace EventManagement.GUI.Forms
             base.OnResize(e);
             DistributeKpiCards();
             DistributeTab1();
+            AlignHeaderSelector();
+        }
+
+        private void AlignHeaderSelector()
+        {
+            if (lblChonSuKien == null || cboChonSuKien == null) return;
+            lblChonSuKien.Left = cboChonSuKien.Left - lblChonSuKien.Width - 10;
+            if (lblTitle != null)
+            {
+                lblTitle.Left = Math.Max(16, (lblChonSuKien.Left - lblTitle.Width) / 2);
+                lblTitle.Top = (pnlHeader.Height - lblTitle.Height) / 2;
+            }
         }
 
         private Panel CreateTabFooter(TabPage tab, out Label lblFooter)
@@ -243,6 +255,7 @@ namespace EventManagement.GUI.Forms
             lblTitle.Text = "CHI TIẾT SỰ KIỆN";
             lblSubtitle.Visible = false;
             lblTitle.Location = new Point(16, 19);
+            AlignHeaderSelector();
 
             tabMain.SizeMode = TabSizeMode.Normal;
             tabMain.Padding = new Point(14, 8);
@@ -392,7 +405,7 @@ namespace EventManagement.GUI.Forms
             colDG_DonVi.HeaderText = "Đơn Vị Công Tác"; colDG_DonVi.Width = 220;
             colDG_Email.HeaderText = "Email"; colDG_Email.Width = 190;
             colDG_SDT.HeaderText = "Số Điện Thoại"; colDG_SDT.Width = 110;
-            colDG_TietMuc.HeaderText = "Tiết Mục Đảm Nhận"; colDG_TietMuc.Width = 130;
+            colDG_TietMuc.HeaderText = "Tiết Mục Đảm Nhận"; colDG_TietMuc.Width = 165; colDG_TietMuc.MinimumWidth = 155;
             colDG_TrangThai.HeaderText = "Trạng Thái";
             colDG_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_SDT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -496,14 +509,16 @@ namespace EventManagement.GUI.Forms
                 dgvTaiTro.Columns.Add(colTT_GhiChu);
             }
 
-            // Tab 8
+            // Tab 8 (Bố cục 2 dòng chuẩn hóa, khoảng cách thoáng đãng, chống đè chữ trên mọi độ phân giải màn hình)
             lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH";
-            lblTab8Header.Location = new Point(10, 12);
-            lblThanhDoNganSach.Location = new Point(190, 14);
-            prgNganSach.Location = new Point(310, 12); prgNganSach.Size = new Size(200, 20);
-            lblNganSachInfo.Location = new Point(520, 14);
-            btnMoF17.Location = new Point(pnlTab8Toolbar.Width - 190, 6);
-            pnlTab8Toolbar.Height = 45;
+            lblTab8Header.Location = new Point(12, 10);
+            lblThanhDoNganSach.Text = "Tiến độ thực chi:";
+            lblThanhDoNganSach.Location = new Point(12, 36);
+            prgNganSach.Location = new Point(150, 33);
+            prgNganSach.Size = new Size(220, 20);
+            lblNganSachInfo.Location = new Point(385, 36);
+            btnMoF17.Location = new Point(pnlTab8Toolbar.Width - 190, 14);
+            pnlTab8Toolbar.Height = 65;
 
             colCP_Ma.HeaderText = "Mã Chi Phí";
             colCP_KhoanMuc.HeaderText = "Khoản Mục Chi";
@@ -516,6 +531,7 @@ namespace EventManagement.GUI.Forms
             colCP_SoTien.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             colCP_NgayChi.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colCP_NgayChi.DefaultCellStyle.Format = "dd/MM/yyyy";
+            colCP_NguoiLap.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colCP_TrangThai.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             // Tab 9
@@ -660,9 +676,6 @@ namespace EventManagement.GUI.Forms
             // Tab 8: Budget & Expenses
             LoadTab8_ChiPhi(_maSuKien);
 
-            // Tab 9: Feedback & Ratings
-            LoadTab9_DanhGia(_maSuKien);
-
             // Calculate and display top KPI Cards
             UpdateKPICards();
         }
@@ -678,13 +691,13 @@ namespace EventManagement.GUI.Forms
                 totalTicketsSold = _ticketTiersCache.Sum(t => t.SoLuongDaBan);
             }
             int capacity = _currentEvent.SucChua > 0 ? _currentEvent.SucChua : 1;
-            double percentTickets = Math.Round((double)totalTicketsSold / capacity * 100, 1);
-            lblCardVeValue.Text = $"{totalTicketsSold:N0} / {capacity:N0} ({percentTickets}%)";
+            double percentTickets = Math.Round((double)totalTicketsSold / capacity * 100, 2);
+            lblCardVeValue.Text = $"{totalTicketsSold:N0} / {capacity:N0} ({percentTickets:0.##}%)";
 
             // 2. Ty Le Check-in
             int checkInCount = _currentEvent.SoKhachCheckIn;
-            double percentCheckIn = totalTicketsSold > 0 ? Math.Round((double)checkInCount / totalTicketsSold * 100, 1) : 0;
-            lblCardCheckInValue.Text = $"{percentCheckIn}% ({checkInCount:N0} khách)";
+            double percentCheckIn = totalTicketsSold > 0 ? Math.Round((double)checkInCount / totalTicketsSold * 100, 2) : 0;
+            lblCardCheckInValue.Text = $"{percentCheckIn:0.##}% ({checkInCount:N0} khách)";
 
             // 3. Doanh Thu Ve
             decimal totalRevenue = 0;
@@ -705,8 +718,8 @@ namespace EventManagement.GUI.Forms
             // 5. Tien Do Ngan Sach
             decimal budget = _currentEvent.NganSachDuKien;
             decimal remaining = budget - totalSpent;
-            double percentBudgetUsed = budget > 0 ? Math.Round((double)totalSpent / (double)budget * 100, 1) : 0;
-            double percentRemaining = Math.Max(0, 100.0 - percentBudgetUsed);
+            double percentBudgetUsed = budget > 0 ? Math.Round((double)totalSpent / (double)budget * 100, 2) : 0;
+            double percentRemaining = Math.Max(0, Math.Round(100.0 - percentBudgetUsed, 2));
 
             if (percentBudgetUsed > 100)
             {
@@ -715,12 +728,12 @@ namespace EventManagement.GUI.Forms
             }
             else if (percentBudgetUsed >= 80)
             {
-                lblCardNganSachValue.Text = $"Cảnh báo: {remaining:N0} đ ({percentRemaining}%)";
+                lblCardNganSachValue.Text = $"Cảnh báo: {remaining:N0} đ ({percentRemaining:0.##}%)";
                 lblCardNganSachValue.ForeColor = ColorWarning;
             }
             else
             {
-                lblCardNganSachValue.Text = $"Còn: {remaining:N0} đ ({percentRemaining}%)";
+                lblCardNganSachValue.Text = $"Còn: {remaining:N0} đ ({percentRemaining:0.##}%)";
                 lblCardNganSachValue.ForeColor = ColorSuccess;
             }
         }
@@ -825,7 +838,7 @@ namespace EventManagement.GUI.Forms
 
             if (dtpNgayKetThuc.Value < dtpNgayBatDau.Value)
             {
-                errBaoLoi.SetError(dtpNgayKetThuc, "Thời gian kết thúc phải lớn hơn hoặc bằng thời gian bắt đầu (BR-03)!");
+                errBaoLoi.SetError(dtpNgayKetThuc, "Thời gian kết thúc phải lớn hơn hoặc bằng thời gian bắt đầu!");
                 dtpNgayKetThuc.Focus();
                 return;
             }
@@ -1133,7 +1146,7 @@ namespace EventManagement.GUI.Forms
                 }
                 else if (alert.IsWarning80)
                 {
-                    lblNganSachInfo.Text = $"⚠️ CẢNH BÁO: Chi phí đã đạt {alert.TyLeSuDung:F1}% ngân sách! (Chạm ngưỡng 80% BR-15)";
+                    lblNganSachInfo.Text = $"⚠️ CẢNH BÁO: Chi phí đã đạt {alert.TyLeSuDung:F1}% ngân sách! (Chạm ngưỡng 80% định mức)";
                     lblNganSachInfo.ForeColor = ColorWarning;
                 }
                 else
@@ -1149,7 +1162,7 @@ namespace EventManagement.GUI.Forms
 
         private void btnMoF17_Click(object sender, EventArgs e)
         {
-            using var frm = new FrmBudgetExpense();
+            using var frm = new FrmBudgetExpense(_maSuKien);
             frm.ShowDialog(this);
             LoadTab8_ChiPhi(_maSuKien);
             UpdateKPICards();
@@ -1267,7 +1280,7 @@ namespace EventManagement.GUI.Forms
 
         public void OpenBudgetExpenseForm()
         {
-            using var frm = new FrmBudgetExpense();
+            using var frm = new FrmBudgetExpense(_maSuKien);
             frm.ShowDialog(this);
             LoadTab8_ChiPhi(_maSuKien);
             UpdateKPICards();
