@@ -115,14 +115,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(16, 10);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(360, 28);
+            this.lblTitle.Size = new System.Drawing.Size(1260, 52);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "SOÁT VÉ & ĐIỂM DANH SỰ KIỆN";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pnlTopBar
             // 

@@ -129,6 +129,11 @@ namespace EventManagement.GUI.Forms
         {
             if (lblChonSuKien == null || cboChonSuKien == null) return;
             lblChonSuKien.Left = cboChonSuKien.Left - lblChonSuKien.Width - 10;
+            if (lblTitle != null)
+            {
+                lblTitle.Left = Math.Max(16, (lblChonSuKien.Left - lblTitle.Width) / 2);
+                lblTitle.Top = (pnlHeader.Height - lblTitle.Height) / 2;
+            }
         }
 
         private Panel CreateTabFooter(TabPage tab, out Label lblFooter)

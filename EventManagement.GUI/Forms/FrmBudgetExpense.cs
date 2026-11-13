@@ -89,7 +89,9 @@ namespace EventManagement.GUI.Forms
             colDienGiai.FillWeight = 18;
 
             lblTitle.Text = "QUẢN LÝ CHI PHÍ & NGÂN SÁCH SỰ KIỆN";
-            lblTitle.Location = new Point(20, Math.Max(12, (pnlTopHeader.Height - lblTitle.Height) / 2));
+            lblTitle.AutoSize = false;
+            lblTitle.Dock = DockStyle.Fill;
+            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
 
             // Anchor filter bar & details
             btnLamMoi.Anchor = AnchorStyles.Top | AnchorStyles.Right;

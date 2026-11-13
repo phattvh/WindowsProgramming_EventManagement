@@ -205,14 +205,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblTitle
             // 
-            this.lblTitle.AutoSize = true;
+            this.lblTitle.AutoSize = false;
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTitle.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblTitle.ForeColor = System.Drawing.Color.White;
-            this.lblTitle.Location = new System.Drawing.Point(16, 16);
+            this.lblTitle.Location = new System.Drawing.Point(0, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(430, 25);
+            this.lblTitle.Size = new System.Drawing.Size(1184, 58);
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "📅 QUẢN LÝ DANH SÁCH SỰ KIỆN TỔNG THỂ";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             // 
             // lblSubtitle
@@ -268,7 +270,7 @@ namespace EventManagement.GUI.Forms
             this.txtTimKiem.Location = new System.Drawing.Point(92, 13);
             this.txtTimKiem.Name = "txtTimKiem";
             this.txtTimKiem.PlaceholderText = "Mã, tên, phụ trách...";
-            this.txtTimKiem.Size = new System.Drawing.Size(145, 23);
+            this.txtTimKiem.Size = new System.Drawing.Size(130, 23);
             this.txtTimKiem.TabIndex = 1;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
 
@@ -278,7 +280,7 @@ namespace EventManagement.GUI.Forms
             this.lblLocLoaiSK.AutoSize = true;
             this.lblLocLoaiSK.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblLocLoaiSK.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.lblLocLoaiSK.Location = new System.Drawing.Point(250, 16);
+            this.lblLocLoaiSK.Location = new System.Drawing.Point(238, 16);
             this.lblLocLoaiSK.Name = "lblLocLoaiSK";
             this.lblLocLoaiSK.Size = new System.Drawing.Size(73, 15);
             this.lblLocLoaiSK.TabIndex = 2;
@@ -290,9 +292,9 @@ namespace EventManagement.GUI.Forms
             this.cboLocLoaiSK.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLocLoaiSK.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboLocLoaiSK.FormattingEnabled = true;
-            this.cboLocLoaiSK.Location = new System.Drawing.Point(345, 13);
+            this.cboLocLoaiSK.Location = new System.Drawing.Point(325, 13);
             this.cboLocLoaiSK.Name = "cboLocLoaiSK";
-            this.cboLocLoaiSK.Size = new System.Drawing.Size(150, 23);
+            this.cboLocLoaiSK.Size = new System.Drawing.Size(140, 23);
             this.cboLocLoaiSK.TabIndex = 3;
             this.cboLocLoaiSK.SelectedIndexChanged += new System.EventHandler(this.Filter_Changed);
 
@@ -302,7 +304,7 @@ namespace EventManagement.GUI.Forms
             this.lblLocTrangThai.AutoSize = true;
             this.lblLocTrangThai.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblLocTrangThai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.lblLocTrangThai.Location = new System.Drawing.Point(510, 16);
+            this.lblLocTrangThai.Location = new System.Drawing.Point(485, 16);
             this.lblLocTrangThai.Name = "lblLocTrangThai";
             this.lblLocTrangThai.Size = new System.Drawing.Size(63, 15);
             this.lblLocTrangThai.TabIndex = 4;
@@ -314,9 +316,9 @@ namespace EventManagement.GUI.Forms
             this.cboLocTrangThai.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLocTrangThai.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.cboLocTrangThai.FormattingEnabled = true;
-            this.cboLocTrangThai.Location = new System.Drawing.Point(590, 13);
+            this.cboLocTrangThai.Location = new System.Drawing.Point(560, 13);
             this.cboLocTrangThai.Name = "cboLocTrangThai";
-            this.cboLocTrangThai.Size = new System.Drawing.Size(140, 23);
+            this.cboLocTrangThai.Size = new System.Drawing.Size(130, 23);
             this.cboLocTrangThai.TabIndex = 5;
             this.cboLocTrangThai.SelectedIndexChanged += new System.EventHandler(this.Filter_Changed);
 
@@ -326,7 +328,7 @@ namespace EventManagement.GUI.Forms
             this.chkLocThoiGian.AutoSize = true;
             this.chkLocThoiGian.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.chkLocThoiGian.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(41)))), ((int)(((byte)(55)))));
-            this.chkLocThoiGian.Location = new System.Drawing.Point(745, 15);
+            this.chkLocThoiGian.Location = new System.Drawing.Point(710, 15);
             this.chkLocThoiGian.Name = "chkLocThoiGian";
             this.chkLocThoiGian.Size = new System.Drawing.Size(77, 19);
             this.chkLocThoiGian.TabIndex = 6;
@@ -341,9 +343,9 @@ namespace EventManagement.GUI.Forms
             this.dtpLocTuNgay.Enabled = false;
             this.dtpLocTuNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpLocTuNgay.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpLocTuNgay.Location = new System.Drawing.Point(842, 13);
+            this.dtpLocTuNgay.Location = new System.Drawing.Point(800, 13);
             this.dtpLocTuNgay.Name = "dtpLocTuNgay";
-            this.dtpLocTuNgay.Size = new System.Drawing.Size(112, 23);
+            this.dtpLocTuNgay.Size = new System.Drawing.Size(105, 23);
             this.dtpLocTuNgay.TabIndex = 7;
             this.dtpLocTuNgay.ValueChanged += new System.EventHandler(this.Filter_Changed);
 
@@ -353,7 +355,7 @@ namespace EventManagement.GUI.Forms
             this.lblDenNgay.AutoSize = true;
             this.lblDenNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblDenNgay.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblDenNgay.Location = new System.Drawing.Point(960, 16);
+            this.lblDenNgay.Location = new System.Drawing.Point(915, 16);
             this.lblDenNgay.Name = "lblDenNgay";
             this.lblDenNgay.Size = new System.Drawing.Size(12, 15);
             this.lblDenNgay.TabIndex = 8;
@@ -366,9 +368,9 @@ namespace EventManagement.GUI.Forms
             this.dtpLocDenNgay.Enabled = false;
             this.dtpLocDenNgay.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.dtpLocDenNgay.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpLocDenNgay.Location = new System.Drawing.Point(980, 13);
+            this.dtpLocDenNgay.Location = new System.Drawing.Point(935, 13);
             this.dtpLocDenNgay.Name = "dtpLocDenNgay";
-            this.dtpLocDenNgay.Size = new System.Drawing.Size(115, 23);
+            this.dtpLocDenNgay.Size = new System.Drawing.Size(105, 23);
             this.dtpLocDenNgay.TabIndex = 9;
             this.dtpLocDenNgay.ValueChanged += new System.EventHandler(this.Filter_Changed);
 
@@ -377,9 +379,9 @@ namespace EventManagement.GUI.Forms
             // 
             this.btnLamMoi.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLamMoi.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnLamMoi.Location = new System.Drawing.Point(1090, 9);
+            this.btnLamMoi.Location = new System.Drawing.Point(1065, 9);
             this.btnLamMoi.Name = "btnLamMoi";
-            this.btnLamMoi.Size = new System.Drawing.Size(100, 32);
+            this.btnLamMoi.Size = new System.Drawing.Size(105, 32);
             this.btnLamMoi.TabIndex = 10;
             this.btnLamMoi.Text = "🔄 Làm mới";
             this.btnLamMoi.UseVisualStyleBackColor = true;

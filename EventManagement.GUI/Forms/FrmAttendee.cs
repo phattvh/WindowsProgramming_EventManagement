@@ -69,7 +69,7 @@ namespace EventManagement.GUI.Forms
                 Dock = DockStyle.Top,
                 Height = 60,
                 BackColor = ColorPrimary,
-                Padding = new Padding(20, 0, 0, 0)
+                Padding = new Padding(0)
             };
             _lblTitle = new Label
             {
@@ -77,7 +77,7 @@ namespace EventManagement.GUI.Forms
                 ForeColor = Color.White,
                 Font = new Font("Segoe UI", 13F, FontStyle.Bold),
                 Dock = DockStyle.Fill,
-                TextAlign = ContentAlignment.MiddleLeft
+                TextAlign = ContentAlignment.MiddleCenter
             };
             _pnlHeader.Controls.Add(_lblTitle);
 

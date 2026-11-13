@@ -86,14 +86,16 @@ namespace EventManagement.GUI.Forms
             // 
             // lblBannerTitle
             // 
-            this.lblBannerTitle.AutoSize = true;
+            this.lblBannerTitle.AutoSize = false;
+            this.lblBannerTitle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBannerTitle.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblBannerTitle.ForeColor = System.Drawing.Color.White;
-            this.lblBannerTitle.Location = new System.Drawing.Point(15, 16);
+            this.lblBannerTitle.Location = new System.Drawing.Point(0, 0);
             this.lblBannerTitle.Name = "lblBannerTitle";
-            this.lblBannerTitle.Size = new System.Drawing.Size(220, 25);
+            this.lblBannerTitle.Size = new System.Drawing.Size(1104, 58);
             this.lblBannerTitle.TabIndex = 0;
             this.lblBannerTitle.Text = "BÁO CÁO THỐNG KÊ";
+            this.lblBannerTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // grpFilter
             // 
