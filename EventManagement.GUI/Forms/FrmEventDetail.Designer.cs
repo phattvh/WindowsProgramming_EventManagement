@@ -1316,7 +1316,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab5Header.Name = "lblTab5Header";
             this.lblTab5Header.Size = new Size(490, 19);
             this.lblTab5Header.TabIndex = 0;
-            this.lblTab5Header.Text = "QUẢN LÝ CƠ CẤU HẠNG VÉ, GIÁ PHÁT HÀNH & TỒN KHO KHẢ DỤNG (BR-08, BR-09)";
+            this.lblTab5Header.Text = "QUẢN LÝ CƠ CẤU HẠNG VÉ, GIÁ PHÁT HÀNH & TỒN KHO KHẢ DỤNG";
             this.lblTab5Header.UseMnemonic = false;
 
             this.dgvHangVe.Columns.AddRange(new DataGridViewColumn[] {
@@ -1408,7 +1408,7 @@ namespace EventManagement.GUI.Forms
             this.lblTab6Header.Name = "lblTab6Header";
             this.lblTab6Header.Size = new Size(470, 19);
             this.lblTab6Header.TabIndex = 0;
-            this.lblTab6Header.Text = "DANH SÁCH NHÂN SỰ BAN TỔ CHỨC & CA TRỰC PHÂN CÔNG (BR-13)";
+            this.lblTab6Header.Text = "DANH SÁCH NHÂN SỰ BAN TỔ CHỨC & CA TRỰC PHÂN CÔNG";
             this.lblTab6Header.UseMnemonic = false;
 
             this.btnMoF15.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
@@ -1607,15 +1607,15 @@ namespace EventManagement.GUI.Forms
             this.pnlTab8Toolbar.Dock = DockStyle.Top;
             this.pnlTab8Toolbar.Location = new Point(12, 12);
             this.pnlTab8Toolbar.Name = "pnlTab8Toolbar";
-            this.pnlTab8Toolbar.Size = new Size(1212, 60);
+            this.pnlTab8Toolbar.Size = new Size(1212, 65);
             this.pnlTab8Toolbar.TabIndex = 0;
 
             this.lblTab8Header.AutoSize = true;
             this.lblTab8Header.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             this.lblTab8Header.ForeColor = Color.FromArgb(30, 58, 138);
-            this.lblTab8Header.Location = new Point(10, 8);
+            this.lblTab8Header.Location = new Point(12, 10);
             this.lblTab8Header.Name = "lblTab8Header";
-            this.lblTab8Header.Size = new Size(330, 19);
+            this.lblTab8Header.Size = new Size(170, 19);
             this.lblTab8Header.TabIndex = 0;
             this.lblTab8Header.Text = "TIẾN ĐỘ NGÂN SÁCH";
             this.lblTab8Header.UseMnemonic = false;
@@ -1623,21 +1623,21 @@ namespace EventManagement.GUI.Forms
             this.lblThanhDoNganSach.AutoSize = true;
             this.lblThanhDoNganSach.Font = new Font("Segoe UI Semibold", 8.5F, FontStyle.Bold);
             this.lblThanhDoNganSach.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblThanhDoNganSach.Location = new Point(10, 32);
+            this.lblThanhDoNganSach.Location = new Point(12, 36);
             this.lblThanhDoNganSach.Name = "lblThanhDoNganSach";
-            this.lblThanhDoNganSach.Size = new Size(101, 15);
+            this.lblThanhDoNganSach.Size = new Size(105, 15);
             this.lblThanhDoNganSach.TabIndex = 1;
-            this.lblThanhDoNganSach.Text = "Tiến độ tiêu ngân:";
+            this.lblThanhDoNganSach.Text = "Tiến độ thực chi:";
 
-            this.prgNganSach.Location = new Point(115, 31);
+            this.prgNganSach.Location = new Point(150, 33);
             this.prgNganSach.Name = "prgNganSach";
-            this.prgNganSach.Size = new Size(300, 18);
+            this.prgNganSach.Size = new Size(220, 20);
             this.prgNganSach.TabIndex = 2;
 
             this.lblNganSachInfo.AutoSize = true;
             this.lblNganSachInfo.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             this.lblNganSachInfo.ForeColor = Color.FromArgb(22, 163, 74);
-            this.lblNganSachInfo.Location = new Point(425, 32);
+            this.lblNganSachInfo.Location = new Point(385, 36);
             this.lblNganSachInfo.Name = "lblNganSachInfo";
             this.lblNganSachInfo.Size = new Size(185, 15);
             this.lblNganSachInfo.TabIndex = 3;
@@ -1645,9 +1645,9 @@ namespace EventManagement.GUI.Forms
 
             this.btnMoF17.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
             this.btnMoF17.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            this.btnMoF17.Location = new Point(1020, 12);
+            this.btnMoF17.Location = new Point(1020, 14);
             this.btnMoF17.Name = "btnMoF17";
-            this.btnMoF17.Size = new Size(180, 34);
+            this.btnMoF17.Size = new Size(175, 36);
             this.btnMoF17.TabIndex = 4;
             this.btnMoF17.Text = "Quản lý chi phí";
             this.btnMoF17.UseVisualStyleBackColor = true;
@@ -1694,6 +1694,7 @@ namespace EventManagement.GUI.Forms
             this.colCP_NgayChi.Width = 120;
 
             this.colCP_NguoiLap.DataPropertyName = "NguoiLapPhieu";
+            this.colCP_NguoiLap.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.colCP_NguoiLap.HeaderText = "Người lập";
             this.colCP_NguoiLap.Name = "colCP_NguoiLap";
             this.colCP_NguoiLap.Width = 160;
