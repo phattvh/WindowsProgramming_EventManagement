@@ -545,10 +545,22 @@ namespace EventManagement.GUI.Forms
         {
             try
             {
-                using var bmp = new Bitmap(794, 1123);
+                // Độ phân giải cao A4 (1654 x 2338 ~ 200 DPI) giúp chữ sắc nét tuyệt đối, không nhòe vỡ hạt
+                int renderWidth = 1654;
+                int renderHeight = 2338;
+                using var bmp = new Bitmap(renderWidth, renderHeight);
                 using (var g = Graphics.FromImage(bmp))
                 {
                     g.Clear(Color.White);
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                    // Tỷ lệ co giãn đồ họa từ 794 sang 1654
+                    float scale = (float)renderWidth / 794f;
+                    g.ScaleTransform(scale, scale);
+
                     var pageBounds = new Rectangle(0, 0, 794, 1123);
                     var marginBounds = new Rectangle(40, 40, 714, 1043);
                     var args = new PrintPageEventArgs(g, marginBounds, pageBounds, new PageSettings());
@@ -556,7 +568,19 @@ namespace EventManagement.GUI.Forms
                 }
 
                 using var ms = new MemoryStream();
-                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                // Nén JPEG chất lượng 95% để bảo toàn độ nét tối đa của ký tự text
+                var encoder = System.Drawing.Imaging.ImageCodecInfo.GetImageEncoders()
+                    .FirstOrDefault(c => c.FormatID == System.Drawing.Imaging.ImageFormat.Jpeg.Guid);
+                if (encoder != null)
+                {
+                    using var encoderParams = new System.Drawing.Imaging.EncoderParameters(1);
+                    encoderParams.Param[0] = new System.Drawing.Imaging.EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 95L);
+                    bmp.Save(ms, encoder, encoderParams);
+                }
+                else
+                {
+                    bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                }
                 byte[] imgBytes = ms.ToArray();
 
                 using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);

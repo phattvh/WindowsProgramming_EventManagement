@@ -115,7 +115,7 @@ namespace EventManagement.GUI.Forms
             this.lblSubTitle.Name = "lblSubTitle";
             this.lblSubTitle.Size = new System.Drawing.Size(569, 15);
             this.lblSubTitle.TabIndex = 1;
-            this.lblSubTitle.Text = "Cho phép mua 1–10 vé (BR-10), kiểm soát kho vé (BR-09), tự sinh mã QR GUID (BR-17) & Transaction (BR-18)";
+            this.lblSubTitle.Text = "Cho phép mua 1–10 vé, kiểm soát kho vé tự động & bảo đảm an toàn dữ liệu";
             this.lblSubTitle.Visible = false;
             // 
             // scMain
