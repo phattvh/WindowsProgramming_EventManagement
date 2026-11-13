@@ -145,7 +145,7 @@ namespace EventManagement.Tests
         // Mô tả: Thẩm định định dạng tiền tệ Việt Nam (VNĐ) trên trục tung biểu đồ LiveCharts2 để số liệu dễ đọc và chuyên nghiệp.
 
         [TestMethod]
-        [Description("Kiểm tra tích hợp LiveCharts2 trên Form F02: hàm nạp biểu đồ cập nhật chuỗi dữ liệu vào chartRevenue và chartCheckIn.")]
+        [Description("Kiểm tra tích hợp LiveCharts2 trên Form F02: biểu đồ tròn CheckIn được cập nhật chuỗi dữ liệu và biểu đồ doanh thu đã được loại bỏ.")]
         public async Task FrmDashboard_LoadChartsDataAsync_PopulatesChartRevenueAndPieChart()
         {
             // Arrange
@@ -158,7 +158,7 @@ namespace EventManagement.Tests
             // Assert
             form.chartRevenue.Should().NotBeNull();
             form.chartRevenue.Series.Should().NotBeNull();
-            form.chartRevenue.Series.Count().Should().Be(2); // Doanh thu & Chi phí
+            form.chartRevenue.Series.Count().Should().Be(0); // Đã loại bỏ biểu đồ doanh thu chi phí
 
             form.chartCheckIn.Should().NotBeNull();
             form.chartCheckIn.Series.Should().NotBeNull();

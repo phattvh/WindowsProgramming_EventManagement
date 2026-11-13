@@ -182,34 +182,29 @@ namespace EventManagement.GUI.Forms
                     || CurrentSession.CoQuyen("UC03");
 
                 // Phân quyền cho nhân viên Staff (ST-11):
-                // Ẩn các thẻ tài chính (Doanh thu & Chi phí), ẩn biểu đồ so sánh doanh thu
+                // Ẩn các thẻ tài chính (Doanh thu & Chi phí)
                 bool isStaff = string.Equals(role, "STAFF", StringComparison.OrdinalIgnoreCase);
+                pnlRevenueChart.Visible = false; // Đã loại bỏ biểu đồ Doanh thu sự kiện theo yêu cầu
+                tblCharts.ColumnStyles[0].Width = 0F;
+                tblCharts.ColumnStyles[1].Width = 100F;
+
                 if (isStaff)
                 {
                     pnlCard3.Visible = false; // Ẩn thẻ Doanh thu / Chi phí
-                    pnlRevenueChart.Visible = false; // Ẩn biểu đồ Doanh thu sự kiện
                     
                     // Căn chỉnh lại 3 thẻ KPI còn lại trên TableLayoutPanel
                     tblKpiCards.ColumnStyles[0].Width = 33.33F;
                     tblKpiCards.ColumnStyles[1].Width = 33.33F;
                     tblKpiCards.ColumnStyles[2].Width = 0F;
                     tblKpiCards.ColumnStyles[3].Width = 33.34F;
-
-                    // Mở rộng biểu đồ Check-in chiếm trọn không gian biểu đồ
-                    tblCharts.ColumnStyles[0].Width = 0F;
-                    tblCharts.ColumnStyles[1].Width = 100F;
                 }
                 else
                 {
                     pnlCard3.Visible = true;
-                    pnlRevenueChart.Visible = true;
                     tblKpiCards.ColumnStyles[0].Width = 25F;
                     tblKpiCards.ColumnStyles[1].Width = 25F;
                     tblKpiCards.ColumnStyles[2].Width = 25F;
                     tblKpiCards.ColumnStyles[3].Width = 25F;
-
-                    tblCharts.ColumnStyles[0].Width = 62F;
-                    tblCharts.ColumnStyles[1].Width = 38F;
                 }
             }
             else
@@ -217,7 +212,9 @@ namespace EventManagement.GUI.Forms
                 lblUserGreeting.Text = "Xin chào: Quản trị viên";
                 CanAccessAdminFeatures = true;
                 pnlCard3.Visible = true;
-                pnlRevenueChart.Visible = true;
+                pnlRevenueChart.Visible = false; // Đã loại bỏ biểu đồ Doanh thu sự kiện theo yêu cầu
+                tblCharts.ColumnStyles[0].Width = 0F;
+                tblCharts.ColumnStyles[1].Width = 100F;
 
                 // Khi chạy độc lập không đăng nhập: Hiển thị đầy đủ để demo
                 foreach (Control c in flpQuickButtons.Controls)
@@ -252,20 +249,6 @@ namespace EventManagement.GUI.Forms
                 var statsResult = await _dashboardService.GetDashboardStatsAsync();
                 if (statsResult.IsSuccess && statsResult.Data != null)
                 {
-                    if (statsResult.Data.TongSoSuKien == 0 && statsResult.Data.TongDoanhThuVe == 0 && statsResult.Data.TongChiPhiThucTe == 0)
-                    {
-                        // Fallback số liệu chuẩn hoá cho kiểm thử Manager (MG-05) khi CSDL mới khởi tạo
-                        statsResult.Data.TongSoSuKien = 4;
-                        statsResult.Data.SuKienChuanBi = 1;
-                        statsResult.Data.SuKienSapDienRa = 1;
-                        statsResult.Data.SuKienDaHoanThanh = 1;
-                        statsResult.Data.TongVeDaBan = 7;
-                        statsResult.Data.TongDoanhThuVe = 2000000m;
-                        statsResult.Data.TongChiPhiThucTe = 75000000m;
-                        statsResult.Data.TongNguoiCheckIn = 1;
-                        statsResult.Data.TyLeCheckIn = 14.3;
-                        statsResult.Data.TongNhaTaiTro = 3;
-                    }
                     CurrentStats = statsResult.Data;
                     UpdateKpiCards(statsResult.Data);
                 }
@@ -335,17 +318,13 @@ namespace EventManagement.GUI.Forms
         {
             try
             {
-                // 1. Dữ liệu biểu đồ cột so sánh Doanh thu vs Chi phí (MG-06)
-                var revResult = await _dashboardService.GetEventRevenueComparisonAsync(5);
-                var chartData = (revResult.IsSuccess && revResult.Data != null)
-                    ? revResult.Data
-                    : new List<EventRevenueChartDto>();
-                var (series, xLabels) = Common.DashboardChartBuilder.BuildRevenueExpenseSeries(chartData, maxLabelLength: 100);
-                chartRevenue.Series = series;
-                chartRevenue.XAxes = Common.DashboardChartBuilder.BuildXAxes(xLabels, textSize: 11);
-                chartRevenue.YAxes = Common.DashboardChartBuilder.BuildCurrencyYAxes();
+                // Đã loại bỏ biểu đồ so sánh Doanh thu & Chi phí theo sự kiện theo yêu cầu người dùng
+                pnlRevenueChart.Visible = false;
+                tblCharts.ColumnStyles[0].Width = 0F;
+                tblCharts.ColumnStyles[1].Width = 100F;
+                chartRevenue.Series = Array.Empty<LiveChartsCore.ISeries>();
 
-                // 2. Dữ liệu biểu đồ tròn Tỷ lệ Check-in
+                // Dữ liệu biểu đồ tròn Tỷ lệ Check-in
                 var checkInResult = await _dashboardService.GetCheckInRatioAsync();
                 var checkInData = (checkInResult.IsSuccess && checkInResult.Data != null)
                     ? checkInResult.Data

@@ -529,8 +529,8 @@
             // tblCharts
             // 
             this.tblCharts.ColumnCount = 2;
-            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 62F));
-            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38F));
+            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 0F));
+            this.tblCharts.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblCharts.Controls.Add(this.pnlRevenueChart, 0, 0);
             this.tblCharts.Controls.Add(this.pnlCheckInChart, 1, 0);
             this.tblCharts.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -552,6 +552,7 @@
             this.pnlRevenueChart.Name = "pnlRevenueChart";
             this.pnlRevenueChart.Size = new System.Drawing.Size(682, 214);
             this.pnlRevenueChart.TabIndex = 0;
+            this.pnlRevenueChart.Visible = false;
             // 
             // lblRevenueChartTitle
             // 
