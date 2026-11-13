@@ -30,7 +30,7 @@ namespace EventManagement.BLL.Services
             if (newPhatHanh < tier.SoLuongDaBan)
             {
                 return ServiceResult<bool>.Failed(
-                    $"Không thể giảm số lượng phát hành xuống {newPhatHanh} vé vì đã bán thực tế {tier.SoLuongDaBan} vé (BR-08).",
+                    $"Không thể giảm số lượng phát hành xuống {newPhatHanh} vé vì đã bán thực tế {tier.SoLuongDaBan} vé.",
                     new List<string> { $"Yêu cầu: SoLuongPhatHanh ({newPhatHanh}) >= SoLuongDaBan ({tier.SoLuongDaBan})" }
                 );
             }
@@ -71,7 +71,7 @@ namespace EventManagement.BLL.Services
             // Kiểm tra giới hạn số lượng đặt mua (1 đến 10 vé - BR-10)
             if (soLuongMua < 1 || soLuongMua > 10)
             {
-                return ServiceResult<int>.Failed("Số lượng vé đặt mua phải từ 1 đến 10 vé trong một đơn hàng (BR-10).");
+                return ServiceResult<int>.Failed("Số lượng vé đặt mua phải từ 1 đến 10 vé trong một đơn hàng.");
             }
 
             // Tính tồn kho khả dụng

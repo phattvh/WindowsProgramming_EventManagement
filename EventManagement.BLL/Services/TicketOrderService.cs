@@ -351,7 +351,7 @@ namespace EventManagement.BLL.Services
             if (request.SoLuongMua < 1 || request.SoLuongMua > 10)
             {
                 return ServiceResult<TicketOrderResultDto>.Failed(
-                    "Quy tắc BR-10: Mỗi đơn hàng chỉ cho phép mua từ 1 đến 10 vé.",
+                    "Mỗi đơn hàng chỉ cho phép mua từ 1 đến 10 vé.",
                     new List<string> { $"Số lượng vé yêu cầu: {request.SoLuongMua} (hợp lệ: 1 - 10)" }
                 );
             }
@@ -389,7 +389,7 @@ namespace EventManagement.BLL.Services
                 if (request.SoLuongMua > available)
                 {
                     return ServiceResult<TicketOrderResultDto>.Failed(
-                        $"Quy tắc BR-09: Kho vé khả dụng không đủ đáp ứng số lượng yêu cầu.",
+                        $"Kho vé khả dụng không đủ đáp ứng số lượng yêu cầu.",
                         new List<string>
                         {
                             $"Hạng vé: {tier.TenHangVe}",

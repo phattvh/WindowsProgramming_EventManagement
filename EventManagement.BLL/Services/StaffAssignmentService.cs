@@ -425,7 +425,7 @@ namespace EventManagement.BLL.Services
             if (!staffRes.Data.TrangThai.Equals("Hoạt động", StringComparison.OrdinalIgnoreCase))
             {
                 return ServiceResult<bool>.Failed(
-                    $"Xung đột phân công (BR-13): Nhân sự [{dto.MaNhanSu} - {staffRes.Data.HoTen}] hiện đang ở trạng thái '{staffRes.Data.TrangThai}', không thể phân công ca trực.",
+                    $"Xung đột phân công: Nhân sự [{dto.MaNhanSu} - {staffRes.Data.HoTen}] hiện đang ở trạng thái '{staffRes.Data.TrangThai}', không thể phân công ca trực.",
                     new List<string> { $"Nhân sự '{staffRes.Data.HoTen}' đã ngừng làm việc hoặc nghỉ việc (Trạng thái = {staffRes.Data.TrangThai})." }
                 );
             }

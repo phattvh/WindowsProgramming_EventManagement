@@ -318,7 +318,7 @@ namespace EventManagement.BLL.Services
             var dateValidation = _validationService.ValidateEventDates(dto.NgayBatDau, dto.NgayKetThuc, isNew: false);
             if (!dateValidation.IsSuccess)
             {
-                return ServiceResult.Failed($"Quy tắc nghiệp vụ BR-03: {dateValidation.Message}", "BR-03");
+                return ServiceResult.Failed(dateValidation.Message, "BR-03");
             }
 
             // 3. Thuật toán BR-04: Chống trùng lịch địa điểm giữa các sự kiện
@@ -417,7 +417,7 @@ namespace EventManagement.BLL.Services
             var dateValidation = _validationService.ValidateEventDates(dto.NgayBatDau, dto.NgayKetThuc, isNew: false);
             if (!dateValidation.IsSuccess)
             {
-                return ServiceResult.Failed($"Quy tắc nghiệp vụ BR-03: {dateValidation.Message}", "BR-03");
+                return ServiceResult.Failed(dateValidation.Message, "BR-03");
             }
 
             // 2. Thuật toán BR-04: Chống trùng lịch địa điểm giữa các sự kiện
@@ -499,7 +499,7 @@ namespace EventManagement.BLL.Services
             if (existing.SoVeDaBan > 0 || existing.SoKhachCheckIn > 0)
             {
                 return ServiceResult.Failed(
-                    $"Quy tắc nghiệp vụ BR-02: Sự kiện '{existing.TenSuKien}' đã phát sinh dữ liệu liên kết ({existing.SoVeDaBan} vé đã bán, {existing.SoKhachCheckIn} lượt check-in). Không thể xóa vĩnh viễn khỏi hệ thống! Vui lòng chuyển trạng thái sự kiện sang 'Đã hủy'.",
+                    $"Sự kiện '{existing.TenSuKien}' đã phát sinh dữ liệu liên kết ({existing.SoVeDaBan} vé đã bán, {existing.SoKhachCheckIn} lượt check-in). Không thể xóa vĩnh viễn khỏi hệ thống! Vui lòng chuyển trạng thái sự kiện sang 'Đã hủy'.",
                     "BR-02");
             }
 
@@ -529,7 +529,7 @@ namespace EventManagement.BLL.Services
             }
             existing.TrangThai = "Đã hủy";
             EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Cancelled");
-            return ServiceResult.Success($"Đã chuyển trạng thái sự kiện '{existing.TenSuKien}' sang 'Đã hủy' (BR-02)!");
+            return ServiceResult.Success($"Đã chuyển trạng thái sự kiện '{existing.TenSuKien}' sang 'Đã hủy'!");
         }
 
         public string SuggestNextCode()
@@ -586,7 +586,7 @@ namespace EventManagement.BLL.Services
             if (conflictingEvent != null)
             {
                 return ServiceResult.Failed(
-                    $"Quy tắc nghiệp vụ BR-04: Địa điểm '{conflictingEvent.TenDiaDiem}' đã được xếp lịch cho sự kiện '{conflictingEvent.TenSuKien}' ({conflictingEvent.MaSuKien}) từ {conflictingEvent.NgayBatDau:dd/MM/yyyy HH:mm} đến {conflictingEvent.NgayKetThuc:dd/MM/yyyy HH:mm}. Khoảng thời gian yêu cầu ({start:dd/MM/yyyy HH:mm} - {end:dd/MM/yyyy HH:mm}) bị trùng lặp!",
+                    $"Địa điểm '{conflictingEvent.TenDiaDiem}' đã được xếp lịch cho sự kiện '{conflictingEvent.TenSuKien}' ({conflictingEvent.MaSuKien}) từ {conflictingEvent.NgayBatDau:dd/MM/yyyy HH:mm} đến {conflictingEvent.NgayKetThuc:dd/MM/yyyy HH:mm}. Khoảng thời gian yêu cầu ({start:dd/MM/yyyy HH:mm} - {end:dd/MM/yyyy HH:mm}) bị trùng lặp!",
                     "BR-04");
             }
 

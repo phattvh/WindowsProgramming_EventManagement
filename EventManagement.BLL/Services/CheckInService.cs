@@ -95,7 +95,7 @@ namespace EventManagement.BLL.Services
                         $"Sai sự kiện! Vé thuộc: {ticket.TenSuKien}");
 
                     return ServiceResult<CheckInResultDto>.Failed(
-                        $"Vé '{ticket.MaVe}' thuộc sự kiện '{ticket.TenSuKien}', không thể check-in tại '{expectedEventName}' (BR-11).");
+                        $"Vé '{ticket.MaVe}' thuộc sự kiện '{ticket.TenSuKien}', không thể check-in tại '{expectedEventName}'.");
                 }
 
                 // 3. Kiểm tra trạng thái hủy/chưa thanh toán
