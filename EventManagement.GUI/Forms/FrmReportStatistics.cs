@@ -78,6 +78,9 @@ namespace EventManagement.GUI.Forms
             dgvReportData.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvReportData.AutoGenerateColumns = false;
 
+            grpFilter.Resize += (s, e) => LayoutFilterButtons();
+            LayoutFilterButtons();
+
             pnlKpiBottom.Resize += (s, e) => LayoutKpiBottom();
             LayoutKpiBottom();
 
@@ -132,6 +135,18 @@ namespace EventManagement.GUI.Forms
                     ExecuteLoadReport();
             }
             catch { }
+        }
+
+        private void LayoutFilterButtons()
+        {
+            if (grpFilter == null || btnLamMoi == null || btnXuatExcel == null || btnIn == null || btnXem == null) return;
+            int rightEdge = grpFilter.ClientSize.Width - 16;
+            if (rightEdge < 600) return;
+
+            btnLamMoi.Location = new Point(rightEdge - btnLamMoi.Width, 27);
+            btnXuatExcel.Location = new Point(btnLamMoi.Left - 12 - btnXuatExcel.Width, 27);
+            btnIn.Location = new Point(btnXuatExcel.Left - 12 - btnIn.Width, 27);
+            btnXem.Location = new Point(btnIn.Left - 12 - btnXem.Width, 27);
         }
 
         private void LayoutKpiBottom()
