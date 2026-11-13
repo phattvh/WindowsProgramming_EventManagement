@@ -154,6 +154,15 @@ namespace EventManagement.GUI.Forms
             }
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            if (!DesignMode && !(this is FrmLogin || this is FrmChangePassword || this is FrmServerConfig))
+            {
+                ApplyResponsiveLayout(this);
+            }
+        }
+
         /// <summary>
         /// Khởi tạo thanh MenuStrip dùng chung cho toàn bộ các Form nghiệp vụ trong hệ thống.
         /// Bố cục chuẩn gồm 7 menu chính với phím tắt (Hotkeys) và phím truy cập nhanh (Mnemonics).
@@ -492,12 +501,13 @@ namespace EventManagement.GUI.Forms
 
             if (pnlHeader != null && pnlFilter != null)
             {
-                int targetFilterTop = pnlHeader.Bottom + 10;
-                if (pnlFilter.Top < targetFilterTop)
+                int targetFilterTop = pnlHeader.Bottom + 12;
+                if (pnlFilter.Top != targetFilterTop)
                 {
+                    int shift = targetFilterTop - pnlFilter.Top;
                     pnlFilter.Top = targetFilterTop;
 
-                    if (mainGrid != null && mainGrid.Top < pnlFilter.Bottom + 10)
+                    if (mainGrid != null)
                     {
                         int targetGridTop = pnlFilter.Bottom + 10;
                         int gridShift = targetGridTop - mainGrid.Top;
@@ -539,8 +549,18 @@ namespace EventManagement.GUI.Forms
             dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = Color.FromArgb(241, 245, 249);
             dgv.ColumnHeadersDefaultCellStyle.SelectionForeColor = ColorText;
             dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgv.ColumnHeadersHeight = 36;
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+            foreach (DataGridViewColumn col in dgv.Columns)
+            {
+                col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+            dgv.ColumnAdded -= Dgv_ColumnAddedCenterHeader;
+            dgv.ColumnAdded += Dgv_ColumnAddedCenterHeader;
+            dgv.DataBindingComplete -= Dgv_DataBindingCompleteCenterHeader;
+            dgv.DataBindingComplete += Dgv_DataBindingCompleteCenterHeader;
 
             // Row Style & Zebra Striping
             dgv.RowTemplate.Height = 32;
@@ -549,6 +569,25 @@ namespace EventManagement.GUI.Forms
             dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(219, 234, 254); // Xanh nhạt khi chọn
             dgv.DefaultCellStyle.SelectionForeColor = ColorText;
             dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(248, 250, 252);
+        }
+
+        private static void Dgv_ColumnAddedCenterHeader(object? sender, DataGridViewColumnEventArgs e)
+        {
+            if (e.Column != null)
+            {
+                e.Column.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+        }
+
+        private static void Dgv_DataBindingCompleteCenterHeader(object? sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            if (sender is DataGridView grid)
+            {
+                foreach (DataGridViewColumn col in grid.Columns)
+                {
+                    col.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                }
+            }
         }
 
         /// <summary>
