@@ -63,3 +63,10 @@ nunit-*.xml
 *.userosscache
 *.sln.docstates
 *.suo
+
+# Temporary test evidence and manual screenshots
+[Tt]esting/
+
+# Unused scratch signature images
+**/Chữ ký*.*
+**/Images/Speakers/Chữ ký*.*
