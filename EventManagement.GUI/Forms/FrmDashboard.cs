@@ -155,7 +155,8 @@ namespace EventManagement.GUI.Forms
             if (e.RowIndex < 0 || e.RowIndex >= dgvUpcoming.Rows.Count) return;
             var row = dgvUpcoming.Rows[e.RowIndex];
             var evt = row.DataBoundItem as UpcomingEventDto;
-            string eventCode = evt?.MaSuKien ?? "EVT202601";
+            if (evt == null || string.IsNullOrWhiteSpace(evt.MaSuKien)) return;
+            string eventCode = evt.MaSuKien;
             PermissionHelper.SafeLaunchDialog(this, "UC05", () => new FrmEventDetail(eventCode), $"Chi tiết sự kiện {eventCode}");
             _ = RefreshDashboardAsync();
         }
@@ -336,13 +337,9 @@ namespace EventManagement.GUI.Forms
             {
                 // 1. Dữ liệu biểu đồ cột so sánh Doanh thu vs Chi phí (MG-06)
                 var revResult = await _dashboardService.GetEventRevenueComparisonAsync(5);
-                var chartData = (revResult.IsSuccess && revResult.Data != null && revResult.Data.Count > 0)
+                var chartData = (revResult.IsSuccess && revResult.Data != null)
                     ? revResult.Data
-                    : new List<EventRevenueChartDto>
-                    {
-                        new EventRevenueChartDto { MaSuKien = "EVT202601", TenSuKien = "Vietnam Tech Summit 2026", DoanhThu = 2000000m, ChiPhi = 75000000m },
-                        new EventRevenueChartDto { MaSuKien = "EVT202602", TenSuKien = "Workshop GenAI 2026", DoanhThu = 1500000m, ChiPhi = 44000000m }
-                    };
+                    : new List<EventRevenueChartDto>();
                 var (series, xLabels) = Common.DashboardChartBuilder.BuildRevenueExpenseSeries(chartData, maxLabelLength: 100);
                 chartRevenue.Series = series;
                 chartRevenue.XAxes = Common.DashboardChartBuilder.BuildXAxes(xLabels, textSize: 11);
@@ -352,7 +349,7 @@ namespace EventManagement.GUI.Forms
                 var checkInResult = await _dashboardService.GetCheckInRatioAsync();
                 var checkInData = (checkInResult.IsSuccess && checkInResult.Data != null)
                     ? checkInResult.Data
-                    : new CheckInRatioDto { DaCheckIn = 1, ChuaCheckIn = 6, TyLePhanTram = 14.3 };
+                    : new CheckInRatioDto { DaCheckIn = 0, ChuaCheckIn = 0, TyLePhanTram = 0 };
                 chartCheckIn.Series = Common.DashboardChartBuilder.BuildCheckInPieSeries(checkInData);
             }
             catch (Exception ex)

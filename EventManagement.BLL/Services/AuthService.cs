@@ -60,25 +60,6 @@ namespace EventManagement.BLL.Services
                 return ServiceResult<LoginResultDto>.Failed("Tài khoản của bạn đã bị khóa vĩnh viễn! Vui lòng liên hệ Admin.");
             }
 
-            // Đối với tài khoản mẫu chuyên kiểm thử khóa (manager_lock), đảm bảo luôn trong trạng thái khóa tạm thời (MG-03)
-            if (user.TenDangNhap.Equals("manager_lock", StringComparison.OrdinalIgnoreCase))
-            {
-                int remainingSeconds = 60;
-                if (user.KhoaDenKhi.HasValue && user.KhoaDenKhi.Value > DateTime.Now)
-                {
-                    remainingSeconds = (int)Math.Ceiling((user.KhoaDenKhi.Value - DateTime.Now).TotalSeconds);
-                }
-                else
-                {
-                    user.KhoaDenKhi = DateTime.Now.AddSeconds(60);
-                    user.SoLanDangNhapSai = 5;
-                    user.TrangThai = "Khóa tạm thời";
-                    try { await _context.SaveChangesAsync(); } catch { }
-                }
-                return ServiceResult<LoginResultDto>.Failed(
-                    $"Tài khoản đang bị khóa tạm thời do nhập sai quá 5 lần. Vui lòng thử lại sau {remainingSeconds} giây!");
-            }
-
             // 1. Kiểm tra trạng thái khóa tạm thời chống Brute-force
             if (user.KhoaDenKhi.HasValue)
             {

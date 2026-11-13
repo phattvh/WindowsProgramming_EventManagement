@@ -91,10 +91,6 @@ namespace EventManagement.GUI.Forms
 
                     // Nếu thông báo chứa thông tin khóa tạm thời (ví dụ "... sau X giây" hoặc "... trong X phút")
                     int lockDuration = ExtractLockoutSeconds(result.Message);
-                    if (username.Equals("manager_lock", StringComparison.OrdinalIgnoreCase) && lockDuration <= 0)
-                    {
-                        lockDuration = 60;
-                    }
 
                     if (lockDuration > 0)
                     {

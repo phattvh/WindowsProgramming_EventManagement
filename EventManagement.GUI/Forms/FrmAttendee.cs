@@ -48,7 +48,7 @@ namespace EventManagement.GUI.Forms
         public FrmAttendee()
         {
             _attendeeService = new AttendeeService();
-            _attendees = GetInitialSeedData();
+            _attendees = LoadAttendeesFromDb();
 
             InitializeComponent();
             LoadDataToGrid(_attendees);
@@ -520,61 +520,17 @@ namespace EventManagement.GUI.Forms
             LoadDataToGrid(results);
         }
 
-        private List<NguoiThamGia> GetInitialSeedData()
+        private List<NguoiThamGia> LoadAttendeesFromDb()
         {
-            return new List<NguoiThamGia>
+            try
             {
-                new NguoiThamGia 
-                { 
-                    MaNguoiThamGia = "NTG001", 
-                    HoTen = "Nguyễn Văn An", 
-                    GioiTinh = "Nam", 
-                    NgaySinh = new DateTime(1995, 5, 15), 
-                    Email = "an.nguyen@gmail.com", 
-                    SoDienThoai = "0912345678", 
-                    DonViCongTac = "Đại học Bách Khoa TP.HCM" 
-                },
-                new NguoiThamGia 
-                { 
-                    MaNguoiThamGia = "NTG002", 
-                    HoTen = "Trần Thị Bích", 
-                    GioiTinh = "Nữ", 
-                    NgaySinh = new DateTime(1998, 10, 20), 
-                    Email = "bich.tran@gmail.com", 
-                    SoDienThoai = "0987654321", 
-                    DonViCongTac = "FPT Software" 
-                },
-                new NguoiThamGia 
-                { 
-                    MaNguoiThamGia = "NTG003", 
-                    HoTen = "Lê Hoàng Nam", 
-                    GioiTinh = "Nam", 
-                    NgaySinh = new DateTime(1992, 3, 8), 
-                    Email = "nam.le@techcorp.vn", 
-                    SoDienThoai = "0903112233", 
-                    DonViCongTac = "TechCorp VN" 
-                },
-                new NguoiThamGia 
-                { 
-                    MaNguoiThamGia = "NTG004", 
-                    HoTen = "Phạm Minh Tuấn", 
-                    GioiTinh = "Nam", 
-                    NgaySinh = new DateTime(2001, 12, 12), 
-                    Email = "tuan.pham@student.edu.vn", 
-                    SoDienThoai = "0934556677", 
-                    DonViCongTac = "Đại học CNTT - ĐHQG" 
-                },
-                new NguoiThamGia 
-                { 
-                    MaNguoiThamGia = "NTG005", 
-                    HoTen = "Hoàng Thu Thảo", 
-                    GioiTinh = "Nữ", 
-                    NgaySinh = new DateTime(1997, 7, 25), 
-                    Email = "thao.hoang@vng.com.vn", 
-                    SoDienThoai = "0977889900", 
-                    DonViCongTac = "VNG Corporation" 
-                }
-            };
+                using var db = new EventManagement.DAL.AppDbContext();
+                return db.NguoiThamGias.ToList();
+            }
+            catch
+            {
+                return new List<NguoiThamGia>();
+            }
         }
     }
 }

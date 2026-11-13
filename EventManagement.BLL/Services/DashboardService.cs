@@ -214,18 +214,6 @@ namespace EventManagement.BLL.Services
                     });
                 }
 
-                if (list.Count == 0)
-                {
-                    // Fallback sự kiện mẫu nếu cơ sở dữ liệu chưa có sự kiện
-                    list.Add(new EventRevenueChartDto
-                    {
-                        MaSuKien = "EVT202601",
-                        TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                        DoanhThu = 2000000m,
-                        ChiPhi = 75000000m
-                    });
-                }
-
                 return ServiceResult<List<EventRevenueChartDto>>.Success(list, "Lấy dữ liệu so sánh doanh thu thành công.");
             }
             catch (Exception ex)

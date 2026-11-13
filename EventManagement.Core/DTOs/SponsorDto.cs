@@ -22,7 +22,7 @@ namespace EventManagement.Core.DTOs
         public string HinhThucTaiTro { get; set; } = "Tiền mặt"; // Tiền mặt, Hiện vật, Dịch vụ...
         public string TrangThai { get; set; } = "Đang hợp tác"; // Đang hợp tác, Tiềm năng, Ngừng hợp tác
         public int SoSuKienTaiTro { get; set; } = 0;
-        public string? MaSuKien { get; set; } = "EVT202601";
+        public string? MaSuKien { get; set; }
         public string? TenSuKien { get; set; }
 
         /// <summary>

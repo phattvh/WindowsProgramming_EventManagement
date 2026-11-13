@@ -200,7 +200,7 @@ namespace EventManagement.GUI.Forms
             }
             else if (cboFilterSuKien.Items.Count > 1)
             {
-                cboFilterSuKien.SelectedIndex = 1; // Mặc định chọn EVT202601
+                cboFilterSuKien.SelectedIndex = 1;
             }
             else
             {

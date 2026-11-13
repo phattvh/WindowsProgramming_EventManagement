@@ -15,26 +15,48 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class CheckInService : ICheckInService
     {
-        private static readonly List<(string MaSuKien, string TenSuKien)> _events = new()
-        {
-            ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026"),
-            ("EVT202602", "Workshop Thực chiến GenAI & Prompt Engineering 2026"),
-            ("EVT202603", "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT")
-        };
+        private static readonly List<(string MaSuKien, string TenSuKien)> _events = new();
+        private static readonly List<CheckInHistoryDto> _recentLogs = new();
 
-        private static readonly List<CheckInHistoryDto> _recentLogs = new()
+        private void EnsureLoadedFromDb()
         {
-            new CheckInHistoryDto
+            if (_events.Count == 0)
             {
-                MaVe = "VE00000",
-                TenNguoiThamGia = "Trần Đình Khôi (Khách mời)",
-                TenHangVe = "Vé VIP",
-                ThoiGian = DateTime.Now.AddMinutes(-25),
-                PhuongThuc = "Webcam QR",
-                ThanhCong = true,
-                GhiChu = "Check-in thành công lúc mở cửa"
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var evts = db.SuKiens.Select(s => new { s.MaSuKien, s.TenSuKien }).ToList();
+                    foreach (var e in evts)
+                    {
+                        if (!_events.Any(x => x.MaSuKien == e.MaSuKien))
+                            _events.Add((e.MaSuKien, e.TenSuKien));
+                    }
+
+                    var logs = (from ci in db.CheckIns
+                                join ctv in db.ChiTietVes on ci.MaVe equals ctv.MaVe
+                                join dk in db.DangKys on ctv.MaDangKy equals dk.MaDangKy
+                                join hv in db.HangVes on dk.MaHangVe equals hv.MaHangVe into hvj
+                                from hv in hvj.DefaultIfEmpty()
+                                orderby ci.ThoiGianCheckIn descending
+                                select new CheckInHistoryDto
+                                {
+                                    MaVe = ctv.MaVe,
+                                    TenNguoiThamGia = ctv.TenNguoiThamGia,
+                                    TenHangVe = hv != null ? hv.TenHangVe : "Vé tham dự",
+                                    ThoiGian = ci.ThoiGianCheckIn,
+                                    PhuongThuc = ci.PhuongThuc,
+                                    ThanhCong = true,
+                                    GhiChu = ci.GhiChu
+                                }).Take(50).ToList();
+
+                    if (logs.Any())
+                    {
+                        _recentLogs.AddRange(logs);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         private static readonly object _syncLock = new();
 
@@ -55,11 +77,13 @@ namespace EventManagement.BLL.Services
 
         public List<(string MaSuKien, string TenSuKien)> GetActiveEvents()
         {
+            EnsureLoadedFromDb();
             return _events.ToList();
         }
 
         public ServiceResult<CheckInResultDto> ProcessCheckIn(CheckInRequestDto request)
         {
+            EnsureLoadedFromDb();
             if (request == null)
                 return ServiceResult<CheckInResultDto>.Failed("Dữ liệu yêu cầu check-in không hợp lệ.");
 
@@ -158,6 +182,7 @@ namespace EventManagement.BLL.Services
 
         public CheckInStatsDto GetCheckInStatistics(string maSuKien)
         {
+            EnsureLoadedFromDb();
             lock (_syncLock)
             {
                 var eventCode = NormalizeCode(maSuKien);
@@ -186,6 +211,7 @@ namespace EventManagement.BLL.Services
 
         public List<CheckInHistoryDto> GetRecentCheckIns(string maSuKien, int count = 20)
         {
+            EnsureLoadedFromDb();
             lock (_syncLock)
             {
                 return _recentLogs

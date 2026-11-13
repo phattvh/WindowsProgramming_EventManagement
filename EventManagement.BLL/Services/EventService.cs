@@ -23,136 +23,48 @@ namespace EventManagement.BLL.Services
         private readonly IEventTypeService _eventTypeService;
         private readonly IVenueService _venueService;
 
-        // Danh sách lưu trữ mô phỏng cho tầng BLL khi chưa kết nối trực tiếp DbContext
-        private static readonly List<EventListDto> _events = new()
+        // Danh sách lưu trữ bộ nhớ đệm cho tầng BLL
+        private static readonly List<EventListDto> _events = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new EventListDto
+            if (_events.Count == 0)
             {
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                MaLoaiSK = "LSK01",
-                TenLoaiSK = "Hội thảo Công nghệ",
-                MaDiaDiem = "DD001",
-                TenDiaDiem = "Hội trường Thống Nhất (Dinh Độc Lập)",
-                NgayBatDau = new DateTime(2026, 12, 15, 8, 0, 0),
-                NgayKetThuc = new DateTime(2026, 12, 15, 17, 30, 0),
-                SucChua = 500,
-                NganSachDuKien = 250000000m,
-                NguoiPhuTrach = "Trần Minh Tâm",
-                TrangThai = "Sắp diễn ra",
-                SoVeDaBan = 450,
-                SoKhachCheckIn = 0,
-                MoTa = "Sự kiện công nghệ thường niên quy tụ hơn 500 chuyên gia, kỹ sư và lãnh đạo công nghệ trong và ngoài nước."
-            },
-            new EventListDto
-            {
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                MaLoaiSK = "LSK05",
-                TenLoaiSK = "Workshop Kỹ năng & Đào tạo",
-                MaDiaDiem = "DD003",
-                TenDiaDiem = "Trung tâm Sự kiện GEM Center",
-                NgayBatDau = new DateTime(2026, 11, 3, 8, 30, 0),
-                NgayKetThuc = new DateTime(2026, 11, 4, 17, 0, 0),
-                SucChua = 300,
-                NganSachDuKien = 85000000m,
-                NguoiPhuTrach = "Lê Thanh Hằng",
-                TrangThai = "Đang diễn ra",
-                SoVeDaBan = 280,
-                SoKhachCheckIn = 210,
-                MoTa = "Đào tạo kỹ năng thực chiến ứng dụng Large Language Models và xây dựng AI Agent cho doanh nghiệp."
-            },
-            new EventListDto
-            {
-                MaSuKien = "EVT202603",
-                TenSuKien = "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT",
-                MaLoaiSK = "LSK04",
-                TenLoaiSK = "Hội nghị Khoa học (Symposium)",
-                MaDiaDiem = "DD005",
-                TenDiaDiem = "Hội trường A - ĐH Bách Khoa TP.HCM",
-                NgayBatDau = new DateTime(2026, 12, 25, 8, 0, 0),
-                NgayKetThuc = new DateTime(2026, 12, 26, 18, 0, 0),
-                SucChua = 800,
-                NganSachDuKien = 180000000m,
-                NguoiPhuTrach = "TS. Nguyễn Minh Triết",
-                TrangThai = "Chuẩn bị",
-                SoVeDaBan = 150,
-                SoKhachCheckIn = 0,
-                MoTa = "Báo cáo công trình nghiên cứu và ứng dụng IoT, AI trong các ngành công nghiệp mũi nhọn."
-            },
-            new EventListDto
-            {
-                MaSuKien = "EVT202604",
-                TenSuKien = "Đại nhạc hội Chào đón Tân sinh viên Mega Concert",
-                MaLoaiSK = "LSK02",
-                TenLoaiSK = "Hội nghị Khách hàng",
-                MaDiaDiem = "DD002",
-                TenDiaDiem = "Nhà thi đấu Quân Khu 7",
-                NgayBatDau = new DateTime(2026, 10, 20, 18, 0, 0),
-                NgayKetThuc = new DateTime(2026, 10, 20, 22, 30, 0),
-                SucChua = 3500,
-                NganSachDuKien = 450000000m,
-                NguoiPhuTrach = "Nguyễn Hoàng Long",
-                TrangThai = "Đã hoàn thành",
-                SoVeDaBan = 3500,
-                SoKhachCheckIn = 3420,
-                MoTa = "Đêm nhạc hội hoành tráng chào đón sinh viên với sự góp mặt của các ca sĩ nổi tiếng."
-            },
-            new EventListDto
-            {
-                MaSuKien = "EVT202605",
-                TenSuKien = "Giải đấu Thể thao Điện tử Sinh viên Toàn quốc (eSports Cup)",
-                MaLoaiSK = "LSK03",
-                TenLoaiSK = "Giải đấu Thể thao Điện tử",
-                MaDiaDiem = "DD002",
-                TenDiaDiem = "Nhà thi đấu Quân Khu 7",
-                NgayBatDau = new DateTime(2026, 11, 20, 8, 0, 0),
-                NgayKetThuc = new DateTime(2026, 11, 22, 21, 0, 0),
-                SucChua = 2000,
-                NganSachDuKien = 120000000m,
-                NguoiPhuTrach = "Vũ Thị Mai",
-                TrangThai = "Chuẩn bị",
-                SoVeDaBan = 650,
-                SoKhachCheckIn = 0,
-                MoTa = "Tranh tài các môn thể thao điện tử hàng đầu giữa các trường đại học toàn quốc."
-            },
-            new EventListDto
-            {
-                MaSuKien = "EVT202606",
-                TenSuKien = "Ngày hội Việc làm & Kết nối Doanh nghiệp IT Career Fair",
-                MaLoaiSK = "LSK06",
-                TenLoaiSK = "Ngày hội Việc làm (Career Fair)",
-                MaDiaDiem = "DD004",
-                TenDiaDiem = "Trung tâm Triển lãm & Hội chợ SECC",
-                NgayBatDau = new DateTime(2026, 11, 15, 8, 0, 0),
-                NgayKetThuc = new DateTime(2026, 11, 15, 17, 0, 0),
-                SucChua = 4000,
-                NganSachDuKien = 160000000m,
-                NguoiPhuTrach = "Lê Thanh Hằng",
-                TrangThai = "Chuẩn bị",
-                SoVeDaBan = 0,
-                SoKhachCheckIn = 0,
-                MoTa = "Kết nối tuyển dụng hơn 50 doanh nghiệp công nghệ với sinh viên và kỹ sư phần mềm trẻ."
-            },
-            new EventListDto
-            {
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                MaLoaiSK = "LSK01",
-                TenLoaiSK = "Hội thảo Công nghệ",
-                MaDiaDiem = "DD001",
-                TenDiaDiem = "Hội trường Thống Nhất (Dinh Độc Lập)",
-                NgayBatDau = new DateTime(2026, 10, 5, 8, 30, 0),
-                NgayKetThuc = new DateTime(2026, 10, 5, 16, 30, 0),
-                SucChua = 400,
-                NganSachDuKien = 95000000m,
-                NguoiPhuTrach = "Trần Minh Tâm",
-                TrangThai = "Đã hủy",
-                SoVeDaBan = 0,
-                SoKhachCheckIn = 0,
-                MoTa = "Sự kiện tạm hủy do diễn giả chính có lịch công tác đột xuất ở nước ngoài."
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var list = (from s in db.SuKiens
+                                join l in db.LoaiSuKiens on s.MaLoaiSK equals l.MaLoaiSK into lj
+                                from l in lj.DefaultIfEmpty()
+                                join d in db.DiaDiems on s.MaDiaDiem equals d.MaDiaDiem into dj
+                                from d in dj.DefaultIfEmpty()
+                                select new EventListDto
+                                {
+                                    MaSuKien = s.MaSuKien,
+                                    TenSuKien = s.TenSuKien,
+                                    MaLoaiSK = s.MaLoaiSK,
+                                    TenLoaiSK = l != null ? l.TenLoaiSK : s.MaLoaiSK,
+                                    MaDiaDiem = s.MaDiaDiem,
+                                    TenDiaDiem = d != null ? d.TenDiaDiem : s.MaDiaDiem,
+                                    NgayBatDau = s.NgayBatDau,
+                                    NgayKetThuc = s.NgayKetThuc,
+                                    SucChua = s.SucChua,
+                                    NganSachDuKien = s.NganSachDuKien,
+                                    NguoiPhuTrach = s.NguoiPhuTrach,
+                                    TrangThai = s.TrangThai,
+                                    SoVeDaBan = db.ChiTietVes.Count(c => db.DangKys.Any(dk => dk.MaDangKy == c.MaDangKy && dk.MaSuKien == s.MaSuKien)),
+                                    SoKhachCheckIn = db.CheckIns.Count(ci => db.ChiTietVes.Any(c => c.MaVe == ci.MaVe && db.DangKys.Any(dk => dk.MaDangKy == c.MaDangKy && dk.MaSuKien == s.MaSuKien))),
+                                    MoTa = s.MoTa
+                                }).ToList();
+
+                    if (list.Any())
+                    {
+                        _events.AddRange(list);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         public EventService() : this(new EventValidationService(), new EventTypeService(), new VenueService())
         {
@@ -192,6 +104,7 @@ namespace EventManagement.BLL.Services
             DateTime? tuNgay = null,
             DateTime? denNgay = null)
         {
+            EnsureLoadedFromDb();
             var query = _events.AsEnumerable();
 
             // 1. Tìm kiếm đa điều kiện theo từ khóa (Mã, Tên, Người phụ trách, Tên loại, Tên địa điểm, Mô tả)
@@ -246,6 +159,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<EventListDto> GetById(string maSuKien)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maSuKien))
             {
                 return ServiceResult<EventListDto>.Failed("Mã sự kiện không được để trống!");
@@ -282,6 +196,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(EventListDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult.Failed("Dữ liệu sự kiện không hợp lệ!");
@@ -381,12 +296,35 @@ namespace EventManagement.BLL.Services
             };
 
             _events.Add(newEntity);
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var entity = new EventManagement.Core.Entities.SuKien
+                {
+                    MaSuKien = newEntity.MaSuKien,
+                    TenSuKien = newEntity.TenSuKien,
+                    MaLoaiSK = newEntity.MaLoaiSK,
+                    MoTa = newEntity.MoTa,
+                    NgayBatDau = newEntity.NgayBatDau,
+                    NgayKetThuc = newEntity.NgayKetThuc,
+                    MaDiaDiem = newEntity.MaDiaDiem,
+                    SucChua = newEntity.SucChua,
+                    NganSachDuKien = newEntity.NganSachDuKien,
+                    NguoiPhuTrach = newEntity.NguoiPhuTrach,
+                    TrangThai = newEntity.TrangThai
+                };
+                db.SuKiens.Add(entity);
+                db.SaveChanges();
+            }
+            catch { }
+
             EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(newEntity.MaSuKien, "Added");
             return ServiceResult.Success("Thêm mới sự kiện thành công!");
         }
 
         public ServiceResult Update(EventListDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null || string.IsNullOrWhiteSpace(dto.MaSuKien))
             {
                 return ServiceResult.Failed("Mã sự kiện không hợp lệ!");
@@ -476,12 +414,34 @@ namespace EventManagement.BLL.Services
             }
             existing.MoTa = dto.MoTa?.Trim();
 
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var sk = db.SuKiens.FirstOrDefault(x => x.MaSuKien == existing.MaSuKien);
+                if (sk != null)
+                {
+                    sk.TenSuKien = existing.TenSuKien;
+                    sk.MaLoaiSK = existing.MaLoaiSK;
+                    sk.MoTa = existing.MoTa;
+                    sk.NgayBatDau = existing.NgayBatDau;
+                    sk.NgayKetThuc = existing.NgayKetThuc;
+                    sk.MaDiaDiem = existing.MaDiaDiem;
+                    sk.SucChua = existing.SucChua;
+                    sk.NganSachDuKien = existing.NganSachDuKien;
+                    sk.NguoiPhuTrach = existing.NguoiPhuTrach;
+                    sk.TrangThai = existing.TrangThai;
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+
             EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Updated");
             return ServiceResult.Success("Cập nhật thông tin sự kiện thành công!");
         }
 
         public ServiceResult Delete(string maSuKien)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maSuKien))
             {
                 return ServiceResult.Failed("Mã sự kiện không được để trống!");
@@ -504,12 +464,25 @@ namespace EventManagement.BLL.Services
             }
 
             _events.Remove(existing);
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var sk = db.SuKiens.FirstOrDefault(x => x.MaSuKien == existing.MaSuKien);
+                if (sk != null)
+                {
+                    db.SuKiens.Remove(sk);
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+
             EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Deleted");
             return ServiceResult.Success($"Đã xóa vĩnh viễn sự kiện '{existing.TenSuKien}' ({existing.MaSuKien}) khỏi hệ thống!");
         }
 
         public ServiceResult CancelEvent(string maSuKien)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maSuKien))
             {
                 return ServiceResult.Failed("Mã sự kiện không được để trống!");
@@ -528,12 +501,25 @@ namespace EventManagement.BLL.Services
                 return ServiceResult.Failed("Sự kiện Đang diễn ra hoặc Đã kết thúc không được phép hủy (không thể thực hiện thao tác hủy)!");
             }
             existing.TrangThai = "Đã hủy";
+            try
+            {
+                using var db = new EventManagement.DAL.AppDbContext();
+                var sk = db.SuKiens.FirstOrDefault(x => x.MaSuKien == existing.MaSuKien);
+                if (sk != null)
+                {
+                    sk.TrangThai = "Đã hủy";
+                    db.SaveChanges();
+                }
+            }
+            catch { }
+
             EventManagement.Core.Common.DataSyncNotifier.NotifyEventChanged(existing.MaSuKien, "Cancelled");
             return ServiceResult.Success($"Đã chuyển trạng thái sự kiện '{existing.TenSuKien}' sang 'Đã hủy'!");
         }
 
         public string SuggestNextCode()
         {
+            EnsureLoadedFromDb();
             int currentYear = DateTime.Now.Year;
             string prefix = $"EVT{currentYear}";
 
@@ -575,6 +561,7 @@ namespace EventManagement.BLL.Services
 
         private ServiceResult CheckVenueConflict(string maDiaDiem, DateTime start, DateTime end, string? excludeMaSuKien)
         {
+            EnsureLoadedFromDb();
             // Lấy danh sách các sự kiện tại địa điểm này (loại trừ các sự kiện đã hủy và sự kiện đang cập nhật)
             var conflictingEvent = _events
                 .Where(e => e.MaDiaDiem.Equals(maDiaDiem, StringComparison.OrdinalIgnoreCase))

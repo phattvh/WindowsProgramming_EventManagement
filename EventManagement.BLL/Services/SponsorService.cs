@@ -16,87 +16,43 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class SponsorService : ISponsorService
     {
-        private static readonly List<SponsorDto> _sponsors = new()
+        private static readonly List<SponsorDto> _sponsors = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new SponsorDto
+            if (_sponsors.Count == 0)
             {
-                MaNhaTaiTro = "NTT001",
-                TenToChuc = "Tập đoàn Viễn thông & Công nghệ VietTech",
-                NguoiDaiDien = "Ông Phạm Nhật Long",
-                Email = "contact@viettech.vn",
-                SoDienThoai = "0283899999",
-                DiaChi = "Tòa nhà VietTech Tower, Quận 1, TP.HCM",
-                GhiChu = "Tài trợ độc quyền tiệc Gala Dinner",
-                GoiTaiTro = "Kim Cương",
-                TongGiaTriTaiTro = 150000000m,
-                HinhThucTaiTro = "Tiền mặt",
-                TrangThai = "Đang hợp tác",
-                SoSuKienTaiTro = 2
-            },
-            new SponsorDto
-            {
-                MaNhaTaiTro = "NTT002",
-                TenToChuc = "Ngân hàng Số FinPay",
-                NguoiDaiDien = "Bà Võ Kim Oanh",
-                Email = "partnership@finpay.vn",
-                SoDienThoai = "0283788888",
-                DiaChi = "Khu Đô thị Sala, TP. Thủ Đức, TP.HCM",
-                GhiChu = "Tài trợ toàn bộ hệ thống quà tặng công nghệ",
-                GoiTaiTro = "Vàng",
-                TongGiaTriTaiTro = 60000000m,
-                HinhThucTaiTro = "Tiền mặt",
-                TrangThai = "Đang hợp tác",
-                SoSuKienTaiTro = 1
-            },
-            new SponsorDto
-            {
-                MaNhaTaiTro = "NTT003",
-                TenToChuc = "Tập đoàn Công nghiệp - Viễn thông Quân đội (Viettel)",
-                NguoiDaiDien = "Ông Tào Đức Thắng",
-                Email = "support@viettel.com.vn",
-                SoDienThoai = "18008098",
-                DiaChi = "Số 1 Trần Hữu Dực, Nam Từ Liêm, Hà Nội",
-                GhiChu = "Tài trợ đường truyền Internet cáp quang tốc độ cao 1Gbps",
-                GoiTaiTro = "Bạc",
-                TongGiaTriTaiTro = 30000000m,
-                HinhThucTaiTro = "Dịch vụ",
-                TrangThai = "Đang hợp tác",
-                SoSuKienTaiTro = 1
-            },
-            new SponsorDto
-            {
-                MaNhaTaiTro = "NTT004",
-                TenToChuc = "Công ty Cổ phần Dịch vụ Di động Trực tuyến (Ví MoMo)",
-                NguoiDaiDien = "Ông Nguyễn Bá Diệp",
-                Email = "hotro@momo.vn",
-                SoDienThoai = "1900545441",
-                DiaChi = "Tòa nhà Phú Mỹ Hưng, Quận 7, TP.HCM",
-                GhiChu = "Tài trợ cổng thanh toán MoMo miễn phí giao dịch vé",
-                GoiTaiTro = "Đồng",
-                TongGiaTriTaiTro = 15000000m,
-                HinhThucTaiTro = "Hiện vật",
-                TrangThai = "Đang hợp tác",
-                SoSuKienTaiTro = 1
-            },
-            new SponsorDto
-            {
-                MaNhaTaiTro = "NTT005",
-                TenToChuc = "Tập đoàn Vingroup (Quỹ Đổi mới sáng tạo VINIF)",
-                NguoiDaiDien = "Bà Phan Thu Hiền",
-                Email = "vinif@vinbigdata.org",
-                SoDienThoai = "02439749999",
-                DiaChi = "Số 7 Đường Bằng Lăng 1, KĐT Vinhomes Riverside, Long Biên, Hà Nội",
-                GhiChu = "Cấp 300 tài khoản GPU Cloud cho học viên xuất sắc",
-                GoiTaiTro = "Kim Cương",
-                TongGiaTriTaiTro = 80000000m,
-                HinhThucTaiTro = "Hiện vật",
-                TrangThai = "Đang hợp tác",
-                SoSuKienTaiTro = 1
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var list = db.NhaTaiTros.Select(n => new SponsorDto
+                    {
+                        MaNhaTaiTro = n.MaNhaTaiTro,
+                        TenToChuc = n.TenToChuc,
+                        NguoiDaiDien = n.NguoiDaiDien,
+                        Email = n.Email,
+                        SoDienThoai = n.SoDienThoai,
+                        DiaChi = n.DiaChi ?? "Việt Nam",
+                        GhiChu = n.GhiChu,
+                        GoiTaiTro = "Tiêu chuẩn",
+                        TongGiaTriTaiTro = db.ChiTietTaiTros.Where(ct => ct.MaNhaTaiTro == n.MaNhaTaiTro).Sum(ct => (decimal?)ct.GiaTri) ?? 0m,
+                        HinhThucTaiTro = "Tiền mặt",
+                        TrangThai = "Đang hợp tác",
+                        SoSuKienTaiTro = db.ChiTietTaiTros.Count(ct => ct.MaNhaTaiTro == n.MaNhaTaiTro)
+                    }).ToList();
+
+                    if (list.Any())
+                    {
+                        _sponsors.AddRange(list);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         public ServiceResult<List<SponsorDto>> GetAll(string? keyword = null, string? packageFilter = null, string? statusFilter = null)
         {
+            EnsureLoadedFromDb();
             var query = _sponsors.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -126,6 +82,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<SponsorDto> GetById(string maNhaTaiTro)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maNhaTaiTro))
             {
                 return ServiceResult<SponsorDto>.Failed("Mã nhà tài trợ không được để trống.");
@@ -142,6 +99,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(SponsorDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
                 return ServiceResult.Failed("Dữ liệu nhà tài trợ không hợp lệ.");
 
@@ -155,6 +113,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(SponsorDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
                 return ServiceResult.Failed("Dữ liệu nhà tài trợ không hợp lệ.");
 
@@ -183,6 +142,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maNhaTaiTro)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maNhaTaiTro))
                 return ServiceResult.Failed("Mã nhà tài trợ không được để trống.");
 
@@ -203,6 +163,7 @@ namespace EventManagement.BLL.Services
 
         public string SuggestNextCode()
         {
+            EnsureLoadedFromDb();
             int maxId = 0;
             foreach (var item in _sponsors)
             {

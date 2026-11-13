@@ -14,347 +14,45 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class BudgetService : IBudgetService
     {
-        // Danh sách sự kiện mẫu kèm ngân sách dự kiến (khớp kịch bản tài trợ và seed data)
-        private static readonly List<(string MaSuKien, string TenSuKien, decimal NganSachDuKien)> _events = new()
-        {
-            ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026", 210000000m),
-            ("EVT202602", "Workshop Thực chiến GenAI & Prompt Engineering 2026", 80000000m),
-            ("EVT202603", "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT", 150000000m),
-            ("EVT202604", "Diễn đàn Khởi nghiệp & Đổi mới Sáng tạo Quốc gia 2026", 120000000m),
-            ("EVT202605", "Giải đấu Thể thao Điện tử Sinh viên Toàn quốc (eSports Cup)", 120000000m),
-            ("EVT202606", "Ngày hội Việc làm & Kết nối Doanh nghiệp IT Career Fair", 160000000m),
-            ("EVT202607", "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng", 95000000m)
-        };
+        private static readonly List<(string MaSuKien, string TenSuKien, decimal NganSachDuKien)> _events = new();
+        private static readonly List<ExpenseDto> _expenses = new();
 
-        // Danh sách phiếu chi khởi tạo từ scripts/seed_data_member3.sql
-        private static readonly List<ExpenseDto> _expenses = new()
+        private void EnsureLoadedFromDb()
         {
-            new ExpenseDto
+            if (_expenses.Count == 0 && _events.Count == 0)
             {
-                MaChiPhi = "CP001",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                KhoanMucChi = "Thuê âm thanh & Ánh sáng sân khấu Grand Ballroom",
-                SoTien = 35000000m,
-                NgayChi = new DateTime(2026, 10, 15),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Hợp đồng âm thanh sự kiện",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP002",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                KhoanMucChi = "Tiệc trà Teabreak đón tiếp khách mời VIP",
-                SoTien = 15000000m,
-                NgayChi = new DateTime(2026, 10, 18),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Bao gồm bánh ngọt, trà và cafe",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP003",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                KhoanMucChi = "In ấn Backdrop, Standee & Thẻ đeo đại biểu",
-                SoTien = 25000000m,
-                NgayChi = new DateTime(2026, 10, 25),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "In ấn ấn phẩm nhận diện thương hiệu",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP004",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                KhoanMucChi = "Thuê thiết bị Lab & Tài khoản thực hành Cloud",
-                SoTien = 20000000m,
-                NgayChi = new DateTime(2026, 10, 28),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Hạ tầng thực hành cho 100 học viên",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP005",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Đặt cọc hội trường Hội trường Thống Nhất",
-                SoTien = 18000000m,
-                NgayChi = new DateTime(2026, 09, 20),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Chi phí đặt cọc giữ chỗ trước khi sự kiện hoãn",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP006",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Thiết kế ấn phẩm truyền thông & Website hội thảo",
-                SoTien = 8000000m,
-                NgayChi = new DateTime(2026, 09, 25),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Hợp đồng thiết kế bộ nhận diện trực tuyến",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP015",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Thuê hệ thống dịch cabin & tai nghe đa ngôn ngữ",
-                SoTien = 12000000m,
-                NgayChi = new DateTime(2026, 09, 28),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Hệ thống tai nghe không dây cho 200 đại biểu",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP016",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Tiệc trà & Teabreak cao cấp phiên sáng chiều",
-                SoTien = 9500000m,
-                NgayChi = new DateTime(2026, 10, 01),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Phục vụ đại biểu và chuyên gia bảo mật",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP017",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Quà tặng lưu niệm & Kỷ niệm chương diễn giả",
-                SoTien = 6500000m,
-                NgayChi = new DateTime(2026, 10, 02),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Bộ kỷ niệm chương pha lê và quà công nghệ",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP018",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Băng rôn, Backdrop sân khấu & Standee đón khách",
-                SoTien = 7000000m,
-                NgayChi = new DateTime(2026, 10, 03),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Thi công trang trí sảnh chính và hội trường",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP019",
-                MaSuKien = "EVT202607",
-                TenSuKien = "Hội thảo Bảo mật Đám mây & Ứng phó Sự cố An ninh mạng",
-                KhoanMucChi = "Bản quyền tài liệu bảo mật & học liệu số",
-                SoTien = 10000000m,
-                NgayChi = new DateTime(2026, 10, 04),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Phát hành tài liệu chuyên đề số cho khách mời",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP007",
-                MaSuKien = "EVT202603",
-                TenSuKien = "Triển lãm Tranh & Công nghệ số \"Nghệ thuật tương lai\"",
-                KhoanMucChi = "Thuê khung gian trưng bày & Hệ thống đèn chiếu",
-                SoTien = 35000000m,
-                NgayChi = new DateTime(2026, 10, 15),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Thi công không gian triển lãm nghệ thuật số",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP008",
-                MaSuKien = "EVT202603",
-                TenSuKien = "Triển lãm Tranh & Công nghệ số \"Nghệ thuật tương lai\"",
-                KhoanMucChi = "In ấn Catalogue & Thẻ đeo khách VIP",
-                SoTien = 15000000m,
-                NgayChi = new DateTime(2026, 10, 20),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Bộ tài liệu giới thiệu tác phẩm nghệ sĩ",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP009",
-                MaSuKien = "EVT202604",
-                TenSuKien = "Lễ Ra Mắt Sản Phẩm Mới: Nền Tảng Cloud AI 2026",
-                KhoanMucChi = "Thuê màn hình LED P2.5 & Âm thanh biểu diễn",
-                SoTien = 25000000m,
-                NgayChi = new DateTime(2026, 11, 01),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Hệ thống trình chiếu Demo sản phẩm công nghệ",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP010",
-                MaSuKien = "EVT202604",
-                TenSuKien = "Lễ Ra Mắt Sản Phẩm Mới: Nền Tảng Cloud AI 2026",
-                KhoanMucChi = "Tiệc Teabreak & Quà tặng khách mời ra mắt",
-                SoTien = 12000000m,
-                NgayChi = new DateTime(2026, 11, 05),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Phục vụ 250 khách mời và báo chí",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP011",
-                MaSuKien = "EVT202605",
-                TenSuKien = "Hackathon Lập trình Web & AI \"Sáng tạo tương lai 2026\"",
-                KhoanMucChi = "Giải thưởng cuộc thi Hackathon 48h",
-                SoTien = 40000000m,
-                NgayChi = new DateTime(2026, 11, 10),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Trao giải Nhất, Nhì, Ba cho các đội thi lập trình",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP012",
-                MaSuKien = "EVT202605",
-                TenSuKien = "Hackathon Lập trình Web & AI \"Sáng tạo tương lai 2026\"",
-                KhoanMucChi = "Suất ăn & Đồ uống 48h cho thí sinh và mentor",
-                SoTien = 20000000m,
-                NgayChi = new DateTime(2026, 11, 12),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Phục vụ 200 lập trình viên thức đêm thi đấu",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP013",
-                MaSuKien = "EVT202606",
-                TenSuKien = "Diễn Đàn Việc Làm & Khởi Nghiệp Công Nghệ Trẻ 2026",
-                KhoanMucChi = "Dựng 50 gian hàng phỏng vấn tuyển dụng",
-                SoTien = 50000000m,
-                NgayChi = new DateTime(2026, 11, 15),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Lắp đặt khung booth tiêu chuẩn cho doanh nghiệp",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP014",
-                MaSuKien = "EVT202606",
-                TenSuKien = "Diễn Đàn Việc Làm & Khởi Nghiệp Công Nghệ Trẻ 2026",
-                KhoanMucChi = "Truyền thông đa kênh & Livestream sự kiện",
-                SoTien = 30000000m,
-                NgayChi = new DateTime(2026, 11, 18),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Chi phí quảng bá tiếp cận 10.000 sinh viên",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP020",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                KhoanMucChi = "Tài khoản thực hành API OpenAI & Claude",
-                SoTien = 6000000m,
-                NgayChi = new DateTime(2026, 10, 26),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Cấp token API cho học viên thực hành tại lớp",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP021",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                KhoanMucChi = "Tiệc nhẹ Teabreak & Cà phê cho học viên",
-                SoTien = 4000000m,
-                NgayChi = new DateTime(2026, 10, 27),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Phục vụ 2 buổi học cuối tuần",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP022",
-                MaSuKien = "EVT202603",
-                TenSuKien = "Triển lãm Tranh & Công nghệ số \"Nghệ thuật tương lai\"",
-                KhoanMucChi = "Bảo hiểm tác phẩm nghệ thuật số & Thiết bị",
-                SoTien = 8000000m,
-                NgayChi = new DateTime(2026, 10, 18),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Bảo hiểm rủi ro trong suốt thời gian triển lãm",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP023",
-                MaSuKien = "EVT202604",
-                TenSuKien = "Lễ Ra Mắt Sản Phẩm Mới: Nền Tảng Cloud AI 2026",
-                KhoanMucChi = "Quà tặng công nghệ trải nghiệm cho khách VIP",
-                SoTien = 7500000m,
-                NgayChi = new DateTime(2026, 11, 02),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Bộ quà tặng cao cấp kỷ niệm lễ ra mắt",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP024",
-                MaSuKien = "EVT202605",
-                TenSuKien = "Hackathon Lập trình Web & AI \"Sáng tạo tương lai 2026\"",
-                KhoanMucChi = "Áo phông đồng phục & Balo thí sinh Hackathon",
-                SoTien = 9000000m,
-                NgayChi = new DateTime(2026, 11, 11),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Đồng phục cho 200 thí sinh và tình nguyện viên",
-                TrangThai = "Đã duyệt"
-            },
-            new ExpenseDto
-            {
-                MaChiPhi = "CP025",
-                MaSuKien = "EVT202606",
-                TenSuKien = "Diễn Đàn Việc Làm & Khởi Nghiệp Công Nghệ Trẻ 2026",
-                KhoanMucChi = "Hệ thống âm thanh hội trường & Sân khấu tuyển dụng",
-                SoTien = 15000000m,
-                NgayChi = new DateTime(2026, 11, 16),
-                NguoiLapPhieu = "USR001",
-                TenNguoiLapPhieu = "Quản trị viên Hệ thống",
-                DienGiai = "Trang thiết bị sân khấu tọa đàm doanh nghiệp",
-                TrangThai = "Đã duyệt"
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var evts = db.SuKiens.Select(s => new { s.MaSuKien, s.TenSuKien, s.NganSachDuKien }).ToList();
+                    foreach (var e in evts)
+                    {
+                        if (!_events.Any(x => x.MaSuKien == e.MaSuKien))
+                            _events.Add((e.MaSuKien, e.TenSuKien, e.NganSachDuKien));
+                    }
+
+                    var exps = db.ChiPhiSuKiens.Select(c => new ExpenseDto
+                    {
+                        MaChiPhi = c.MaChiPhi,
+                        MaSuKien = c.MaSuKien,
+                        TenSuKien = c.SuKien != null ? c.SuKien.TenSuKien : c.MaSuKien,
+                        KhoanMucChi = c.KhoanMucChi,
+                        SoTien = c.SoTien,
+                        NgayChi = c.NgayChi,
+                        NguoiLapPhieu = c.NguoiDuyet ?? "admin",
+                        TenNguoiLapPhieu = "Quản trị viên Hệ thống",
+                        DienGiai = c.GhiChu,
+                        TrangThai = "Đã duyệt"
+                    }).ToList();
+
+                    if (exps.Any())
+                    {
+                        _expenses.AddRange(exps);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         #region 1. CÁC HÀM THUẬT TOÁN BR-14 & BR-15 (TƯƠNG THÍCH UNIT TESTS)
 
@@ -448,11 +146,13 @@ namespace EventManagement.BLL.Services
 
         public List<(string MaSuKien, string TenSuKien, decimal NganSachDuKien)> GetAvailableEvents()
         {
+            EnsureLoadedFromDb();
             return _events.ToList();
         }
 
         public ServiceResult<List<ExpenseDto>> GetExpensesByEvent(string? maSuKien)
         {
+            EnsureLoadedFromDb();
             var query = _expenses.AsEnumerable();
             if (!string.IsNullOrWhiteSpace(maSuKien))
             {
@@ -465,6 +165,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<ExpenseDto> GetExpenseById(string maChiPhi)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maChiPhi))
                 return ServiceResult<ExpenseDto>.Failed("Mã chi phí không được để trống.");
 
@@ -477,6 +178,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<BudgetAlertDto> GetBudgetStatus(string maSuKien, decimal khoanChiSapThem = 0)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maSuKien))
                 return ServiceResult<BudgetAlertDto>.Failed("Vui lòng chọn sự kiện.");
 
@@ -493,6 +195,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<BudgetAlertDto> AddExpense(ExpenseDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
                 return ServiceResult<BudgetAlertDto>.Failed("Dữ liệu phiếu chi không được để trống.");
 
@@ -532,6 +235,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<BudgetAlertDto> UpdateExpense(ExpenseDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
                 return ServiceResult<BudgetAlertDto>.Failed("Dữ liệu phiếu chi không được để trống.");
 
@@ -562,6 +266,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult DeleteExpense(string maChiPhi)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maChiPhi))
                 return ServiceResult.Failed("Mã chi phí không được để trống.");
 
@@ -576,6 +281,7 @@ namespace EventManagement.BLL.Services
 
         public string GetNextExpenseCode()
         {
+            EnsureLoadedFromDb();
             int maxId = 0;
             foreach (var item in _expenses)
             {

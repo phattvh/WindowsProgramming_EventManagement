@@ -14,84 +14,40 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class VenueService : IVenueService
     {
-        private static readonly List<VenueDto> _venues = new()
+        private static readonly List<VenueDto> _venues = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new VenueDto
+            if (_venues.Count == 0)
             {
-                MaDiaDiem = "DD001",
-                TenDiaDiem = "Hội trường Thống Nhất (Dinh Độc Lập)",
-                DiaChi = "135 Nam Kỳ Khởi Nghĩa, Phường Bến Thành, Quận 1, TP.HCM",
-                SucChuaToiDa = 500,
-                NguoiQuanLy = "Trần Văn Quản Lý",
-                SoDienThoai = "0908123456",
-                TrangThai = "Hoạt động",
-                GhiChu = "Phù hợp hội nghị cấp cao và gala dinner",
-                SoSuKienToChuc = 2
-            },
-            new VenueDto
-            {
-                MaDiaDiem = "DD002",
-                TenDiaDiem = "Nhà thi đấu Quân Khu 7",
-                DiaChi = "202 Hoàng Văn Thụ, Phường 9, Quận Phú Nhuận, TP.HCM",
-                SucChuaToiDa = 4000,
-                NguoiQuanLy = "Lê Thị Trưởng Sân",
-                SoDienThoai = "0918765432",
-                TrangThai = "Hoạt động",
-                GhiChu = "Không gian đa năng dành cho đại nhạc hội và eSports",
-                SoSuKienToChuc = 1
-            },
-            new VenueDto
-            {
-                MaDiaDiem = "DD003",
-                TenDiaDiem = "Trung tâm Sự kiện GEM Center",
-                DiaChi = "08 Nguyễn Bỉnh Khiêm, Phường Đa Kao, Quận 1, TP.HCM",
-                SucChuaToiDa = 1800,
-                NguoiQuanLy = "Nguyễn Văn Hùng",
-                SoDienThoai = "0909112233",
-                TrangThai = "Hoạt động",
-                GhiChu = "Không gian sang trọng, trần cao 8m phù hợp dạ tiệc VIP",
-                SoSuKienToChuc = 0
-            },
-            new VenueDto
-            {
-                MaDiaDiem = "DD004",
-                TenDiaDiem = "Trung tâm Triển lãm & Hội chợ SECC",
-                DiaChi = "799 Nguyễn Văn Linh, Phường Tân Phú, Quận 7, TP.HCM",
-                SucChuaToiDa = 5000,
-                NguoiQuanLy = "Phạm Hoàng Long",
-                SoDienThoai = "0933445566",
-                TrangThai = "Hoạt động",
-                GhiChu = "Hội trường triển lãm tiêu chuẩn quốc tế quy mô lớn",
-                SoSuKienToChuc = 0
-            },
-            new VenueDto
-            {
-                MaDiaDiem = "DD005",
-                TenDiaDiem = "Hội trường A - ĐH Bách Khoa TP.HCM",
-                DiaChi = "268 Lý Thường Kiệt, Phường 14, Quận 10, TP.HCM",
-                SucChuaToiDa = 1000,
-                NguoiQuanLy = "TS. Nguyễn Minh Triết",
-                SoDienThoai = "0283865432",
-                TrangThai = "Hoạt động",
-                GhiChu = "Hội trường âm học chuẩn cho hội thảo nghiên cứu khoa học",
-                SoSuKienToChuc = 0
-            },
-            new VenueDto
-            {
-                MaDiaDiem = "DD006",
-                TenDiaDiem = "Khách sạn Rex Sài Gòn (Lotus Ballroom)",
-                DiaChi = "141 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP.HCM",
-                SucChuaToiDa = 800,
-                NguoiQuanLy = "Vũ Mai Phương",
-                SoDienThoai = "0903889900",
-                TrangThai = "Bảo trì",
-                GhiChu = "Đang nâng cấp hệ thống âm thanh ánh sáng hội trường",
-                SoSuKienToChuc = 1
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var list = db.DiaDiems.Select(d => new VenueDto
+                    {
+                        MaDiaDiem = d.MaDiaDiem,
+                        TenDiaDiem = d.TenDiaDiem,
+                        DiaChi = d.DiaChi,
+                        SucChuaToiDa = d.SucChuaToiDa,
+                        NguoiQuanLy = "Ban Quản lý",
+                        SoDienThoai = "0900000000",
+                        TrangThai = "Hoạt động",
+                        GhiChu = d.GhiChu,
+                        SoSuKienToChuc = db.SuKiens.Count(s => s.MaDiaDiem == d.MaDiaDiem)
+                    }).ToList();
+
+                    if (list.Any())
+                    {
+                        _venues.AddRange(list);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         public ServiceResult<List<VenueDto>> GetAll(string? keyword = null, string? statusFilter = null)
         {
+            EnsureLoadedFromDb();
             var query = _venues.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -114,6 +70,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<VenueDto> GetById(string maDiaDiem)
         {
+            EnsureLoadedFromDb();
             var item = _venues.FirstOrDefault(x => x.MaDiaDiem.Equals(maDiaDiem, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -124,6 +81,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(VenueDto dto)
         {
+            EnsureLoadedFromDb();
             // Kiểm tra tính hợp lệ dữ liệu
             if (string.IsNullOrWhiteSpace(dto.MaDiaDiem))
             {
@@ -171,6 +129,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(VenueDto dto)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(dto.MaDiaDiem))
             {
                 return ServiceResult.Failed("Mã địa điểm không hợp lệ!");
@@ -214,6 +173,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maDiaDiem)
         {
+            EnsureLoadedFromDb();
             var existing = _venues.FirstOrDefault(x => x.MaDiaDiem.Equals(maDiaDiem, StringComparison.OrdinalIgnoreCase));
             if (existing == null)
             {
@@ -235,6 +195,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult SoftDelete(string maDiaDiem)
         {
+            EnsureLoadedFromDb();
             var existing = _venues.FirstOrDefault(x => x.MaDiaDiem.Equals(maDiaDiem, StringComparison.OrdinalIgnoreCase));
             if (existing == null)
             {
@@ -247,6 +208,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<bool> CheckVenueAvailability(string maDiaDiem, DateTime startTime, DateTime endTime, string? excludeEventId = null)
         {
+            EnsureLoadedFromDb();
             // Sẵn sàng kết nối tới thuật toán BR-04 do Thành viên 3 bàn giao ở Ngày 4
             var venue = _venues.FirstOrDefault(x => x.MaDiaDiem.Equals(maDiaDiem, StringComparison.OrdinalIgnoreCase));
             if (venue == null)

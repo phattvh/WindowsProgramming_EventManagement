@@ -17,133 +17,52 @@ namespace EventManagement.BLL.Services
     {
         private readonly ScheduleValidationService _validator;
 
-        // Bảng dữ liệu sự kiện để kiểm tra BR-05 và đổ dữ liệu ComboBox
-        private static readonly List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> _events = new()
-        {
-            ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026", new DateTime(2026, 12, 15, 8, 0, 0), new DateTime(2026, 12, 15, 17, 30, 0)),
-            ("EVT202602", "Workshop Thực chiến GenAI & Prompt Engineering 2026", new DateTime(2026, 11, 3, 8, 30, 0), new DateTime(2026, 11, 4, 17, 0, 0)),
-            ("EVT202603", "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT", new DateTime(2026, 12, 25, 8, 0, 0), new DateTime(2026, 12, 26, 18, 0, 0))
-        };
+        private static readonly List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> _events = new();
+        private static readonly Dictionary<string, string> _speakers = new(StringComparer.OrdinalIgnoreCase);
+        private static readonly List<ScheduleItemDto> _schedules = new();
 
-        // Bảng dữ liệu diễn giả để ánh xạ tên và đổ dữ liệu ComboBox
-        private static readonly Dictionary<string, string> _speakers = new(StringComparer.OrdinalIgnoreCase)
+        private void EnsureLoadedFromDb()
         {
-            ["DG001"] = "TS. Nguyễn Minh Hải",
-            ["DG002"] = "Bà Trần Hoàng Yến",
-            ["DG003"] = "ThS. Lê Quang Huy",
-            ["DG004"] = "Bà Phạm Mai Lan",
-            ["DG005"] = "Ông Michael Harrison",
-            ["DG006"] = "ThS. Đặng Hữu Hoàng"
-        };
+            if (_schedules.Count == 0 && _events.Count == 0)
+            {
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var evts = db.SuKiens.Select(s => new { s.MaSuKien, s.TenSuKien, s.NgayBatDau, s.NgayKetThuc }).ToList();
+                    foreach (var e in evts)
+                    {
+                        if (!_events.Any(x => x.MaSuKien == e.MaSuKien))
+                            _events.Add((e.MaSuKien, e.TenSuKien, e.NgayBatDau, e.NgayKetThuc));
+                    }
 
-        // Danh sách lưu trữ lịch trình khởi tạo từ CSDL mẫu (02_SeedData & seed_data_member2)
-        private static readonly List<ScheduleItemDto> _schedules = new()
-        {
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT001",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenTietMuc = "Khai mạc & Keynote: Xu hướng GenAI & Agentic Coding 2026",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 8, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 10, 0, 0),
-                MaDienGia = "DG001",
-                TenDienGia = "TS. Nguyễn Minh Hải",
-                DiaDiemChiTiet = "Hội trường chính Grand Ballroom",
-                GhiChu = "Trình chiếu keynote khai mạc"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT002",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenTietMuc = "Tọa đàm: Bảo mật thông tin & Kiến trúc Cloud-Native",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 10, 15, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 11, 45, 0),
-                MaDienGia = "DG002",
-                TenDienGia = "Bà Trần Hoàng Yến",
-                DiaDiemChiTiet = "Phòng Hội thảo 2",
-                GhiChu = "Phiên hỏi đáp Q&A cùng khán giả"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT003",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenTietMuc = "Tiệc Teabreak & Kết nối Doanh nghiệp B2B",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 10, 0, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 10, 30, 0),
-                MaDienGia = null,
-                TenDienGia = null,
-                DiaDiemChiTiet = "Sảnh Expo Lounge",
-                GhiChu = "Thưởng thức trà, cafe và giao lưu kết nối mạng lưới"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT004",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenTietMuc = "Kiến trúc Hệ thống Phân tán Siêu quy mô (Hyperscale Systems)",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 13, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 15, 0, 0),
-                MaDienGia = "DG005",
-                TenDienGia = "Ông Michael Harrison",
-                DiaDiemChiTiet = "Hội trường chính Grand Ballroom",
-                GhiChu = "Phiên chuyên sâu về hạ tầng Cloud quy mô lớn"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT005",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenTietMuc = "Panel Discussion: Tương lai Lập trình viên trong kỷ nguyên AI",
-                ThoiGianBatDau = new DateTime(2026, 12, 15, 15, 15, 0),
-                ThoiGianKetThuc = new DateTime(2026, 12, 15, 16, 30, 0),
-                MaDienGia = "DG006",
-                TenDienGia = "ThS. Đặng Hữu Hoàng",
-                DiaDiemChiTiet = "Hội trường chính Grand Ballroom",
-                GhiChu = "Thảo luận bàn tròn cùng các CTO đầu ngành"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT006",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                TenTietMuc = "Khai mạc & Hướng dẫn Cài đặt Môi trường Lab",
-                ThoiGianBatDau = new DateTime(2026, 11, 3, 8, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 11, 3, 9, 30, 0),
-                MaDienGia = "DG006",
-                TenDienGia = "ThS. Đặng Hữu Hoàng",
-                DiaDiemChiTiet = "Phòng Lab Kỹ thuật A",
-                GhiChu = "Cấp tài khoản Cloud và khởi tạo workspace"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT007",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                TenTietMuc = "Thực chiến Prompt Engineering & Kỹ thuật RAG Nâng cao",
-                ThoiGianBatDau = new DateTime(2026, 11, 3, 9, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 11, 3, 12, 0, 0),
-                MaDienGia = "DG003",
-                TenDienGia = "ThS. Lê Quang Huy",
-                DiaDiemChiTiet = "Phòng Lab Kỹ thuật A",
-                GhiChu = "Bài tập lab tương tác trực tiếp 1-1"
-            },
-            new ScheduleItemDto
-            {
-                MaLichTrinh = "LT008",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                TenTietMuc = "Tích hợp AI Agents vào Phần mềm C# Windows Forms",
-                ThoiGianBatDau = new DateTime(2026, 11, 3, 13, 30, 0),
-                ThoiGianKetThuc = new DateTime(2026, 11, 3, 17, 0, 0),
-                MaDienGia = "DG006",
-                TenDienGia = "ThS. Đặng Hữu Hoàng",
-                DiaDiemChiTiet = "Phòng Lab Kỹ thuật A",
-                GhiChu = "Hướng dẫn gọi API và streaming response lên UI"
+                    var spks = db.DienGias.Select(d => new { d.MaDienGia, d.HoTen }).ToList();
+                    foreach (var s in spks)
+                    {
+                        _speakers[s.MaDienGia] = s.HoTen;
+                    }
+
+                    var schs = db.LichTrinhs.Select(l => new ScheduleItemDto
+                    {
+                        MaLichTrinh = l.MaLichTrinh,
+                        MaSuKien = l.MaSuKien,
+                        TenSuKien = l.SuKien != null ? l.SuKien.TenSuKien : l.MaSuKien,
+                        TenTietMuc = l.TenTietMuc,
+                        ThoiGianBatDau = l.ThoiGianBatDau,
+                        ThoiGianKetThuc = l.ThoiGianKetThuc,
+                        MaDienGia = l.MaDienGia,
+                        TenDienGia = l.DienGia != null ? l.DienGia.HoTen : null,
+                        DiaDiemChiTiet = l.DiaDiemChiTiet,
+                        GhiChu = l.GhiChu
+                    }).ToList();
+
+                    if (schs.Any())
+                    {
+                        _schedules.AddRange(schs);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         public ScheduleService() : this(new ScheduleValidationService())
         {
@@ -156,6 +75,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<List<ScheduleItemDto>> GetAll(string? maSuKien = null, string? keyword = null, string? maDienGia = null)
         {
+            EnsureLoadedFromDb();
             try
             {
                 var query = _schedules.AsEnumerable();
@@ -198,6 +118,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<ScheduleItemDto> GetById(string maLichTrinh)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maLichTrinh))
             {
                 return ServiceResult<ScheduleItemDto>.Failed("Mã lịch trình không được để trống.");
@@ -214,6 +135,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(ScheduleItemDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult.Failed("Dữ liệu lịch trình không được để trống.");
@@ -272,6 +194,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(ScheduleItemDto dto)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult.Failed("Dữ liệu lịch trình không được để trống.");
@@ -339,6 +262,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maLichTrinh)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maLichTrinh))
             {
                 return ServiceResult.Failed("Mã lịch trình không được để trống.");
@@ -357,6 +281,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<bool> CheckConflict(ScheduleItemDto dto, string? excludeMaLichTrinh = null)
         {
+            EnsureLoadedFromDb();
             if (dto == null)
             {
                 return ServiceResult<bool>.Failed("Dữ liệu cần kiểm tra không được để trống.");
@@ -376,11 +301,13 @@ namespace EventManagement.BLL.Services
 
         public List<(string MaSuKien, string TenSuKien, DateTime BatDau, DateTime KetThuc)> GetAvailableEvents()
         {
+            EnsureLoadedFromDb();
             return _events.ToList();
         }
 
         public List<(string MaDienGia, string HoTen)> GetAvailableSpeakers()
         {
+            EnsureLoadedFromDb();
             return _speakers.Select(kv => (kv.Key, kv.Value)).OrderBy(x => x.Key).ToList();
         }
 

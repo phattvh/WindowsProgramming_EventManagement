@@ -17,217 +17,64 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class TicketOrderService : ITicketOrderService
     {
-        // 1. Danh sách sự kiện mở bán vé
-        private static readonly List<(string MaSuKien, string TenSuKien)> _events = new()
-        {
-            ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026"),
-            ("EVT202602", "Workshop Thực chiến GenAI & Prompt Engineering 2026"),
-            ("EVT202603", "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT")
-        };
+        private static readonly List<(string MaSuKien, string TenSuKien)> _events = new();
+        private static readonly List<TicketTierSummaryDto> _ticketTiers = new();
+        private static readonly List<TicketDetailDto> _issuedTickets = new();
 
-        // 2. Danh sách các hạng vé mở bán (BR-08, BR-09)
-        private static readonly List<TicketTierSummaryDto> _ticketTiers = new()
+        private static void EnsureLoadedFromDb()
         {
-            new TicketTierSummaryDto
+            if (_events.Count == 0 && _ticketTiers.Count == 0)
             {
-                MaHangVe = "HV001",
-                MaSuKien = "EVT202601",
-                TenHangVe = "Standard",
-                GiaVe = 200000m,
-                SoLuongPhatHanh = 800,
-                SoLuongDaBan = 159
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV002",
-                MaSuKien = "EVT202601",
-                TenHangVe = "VIP",
-                GiaVe = 800000m,
-                SoLuongPhatHanh = 200,
-                SoLuongDaBan = 50
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV005",
-                MaSuKien = "EVT202601",
-                TenHangVe = "Early Bird",
-                GiaVe = 150000m,
-                SoLuongPhatHanh = 150,
-                SoLuongDaBan = 150
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV003",
-                MaSuKien = "EVT202602",
-                TenHangVe = "Standard",
-                GiaVe = 300000m,
-                SoLuongPhatHanh = 100,
-                SoLuongDaBan = 98 // Chỉ còn đúng 2 vé khả dụng để test BR-09
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV004",
-                MaSuKien = "EVT202602",
-                TenHangVe = "VIP",
-                GiaVe = 600000m,
-                SoLuongPhatHanh = 50,
-                SoLuongDaBan = 10
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV006",
-                MaSuKien = "EVT202602",
-                TenHangVe = "Early Bird",
-                GiaVe = 250000m,
-                SoLuongPhatHanh = 50,
-                SoLuongDaBan = 50
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV007",
-                MaSuKien = "EVT202603",
-                TenHangVe = "Standard",
-                GiaVe = 350000m,
-                SoLuongPhatHanh = 200,
-                SoLuongDaBan = 45
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV008",
-                MaSuKien = "EVT202603",
-                TenHangVe = "VIP",
-                GiaVe = 900000m,
-                SoLuongPhatHanh = 50,
-                SoLuongDaBan = 12
-            },
-            new TicketTierSummaryDto
-            {
-                MaHangVe = "HV009",
-                MaSuKien = "EVT202603",
-                TenHangVe = "Early Bird",
-                GiaVe = 280000m,
-                SoLuongPhatHanh = 50,
-                SoLuongDaBan = 50
-            }
-        };
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var evts = db.SuKiens.Select(s => new { s.MaSuKien, s.TenSuKien }).ToList();
+                    foreach (var e in evts)
+                    {
+                        if (!_events.Any(x => x.MaSuKien == e.MaSuKien))
+                            _events.Add((e.MaSuKien, e.TenSuKien));
+                    }
 
-        // 3. Danh sách vé con đã phát hành (ChiTietVe) kèm mã QR token
-        // Khởi tạo sẵn 3 mã vé mẫu từ scripts/seed_data_member3.sql
-        private static readonly List<TicketDetailDto> _issuedTickets = new()
-        {
-            new TicketDetailDto
-            {
-                MaVe = "VE00001",
-                MaDangKy = "REG001",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenHangVe = "VIP",
-                GiaVe = 800000m,
-                TenNguoiThamGia = "Vũ Thị Mai",
-                Email = "mai.vu@techcorp.vn",
-                MaQR = "EVT2-QR-MAI-002",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 2)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00002",
-                MaDangKy = "REG002",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenHangVe = "Standard",
-                GiaVe = 200000m,
-                TenNguoiThamGia = "Phạm Nhật Long",
-                Email = "long.pham@viettech.vn",
-                MaQR = "EVT2-QR-LONG-003",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 3)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00003",
-                MaDangKy = "REG003",
-                MaSuKien = "EVT202601",
-                TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026",
-                TenHangVe = "Standard",
-                GiaVe = 200000m,
-                TenNguoiThamGia = "Nguyễn Ngọc Bích",
-                Email = "bich.nguyen@fintech.vn",
-                MaQR = "EVT2-QR-BICH-004",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 4)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00004",
-                MaDangKy = "REG004",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                TenHangVe = "Standard",
-                GiaVe = 300000m,
-                TenNguoiThamGia = "Đặng Hoàng Nam",
-                Email = "nam.dang@aihub.vn",
-                MaQR = "EVT2-QR-NAM-005",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 5)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00005",
-                MaDangKy = "REG005",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                TenHangVe = "VIP",
-                GiaVe = 600000m,
-                TenNguoiThamGia = "Trần Thị Lan",
-                Email = "lan.tran@techgroup.vn",
-                MaQR = "EVT2-QR-LAN-006",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 5)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00006",
-                MaDangKy = "REG006",
-                MaSuKien = "EVT202602",
-                TenSuKien = "Workshop Thực chiến GenAI & Prompt Engineering 2026",
-                TenHangVe = "Early Bird",
-                GiaVe = 250000m,
-                TenNguoiThamGia = "Lê Hoàng Phúc",
-                Email = "phuc.le@corp.vn",
-                MaQR = "EVT2-QR-PHUC-007",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 6)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00007",
-                MaDangKy = "REG007",
-                MaSuKien = "EVT202603",
-                TenSuKien = "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT",
-                TenHangVe = "VIP",
-                GiaVe = 900000m,
-                TenNguoiThamGia = "PGS.TS. Trần Văn Hưng",
-                Email = "hung.tran@univ.edu.vn",
-                MaQR = "EVT3-QR-HUNG-008",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 7)
-            },
-            new TicketDetailDto
-            {
-                MaVe = "VE00008",
-                MaDangKy = "REG008",
-                MaSuKien = "EVT202603",
-                TenSuKien = "Hội nghị Khoa học Quốc tế về Công nghệ Phần mềm & IoT",
-                TenHangVe = "Standard",
-                GiaVe = 350000m,
-                TenNguoiThamGia = "ThS. Đỗ Thị Thu",
-                Email = "thu.do@research.org",
-                MaQR = "EVT3-QR-THU-009",
-                TrangThaiVe = "Hợp lệ",
-                NgayDangKy = new DateTime(2026, 11, 7)
+                    var tiers = db.HangVes.Select(h => new TicketTierSummaryDto
+                    {
+                        MaHangVe = h.MaHangVe,
+                        MaSuKien = h.MaSuKien,
+                        TenHangVe = h.TenHangVe,
+                        GiaVe = h.GiaVe,
+                        SoLuongPhatHanh = h.SoLuongPhatHanh,
+                        SoLuongDaBan = h.SoLuongDaBan,
+                        ThoiGianMoBan = h.ThoiGianMoBan,
+                        ThoiGianDongBan = h.ThoiGianDongBan
+                    }).ToList();
+                    if (tiers.Any()) _ticketTiers.AddRange(tiers);
+
+                    var tickets = (from ctv in db.ChiTietVes
+                                   join dk in db.DangKys on ctv.MaDangKy equals dk.MaDangKy
+                                   join hv in db.HangVes on dk.MaHangVe equals hv.MaHangVe into hvj
+                                   from hv in hvj.DefaultIfEmpty()
+                                   join sk in db.SuKiens on dk.MaSuKien equals sk.MaSuKien into skj
+                                   from sk in skj.DefaultIfEmpty()
+                                   select new TicketDetailDto
+                                   {
+                                       MaVe = ctv.MaVe,
+                                       MaDangKy = dk.MaDangKy,
+                                       MaSuKien = sk != null ? sk.MaSuKien : dk.MaSuKien,
+                                       TenSuKien = sk != null ? sk.TenSuKien : dk.MaSuKien,
+                                       TenHangVe = hv != null ? hv.TenHangVe : (dk.HangVe != null ? dk.HangVe.TenHangVe : "Vé chuẩn"),
+                                       GiaVe = hv != null ? hv.GiaVe : 0m,
+                                       TenNguoiThamGia = ctv.TenNguoiThamGia,
+                                       Email = ctv.Email,
+                                       MaQR = ctv.MaQR,
+                                       TrangThaiVe = ctv.TrangThaiVe,
+                                       NgayDangKy = dk.NgayDangKy,
+                                       ThoiGianCheckIn = ctv.CheckIn != null ? (DateTime?)ctv.CheckIn.ThoiGianCheckIn : null,
+                                       NguoiCheckIn = ctv.CheckIn != null ? ctv.CheckIn.NguoiCheckIn : null
+                                   }).ToList();
+                    if (tickets.Any()) _issuedTickets.AddRange(tickets);
+                }
+                catch { }
             }
-        };
+        }
 
         private static int _orderCounter = 100;
         private static int _ticketCounter = 1000;
@@ -273,11 +120,13 @@ namespace EventManagement.BLL.Services
 
         public List<(string MaSuKien, string TenSuKien)> GetAvailableEvents()
         {
+            EnsureLoadedFromDb();
             return _events.ToList();
         }
 
         public List<TicketTierSummaryDto> GetTicketTiersByEvent(string maSuKien)
         {
+            EnsureLoadedFromDb();
             var eventCode = NormalizeCode(maSuKien);
             if (string.IsNullOrWhiteSpace(eventCode))
                 return _ticketTiers.ToList();
@@ -286,29 +135,12 @@ namespace EventManagement.BLL.Services
                 .Where(t => string.Equals(t.MaSuKien, eventCode, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            if (list.Count == 0)
-            {
-                var fallbackTier = new TicketTierSummaryDto
-                {
-                    MaHangVe = "HV-" + maSuKien.Trim(),
-                    MaSuKien = maSuKien.Trim(),
-                    TenHangVe = "Standard",
-                    GiaVe = 250000m,
-                    SoLuongPhatHanh = 500,
-                    SoLuongDaBan = 0
-                };
-                lock (_syncLock)
-                {
-                    _ticketTiers.Add(fallbackTier);
-                }
-                list.Add(fallbackTier);
-            }
-
             return list;
         }
 
         public ServiceResult<List<TicketDetailDto>> GetTicketsByEvent(string? maSuKien)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(maSuKien))
                 return ServiceResult<List<TicketDetailDto>>.Success(_issuedTickets.ToList());
 
@@ -325,6 +157,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<TicketDetailDto> GetTicketByCode(string codeOrQr)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(codeOrQr))
                 return ServiceResult<TicketDetailDto>.Failed("Mã vé hoặc mã QR không được để trống.");
 
@@ -344,6 +177,7 @@ namespace EventManagement.BLL.Services
         /// </summary>
         public ServiceResult<TicketOrderResultDto> RegisterTicketOrder(RegisterTicketRequestDto request)
         {
+            EnsureLoadedFromDb();
             if (request == null)
                 return ServiceResult<TicketOrderResultDto>.Failed("Yêu cầu đặt vé không được để trống.");
 
@@ -495,6 +329,7 @@ namespace EventManagement.BLL.Services
         /// </summary>
         public static List<TicketDetailDto> GetIssuedTicketsList()
         {
+            EnsureLoadedFromDb();
             lock (_syncLock)
             {
                 return _issuedTickets;

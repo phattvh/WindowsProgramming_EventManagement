@@ -15,90 +15,41 @@ namespace EventManagement.BLL.Services
     /// </summary>
     public class SpeakerService : ISpeakerService
     {
-        private static readonly List<SpeakerDto> _speakers = new()
+        private static readonly List<SpeakerDto> _speakers = new();
+
+        private void EnsureLoadedFromDb()
         {
-            new SpeakerDto
+            if (_speakers.Count == 0)
             {
-                MaDienGia = "DG001",
-                HoTen = "TS. Nguyễn Minh Hải",
-                ChucVu = "Phó Viện trưởng Viện Trí tuệ Nhân tạo",
-                DonViCongTac = "Đại học Bách Khoa TP.HCM",
-                Email = "hai.nguyen@ai-institute.edu.vn",
-                SoDienThoai = "0903112233",
-                TieuSu = "Tiến sĩ ngành Khoa học Máy tính tại ĐH Stanford, hơn 15 năm nghiên cứu Machine Learning và Xử lý ngôn ngữ tự nhiên.",
-                HinhAnh = "speaker_hai_nguyen.png",
-                SoTietMucThamGia = 1,
-                TrangThai = "Hoạt động"
-            },
-            new SpeakerDto
-            {
-                MaDienGia = "DG002",
-                HoTen = "Bà Trần Hoàng Yến",
-                ChucVu = "Tech Lead & AI Product Manager",
-                DonViCongTac = "VNG Corporation",
-                Email = "yenth@vng.com.vn",
-                SoDienThoai = "0912334455",
-                TieuSu = "Chuyên gia phát triển sản phẩm công nghệ với nhiều sản phẩm phục vụ hàng triệu người dùng tại thị trường Đông Nam Á.",
-                HinhAnh = "speaker_yen_tran.png",
-                SoTietMucThamGia = 1,
-                TrangThai = "Hoạt động"
-            },
-            new SpeakerDto
-            {
-                MaDienGia = "DG003",
-                HoTen = "ThS. Lê Quang Huy",
-                ChucVu = "Trưởng phòng An toàn Thông tin",
-                DonViCongTac = "Viettel Cyber Security",
-                Email = "huylq@viettel.com.vn",
-                SoDienThoai = "0988334455",
-                TieuSu = "Chuyên gia ứng cứu sự cố và bảo mật hạ tầng trọng yếu, diễn giả quen thuộc tại Security Bootcamp.",
-                HinhAnh = "speaker_huy_le.png",
-                SoTietMucThamGia = 0,
-                TrangThai = "Hoạt động"
-            },
-            new SpeakerDto
-            {
-                MaDienGia = "DG004",
-                HoTen = "Bà Phạm Mai Lan",
-                ChucVu = "Giám đốc Đổi mới Sáng tạo",
-                DonViCongTac = "Forbes Under 30 Asia",
-                Email = "lan.pham@innovate.vn",
-                SoDienThoai = "0977445566",
-                TieuSu = "Cố vấn khởi nghiệp công nghệ, đã ươm tạo hơn 40 dự án Tech Startup tại Đông Nam Á.",
-                HinhAnh = "speaker_lan_pham.png",
-                SoTietMucThamGia = 0,
-                TrangThai = "Hoạt động"
-            },
-            new SpeakerDto
-            {
-                MaDienGia = "DG005",
-                HoTen = "Ông Michael Harrison",
-                ChucVu = "Principal Cloud Architect",
-                DonViCongTac = "Google Cloud APAC",
-                Email = "mharrison@google.com",
-                SoDienThoai = "0933556677",
-                TieuSu = "Hơn 18 năm tư vấn kiến trúc Cloud Native và bảo mật dữ liệu cấp doanh nghiệp cho các tập đoàn toàn cầu.",
-                HinhAnh = "speaker_michael.png",
-                SoTietMucThamGia = 0,
-                TrangThai = "Hoạt động"
-            },
-            new SpeakerDto
-            {
-                MaDienGia = "DG006",
-                HoTen = "ThS. Đặng Hữu Hoàng",
-                ChucVu = "Senior Software Architect",
-                DonViCongTac = "FPT Software",
-                Email = "hoangdh@fpt.com",
-                SoDienThoai = "0966778899",
-                TieuSu = "Chuyên gia kiến trúc Microservices, Clean Architecture và tối ưu hóa hệ thống .NET Enterprise.",
-                HinhAnh = "speaker_hoang_dang.png",
-                SoTietMucThamGia = 0,
-                TrangThai = "Hoạt động"
+                try
+                {
+                    using var db = new EventManagement.DAL.AppDbContext();
+                    var list = db.DienGias.Select(d => new SpeakerDto
+                    {
+                        MaDienGia = d.MaDienGia,
+                        HoTen = d.HoTen,
+                        ChucVu = d.ChucVu,
+                        DonViCongTac = d.DonViCongTac,
+                        Email = d.Email,
+                        SoDienThoai = d.SoDienThoai,
+                        TieuSu = d.TieuSu,
+                        HinhAnh = d.HinhAnh,
+                        SoTietMucThamGia = db.LichTrinhs.Count(l => l.MaDienGia == d.MaDienGia),
+                        TrangThai = "Hoạt động"
+                    }).ToList();
+
+                    if (list.Any())
+                    {
+                        _speakers.AddRange(list);
+                    }
+                }
+                catch { }
             }
-        };
+        }
 
         public ServiceResult<List<SpeakerDto>> GetAll(string? keyword = null, string? statusFilter = null)
         {
+            EnsureLoadedFromDb();
             var query = _speakers.AsEnumerable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
@@ -122,6 +73,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult<SpeakerDto> GetById(string maDienGia)
         {
+            EnsureLoadedFromDb();
             var item = _speakers.FirstOrDefault(x => x.MaDienGia.Equals(maDienGia, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -132,6 +84,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Add(SpeakerDto dto)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(dto.MaDienGia))
             {
                 return ServiceResult.Failed("Mã diễn giả không được để trống!");
@@ -187,6 +140,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Update(SpeakerDto dto)
         {
+            EnsureLoadedFromDb();
             if (string.IsNullOrWhiteSpace(dto.MaDienGia))
             {
                 return ServiceResult.Failed("Mã diễn giả không hợp lệ!");
@@ -236,6 +190,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult Delete(string maDienGia)
         {
+            EnsureLoadedFromDb();
             var item = _speakers.FirstOrDefault(x => x.MaDienGia.Equals(maDienGia, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
@@ -257,6 +212,7 @@ namespace EventManagement.BLL.Services
 
         public ServiceResult SoftDelete(string maDienGia)
         {
+            EnsureLoadedFromDb();
             var item = _speakers.FirstOrDefault(x => x.MaDienGia.Equals(maDienGia, StringComparison.OrdinalIgnoreCase));
             if (item == null)
             {
