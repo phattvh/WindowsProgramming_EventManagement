@@ -73,6 +73,101 @@ namespace EventManagement.BLL.Services
                     if (tickets.Any()) _issuedTickets.AddRange(tickets);
                 }
                 catch { }
+
+                SeedDefaultTiersAndTickets();
+            }
+        }
+
+        private static void SeedDefaultTiersAndTickets()
+        {
+            var demoEvents = new (string Ma, string Ten)[]
+            {
+                ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026"),
+                ("EVT202602", "Đại nhạc hội Sinh viên YouthWave 2026"),
+                ("EVT202603", "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026"),
+                ("EVT202604", "Triển lãm Thiết bị & Trải nghiệm AI Expo 2026"),
+                ("EVT202605", "Workshop Thực chiến GenAI & Agentic Coding 2026"),
+                ("EVT202606", "Giải thi đấu Thể thao Điện tử Sinh viên Toàn quốc 2026"),
+                ("EVT202607", "Ngày hội Việc làm & Kết nối Doanh nghiệp IT Career Fair 2026"),
+                ("EVT202608", "Diễn đàn An ninh mạng Quốc gia Cybershield 2026"),
+                ("EVT202609", "Hội nghị Khoa học Quốc tế về Trí tuệ Nhân tạo & Bán dẫn 2026"),
+                ("EVT202610", "Lễ hội Văn hóa Ẩm thực & Âm nhạc Mùa Thu 2026"),
+                ("EVT202611", "Diễn đàn Chuyển đổi số Doanh nghiệp Vừa và Nhỏ 2026"),
+                ("EVT202612", "Giải Marathon Sinh viên Vì Cộng đồng Green Run 2026")
+            };
+
+            foreach (var d in demoEvents)
+            {
+                if (!_events.Any(x => x.MaSuKien == d.Ma))
+                    _events.Add((d.Ma, d.Ten));
+            }
+
+            int tierNum = 100;
+            foreach (var evt in _events.ToList())
+            {
+                if (!_ticketTiers.Any(t => t.MaSuKien == evt.MaSuKien))
+                {
+                    string hv1 = $"HV{tierNum++}";
+                    string hv2 = $"HV{tierNum++}";
+                    _ticketTiers.Add(new TicketTierSummaryDto
+                    {
+                        MaHangVe = hv1,
+                        MaSuKien = evt.MaSuKien,
+                        TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                        GiaVe = 200000m,
+                        SoLuongPhatHanh = 80,
+                        SoLuongDaBan = 35,
+                        ThoiGianMoBan = DateTime.Now.AddDays(-30),
+                        ThoiGianDongBan = DateTime.Now.AddDays(30)
+                    });
+                    _ticketTiers.Add(new TicketTierSummaryDto
+                    {
+                        MaHangVe = hv2,
+                        MaSuKien = evt.MaSuKien,
+                        TenHangVe = "Vé VIP (Full-Access)",
+                        GiaVe = 500000m,
+                        SoLuongPhatHanh = 20,
+                        SoLuongDaBan = 10,
+                        ThoiGianMoBan = DateTime.Now.AddDays(-30),
+                        ThoiGianDongBan = DateTime.Now.AddDays(30)
+                    });
+                }
+
+                if (!_issuedTickets.Any(t => t.MaSuKien == evt.MaSuKien))
+                {
+                    _issuedTickets.Add(new TicketDetailDto
+                    {
+                        MaVe = $"TKT{_ticketCounter++}",
+                        MaDangKy = $"DK{_orderCounter++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        TenHangVe = "Vé Tiêu chuẩn (Standard)",
+                        GiaVe = 200000m,
+                        TenNguoiThamGia = "Nguyễn Văn Hùng",
+                        Email = "hung.nguyen@ai-institute.vn",
+                        MaQR = $"QR_{evt.MaSuKien}_001",
+                        TrangThaiVe = "Đã check-in",
+                        NgayDangKy = DateTime.Now.AddDays(-10),
+                        ThoiGianCheckIn = DateTime.Now.AddDays(-1),
+                        NguoiCheckIn = "Quản trị viên Hệ thống"
+                    });
+                    _issuedTickets.Add(new TicketDetailDto
+                    {
+                        MaVe = $"TKT{_ticketCounter++}",
+                        MaDangKy = $"DK{_orderCounter++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        TenHangVe = "Vé VIP (Full-Access)",
+                        GiaVe = 500000m,
+                        TenNguoiThamGia = "Lê Hoàng Mai",
+                        Email = "mai.le@techcorp.com",
+                        MaQR = $"QR_{evt.MaSuKien}_002",
+                        TrangThaiVe = "Chưa sử dụng",
+                        NgayDangKy = DateTime.Now.AddDays(-8),
+                        ThoiGianCheckIn = null,
+                        NguoiCheckIn = null
+                    });
+                }
             }
         }
 

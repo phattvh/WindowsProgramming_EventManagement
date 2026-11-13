@@ -56,6 +56,71 @@ namespace EventManagement.BLL.Services
                     }
                 }
                 catch { }
+
+                SeedDefaultAssignments();
+            }
+        }
+
+        private static void SeedDefaultAssignments()
+        {
+            var demoEvents = new (string Ma, string Ten, DateTime Start, DateTime End)[]
+            {
+                ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026", new DateTime(2026, 12, 15, 8, 0, 0), new DateTime(2026, 12, 15, 17, 30, 0)),
+                ("EVT202602", "Đại nhạc hội Sinh viên YouthWave 2026", new DateTime(2026, 12, 25, 18, 0, 0), new DateTime(2026, 12, 25, 23, 0, 0)),
+                ("EVT202603", "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", new DateTime(2026, 1, 10, 8, 30, 0), new DateTime(2026, 1, 10, 12, 0, 0)),
+                ("EVT202604", "Triển lãm Thiết bị & Trải nghiệm AI Expo 2026", new DateTime(2026, 5, 20, 9, 0, 0), new DateTime(2026, 5, 21, 17, 0, 0)),
+                ("EVT202605", "Workshop Thực chiến GenAI & Agentic Coding 2026", new DateTime(2026, 11, 28, 8, 30, 0), new DateTime(2026, 11, 28, 17, 0, 0)),
+                ("EVT202606", "Giải thi đấu Thể thao Điện tử Sinh viên Toàn quốc 2026", new DateTime(2026, 12, 5, 8, 0, 0), new DateTime(2026, 12, 7, 21, 0, 0)),
+                ("EVT202607", "Ngày hội Việc làm & Kết nối Doanh nghiệp IT Career Fair 2026", new DateTime(2026, 12, 18, 8, 0, 0), new DateTime(2026, 12, 18, 17, 0, 0)),
+                ("EVT202608", "Diễn đàn An ninh mạng Quốc gia Cybershield 2026", new DateTime(2026, 11, 15, 8, 30, 0), new DateTime(2026, 11, 15, 16, 30, 0)),
+                ("EVT202609", "Hội nghị Khoa học Quốc tế về Trí tuệ Nhân tạo & Bán dẫn 2026", new DateTime(2026, 12, 28, 8, 0, 0), new DateTime(2026, 12, 29, 17, 30, 0)),
+                ("EVT202610", "Lễ hội Văn hóa Ẩm thực & Âm nhạc Mùa Thu 2026", new DateTime(2026, 11, 8, 16, 0, 0), new DateTime(2026, 11, 9, 22, 30, 0)),
+                ("EVT202611", "Diễn đàn Chuyển đổi số Doanh nghiệp Vừa và Nhỏ 2026", new DateTime(2026, 12, 20, 8, 30, 0), new DateTime(2026, 12, 20, 17, 0, 0)),
+                ("EVT202612", "Giải Marathon Sinh viên Vì Cộng đồng Green Run 2026", new DateTime(2026, 12, 27, 5, 30, 0), new DateTime(2026, 12, 27, 11, 30, 0))
+            };
+
+            foreach (var d in demoEvents)
+            {
+                if (!_events.Any(x => x.MaSuKien == d.Ma))
+                    _events.Add((d.Ma, d.Ten, d.Start, d.End));
+            }
+
+            int pcNum = 100;
+            foreach (var evt in _events.ToList())
+            {
+                if (!_assignments.Any(a => a.MaSuKien == evt.MaSuKien))
+                {
+                    _assignments.Add(new StaffAssignmentDto
+                    {
+                        MaPhanCong = $"PC{pcNum++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        MaNhanSu = "NS001",
+                        TenNhanSu = "Trần Minh Tâm",
+                        SoDienThoai = "0933111222",
+                        ChucVuNhanSu = "Trưởng nhóm điều phối",
+                        PhongBan = "Ban Tổ chức",
+                        NhiemVu = "Phụ trách tổng thể điều hành khu vực hội trường chính",
+                        ThoiGianBatDau = evt.BatDau,
+                        ThoiGianKetThuc = evt.KetThuc,
+                        GhiChu = "Trực liên tục và kết nối bộ đàm với BTC"
+                    });
+                    _assignments.Add(new StaffAssignmentDto
+                    {
+                        MaPhanCong = $"PC{pcNum++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        MaNhanSu = "NS002",
+                        TenNhanSu = "Lê Thị Thu Thảo",
+                        SoDienThoai = "0944333444",
+                        ChucVuNhanSu = "Điều phối viên Check-in",
+                        PhongBan = "Ban Lễ tân",
+                        NhiemVu = "Soát vé QR & Đón tiếp đại biểu",
+                        ThoiGianBatDau = evt.BatDau,
+                        ThoiGianKetThuc = evt.KetThuc,
+                        GhiChu = "Phụ trách cửa đón tiếp đại biểu VIP"
+                    });
+                }
             }
         }
 

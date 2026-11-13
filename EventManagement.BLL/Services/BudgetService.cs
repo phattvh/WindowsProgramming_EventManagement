@@ -75,6 +75,74 @@ namespace EventManagement.BLL.Services
                     }
                 }
                 catch { }
+
+                SeedDefaultExpensesForEvents();
+            }
+        }
+
+        private static void SeedDefaultExpensesForEvents()
+        {
+            var demoEvents = new (string Ma, string Ten, decimal NganSach)[]
+            {
+                ("EVT202601", "Hội nghị Công nghệ Vietnam Tech Summit 2026", 210000000m),
+                ("EVT202602", "Đại nhạc hội Sinh viên YouthWave 2026", 80000000m),
+                ("EVT202603", "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", 150000000m),
+                ("EVT202604", "Triển lãm Thiết bị & Trải nghiệm AI Expo 2026", 120000000m),
+                ("EVT202605", "Workshop Thực chiến GenAI & Agentic Coding 2026", 120000000m),
+                ("EVT202606", "Giải thi đấu Thể thao Điện tử Sinh viên Toàn quốc 2026", 160000000m),
+                ("EVT202607", "Ngày hội Việc làm & Kết nối Doanh nghiệp IT Career Fair 2026", 95000000m),
+                ("EVT202608", "Diễn đàn An ninh mạng Quốc gia Cybershield 2026", 100000000m),
+                ("EVT202609", "Hội nghị Khoa học Quốc tế về Trí tuệ Nhân tạo & Bán dẫn 2026", 150000000m),
+                ("EVT202610", "Lễ hội Văn hóa Ẩm thực & Âm nhạc Mùa Thu 2026", 100000000m),
+                ("EVT202611", "Diễn đàn Chuyển đổi số Doanh nghiệp Vừa và Nhỏ 2026", 100000000m),
+                ("EVT202612", "Giải Marathon Sinh viên Vì Cộng đồng Green Run 2026", 100000000m)
+            };
+
+            foreach (var d in demoEvents)
+            {
+                if (!_events.Any(x => x.MaSuKien == d.Ma))
+                {
+                    _events.Add((d.Ma, d.Ten, d.NganSach));
+                }
+            }
+
+            int nextId = 100;
+            foreach (var evt in _events.ToList())
+            {
+                if (!_expenses.Any(x => x.MaSuKien == evt.MaSuKien))
+                {
+                    decimal budget = evt.NganSachDuKien > 0 ? evt.NganSachDuKien : 100000000m;
+                    decimal spend1 = Math.Round(budget * 0.25m, 0);
+                    decimal spend2 = Math.Round(budget * 0.15m, 0);
+
+                    _expenses.Add(new ExpenseDto
+                    {
+                        MaChiPhi = $"CP{nextId++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        KhoanMucChi = "Thuê địa điểm & Hội trường tổ chức",
+                        SoTien = spend1,
+                        NgayChi = DateTime.Now.AddDays(-15),
+                        NguoiLapPhieu = "admin",
+                        TenNguoiLapPhieu = "Quản trị viên Hệ thống",
+                        TrangThai = "Đã duyệt",
+                        DienGiai = "Thanh toán trọn gói chi phí mặt bằng và hội trường"
+                    });
+
+                    _expenses.Add(new ExpenseDto
+                    {
+                        MaChiPhi = $"CP{nextId++}",
+                        MaSuKien = evt.MaSuKien,
+                        TenSuKien = evt.TenSuKien,
+                        KhoanMucChi = "In ấn Backdrop, Standee & Truyền thông",
+                        SoTien = spend2,
+                        NgayChi = DateTime.Now.AddDays(-7),
+                        NguoiLapPhieu = "admin",
+                        TenNguoiLapPhieu = "Quản trị viên Hệ thống",
+                        TrangThai = "Đã duyệt",
+                        DienGiai = "In ấn ấn phẩm và thiết kế tài liệu cho người tham dự"
+                    });
+                }
             }
         }
 

@@ -71,6 +71,19 @@ namespace EventManagement.BLL.Services
                     }
                 }
                 catch { }
+
+                if (_feedbacks.Count < 5)
+                {
+                    _feedbacks.Clear();
+                    _feedbacks.AddRange(new[]
+                    {
+                        new FeedbackDto { MaPhanHoi = "PH001", MaSuKien = "EVT202601", TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026", MaNguoiThamGia = "NTG003", TenNguoiThamGia = "Nguyễn Văn Hùng", Email = "hung.nguyen@ai-institute.vn", DiemDanhGia = 5, NoiDungPhanHoi = "Sự kiện được tổ chức chuyên nghiệp, nội dung xuất sắc!", NgayDanhGia = DateTime.Now.AddDays(-2) },
+                        new FeedbackDto { MaPhanHoi = "PH002", MaSuKien = "EVT202601", TenSuKien = "Hội nghị Công nghệ Vietnam Tech Summit 2026", MaNguoiThamGia = "NTG002", TenNguoiThamGia = "Lê Hoàng Mai", Email = "mai.le@techcorp.com", DiemDanhGia = 4, NoiDungPhanHoi = "Diễn giả rất nhiệt huyết, khán phòng âm thanh rõ ràng.", NgayDanhGia = DateTime.Now.AddDays(-2) },
+                        new FeedbackDto { MaPhanHoi = "PH003", MaSuKien = "EVT202602", TenSuKien = "Đại nhạc hội Sinh viên YouthWave 2026", MaNguoiThamGia = "NTG003", TenNguoiThamGia = "Trần Minh Tâm", Email = "tam.tran@email.com", DiemDanhGia = 5, NoiDungPhanHoi = "Âm nhạc bùng nổ, không khí cực kỳ sôi động!", NgayDanhGia = DateTime.Now.AddDays(-1) },
+                        new FeedbackDto { MaPhanHoi = "PH004", MaSuKien = "EVT202603", TenSuKien = "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", MaNguoiThamGia = "NTG004", TenNguoiThamGia = "Phạm Quỳnh Như", Email = "nhu.pham@email.com", DiemDanhGia = 4, NoiDungPhanHoi = "Nhiều thông tin hữu ích cho startup.", NgayDanhGia = DateTime.Now.AddDays(-1) },
+                        new FeedbackDto { MaPhanHoi = "PH005", MaSuKien = "EVT202603", TenSuKien = "Hội thảo Khởi nghiệp Trẻ & Đổi mới Sáng tạo 2026", MaNguoiThamGia = "NTG005", TenNguoiThamGia = "Vũ Hải Đăng", Email = "dang.vu@gss.com.vn", DiemDanhGia = 5, NoiDungPhanHoi = "Tổ chức rất chu đáo, teabreak ngon.", NgayDanhGia = DateTime.Now.AddDays(-1) }
+                    });
+                }
             }
         }
 
