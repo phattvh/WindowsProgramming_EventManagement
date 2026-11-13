@@ -132,9 +132,9 @@ dotnet test EventManagement.Tests/EventManagement.Tests.csproj
 
 | Họ và tên | Mã số SV | Vai trò | Trách nhiệm chính trong đồ án |
 | :--- | :---: | :---: | :--- |
-| **Trần Vũ Hoà Phát** | *Trưởng nhóm* | Thành viên 1 | Thiết kế kiến trúc giải pháp 3-Tier, thiết kế CSDL 20 bảng, tầng DAL (Generic Repository & Unit of Work), bảo mật BCrypt, kiểm soát Brute-force, Dashboard KPI & LiveCharts (F01 – F03, UC21, AD-6). |
-| **Trần Trọng Hưng** | *Thành viên* | Thành viên 2 | Chuẩn hóa giao diện người dùng UI/UX responsive, quản lý danh sách và chi tiết sự kiện Master-Detail, quản lý các danh mục địa điểm, loại sự kiện, lịch trình, diễn giả, nhà tài trợ (F04 – F09, F14, F16). |
-| **Huỳnh Minh Trí** | *Thành viên* | Thành viên 3 | Xây dựng thuật toán nghiệp vụ BLL, quy trình đặt mua vé, giải thuật giao dịch an toàn (ACID Transaction), soát vé Check-in bằng camera QR Code, quản lý ngân sách - chi phí và báo cáo thống kê PDF/Excel (F10 – F13, F15, F17, F19). |
+| **Trần Vũ Hoà Phát** | 51.01.104.072 | Trưởng nhóm | Thiết kế kiến trúc giải pháp 3-Tier, thiết kế CSDL 20 bảng, tầng DAL (Generic Repository & Unit of Work), bảo mật BCrypt, kiểm soát Brute-force, Dashboard KPI & LiveCharts (F01 – F03, UC21, AD-6). |
+| **Trần Trọng Hưng** | 51.01.104.132 | Thành viên | Chuẩn hóa giao diện người dùng UI/UX responsive, quản lý danh sách và chi tiết sự kiện Master-Detail, quản lý các danh mục địa điểm, loại sự kiện, lịch trình, diễn giả, nhà tài trợ (F04 – F09, F14, F16). |
+| **Huỳnh Minh Trí** | 51.01.104.105 | Thành viên | Xây dựng thuật toán nghiệp vụ BLL, quy trình đặt mua vé, giải thuật giao dịch an toàn (ACID Transaction), soát vé Check-in bằng camera QR Code, quản lý ngân sách - chi phí và báo cáo thống kê PDF/Excel (F10 – F13, F15, F17, F19). |
 
 ---
 
