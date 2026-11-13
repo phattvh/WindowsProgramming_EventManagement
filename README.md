@@ -140,4 +140,4 @@ dotnet test EventManagement.Tests/EventManagement.Tests.csproj
 
 ## 📄 Bản quyền (License)
 
-Dự án được phát triển phục vụ mục đích học tập và nghiên cứu trong khuôn khổ môn học Lập trình Windows. Bản quyền thuộc về Nhóm phát triển.
+Dự án được phát triển phục vụ mục đích học tập và nghiên cứu trong khuôn khổ môn học Lập trình Windows. Bản quyền thuộc về Nhóm WINDOWN.
