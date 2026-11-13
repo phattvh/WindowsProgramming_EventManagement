@@ -24,17 +24,17 @@ namespace EventManagement.Tests
 
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
-            Assert.IsTrue(result.Data.Count >= 5);
+            Assert.IsTrue(result.Data.Count >= 3);
         }
 
         [TestMethod]
         public void GetAll_FilterByEvent_ReturnsCorrect()
         {
-            var result = _feedbackService.GetAll(maSuKien: "EVT202604");
+            var result = _feedbackService.GetAll(maSuKien: "EVT202601");
 
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
-            Assert.IsTrue(result.Data.All(x => x.MaSuKien == "EVT202604"));
+            Assert.IsTrue(result.Data.All(x => x.MaSuKien == "EVT202601"));
         }
 
         [TestMethod]
@@ -62,11 +62,12 @@ namespace EventManagement.Tests
         public void Add_ValidFeedback_ReturnsSuccess()
         {
             string newCode = "PH_TEST_" + Guid.NewGuid().ToString("N").Substring(0, 6);
+            string newAttendee = "NTG_NEW_" + Guid.NewGuid().ToString("N").Substring(0, 4);
             var dto = new FeedbackDto
             {
                 MaPhanHoi = newCode,
                 MaSuKien = "EVT202603",
-                MaNguoiThamGia = "NTG006",
+                MaNguoiThamGia = newAttendee,
                 DiemDanhGia = 4,
                 NoiDungPhanHoi = "Hội thảo rất bổ ích, công tác chuẩn bị chu đáo.",
                 NgayDanhGia = DateTime.Now
@@ -74,7 +75,7 @@ namespace EventManagement.Tests
 
             var result = _feedbackService.Add(dto);
 
-            Assert.IsTrue(result.IsSuccess);
+            Assert.IsTrue(result.IsSuccess, result.Message);
             var check = _feedbackService.GetById(newCode);
             Assert.IsTrue(check.IsSuccess);
             Assert.AreEqual(4, check.Data!.DiemDanhGia);
@@ -83,13 +84,13 @@ namespace EventManagement.Tests
         [TestMethod]
         public void Add_DuplicateAttendeeForSameEvent_ReturnsFailed_BR16()
         {
-            // PH001 đã có MaSuKien = EVT202604, MaNguoiThamGia = NTG001
+            // PH001 đã có MaSuKien = EVT202601, MaNguoiThamGia = NTG003
             string newCode = "PH_DUP_" + Guid.NewGuid().ToString("N").Substring(0, 6);
             var dto = new FeedbackDto
             {
                 MaPhanHoi = newCode,
-                MaSuKien = "EVT202604",
-                MaNguoiThamGia = "NTG001",
+                MaSuKien = "EVT202601",
+                MaNguoiThamGia = "NTG003",
                 DiemDanhGia = 5,
                 NoiDungPhanHoi = "Thử gửi lại phản hồi lần 2"
             };

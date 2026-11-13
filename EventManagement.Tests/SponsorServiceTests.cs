@@ -49,12 +49,12 @@ namespace EventManagement.Tests
         [TestMethod]
         public void GetAll_SearchKeyword_ReturnsMatched()
         {
-            var result = _sponsorService.GetAll(keyword: "Viettel");
+            var result = _sponsorService.GetAll(keyword: "VietTech");
 
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
             Assert.IsTrue(result.Data.Count >= 1);
-            Assert.IsTrue(result.Data.Any(x => x.TenToChuc.Contains("Viettel")));
+            Assert.IsTrue(result.Data.Any(x => x.TenToChuc.Contains("VietTech")));
         }
 
         [TestMethod]

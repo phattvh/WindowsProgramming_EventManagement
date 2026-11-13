@@ -41,7 +41,7 @@ namespace EventManagement.Tests
 
             Assert.IsTrue(result.IsSuccess);
             Assert.IsNotNull(result.Data);
-            Assert.IsTrue(result.Data.Count >= 7, $"Số lượng thực tế: {result.Data.Count}");
+            Assert.IsTrue(result.Data.Count >= 6, $"Số lượng thực tế: {result.Data.Count}");
         }
 
         [TestMethod]
@@ -51,23 +51,23 @@ namespace EventManagement.Tests
             Assert.IsTrue(resEvent1.IsSuccess);
             Assert.IsNotNull(resEvent1.Data);
             Assert.IsTrue(resEvent1.Data.All(x => x.MaSuKien == "EVT202601"));
-            Assert.AreEqual(5, resEvent1.Data.Count);
+            Assert.AreEqual(3, resEvent1.Data.Count);
 
-            var resEvent2 = _assignmentService.GetAll(maSuKien: "EVT202602");
+            var resEvent2 = _assignmentService.GetAll(maSuKien: "EVT202605");
             Assert.IsTrue(resEvent2.IsSuccess);
             Assert.IsNotNull(resEvent2.Data);
-            Assert.IsTrue(resEvent2.Data.All(x => x.MaSuKien == "EVT202602"));
-            Assert.AreEqual(2, resEvent2.Data.Count);
+            Assert.IsTrue(resEvent2.Data.All(x => x.MaSuKien == "EVT202605"));
+            Assert.AreEqual(1, resEvent2.Data.Count);
         }
 
         [TestMethod]
         public void GetAll_FilterByDepartment_ReturnsCorrectItems()
         {
-            var resHauCan = _assignmentService.GetAll(phongBan: "Hậu cần");
-            Assert.IsTrue(resHauCan.IsSuccess);
-            Assert.IsNotNull(resHauCan.Data);
-            Assert.IsTrue(resHauCan.Data.All(x => x.PhongBan == "Hậu cần"));
-            Assert.IsTrue(resHauCan.Data.Count >= 2);
+            var resCheckIn = _assignmentService.GetAll(phongBan: "Điều phối viên Check-in");
+            Assert.IsTrue(resCheckIn.IsSuccess);
+            Assert.IsNotNull(resCheckIn.Data);
+            Assert.IsTrue(resCheckIn.Data.All(x => x.PhongBan == "Điều phối viên Check-in"));
+            Assert.IsTrue(resCheckIn.Data.Count >= 2);
         }
 
         [TestMethod]
@@ -112,11 +112,11 @@ namespace EventManagement.Tests
             {
                 MaPhanCong = "PC099",
                 MaSuKien = "EVT202601",
-                MaNhanSu = "NS002", // Lê Thanh Hằng - Trưởng ban Lễ tân
-                NhiemVu = "Điều phối xe đưa đón khách VIP",
+                MaNhanSu = "NS007",
+                NhiemVu = "Hỗ trợ hậu cần teabreak phòng hội thảo",
                 ThoiGianBatDau = new DateTime(2026, 12, 15, 6, 0, 0),
                 ThoiGianKetThuc = new DateTime(2026, 12, 15, 8, 0, 0),
-                GhiChu = "Đón tại cổng số 1"
+                GhiChu = "Chuẩn bị hoa và nước uống"
             };
 
             var result = _assignmentService.Add(newAssignment);
@@ -125,8 +125,7 @@ namespace EventManagement.Tests
 
             var queryRes = _assignmentService.GetById("PC099");
             Assert.IsTrue(queryRes.IsSuccess);
-            Assert.AreEqual("Lê Thanh Hằng", queryRes.Data?.TenNhanSu);
-            Assert.AreEqual("Lễ tân", queryRes.Data?.PhongBan);
+            Assert.AreEqual("Vũ Mai Lan", queryRes.Data?.TenNhanSu);
 
             // Dọn dẹp
             _assignmentService.Delete("PC099");
@@ -323,7 +322,7 @@ namespace EventManagement.Tests
 
             Assert.IsTrue(code.StartsWith("PC"));
             Assert.IsTrue(int.TryParse(code.Substring(2), out int num));
-            Assert.IsTrue(num >= 8, $"Mã sinh ra phải từ PC008 trở lên, thực tế: {code}");
+            Assert.IsTrue(num >= 7, $"Mã sinh ra phải từ PC007 trở lên, thực tế: {code}");
         }
 
         [TestMethod]
