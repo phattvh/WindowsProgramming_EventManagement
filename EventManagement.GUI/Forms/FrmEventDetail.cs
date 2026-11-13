@@ -400,7 +400,7 @@ namespace EventManagement.GUI.Forms
             colDG_DonVi.HeaderText = "Đơn Vị Công Tác"; colDG_DonVi.Width = 220;
             colDG_Email.HeaderText = "Email"; colDG_Email.Width = 190;
             colDG_SDT.HeaderText = "Số Điện Thoại"; colDG_SDT.Width = 110;
-            colDG_TietMuc.HeaderText = "Tiết Mục Đảm Nhận"; colDG_TietMuc.Width = 130;
+            colDG_TietMuc.HeaderText = "Tiết Mục Đảm Nhận"; colDG_TietMuc.Width = 165; colDG_TietMuc.MinimumWidth = 155;
             colDG_TrangThai.HeaderText = "Trạng Thái";
             colDG_Ma.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             colDG_SDT.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;

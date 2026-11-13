@@ -504,9 +504,9 @@
             // txtSoDienThoai
             // 
             this.txtSoDienThoai.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.txtSoDienThoai.Location = new System.Drawing.Point(475, 101);
+            this.txtSoDienThoai.Location = new System.Drawing.Point(450, 101);
             this.txtSoDienThoai.Name = "txtSoDienThoai";
-            this.txtSoDienThoai.Size = new System.Drawing.Size(160, 24);
+            this.txtSoDienThoai.Size = new System.Drawing.Size(175, 24);
             this.txtSoDienThoai.TabIndex = 11;
 
             // 
@@ -530,9 +530,9 @@
             "Hoạt động",
             "Bảo trì",
             "Ngừng sử dụng"});
-            this.cboTrangThai.Location = new System.Drawing.Point(755, 101);
+            this.cboTrangThai.Location = new System.Drawing.Point(740, 101);
             this.cboTrangThai.Name = "cboTrangThai";
-            this.cboTrangThai.Size = new System.Drawing.Size(190, 24);
+            this.cboTrangThai.Size = new System.Drawing.Size(205, 24);
             this.cboTrangThai.TabIndex = 13;
 
             // 

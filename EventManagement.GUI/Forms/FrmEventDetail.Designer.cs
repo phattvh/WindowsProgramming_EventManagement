@@ -1177,7 +1177,7 @@ namespace EventManagement.GUI.Forms
             this.colDG_TietMuc.DataPropertyName = "SoTietMucThamGia";
             this.colDG_TietMuc.HeaderText = "Số tiết mục";
             this.colDG_TietMuc.Name = "colDG_TietMuc";
-            this.colDG_TietMuc.Width = 110;
+            this.colDG_TietMuc.Width = 165;
 
             this.colDG_TrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             this.colDG_TrangThai.DataPropertyName = "TrangThai";
